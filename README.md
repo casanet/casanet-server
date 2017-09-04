@@ -6,10 +6,10 @@ i will update readme file soon...
 ### Add to this doc:
 
 * `Purpose`: what this project wont to do or solve
-* 'work' : how to run this app
+* `work` : how to run this app
 * `use`   : how to use this server with examples
 * `extand`: how to extand this app to support any other socket
-* 'credits' : to every lib that i using
+* `credits` : to every lib that i using
 
 BroadLink:
 https://github.com/NightRang3r/Broadlink-NodeSP2
