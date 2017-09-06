@@ -5,7 +5,7 @@ i will update readme file soon...
 
 ### Add to this doc:
 
-* `Purpose`: what this project wont to do or solve
+* `Purpose`: Instead of managing each smart socket (or any device with an on / off option) in a separate API for each brand, even though their operation is quite similar, we will consolidate all into one API and only behind the scenes will we perform the logical operations of the I / O for each brand according to its protocol.
 * `work` : how to run this app
 * `use`   : how to use this server with examples
 * `extand`: how to extand this app to support any other socket
