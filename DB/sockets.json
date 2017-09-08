@@ -1,50 +1,17 @@
 {
     "34ea34f5b7d2": {
         "ip": "192.168.1.25",
-        "name": "בדיקות B",
-        "brand": "Broadlink",
-        "power": "5"
-    },
-    "b4430dcbe161": {
-        "ip": "192.168.1.11",
-        "name": "סלון",
-        "brand": "Broadlink",
-        "power": "40"
-    },
-    "34ea34f1a482": {
-        "ip": "192.168.1.12",
-        "name": "ספוטים",
-        "brand": "Broadlink",
-        "power": "10"
+        "name": "BroadLink Device",
+        "brand": "Broadlink"
     },
     "accf2334e632": {
         "ip": "192.168.1.22",
-        "name": "בדיקות O",
-        "brand": "Orvibo",
-        "power": "20"
-    },
-    "accf23349b9a": {
-        "ip": "192.168.1.20",
-        "name": "חדר של מושי",
-        "brand": "Orvibo",
-        "power": "20"
-    },
-    "accf2329ac86": {
-        "ip": "192.168.1.18",
-        "name": "חדר שינה",
-        "brand": "Orvibo",
-        "power": "20"
-    },
-    "001561cd462d": {
-        "ip": "192.168.1.26",
-        "name": "מאוורר",
-        "brand": "Kankun",
-        "power": "20"
+        "name": "Orvibo Device",
+        "brand": "Orvibo"
     },
     "001561bc41ff": {
         "ip": "192.168.1.16",
-        "name": "בדיקות K",
-        "brand": "Kankun",
-        "power": "20"
+        "name": "Kankun device",
+        "brand": "Kankun"
     }
 }

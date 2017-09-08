@@ -62,7 +62,6 @@ var GetDevice = function (mac, next) {
       "mac": device.mac,
       "ip": device.ip,
       "name": device.name,
-      "power": device.power,
       "state": state
     })
   };
@@ -95,7 +94,6 @@ var GetDevicesState = function (devices, index, next) {
       "mac": device.mac,
       "ip": device.ip,
       "name": device.name,
-      "power": device.power,
       "state": state
     })
 
