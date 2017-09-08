@@ -1,8 +1,6 @@
 # Generic IoT Server
 Generic IoT devices Node.js server with basic REST api 
 
-i will update readme file soon...
-
 ### Operating instructions and use:
 
 * `Purpose`: Instead of managing each smart socket (or any device with an on / off option) in a separate API for each brand, even though their operation is quite similar, we will consolidate all into one API and only behind the scenes will we perform the logical operations of the I / O for each brand according to its protocol. 
