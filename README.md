@@ -9,9 +9,9 @@ Which is why I completely ignored the advanced capabilities of the smart devices
 * `Run it` : This part is for the Windows operating system, of course you can run the server on Linux, but the connection with Orvibo Sockets is through .NET and it's a bit of a problem in Linux, so I did not try the server in Linux but everything else should work.
 
 1. Install Node.js
-1. Installing Python 2.2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7)
-1. DotNet installation
-1. Go to location of the files in Cmd and enter `npm install`
+1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7)
+1. Install .Net
+1. Go to location of the files in CMD and enter `npm install`
 1. Go to `DB\sockets.json` file and change the values to the correct data and save the structure
 1. Run the server by pressing `node app.js` or clicking the ActiveServer.bat file
 
