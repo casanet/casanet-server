@@ -2,11 +2,11 @@
 Generic IoT devices Node.js server with basic REST api 
 
 ### Suppoted Right now
-1. Orvibo wiwo - S20
-1. Broadlink SP3
-1. Kankun Smart Wifi Plug
-1. Xiaomi Yeelight Smart LED Ceiling Light -- soon
-1. Xiaomi Philips LED Ceiling Lamp -- soon
+* Orvibo wiwo - S20
+* Broadlink SP3
+* Kankun Smart Wifi Plug
+* Xiaomi Yeelight Smart LED Ceiling Light -- soon
+* Xiaomi Philips LED Ceiling Lamp -- soon
 
 ### Operating instructions and use:
 
