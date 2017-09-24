@@ -15,6 +15,9 @@ Which is why I completely ignored the advanced capabilities of the smart devices
 
 * `Run it` : This part is for the Windows operating system, of course you can run the server on Linux, but the connection with Orvibo Sockets is through .NET and it's a bit of a problem in Linux, so I did not try the server in Linux but everything else should work.
 
+Note that .Net is for Orvibo device
+Python is for kankun and broadlink devices
+
 1. Install Node.js
 1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7)
 1. Install .Net
