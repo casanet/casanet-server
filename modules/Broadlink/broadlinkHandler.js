@@ -23,6 +23,6 @@ var GetState = function (ip, mac, next) {
 };
 
 module.exports = {
-  GetStateSP: GetState,
-  ChangeStateSP: ChangeState
+  GetState: GetState,
+  ChangeState: ChangeState
 };

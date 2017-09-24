@@ -9,14 +9,13 @@ try:
 	device.auth()
 	time.sleep(3)
 	device.host
-
-	# Add option to only check power without change it 
+	
 	if state == "2":
 		print device.check_power()   
-	elif state == "1":
+	if state == "1":
 		device.set_power(True)
 		print "on"
-	elif state == "0":
+	if state == "0":
 		device.set_power(False)
 		print "off"
 except:

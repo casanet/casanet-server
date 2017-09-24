@@ -1,12 +1,12 @@
 # Home IoT Server
-Generic IoT devices Node.js server with basic REST api 
+Node.js server with basic REST api for home IoT devices 
 
 ### Suppoted Right now
 * Orvibo wiwo - S20
 * Broadlink SP3
 * Kankun Smart Wifi Plug
-* Xiaomi Yeelight Smart LED Ceiling Light -- soon
-* Xiaomi Philips LED Ceiling Lamp -- soon
+* Xiaomi Yeelight Smart LED Ceiling Light
+* Xiaomi Philips LED Ceiling Lamp
 
 ### Operating instructions and use:
 
@@ -64,3 +64,8 @@ My Fork-
 https://github.com/haimkastner/kankuncontroller
 
 At the moment only 3 devices from three companies (Broadlink Orvibo Kankun) are supported because this is what I have in my house ... but easily (I hope) you can add support for any type of device that supports the option of turning on and off through WIFI and if I have more devices I will add them Here
+
+### TODO:
+- [ ] Add yeelight support in light interface
+- [ ] writing ui (client side)
+- [ ] logs and comments

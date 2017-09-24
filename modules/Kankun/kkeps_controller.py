@@ -34,7 +34,6 @@ def applyConfig():
     ##
     global IFACE
     IFACE = "wlan0"
-	# Remove next 4 lines because this info we want to get by arguments only
     #global RHOST
     #RHOST = "192.168.1.16"
     #global RMAC
@@ -410,11 +409,10 @@ def main():
         usage()
         exit(1)
     action = None
-    options, remainder = getopt.getopt(sys.argv[1:], 'a:vh', ['action=','verbose','num=','start-time=','stop-time=','enabled=','on-enabled=','off-enabled=','repeatstr=','ssid=','key=','initial-password=','device-name=','ip=','help'])
+    options, remainder = getopt.getopt(sys.argv[1:], 'a:vh', ['action=','verbose','num=','start-time=','stop-time=','enabled=','on-enabled=','off-enabled=','repeatstr=','ssid=','key=','initial-password=','device-name=','ip=','mac=','help'])
 
-	# Add this code to set ip and mac global from user arguments
-    # Example for use:
-	# $	python kkeps_controller.py -a off ip=192.168.1.16 mac=44:44:44:ff:ff:ff
+    #my code to enable reuse in script to diffrence sockets
+    # Example for use python kkeps_controller.py -a off ip=192.168.1.16 mac=00:15:61:bc:41:ff
     for arg in remainder:
         opt = arg.split('=')
         if opt[0] == 'ip':
@@ -425,8 +423,8 @@ def main():
             global RMAC
             RMAC = opt[1]
             print 'mac:' + RMAC
-    
-	
+        
+
     for opt, arg in options:
         if opt in ('-h', '--help'):
             usage()
@@ -462,11 +460,7 @@ def main():
         elif opt in ('device-name'):
             global DEVNAME
             DEVNAME = arg
-		# Remove next lines because this info we get it before in new part of code above
-        #elif opt in ('ip'):
-            #global RHOST
-            #RHOST = arg
-
+        
     if action == None:
         usage()
         exit(1)

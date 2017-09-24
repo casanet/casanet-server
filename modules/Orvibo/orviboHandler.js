@@ -20,7 +20,11 @@ var GetState = function (ip, mac, next) {
     });
 };
 
+var GetAllState = function (next) {
+  next();
+};
+
 module.exports = {
-  GetStateS20: GetState,
-  ChangeStateS20: ChangeState
+  GetState: GetState,
+  ChangeState: ChangeState
 };
