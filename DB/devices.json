@@ -27,7 +27,8 @@
         "ip": "192.168.1.16",
         "name": "תאורת חדר שינה",
         "brand": "Yeelight",
-        "types" :["switch"]
+        "types" :["switch", "light"],
+        "token": "b726e337ade22fb026aa2f7dfbe4cd12"
     },
     "34ce0092edcf": {
         "ip": "192.168.1.21",
