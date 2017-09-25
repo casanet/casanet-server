@@ -29,7 +29,7 @@ Note that .Net is for Orvibo device only and python is for kankun and broadlink 
 1. Install Node.js
 1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7)
 1. Install .Net
-1. Go to location of the files in CMD and enter `npm install`
+1. Go to path of the project in CMD and press `npm install`
 1. Go to `DB\devices.json` file and change the values to the correct data and save the structure
 1. Run the server by pressing `node app.js` or clicking the ActiveServer.bat file
 
@@ -118,7 +118,7 @@ and
 
 POST http://127.0.0.1:3000/refresh/switchers http://127.0.0.1:3000/refresh/lights to scan again in LAN,
 
-In addition to get update (by SSE obj) of changes in devices status GET http://127.0.0.1:3000/switchers-feed (you can simply enter this url in chrom and see updates in live)
+In addition to get update (by SSE https://en.m.wikipedia.org/wiki/Server-sent_events) of changes GET http://127.0.0.1:3000/switchers-feed http://127.0.0.1:3000/lights-feed
 * `Extand`: Not really complicated but a bit required to understand some of the existing code
 At the moment, I went from the server to external script programs in Python and cmd, the data is given with arguments and the results are called by reading the printing at the terminal.
 To expand what is currently needed
