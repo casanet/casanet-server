@@ -131,9 +131,12 @@ in body to change value of light
 
 and 
 
-POST http://127.0.0.1:3000/refresh/switchers http://127.0.0.1:3000/refresh/lights to scan again in LAN,
+POST http://127.0.0.1:3000/refresh/switchers Or http://127.0.0.1:3000/refresh/lights to scan all devices again (in LAN),
 
-In addition to get update (by SSE https://en.m.wikipedia.org/wiki/Server-sent_events) of changes GET http://127.0.0.1:3000/switchers-feed http://127.0.0.1:3000/lights-feed
+In addition to get update (by SSE https://en.m.wikipedia.org/wiki/Server-sent_events) of changes GET http://127.0.0.1:3000/switchers-feed  http://127.0.0.1:3000/lights-feed
+
+to get static files (in public folder) GET http://127.0.0.1:3000/static/{{path}}
+
 * `Extand`: Not really complicated but a bit required to understand some of the existing code
 At the moment, I went from the server to external script programs in Python and cmd, the data is given with arguments and the results are called by reading the printing at the terminal.
 To expand what is currently needed
