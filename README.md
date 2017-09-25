@@ -122,11 +122,10 @@ In addition to get update (by SSE https://en.m.wikipedia.org/wiki/Server-sent_ev
 * `Extand`: Not really complicated but a bit required to understand some of the existing code
 At the moment, I went from the server to external script programs in Python and cmd, the data is given with arguments and the results are called by reading the printing at the terminal.
 To expand what is currently needed
-1. Create a `xxxxHandler.js` file in a new folder named `xxx` in the `modules` folder that allows you to receive status and change status. Note that maintaining the structure of the arguments and callbacks as in the rest of the modules no matter how it works inside
+1. Create a `xxxxHandler.js` file in a new folder named `xxx` in the `modules` folder that implement the methods of device type. Note that maintaining the structure of the arguments and callbacks as in the rest of the modules no matter how it works inside
 (If you need access to other languages, you can see how I used cmd or python in the other modules or any way you see fit).
 1. Give a new name to the brand field in the `DB\sockets.json` file
-1. Go to the `modules\sockets.js` file to add a require to the module you have written and add any `switch` in the code
-`case` with the name you gave in the brand field and refer to the appropriate method that you wrote
+1. Go to the `modules\commons.js` file to add a require to the module you have written and add to `switch` in function `GetBrandModule` a `case` with the name you gave in the brand field and set return the module that you wrote
 * `Credits & Licence` : I used external libraries to communicate with sockets, and changed the code slightly to fit this project, so I will give a link to the original code repositiry and in addition to the fork I created for the changes,
 Please note that usage licenses are limited by any restrictions set by the original code authors.
 
