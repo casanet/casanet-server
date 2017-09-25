@@ -156,6 +156,6 @@ For Xiaomi philips:
 https://www.npmjs.com/package/miio
 
 ### TODO:
-- [ ] yeelight need refresh after start app
+- [x] yeelight need refresh after start app
 - [ ] writing ui (client side)
 - [ ] logs and comments
