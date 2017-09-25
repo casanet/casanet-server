@@ -24,14 +24,19 @@ And so in this way we maintain a rigid and basic structure that allows us to "ta
 
 * `Run it` : This part is for the Windows operating system, of course you can run the server on Linux, but the connection with Orvibo Sockets is through .NET and it's a bit of a problem in Linux, so I did not try the server in Linux but everything else should work.
 
-Note that .Net is for Orvibo device only and python is for kankun and broadlink devices
+Of course, there is no obligation to use the modules I wrote
+So if you change such modules, you do not need to install Python or DotNet
+(.Net is for Orvibo module and python is for kankun and broadlink modules)
 
-1. Install Node.js
-1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7)
-1. Install .Net
+so, for installation of server:
+1. Install Node.js 
 1. Go to path of the project in CMD and press `npm install`
 1. Go to `DB\devices.json` file and change the values to the correct data and save the structure
 1. Run the server by pressing `node app.js` or clicking the ActiveServer.bat file
+
+to use modules as is:
+1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7) 
+1. Install .Net
 
 If there are errors in the cmd window, note that you have set all the variables that the external libraries I have used have been properly arranged (the links to these projects are attached at the end of the page)
 
