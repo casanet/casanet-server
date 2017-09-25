@@ -16,7 +16,7 @@ var SSE = require('express-sse');
 // Parse every request body to json
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-app.use(express.static('public')); // serve every static file in public folder
+app.use('/static', express.static('public')); // serve every static file in public folder
 app.use(function (req, res, next) { // middelwhere for security
   if (req.url == '/login' || req.url == '/logout') { // it login logout or static file continue
     next()
