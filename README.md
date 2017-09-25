@@ -42,6 +42,16 @@ If there are errors in the cmd window, note that you have set all the variables 
 
 
 * `Using`   : so, after the server runing we can access to all devices in devices.json file simply, 
+
+to login POST http://127.0.0.1:3000/login
+```javascript
+{userName : 'myuser@domain.com', password : "myPass" } 
+``` 
+in body (users and passwords are in `DB\users.json` file)
+and your IP address will be allow to access until logout
+
+to logout POST http://127.0.0.1:3000/logout
+
 to get all 'switchers'  status GET http://127.0.0.1:3000/switchers 
 ```javascript
 [
