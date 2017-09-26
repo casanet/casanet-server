@@ -18,7 +18,7 @@ Which enables receiving status, turning on and off
 Each lighting device "realizes" a light interface that also allows changing brightness and color temperature
 And later the "realization" will be added to a color lighting device that will also be able to edit color details (RGB)
 (In addition to being a standard lighting fixture and a standard switch)
-And an interface will be added to the air conditioner that will allow a change in the temperature of the ventilation volume and the status (cold heat or air)
+And an interface will be added to the air conditioner that will allow controling the temperature, fan volume and operating status (heat, cold and ventilation)
 
 And so in this way we maintain a rigid and basic structure that allows us to "talk" with each device without knowing its mode of operation and its unique protocol.
 
