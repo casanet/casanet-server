@@ -107,7 +107,7 @@ var GetBrightnessAndColor = function (ip, mac, next) {
 
                     device.call('get_prop', ['ct'])
                         .then((cct) => {
-                            next(true, { bright: bright[0], color: GeneralMethods.SetRangeToPercent(cct[0] , 4100, 6500)});
+                            next(true, { bright: parseInt(bright[0]), color: GeneralMethods.SetRangeToPercent(parseInt(cct[0]) , 4100, 6500)});
                         })
                         .catch((err) => {
                             next(false, {});
