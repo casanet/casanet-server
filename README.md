@@ -179,7 +179,7 @@ for create new event POST http://127.0.0.1:3000/events
 with data in body like:
 ```javascript
 {
-    name: "EventName,
+    name: "EventName",
     actions: [{
                 "mac": "34ea34f1a482",
                 "type": "switch",
