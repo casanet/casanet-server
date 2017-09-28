@@ -195,7 +195,7 @@ with data in body like:
                 }
             }]
 }
-
+```
 or to edit event by its id PUT http://127.0.0.1:3000/events/r1igRA5iZ
 with body like posting new event
 for remove event DELETE http://127.0.0.1:3000/events/r1igRA5iZ
