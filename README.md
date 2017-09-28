@@ -137,6 +137,70 @@ In addition to get update (by SSE https://en.m.wikipedia.org/wiki/Server-sent_ev
 
 to get static files (in public folder) GET http://127.0.0.1:3000/static/{{path}}
 
+also the application support a events, 
+that every event hold a array of action to do, when every action contains mac of device, state and if it 
+more that just switch it can declare in type field and set the wanted value in set fiele
+
+to get all events GET http://127.0.0.1:3000/events 
+```javascript
+{
+    "SynCp05sb": {
+        "name": "Event1",
+        "actions": [
+            {
+                "mac": "34ea34f1a482",
+                "type": "switch",
+                "state": "off"
+            }
+        ]
+    },
+    "r1igRA5iZ": {
+        "name": "Event2",
+        "actions": [
+            {
+                "mac": "34ea34f1a482",
+                "type": "switch",
+                "state": "off"
+            },
+            {
+                "mac": "34ce0092edcf",
+                "type": "light",
+                "state": "on",
+                "set": {
+                    "bright": 1,
+                    "color": 50
+                }
+            }
+        ]
+    }
+}
+``` 
+for create new event POST http://127.0.0.1:3000/events 
+with data in body like:
+```javascript
+{
+    name: "EventName,
+    actions: [{
+                "mac": "34ea34f1a482",
+                "type": "switch",
+                "state": "off"
+            },
+            {
+                "mac": "34ce0092edcf",
+                "type": "light",
+                "state": "on",
+                "set": {
+                    "bright": 1,
+                    "color": 50
+                }
+            }]
+}
+
+or to edit event by its id PUT http://127.0.0.1:3000/events/r1igRA5iZ
+with body like posting new event
+for remove event DELETE http://127.0.0.1:3000/events/r1igRA5iZ
+and to invoke event POST http://127.0.0.1:3000/events/invoke/r1igRA5iZ
+
 * `Extand`: Not really complicated but a bit required to understand some of the existing code
 At the moment, I went from the server to external script programs in Python and cmd, the data is given with arguments and the results are called by reading the printing at the terminal.
 To expand what is currently needed
