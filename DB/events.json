@@ -1,0 +1,21 @@
+{
+	"id1": {
+		"name": "on-salon",
+		"actions": [
+			{
+				"mac": "34ea34f1a482",
+				"type": "switch",
+				"state": "on"
+			},
+			{
+				"mac": "34ce0092edcf",
+				"type": "light",
+				"state": "on",
+				"set": {
+					"bright": 1,
+					"color": 100
+				}
+			}
+		]
+	}
+}

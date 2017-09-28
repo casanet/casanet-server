@@ -2,6 +2,7 @@
 // Project moduls 
 var switchers = require('./modules/switchers');
 var lights = require('./modules/lights');
+var events = require('./modules/events');
 var security = require('./modules/security');
 var logs = require('./modules/logs');
 
@@ -139,6 +140,94 @@ app.put('/lights/:mac', function (req, res) {
     res.send('error with param ' + params.bright + ' or ' + params.color)
   }
 });
+
+// Events API
+
+// Trigger event by its id
+app.post('/events/invoke/:id', function (req, res) {
+  events.InvokeEvent(req.params.id, (isSuccess) => {
+    if (!isSuccess)
+      res.statusCode = 503;
+    res.send(isSuccess)
+  });
+});
+
+// Get all events
+app.get('/events', function (req, res) {
+  events.GetEvents((events) => {
+    res.send(events)
+  });
+});
+
+// Send new event
+app.post('/events', function (req, res) {
+  var params = req.body;
+
+  var name = params.name;
+  var actions = params.actions;
+
+  var hasError = false;
+
+  // chack params
+  try {
+    var actions = JSON.parse(actions);
+    hasError = !events.ActionsValidation(actions);
+  } catch (error) {
+    hasError = true;
+  }
+
+  if (hasError) {
+    res.statusCode = 503;
+    res.send('params errer');
+    return;
+  }
+
+  events.CreateEvent(name, actions, (isSuccess) => {
+    if (!isSuccess)
+      res.statusCode = 503;
+    res.send(isSuccess)
+  });
+});
+
+// change event 
+app.put('/events/:id', function (req, res) {
+  var params = req.body;
+
+  var name = params.name;
+  var actions = params.actions;
+
+  var hasError = false;
+
+  // check params
+  try {
+    var actions = JSON.parse(actions);
+    hasError = !events.ActionsValidation(actions);
+  } catch (error) {
+    hasError = true;
+  }
+
+  if (hasError) {
+    res.statusCode = 503;
+    res.send('params errer');
+    return;
+  }
+
+  events.EditEvent(req.params.id, name, actions, (isSuccess) => {
+    if (!isSuccess)
+      res.statusCode = 503;
+    res.send(isSuccess)
+  });
+});
+
+// delete event by its id
+app.delete('/events/:id', function (req, res) {
+  events.DeleteEvent(req.params.id, (isSuccess) => {
+    if (!isSuccess)
+      res.statusCode = 503;
+    res.send(isSuccess)
+  });
+});
+
 
 // Refresh data API (rescan lan)
 

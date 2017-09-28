@@ -9,7 +9,8 @@
     "miio": "^0.13.0",
     "node-cmd": "^3.0.0",
     "node-yeelight-wifi": "^0.1.2",
-    "python-shell": "^0.4.0"
+    "python-shell": "^0.4.0",
+    "shortid": "^2.2.8"
   },
   "devDependencies": {},
   "scripts": {
