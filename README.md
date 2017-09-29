@@ -23,8 +23,7 @@ And so in this way we maintain a rigid and basic structure that allows us to "ta
 
 ## Run it
 > This part is for the Windows operating system, of course you can run the server on Linux, but the connection with Orvibo Sockets is through .NET and it's a bit of a problem in Linux, so I did not try the server in Linux but everything else should work.
-
-> Of course, there is no obligation to use the modules I wrote
+and there is no obligation to use the modules I wrote
 So if you change such modules, you do not need to install Python or DotNet
 (.Net is for Orvibo module and python is for kankun and broadlink modules)
 
