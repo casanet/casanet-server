@@ -1,11 +1,21 @@
 {
-	"id1": {
-		"name": "on-salon",
+	"SynCp05sb": {
+		"name": "Event1",
 		"actions": [
 			{
 				"mac": "34ea34f1a482",
 				"type": "switch",
-				"state": "on"
+				"state": "off"
+			}
+		]
+	},
+	"r1igRA5iZ": {
+		"name": "Event2",
+		"actions": [
+			{
+				"mac": "34ea34f1a482",
+				"type": "switch",
+				"state": "off"
 			},
 			{
 				"mac": "34ce0092edcf",
@@ -13,7 +23,7 @@
 				"state": "on",
 				"set": {
 					"bright": 1,
-					"color": 100
+					"color": 50
 				}
 			}
 		]
