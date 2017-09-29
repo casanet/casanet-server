@@ -201,7 +201,7 @@ with body like posting new event
 for remove event DELETE http://127.0.0.1:3000/events/r1igRA5iZ
 and to invoke event POST http://127.0.0.1:3000/events/invoke/r1igRA5iZ
 
-## Extand server moduls
+## Extand server modules
 It is not really complicated but a bit required to understand some of the existing code
 At the moment, I went from the server to external script programs in Python and cmd, the data is given with arguments and the results are called by reading the printing at the terminal.
 To expand what is currently needed
@@ -237,7 +237,7 @@ https://www.npmjs.com/package/node-yeelight-wifi
 For Xiaomi philips:
 https://www.npmjs.com/package/miio
 
-To get xiaomi token (for current yeelight and philips moduls)
+To get xiaomi token (for current yeelight and philips modules)
 https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token_mirobot_new.md
 or call device.discover() in https://github.com/aholstenson/miio#advanced-device-management
 
