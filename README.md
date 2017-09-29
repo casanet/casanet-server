@@ -22,20 +22,19 @@ And an interface will be added to the air conditioner that will allow controling
 And so in this way we maintain a rigid and basic structure that allows us to "talk" with each device without knowing its mode of operation and its unique protocol.
 
 ## Run it
-```This part is for the Windows operating system, of course you can run the server on Linux, but the connection with Orvibo Sockets is through .NET and it's a bit of a problem in Linux, so I did not try the server in Linux but everything else should work.
+> This part is for the Windows operating system, of course you can run the server on Linux, but the connection with Orvibo Sockets is through .NET and it's a bit of a problem in Linux, so I did not try the server in Linux but everything else should work.
 
-Of course, there is no obligation to use the modules I wrote
+> Of course, there is no obligation to use the modules I wrote
 So if you change such modules, you do not need to install Python or DotNet
 (.Net is for Orvibo module and python is for kankun and broadlink modules)
-```
 
-### server installation :
+### Server installation :
 1. Install Node.js 
 1. Go to path of the project in CMD and press `npm install`
 1. Go to `DB\devices.json` file and change the values to the correct data and save the structure
 1. Run the server by pressing `node app.js` or clicking the ActiveServer.bat file
 
-### modules dependents:
+### Current modules dependents:
 1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7) 
 1. Install .Net
 
