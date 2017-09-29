@@ -1,16 +1,15 @@
 # Home IoT Server
 Node.js server with basic REST api for home IoT devices 
 
-### Suppoted Right now
+## Suppoted Right now
 * Orvibo wiwo - S20
 * Broadlink SP3
 * Kankun Smart Wifi Plug
 * Xiaomi Yeelight Smart LED Ceiling Light
 * Xiaomi Philips LED Ceiling Lamp
 
-### Operating instructions and use:
-
-* `Purpose`: Instead of managing each smart socket (or any device with an on / off option) in a separate API for each brand, even though their operation is quite similar, we will consolidate all into one API and only behind the scenes will we perform the logical operations of the I / O for each brand according to its protocol. 
+## Purpose
+Instead of managing each smart socket (or any device with an on / off option) in a separate API for each brand, even though their operation is quite similar, we will consolidate all into one API and only behind the scenes will we perform the logical operations of the I / O for each brand according to its protocol. 
 Which is why I completely ignored the advanced capabilities of the smart devices from all the companies and left only a simple API With such a structure: 
 
 Each device "realizes" a switch interface
@@ -22,26 +21,29 @@ And an interface will be added to the air conditioner that will allow controling
 
 And so in this way we maintain a rigid and basic structure that allows us to "talk" with each device without knowing its mode of operation and its unique protocol.
 
-* `Run it` : This part is for the Windows operating system, of course you can run the server on Linux, but the connection with Orvibo Sockets is through .NET and it's a bit of a problem in Linux, so I did not try the server in Linux but everything else should work.
+## Run it
+```This part is for the Windows operating system, of course you can run the server on Linux, but the connection with Orvibo Sockets is through .NET and it's a bit of a problem in Linux, so I did not try the server in Linux but everything else should work.
 
 Of course, there is no obligation to use the modules I wrote
 So if you change such modules, you do not need to install Python or DotNet
 (.Net is for Orvibo module and python is for kankun and broadlink modules)
+```
 
-so, for installation of server:
+### server installation :
 1. Install Node.js 
 1. Go to path of the project in CMD and press `npm install`
 1. Go to `DB\devices.json` file and change the values to the correct data and save the structure
 1. Run the server by pressing `node app.js` or clicking the ActiveServer.bat file
 
-to use modules as is:
+### modules dependents:
 1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7) 
 1. Install .Net
 
 If there are errors in the cmd window, note that you have set all the variables that the external libraries I have used have been properly arranged (the links to these projects are attached at the end of the page)
 
 
-* `Using`   : so, after the server runing we can access to all devices in devices.json file simply, 
+## Using (HTTP API)
+After the server runing we can access to all devices in devices.json file simply, 
 
 to login POST http://127.0.0.1:3000/login
 ```javascript
@@ -201,7 +203,8 @@ with body like posting new event
 for remove event DELETE http://127.0.0.1:3000/events/r1igRA5iZ
 and to invoke event POST http://127.0.0.1:3000/events/invoke/r1igRA5iZ
 
-* `Extand`: Not really complicated but a bit required to understand some of the existing code
+## Extand server moduls
+It is not really complicated but a bit required to understand some of the existing code
 At the moment, I went from the server to external script programs in Python and cmd, the data is given with arguments and the results are called by reading the printing at the terminal.
 To expand what is currently needed
 1. Create a `xxxxHandler.js` file in a new folder named `xxx` in the `modules` folder that implement the methods of device type. Note that maintaining the structure of the arguments and callbacks as in the rest of the modules no matter how it works inside
