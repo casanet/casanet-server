@@ -236,6 +236,10 @@ https://www.npmjs.com/package/node-yeelight-wifi
 For Xiaomi philips:
 https://www.npmjs.com/package/miio
 
+To get xiaomi token (for current yeelight and philips moduls)
+https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token_mirobot_new.md
+or call device.discover() in https://github.com/aholstenson/miio#advanced-device-management
+
 ### TODO:
 - [x] yeelight need refresh after start app
 - [ ] writing ui (client side)
