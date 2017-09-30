@@ -209,7 +209,9 @@ To expand what is currently needed
 (If you need access to other languages, you can see how I used cmd or python in the other modules or any way you see fit).
 1. Give a new name to the brand field in the `DB\sockets.json` file
 1. Go to the `modules\commons.js` file to add a require to the module you have written and add to `switch` in function `GetBrandModule` a `case` with the name you gave in the brand field and set return the module that you wrote
-* `Credits & Licence` : I used external libraries to communicate with sockets, and changed the code slightly to fit this project, so I will give a link to the original code repositiry and in addition to the fork I created for the changes,
+
+## Credits & Licence 
+I used external libraries to communicate with sockets, and changed the code slightly to fit this project, so I will give a link to the original code repositiry and in addition to the fork I created for the changes,
 Please note that usage licenses are limited by any restrictions set by the original code authors.
 
 ### links
