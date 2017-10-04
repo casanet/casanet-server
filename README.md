@@ -202,7 +202,7 @@ and to invoke event POST http://127.0.0.1:3000/events/invoke/r1igRA5iZ
 It is not really complicated but a bit required to understand some of the existing code
 At the moment, I went from the server to external script programs in Python and cmd, the data is given with arguments and the results are called by reading the printing at the terminal.
 To expand what is currently needed
-1. Create a `xxxxHandler.js` file in a new folder named `xxx` in the `modules` folder that implement the methods of device type. Note that maintaining the structure of the arguments and callbacks as in the rest of the modules no matter how it works inside, 
+* Create a `xxxxHandler.js` file in a new folder named `xxx` in the `modules` folder that implement the methods of device type. Note that maintaining the structure of the arguments and callbacks as in the rest of the modules no matter how it works inside, 
 the struct of 'interface' is for switch: 
 ```javascript
 GetState(device, callback(state, err))
@@ -216,8 +216,8 @@ SetBrightnessAndColor(device, value, callback(err))
 note that in `device` you get the object from `DB\devices.json` so you can add a key of anything for example a token to communicate xiaomi devices and it will arrive in device parameter.
 
 (If you need access to other languages, you can see how I used cmd or python in the other modules or any way you see fit).
-1. Give a new name to the brand field in the `DB\devices.json` file
-1. Go to the `modules\commons.js` file to add a require to the module you have written and add to `switch` in function `GetBrandModule` a `case` with the name you gave in the brand field and set return the module that you wrote.
+* Give a new name to the brand field in the `DB\devices.json` file
+* Go to the `modules\commons.js` file to add a require to the module you have written and add to `switch` in function `GetBrandModule` a `case` with the name you gave in the brand field and set return the module that you wrote.
 
 ## Credits & Licence 
  I used external libraries to communicate with sockets, and changed the code slightly to fit this project, so I will give a link to the original code repositiry and in addition to the fork I created for the changes,
