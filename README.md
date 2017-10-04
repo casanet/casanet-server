@@ -225,9 +225,9 @@ note that in `device` you get the object from `DB\devices.json` so you can add a
 1. Go to the `modules\commons.js` file to add a require to the module you have written and add to `switch` in function `GetBrandModule` a `case` with the name you gave in the brand field and set return the module that you wrote
 
 ## Credits & Licence 
-I used external libraries to communicate with sockets, and changed the code slightly to fit this project, so I will give a link to the original code repositiry and in addition to the fork I created for the changes,
->>>>>>> 2b18c1dae60fc8fd7b5bf47234ada9452fd55bed
+ I used external libraries to communicate with sockets, and changed the code slightly to fit this project, so I will give a link to the original code repositiry and in addition to the fork I created for the changes,
 Please note that usage licenses are limited by any restrictions set by the original code authors.
+
 
 ### links
 For BroadLink sockests:
