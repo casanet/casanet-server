@@ -3,22 +3,22 @@
 		"name": "Event1",
 		"actions": [
 			{
-				"mac": "34ea34f1a482",
+				"deviceID": "id6",
 				"type": "switch",
 				"state": "off"
 			}
 		]
 	},
-	"r1igRA5iZ": {
-		"name": "Event2",
+	"H1MXuQzhW": {
+		"name": "EditEvent3",
 		"actions": [
 			{
-				"mac": "34ea34f1a482",
+				"deviceID": "id2",
 				"type": "switch",
-				"state": "off"
+				"state": "on"
 			},
 			{
-				"mac": "34ce0092edcf",
+				"deviceID": "id6",
 				"type": "light",
 				"state": "on",
 				"set": {

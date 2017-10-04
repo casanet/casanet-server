@@ -1,27 +1,21 @@
 var cmd = require('node-cmd');
 
-var ChangeState = function (ip, mac, state, next) {
+var ChangeState = function (device, state, next) {
   cmd.get(
-    __dirname + '\\' + 'OrviboController.exe ' + (state ? ' seton ' : ' setoff ') + ' ' + mac.toUpperCase() + ' ' + ip,
+    __dirname + '\\' + 'OrviboController.exe ' + (state == 'on' ? ' seton ' : ' setoff ') + ' ' + device.mac.toUpperCase() + ' ' + device.ip,
     function (err, data, stderr) {
-      console.log(data);
-      next(!err && data.indexOf("True") != -1);
+      next((!err && data.indexOf("True") != -1) ? null : err);
     });
 };
 
-var GetState = function (ip, mac, next) {
+var GetState = function (device, next) {
   cmd.get(
-    __dirname + '\\' + 'OrviboController.exe query ' + mac.toUpperCase() + ' ' + ip,
+    __dirname + '\\' + 'OrviboController.exe query ' + device.mac.toUpperCase() + ' ' + device.ip,
     function (err, data, stderr) {
-      console.log(err ? err : data);
       // the tow !! is to get boolien and not value of data
       var isSuccess = !err && !!data;
-      next(isSuccess, isSuccess ? data.indexOf('True') != -1 : 'Error');
+      next(isSuccess ? (data.indexOf('True') != -1 ? 'on' : 'off') : 'error',  err);
     });
-};
-
-var GetAllState = function (next) {
-  next();
 };
 
 module.exports = {

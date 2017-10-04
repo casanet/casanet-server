@@ -5,46 +5,41 @@ var devices = require('../../DB/devices.json');
 var lights = {};
 updateChangesCallbacks = [];
 
-var ChangeState = function (ip, mac, state, next) {
-    if (!(mac in lights)) {
-        next(false);
+var ChangeState = function (device, state, next) {
+    if (!(device.mac in lights)) {
+        next('Mac not exsist in module lights');
         return;
     }
 
-    lights[mac].call('set_power', [state ? 'on' : 'off'])
+    lights[device.mac].call('set_power', [state])
         .then((result) => {
-            console.log('philips light ' + mac + ' set successfuly');
-            next(result[0] == 'ok' ? true : false);
+            next(result[0] == 'ok' ? null : 'Error');
         })
         .catch((err) => {
-            next(false);
+            next(err);
         });
 };
 
-var GetState = function (ip, mac, next) {
-    const device = miio.createDevice({
-        address: ip,
-        token: devices[mac].token, //'3d5f7ae53b51aa312e464b150b37453b',
-        model: mac
+var GetState = function (device, next) {
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token, //'3d5f7ae53b51aa312e464b150b37453b',
+        model: device.mac
     });
 
-    device.init()
+    lightDevice.init()
         .then(() => {
-
-            lights[mac] = device;
-            console.log('get philips light ' + mac);
-            device.call('get_prop', ['power'])
+            lights[device.mac] = lightDevice;
+            lightDevice.call('get_prop', ['power'])
                 .then((power) => {
-                    console.log('philips light ' + mac + ' state ' + power[0]);
-
-                    next(true, power[0] == 'on' ? true : false);
+                    next(power[0]);
                 })
                 .catch((err) => {
-                    next(false, 'Error');
+                    next('error', err);
                 });
         })
         .catch((err) => {
-            next(false, 'Error');
+            next('error', err);
         });
 };
 
@@ -52,55 +47,48 @@ var UpdateChangesRegistar = function (callback) {
     updateChangesCallbacks.push(callback);
 }
 
-var GetBrightnessAndColor = function (ip, mac, next) {
-    const device = miio.createDevice({
-        address: ip,
-        token: devices[mac].token, //'3d5f7ae53b51aa312e464b150b37453b',
-        model: mac
+var GetBrightnessAndColor = function (device, next) {
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token, //'3d5f7ae53b51aa312e464b150b37453b',
+        model: device.mac
     });
 
-    device.init()
+    lightDevice.init()
         .then(() => {
-
-            lights[mac] = device;
-            console.log('get philips light ' + mac);
-            device.call('get_prop', ['bright'])
+            lights[device.mac] = lightDevice;
+            lightDevice.call('get_prop', ['bright'])
                 .then((bright) => {
-
-                    device.call('get_prop', ['cct'])
+                    lightDevice.call('get_prop', ['cct'])
                         .then((cct) => {
-                            console.log('philips light ' + cct + ' state ' + bright);
-
-                            next(true, { bright: bright[0], color: cct[0] });
+                            next({ bright: bright[0], color: cct[0] });
                         })
                         .catch((err) => {
-                            next(false, {});
+                            next({ bright: -1, color: -1 }, err);
                         });
                 })
                 .catch((err) => {
-                    next(false,{});
+                    next({ bright: -1, color: -1 }, err);
                 });
         })
         .catch((err) => {
-            next(false, {});
+            next({ bright: -1, color: -1 }, err);
         });
 }
 
-var SetBrightnessAndColor = function (ip, mac, value, next) {
-    if (!(mac in lights)) {
-        next(false);
+var SetBrightnessAndColor = function (device, value, next) {
+    if (!(device.mac in lights)) {
+        next('Mac not exsist in module lights');
         return;
     }
 
-    lights[mac].call('set_bricct', [value.bright, value.color])
+    lights[device.mac].call('set_bricct', [value.bright, value.color])
         .then((result) => {
-            console.log('philips light bricct ' + mac + ' set successfuly');
-            next(result[0] == 'ok' ? true : false);
+            next(result[0] == 'ok' ? null : 'Error');
         })
         .catch((err) => {
-            next(false);
+            next(err);
         });
-
 }
 
 module.exports = {

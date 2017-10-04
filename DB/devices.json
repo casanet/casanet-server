@@ -1,40 +1,60 @@
 {
-    "34ea34f5b7d2": {
+    "id1": {
+        "mac": "34ea34f5b7d2",
         "ip": "192.168.1.25",
         "name": "מזגן מושי",
         "brand": "Broadlink",
-        "types" : ["switch"]
+        "types": [
+            "switch"
+        ]
     },
-    "34ea34f1a482": {
+    "id2": {
+        "mac": "34ea34f1a482",
         "ip": "192.168.1.12",
         "name": "ספוטים",
         "brand": "Broadlink",
-        "types" :["switch"]
+        "types": [
+            "switch"
+        ]
     },
-    "accf2334e632": {
+    "id3": {
+        "mac": "accf2334e632",
         "ip": "192.168.1.22",
         "name": "מזגן סלון",
         "brand": "Orvibo",
-        "types" :["switch"]
+        "types": [
+            "switch"
+        ]
     },
-    "accf2329ac86": {
+    "id4": {
+        "mac": "accf2329ac86",
         "ip": "192.168.1.18",
         "name": "מזגן חדר שינה",
         "brand": "Orvibo",
-        "types" :["switch"]
+        "types": [
+            "switch"
+        ]
     },
-    "34ce00bc9b57": {
+    "id5": {
+        "mac": "34ce00bc9b57",
         "ip": "192.168.1.16",
         "name": "תאורת חדר שינה",
         "brand": "Yeelight",
-        "types" :["switch", "light"],
+        "types": [
+            "switch",
+            "light"
+        ],
         "token": "b726e337ade22fb026aa2f7dfbe4cd12"
     },
-    "34ce0092edcf": {
+    "id6": {
+        "mac": "34ce0092edcf",
         "ip": "192.168.1.21",
         "name": "תאורת סלון",
         "brand": "Philips",
-        "types" :["switch", "light"],
+        "types": [
+            "switch",
+            "light"
+        ],
         "token": "3d5f7ae53b51aa312e464b150b37453b"
     }
 }

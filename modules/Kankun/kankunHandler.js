@@ -6,19 +6,17 @@ var ToKankunMac = function (mac) {
     .join(':')
 }
 
-var ChangeState = function (ip, mac, state, next) {
-  python.PythonCommand(__dirname, 'kkeps_controller.py', ['-a', state ? 'on' : 'off' , 'ip=' + ip, 'mac=' + ToKankunMac(mac)], function (err, results) {
+var ChangeState = function (device, state, next) {
+  python.PythonCommand(__dirname, 'kkeps_controller.py', ['-a', state , 'ip=' + device.ip, 'mac=' + ToKankunMac(device.mac)], function (err, results) {
     // The result is array with string search for error word if exist
-    next(results.length > 7 && results[7].indexOf('switch') != -1);
-    console.log(results);
+    next((results.length > 7 && results[7].indexOf('switch') != -1) ? null : err);
   });
 };
 
-var GetState = function (ip, mac, next) {
-  python.PythonCommand(__dirname, 'kkeps_controller.py', ['-a', 'check', 'ip=' + ip, 'mac=' + ToKankunMac(mac)], function (err, results) {
+var GetState = function (device, next) {
+  python.PythonCommand(__dirname, 'kkeps_controller.py', ['-a', 'check', 'ip=' + device.ip, 'mac=' + ToKankunMac(device.mac)], function (err, results) {
     var isSuccess = results.length > 4 && results[4].indexOf('switch') != -1;
-    next(isSuccess, isSuccess ? results[4].indexOf('open') != -1 : 'Error');
-    console.log(results);
+    next(isSuccess ? (results[4].indexOf('open') != -1 ? 'on' : 'off') : 'error', isSuccess ? null : err);
   });
 };
 

@@ -2,8 +2,7 @@ var fs = require('fs')
 var shortid = require('shortid');
 
 var Commons = require('./commons');
-var switchers = require('./switchers');
-var lights = require('./lights');
+var devicesHandle = require('./devices');
 
 var devices = require('../DB/devices.json');
 var events;
@@ -29,7 +28,7 @@ var ActionsValidation = (actions) => {
     var hasError = false;
     try {
         actions.forEach((action) => {
-            if (!action.mac ||
+            if (!action.deviceID ||
                 !action.type ||
                 !action.state) {
                 hasError = true;
@@ -54,7 +53,7 @@ var CreateEvent = (name, actions, next) => {
 
     SaveToDB();
 
-    next(true);
+    next();
 }
 
 var EditEvent = (id, name, actions, next) => {
@@ -65,7 +64,7 @@ var EditEvent = (id, name, actions, next) => {
 
     SaveToDB();
 
-    next(true);
+    next();
 }
 
 var DeleteEvent = (id, next) => {
@@ -73,7 +72,7 @@ var DeleteEvent = (id, next) => {
 
     SaveToDB();
 
-    next(true);
+    next();
 }
 
 // Invoke the action action by action by recusion
@@ -81,7 +80,7 @@ var RunActionsRecursion = (actions, index, next) => {
 
     // Stop condition if run on all actions
     if (actions.length <= index) {
-        next(true);
+        next();
         return;
     }
 
@@ -89,9 +88,9 @@ var RunActionsRecursion = (actions, index, next) => {
     var action = actions[index];
 
     // If all ok start next recursion call
-    var nextAction = (isSuccess) => {
-        if (!isSuccess) {
-            next(false);
+    var nextAction = (err) => {
+        if (err) {
+            next(err);
             return;
         }
 
@@ -99,19 +98,19 @@ var RunActionsRecursion = (actions, index, next) => {
     }
 
     // First set the wanted state
-    switchers.SetState(action.mac, action.state == 'on' ? true : false, (isSuccess) => {
-        if (!isSuccess) {
-            next(false);
+    devicesHandle.SetDeviceProperty(action.deviceID, 'switch', action.state, (err) => {
+        if (err) {
+            next(err);
             return;
         }
 
         // Then if it need addtional value set do it 
         switch (action.type) {
             case 'light':
-                lights.SetValue(action.mac, action.set, nextAction);
+                devicesHandle.SetDeviceProperty(action.deviceID, action.type, action.set, nextAction);
                 break;
             default:
-                nextAction(isSuccess);
+                nextAction();
                 break;
         }
     });
@@ -119,8 +118,8 @@ var RunActionsRecursion = (actions, index, next) => {
 
 // Start invoke event by its id
 var InvokeEvent = (id, next) => {
-    if(!(id in events)){
-        next(false);
+    if (!(id in events)) {
+        next('event id not exist');
         return;
     }
     RunActionsRecursion(events[id].actions, 0, next);

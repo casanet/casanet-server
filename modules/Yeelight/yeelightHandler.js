@@ -52,73 +52,70 @@ lookup.on("detected", (light) => {
 const miio = require('miio');
 
 var miioLights = {};
-var ChangeState = function (ip, mac, state, next) {
-    if (!(mac in miioLights)) {
-        next(false);
+var ChangeState = function (device, state, next) {
+    if (!(device.mac in miioLights)) {
+        next('Mac not exsist in module lights');
         return;
     }
 
-    miioLights[mac].call('set_power', [state ? 'on' : 'off'])
+    miioLights[device.mac].call('set_power', [state])
         .then((result) => {
-            next(result[0] == 'ok' ? true : false);
+            next(result[0] == 'ok' ? null : 'Error');
         })
         .catch((err) => {
-            next(false);
+            next(err);
         });
 };
 
-var GetState = function (ip, mac, next) {
-    const device = miio.createDevice({
-        address: ip,
-        token: devices[mac].token, 
-        model: mac
+var GetState = function (device, next) {
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token, //'3d5f7ae53b51aa312e464b150b37453b',
+        model: device.mac
     });
 
-    device.init()
+    lightDevice.init()
         .then(() => {
-
-            miioLights[mac] = device;
-            device.call('get_prop', ['power'])
+            miioLights[device.mac] = lightDevice;
+            lightDevice.call('get_prop', ['power'])
                 .then((power) => {
-                    next(true, power[0] == 'on' ? true : false);
+                    next(power[0]);
                 })
                 .catch((err) => {
-                    next(false, 'Error');
+                    next('error', err);
                 });
         })
         .catch((err) => {
-            next(false, 'Error');
+            next('error', err);
         });
 };
 
-var GetBrightnessAndColor = function (ip, mac, next) {
-    const device = miio.createDevice({
-        address: ip,
-        token: devices[mac].token,
-        model: mac
+var GetBrightnessAndColor = function (device, next) {
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token,
+        model: device.mac
     });
 
-    device.init()
+    lightDevice.init()
         .then(() => {
-
-            miioLights[mac] = device;            
-            device.call('get_prop', ['bright'])
+            miioLights[device.mac] = lightDevice;
+            lightDevice.call('get_prop', ['bright'])
                 .then((bright) => {
-
-                    device.call('get_prop', ['ct'])
+                    lightDevice.call('get_prop', ['ct'])
                         .then((cct) => {
-                            next(true, { bright: parseInt(bright[0]), color: GeneralMethods.SetRangeToPercent(parseInt(cct[0]) , 4100, 6500)});
+                            next({ bright: parseInt(bright[0]), color: GeneralMethods.SetRangeToPercent(parseInt(cct[0]), 4100, 6500) });
                         })
                         .catch((err) => {
-                            next(false, {});
+                            next({ bright: -1, color: -1 }, err);
                         });
                 })
                 .catch((err) => {
-                    next(false,{});
+                    next({ bright: -1, color: -1 }, err);
                 });
         })
         .catch((err) => {
-            next(false, {});
+            next({ bright: -1, color: -1 }, err);
         });
 }
 
@@ -175,21 +172,21 @@ var GetBrightnessAndColor = function (ip, mac, next) {
 //     }
 // }
 
-var SetBrightnessAndColor = function (ip, mac, value, next) {
-    mac = GeneralMethods.ToReadbleMac(mac);
+var SetBrightnessAndColor = function (device, value, next) {
+    mac = GeneralMethods.ToReadbleMac(device.mac);
     if (mac in lights) {
         lights[mac].obj.setBright(value.bright).then(() => {
             lights[mac].obj.setCT(GeneralMethods.GetRangeFromPercent(value.color, 4100, 6500)).then(() => {
-                next(true);
+                next();
             }).catch((error => {
-                next(false);
+                next(error);
             }));
         }).catch((error => {
-            next(false);
+            next(error);
         }));
     }
     else {
-        next(false);
+        next('Mac not exsist in current module');
     }
 }
 

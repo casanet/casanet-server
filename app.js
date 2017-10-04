@@ -1,7 +1,6 @@
 
 // Project moduls 
-var switchers = require('./modules/switchers');
-var lights = require('./modules/lights');
+var devices = require('./modules/devices');
 var events = require('./modules/events');
 var security = require('./modules/security');
 var logs = require('./modules/logs');
@@ -54,113 +53,68 @@ app.post('/logout', function (req, res) {
 
 // RESTful API
 
-// Get all switchers 
-app.get('/switchers', function (req, res) {
-  switchers.GetSwitchers(function (devices) {
+// Get all devices 
+app.get('/devices', (req, res) => {
+  devices.GetDevices((devices) => {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(devices));
   });
 });
 
-// Get switche by mac
-app.get('/switchers/:mac', function (req, res) {
-  switchers.GetSwitch(req.params.mac, function (isSuccess, result) {
-    if (!isSuccess)
+// Get device by id
+app.get('/devices/:id', (req, res) => {
+  devices.GetDevice(req.params.id, (device, err) => {
+    if (err)
       res.statusCode = 503;
-    res.send(result)
+    res.send(device);
   });
 });
 
-// Change switch state by mac
-// body should be { state : 'on' OR 'off' } 
-app.put('/switchers/:mac', function (req, res) {
+// Change devices vale by id
+app.put('/devices/:id', (req, res) => {
   var params = req.body;
-  var state;
-  switch (params.state) {
-    case 'on':
-      state = true;
-      break;
-    case 'off':
-      state = false;
-      break;
-    default:
-      res.statusCode = 503;
-      res.send('unknown parametr' + params.state)
-      return;
-  }
-
-  switchers.SetState(req.params.mac, state, (isSuccess) => {
-    if (!isSuccess)
-      res.statusCode = 503;
-    res.send(isSuccess)
-  });
-});
-
-
-
-// API for lights
-
-// Get all sockets 
-app.get('/lights', function (req, res) {
-  lights.GetLigthsValue(function (lights) {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(lights));
-  });
-});
-
-// Get light by mac
-app.get('/lights/:mac', function (req, res) {
-  lights.GetLight(req.params.mac, function (isSuccess, result) {
-    if (!isSuccess)
-      res.statusCode = 503;
-    res.send(result)
-  });
-});
-
-
-// Change light value by mac
-// body should be {bright : (int 1 - 100) , color : (int 1 - 100)} 
-app.put('/lights/:mac', function (req, res) {
-  var params = req.body;
-  // try parse value to int
+  var value;
   try {
-    // value is range between 1 - 100
-    var value = {
-      bright: parseInt(params.bright),
-      color: parseInt(params.color)
-    };
-
-    lights.SetValue(req.params.mac, value, (isSuccess) => {
-      if (!isSuccess)
-        res.statusCode = 503;
-      res.send(isSuccess)
-    });
+    value = JSON.parse(params.value);
   } catch (error) {
-    res.statusCode = 503;
-    res.send('error with param ' + params.bright + ' or ' + params.color)
+    if (params.type == 'switch') {
+      value = params.value;
+    } else {
+      res.statusCode = 503;
+      res.send('param value parsing error');
+      return;
+    }
   }
+
+  devices.SetDeviceProperty(req.params.id, params.type, value, (err) => {
+    if (err)
+      res.statusCode = 503;
+    res.send();
+  });
 });
 
 // Events API
 
 // Trigger event by its id
-app.post('/events/invoke/:id', function (req, res) {
-  events.InvokeEvent(req.params.id, (isSuccess) => {
-    if (!isSuccess)
+app.post('/events/invoke/:id', (req, res) => {
+  events.InvokeEvent(req.params.id, (err) => {
+    if (err)
       res.statusCode = 503;
-    res.send(isSuccess)
+    res.send()
   });
 });
 
 // Get all events
-app.get('/events', function (req, res) {
-  events.GetEvents((events) => {
+app.get('/events', (req, res) => {
+  events.GetEvents((events, err) => {
+    if (err)
+      res.statusCode = 503;
     res.send(events)
   });
 });
 
 // Send new event
-app.post('/events', function (req, res) {
+app.post('/events', (req, res) => {
   var params = req.body;
 
   var name = params.name;
@@ -182,15 +136,15 @@ app.post('/events', function (req, res) {
     return;
   }
 
-  events.CreateEvent(name, actions, (isSuccess) => {
-    if (!isSuccess)
+  events.CreateEvent(name, actions, (err) => {
+    if (err)
       res.statusCode = 503;
-    res.send(isSuccess)
+    res.send()
   });
 });
 
 // change event 
-app.put('/events/:id', function (req, res) {
+app.put('/events/:id', (req, res) => {
   var params = req.body;
 
   var name = params.name;
@@ -212,19 +166,19 @@ app.put('/events/:id', function (req, res) {
     return;
   }
 
-  events.EditEvent(req.params.id, name, actions, (isSuccess) => {
-    if (!isSuccess)
+  events.EditEvent(req.params.id, name, actions, (err) => {
+    if (err)
       res.statusCode = 503;
-    res.send(isSuccess)
+    res.send()
   });
 });
 
 // delete event by its id
 app.delete('/events/:id', function (req, res) {
-  events.DeleteEvent(req.params.id, (isSuccess) => {
-    if (!isSuccess)
+  events.DeleteEvent(req.params.id, (err) => {
+    if (err)
       res.statusCode = 503;
-    res.send(isSuccess)
+    res.send()
   });
 });
 
@@ -232,38 +186,25 @@ app.delete('/events/:id', function (req, res) {
 // Refresh data API (rescan lan)
 
 // Refresh switchers and then get them
-app.post('/refresh/switchers', function (req, res) {
-  switchers.RefreshSwitchersData(() => {
-    res.send('done');
+app.post('/refresh', function (req, res) {
+  devices.RefreshDevicesData((err) => {
+    if (err)
+      res.statusCode = 503;
+    res.send();
   });
 });
-
-// Refresh lights and then
-app.post('/refresh/lights', function (req, res) {
-  lights.RefreshLightsValue(() => {
-    res.send('done');
-  });
-});
-
 
 // Server send event (SSE) Area
 
 // Init the sse objects
-var switchersSse = new SSE(['init'], { isSerialized: true });
-var lightsSse = new SSE(['init'], { isSerialized: true });
+var devicesSse = new SSE(['init'], { isSerialized: true });
 
 // SSE resuest for switchers state federation
-app.get('/switchers-feed', switchersSse.init);
-// SSE resuest for lights value federation
-app.get('/lights-feed', lightsSse.init);
+app.get('/devices-feed', devicesSse.init);
 
-// Registar updates  
-switchers.UpdateChangesEventRegistar((mac, state) => {
-  switchersSse.send({ 'mac': mac, 'state': state });
-})
-
-lights.UpdateChangesEventRegistar((mac, value) => {
-  lightsSse.send({ 'mac': mac, 'value': value });
+// Registar devices push updates  
+devices.UpdateChangesEventRegistar((id, data) => {
+  devicesSse.send({ 'deviceID': id, 'data': data });
 })
 
 // Other API 
