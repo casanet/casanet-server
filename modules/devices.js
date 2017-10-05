@@ -1,9 +1,12 @@
 var shortid = require('shortid');
 
-var Commons = require('./commons');
+var brandModulesMap = require('./brandModulesMap');
 
 var devices = require('../DB/devices.json');
-var devicesKeysArray = Commons.GetFilterdKeysByType();
+var devicesKeysArray = [];
+Object.keys(devices).forEach((id) => {
+    devicesKeysArray.push(id);
+})
 
 // Recursive function to run on every dd\evie 
 // not in parallel
@@ -18,7 +21,7 @@ var InitDevicesData = function (deviceIndex, next) {
     var id = devicesKeysArray[deviceIndex];
     var device = devices[id];
 
-    var brandModuleHandler = Commons.GetBrandModule(device.brand);
+    var brandModuleHandler = brandModulesMap.GetBrandModule(device.brand);
 
     if (brandModuleHandler == null) {
         next('Cant find module that map to brand: ' + device.brand);
@@ -59,7 +62,7 @@ var InitDevicesData = function (deviceIndex, next) {
 }
 
 
-// next =  (isSuccess, err)
+// next =  (err)
 var SetDeviceProperty = (id, type, value, next) => {
     var device = devices[id];
 
@@ -70,14 +73,14 @@ var SetDeviceProperty = (id, type, value, next) => {
         next('Device id: ' + id + ' not supported : ' + type);
         return;
     }
-    var brandModuleHandler = Commons.GetBrandModule(device.brand);
+    var brandModuleHandler = brandModulesMap.GetBrandModule(device.brand);
 
     if (brandModuleHandler == null) {
         next('Cant find module that map to brand: ' + device.brand);
         return;
     }
 
-    // Do tryp action 
+    // Do type action 
     switch (type) {
         case ('switch'):
             brandModuleHandler.ChangeState(device, value, (err) => {
@@ -112,21 +115,26 @@ var GetDevice = (id, next) => {
     next(devices[id]);
 };
 
-// next = (devices)
+// next = (devices, err)
 var GetDevices = (next) => {
     next(devices);
 };
 
+// Scan lan devices data one by one
+// next = (err)
+var RefreshDevicesData = (next) => {
+    InitDevicesData(0, next);
+};
+
+// In startup of server scan all lan devices
 console.log('Getting devices data...');
-InitDevicesData(0, (err) => {
+RefreshDevicesData((err) => {
     console.log('Done getting device data');
     if (err)
         console.error(err);
 });
 
-var RefreshDevicesData = (next) => {
-    InitDevicesData(0, next);
-};
+
 
 // Push changes enents
 

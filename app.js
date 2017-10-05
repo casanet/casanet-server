@@ -1,9 +1,8 @@
 
 // Project moduls 
-var devices = require('./modules/devices');
-var events = require('./modules/events');
-var security = require('./modules/security');
-var logs = require('./modules/logs');
+var devicesHandler = require('./modules/devices');
+var eventsHandler = require('./modules/events');
+var securityHandler = require('./modules/security');
 
 // Depenencies moduls
 var express = require('express');
@@ -19,11 +18,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 app.use('/static', express.static('public')); // serve every static file in public folder
 app.use(function (req, res, next) { // middelwhere for security
   if (req.url == '/login' || req.url == '/logout') { // it login logout or static file continue
-    next()
+    next();
     return;
   }
-  security.CheckAccess(req, res, () => {
-    next()
+  securityHandler.CheckAccess(req, res, () => {
+    next();
   });
 })
 
@@ -35,7 +34,7 @@ app.use(function (req, res, next) { // middelwhere for security
 // body should be { userName : 'theUserName', password : 'thePassword' } 
 app.post('/login', function (req, res) {
   var params = req.body;
-  security.CheckIn(req, params.userName, params.password, (result) => {
+  securityHandler.CheckIn(req, params.userName, params.password, (result) => {
     if (result)
       res.send(`you connected seccessfuly`)
     else {
@@ -47,30 +46,34 @@ app.post('/login', function (req, res) {
 
 // Logout 
 app.post('/logout', function (req, res) {
-  security.CheckOut(req);
+  securityHandler.CheckOut(req);
   res.send(`Logout seccessfuly`);
 });
 
 // RESTful API
 
+// Devices API
+
 // Get all devices 
 app.get('/devices', (req, res) => {
-  devices.GetDevices((devices) => {
+  devicesHandler.GetDevices((devices, err) => {
+    if (err)
+      res.statusCode = 503;
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(devices));
+    res.end(!err ? JSON.stringify(devices) : err);
   });
 });
 
 // Get device by id
 app.get('/devices/:id', (req, res) => {
-  devices.GetDevice(req.params.id, (device, err) => {
+  devicesHandler.GetDevice(req.params.id, (device, err) => {
     if (err)
       res.statusCode = 503;
-    res.send(device);
+    res.send(!err ? device : err);
   });
 });
 
-// Change devices vale by id
+// Change devices value by id
 app.put('/devices/:id', (req, res) => {
   var params = req.body;
   var value;
@@ -86,10 +89,10 @@ app.put('/devices/:id', (req, res) => {
     }
   }
 
-  devices.SetDeviceProperty(req.params.id, params.type, value, (err) => {
+  devicesHandler.SetDeviceProperty(req.params.id, params.type, value, (err) => {
     if (err)
       res.statusCode = 503;
-    res.send();
+    res.send(err);
   });
 });
 
@@ -97,19 +100,19 @@ app.put('/devices/:id', (req, res) => {
 
 // Trigger event by its id
 app.post('/events/invoke/:id', (req, res) => {
-  events.InvokeEvent(req.params.id, (err) => {
+  eventsHandler.InvokeEvent(req.params.id, (err) => {
     if (err)
       res.statusCode = 503;
-    res.send()
+    res.send(err);
   });
 });
 
 // Get all events
 app.get('/events', (req, res) => {
-  events.GetEvents((events, err) => {
+  eventsHandler.GetEvents((events, err) => {
     if (err)
       res.statusCode = 503;
-    res.send(events)
+    res.send(!err ? events : err)
   });
 });
 
@@ -125,7 +128,7 @@ app.post('/events', (req, res) => {
   // chack params
   try {
     var actions = JSON.parse(actions);
-    hasError = !events.ActionsValidation(actions);
+    hasError = !eventsHandler.ActionsValidation(actions);
   } catch (error) {
     hasError = true;
   }
@@ -136,10 +139,10 @@ app.post('/events', (req, res) => {
     return;
   }
 
-  events.CreateEvent(name, actions, (err) => {
+  eventsHandler.CreateEvent(name, actions, (err) => {
     if (err)
       res.statusCode = 503;
-    res.send()
+    res.send(err)
   });
 });
 
@@ -155,7 +158,7 @@ app.put('/events/:id', (req, res) => {
   // check params
   try {
     var actions = JSON.parse(actions);
-    hasError = !events.ActionsValidation(actions);
+    hasError = !eventsHandler.ActionsValidation(actions);
   } catch (error) {
     hasError = true;
   }
@@ -166,31 +169,28 @@ app.put('/events/:id', (req, res) => {
     return;
   }
 
-  events.EditEvent(req.params.id, name, actions, (err) => {
+  eventsHandler.EditEvent(req.params.id, name, actions, (err) => {
     if (err)
       res.statusCode = 503;
-    res.send()
+    res.send(err)
   });
 });
 
 // delete event by its id
 app.delete('/events/:id', function (req, res) {
-  events.DeleteEvent(req.params.id, (err) => {
+  eventsHandler.DeleteEvent(req.params.id, (err) => {
     if (err)
       res.statusCode = 503;
-    res.send()
+    res.send(err)
   });
 });
 
-
-// Refresh data API (rescan lan)
-
-// Refresh switchers and then get them
+// Refresh data of deviced (read angin all deviced status)
 app.post('/refresh', function (req, res) {
-  devices.RefreshDevicesData((err) => {
+  devicesHandler.RefreshDevicesData((err) => {
     if (err)
       res.statusCode = 503;
-    res.send();
+    res.send(err);
   });
 });
 
@@ -199,11 +199,11 @@ app.post('/refresh', function (req, res) {
 // Init the sse objects
 var devicesSse = new SSE(['init'], { isSerialized: true });
 
-// SSE resuest for switchers state federation
+// SSE object to get push notifications updates of devices changes
 app.get('/devices-feed', devicesSse.init);
 
-// Registar devices push updates  
-devices.UpdateChangesEventRegistar((id, data) => {
+// Registar to devices push updates  
+devicesHandler.UpdateChangesEventRegistar((id, data) => {
   devicesSse.send({ 'deviceID': id, 'data': data });
 })
 
@@ -227,7 +227,7 @@ app.set('port', (process.env.PORT || 3000));
 
 // Invoke app and listen to requests
 app.listen(app.get('port'), function () {
-  console.log('home app run on port ' + app.get('port'));
+  console.log('home IoT server run on port ' + app.get('port'));
 });
 
 

@@ -1,7 +1,6 @@
 var fs = require('fs')
 var shortid = require('shortid');
 
-var Commons = require('./commons');
 var devicesHandle = require('./devices');
 
 var devices = require('../DB/devices.json');
