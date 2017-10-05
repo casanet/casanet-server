@@ -1,7 +1,7 @@
 # Home IoT Server
 Node.js server with basic REST api for home IoT devices 
 
-## Suppoted Right now
+## Supported Right now
 * Orvibo wiwo - S20
 * Broadlink SP3
 * Kankun Smart Wifi Plug
