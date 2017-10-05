@@ -128,7 +128,7 @@ and
 
 POST http://127.0.0.1:3000/refresh to scan all devices again (in LAN),
 
-In addition to get update (by SSE https://en.m.wikipedia.org/wiki/Server-sent_events) of changes GET http://127.0.0.1:3000/devices-feed
+In addition to get update (by [SSE](https://en.wikipedia.org/wiki/Server-sent_events "Wikipedia")) of changes GET http://127.0.0.1:3000/devices-feed
 
 to get static files (in public folder) GET http://127.0.0.1:3000/static/{{path}}
 
