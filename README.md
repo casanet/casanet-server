@@ -208,11 +208,15 @@ the struct of 'interface' is for switch:
 GetState(device, callback(state, err))
 ChangeState(device, state, callback(err))
 ```
+while `state` can be `on` of `off`
+
 for light:
 ```javascript
 GetBrightnessAndColor(device, callback(value, err))
 SetBrightnessAndColor(device, value, callback(err))
 ```
+while `value` is struce of key `bright` with value 1 - 100 and `color` with value 1 - 100
+
 note that in `device` you get the object from `DB\devices.json` so you can add a key of anything for example a token to communicate xiaomi devices and it will arrive in device parameter.
 
 (If you need access to other languages, you can see how I used cmd or python in the other modules or any way you see fit).

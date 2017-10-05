@@ -17,6 +17,7 @@ var GetBrandModule = (brand) => {
             return YeelightHandler;
         case 'Philips':
             return PhilipsHandler;
+        // Add here a case of any module......
         default:
             return null;
     }
