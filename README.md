@@ -255,5 +255,5 @@ or call device.discover() in https://github.com/aholstenson/miio#advanced-device
 
 ### TODO:
 - [x] yeelight need refresh after start app
-- [ ] writing ui (client side)
+- [ ] writing client side (in web tech, and android application)
 - [ ] logs and comments
