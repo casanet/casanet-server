@@ -13,7 +13,23 @@ var ChangeState = function (device, state, next) {
 
     lights[device.mac].call('set_power', [state])
         .then((result) => {
-            next(result[0] == 'ok' ? null : 'Error');
+            if (state == 'on') {
+                // some time ligt dont know what is the color and bright so init it
+                // to know if light in error mode read data and watch if it 0 (error value)
+                GetBrightnessAndColor(device, (value, err) => {
+                    if (err) {
+                        next(err);
+                    } else if (value.bright != 0 && value.color != 0) {
+                        next(result[0] == 'ok' ? null : 'Error');
+                    } else {
+                        SetBrightnessAndColor(device, device.light, (err) => {
+                            next(err);
+                        })
+                    }
+                })
+            } else {
+                next(result[0] == 'ok' ? null : 'Error');
+            }
         })
         .catch((err) => {
             next(err);
