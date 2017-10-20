@@ -48,10 +48,18 @@ var InitDevicesData = function (deviceIndex, next) {
             case ('light'):
                 brandModuleHandler.GetBrightnessAndColor(device, (value, err) => {
                     device.light = value;
-                    console.log('Device ' + device.name + ' value: bright' + value.bright + ' color' + value.color);
+                    console.log('Device ' + device.name + ' value: bright ' + value.bright + ' color ' + value.color);
                     getDeviceProperty(propertyIndex + 1);
                 });
                 return;
+            case ('ac'):
+                brandModuleHandler.GetACData(device, (value, err) => {
+                    device.ac = value;
+                    console.log('Device ' + device.name + " value: mode -" + value.mode + "- fun_strength: -" + value.fun_strength + "- temp:" + value.temp);
+                    getDeviceProperty(propertyIndex + 1);
+                });
+                return;
+            // Here extenad types getting
             default:
                 next('Cant handle unknown type: ' + device.types[propertyIndex])
                 return;
@@ -104,6 +112,18 @@ var SetDeviceProperty = (id, type, value, next) => {
                 }
             });
             break;
+        case ('ac'):
+            brandModuleHandler.SetACData(device, value, (err) => {
+                if (err)
+                    next(err);
+                else {
+                    device.ac = value;
+                    next();
+                    PushChanges(id);
+                }
+            });
+            break;
+        // Here add your new type 
         default:
             next('Cant handle unknown type: ' + type)
             return;

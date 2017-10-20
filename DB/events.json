@@ -1,4 +1,29 @@
 {
+	"vwwrp55sq": {
+		"name": "AC_Event",
+		"actions": [
+			{
+				"deviceID": "id0",
+				"type": "ac",
+				"state": "on",
+				"set": {
+					"mode": "fun",
+					"fun_strength": "low",
+					"temp": 22
+				}
+			}
+		]
+	},
+	"vwwrp88sq": {
+		"name": "AC_Event",
+		"actions": [
+			{
+				"deviceID": "id0",
+				"type": "switch",
+				"state": "off"
+			}
+		]
+	},
 	"SynCp05sb": {
 		"name": "Event1",
 		"actions": [

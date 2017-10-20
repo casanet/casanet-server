@@ -1,4 +1,15 @@
 {
+    "id0": {
+        "mac": "34ea348ee66f",
+        "ip": "192.168.1.30",
+        "name": "מיזוג חדש בסלון",
+        "brand": "Broadlink",
+        "types": [
+            "switch",
+            "ac"
+        ],
+        "deviceIdentity" : "SalonAC"
+    },
     "id1": {
         "mac": "34ea34f5b7d2",
         "ip": "192.168.1.25",

@@ -104,14 +104,10 @@ var RunActionsRecursion = (actions, index, next) => {
         }
 
         // Then if it need addtional value set do it 
-        switch (action.type) {
-            case 'light':
-                devicesHandle.SetDeviceProperty(action.deviceID, action.type, action.set, nextAction);
-                break;
-            default:
-                nextAction();
-                break;
-        }
+        if (action.type == 'switch')
+            nextAction();
+        else
+            devicesHandle.SetDeviceProperty(action.deviceID, action.type, action.set, nextAction);
     });
 }
 
