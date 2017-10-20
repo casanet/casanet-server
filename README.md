@@ -4,6 +4,7 @@ Node.js server with basic REST api for home IoT devices
 ## Supported Right now
 * Orvibo wiwo - S20
 * Broadlink SP3
+* Broadlink RM mini 3
 * Kankun Smart Wifi Plug
 * Xiaomi Yeelight Smart LED Ceiling Light
 * Xiaomi Philips LED Ceiling Lamp
@@ -55,6 +56,23 @@ to logout POST http://127.0.0.1:3000/logout
 to get all devices GET http://127.0.0.1:3000/devices 
 ```javascript
 {
+    "id0": {
+        "mac": "34ea348ee66f",
+        "ip": "192.168.1.30",
+        "name": "מיזוג חדש בסלון",
+        "brand": "Broadlink",
+        "types": [
+            "switch",
+            "ac"
+        ],
+        "deviceIdentity": "SalonAC",
+        "state": "off",
+        "ac": {
+            "mode": "fun",
+            "fun_strength": "low",
+            "temp": 23
+        }
+    },
     "id1": {
         "mac": "34ea34f5b7d2",
         "ip": "192.168.1.25",
@@ -113,13 +131,24 @@ to chnage device value or state PUT http://127.0.0.1:3000/devices/id3
     "value" : "off"
 };
 ``` 
-or:
+or to change only value of light:
 ```javascript
 {
     "type": "light",
     "value": {
             "bright": 4,
             "color'": 44
+        }
+};
+``` 
+or to change only value of ac:
+```javascript
+{
+    "type": "light",
+    "value": {
+            "mode" : "fun" , 
+            "fun_strength": "low" , 
+            "temp" : 23
         }
 };
 ``` 
@@ -139,6 +168,21 @@ more that just switch it can declare in type field and set the wanted value in s
 to get all events GET http://127.0.0.1:3000/events 
 ```javascript
 {
+    "vwwrp55sq": {
+        "name": "AC_Event",
+        "actions": [
+            {
+                "deviceID": "id0",
+                "type": "ac",
+                "state": "on",
+                "set": {
+                    "mode": "fun",
+                    "fun_strength": "low",
+                    "temp": 22
+                }
+            }
+        ]
+    },
     "SynCp05sb": {
         "name": "Event1",
         "actions": [
@@ -217,11 +261,43 @@ SetBrightnessAndColor(device, value, callback(err))
 ```
 while `value` is struce of key `bright` with value 1 - 100 and `color` with value 1 - 100
 
+for ac (air conditioner)
+```javascript
+GetACData(device, callback(value, err))
+SetACData(device, value, callback(err))
+```
+while `value` is struct of keys 
+
+`mode` can be : `auto` , `hot` , `cold` , `dry` , `fun`
+
+`fun_strength` can be : `auto` , `high`, `med` , `low`
+
+`temp` with value 16 - 30
+
 note that in `device` you get the object from `DB\devices.json` so you can add a key of anything for example a token to communicate xiaomi devices and it will arrive in device parameter.
 
 (If you need access to other languages, you can see how I used cmd or python in the other modules or any way you see fit).
 * Give a new name to the device brand field in the `DB\devices.json` file
 * Go to the `modules\brandModulesMap.js` file to add a require to the module you have written and add to `switch` in function `GetBrandModule` a `case` with the name you gave in the brand field and set return the module that you wrote.
+
+## Current Modules Explanations
+
+### Orvibo
+very simple use by sending to .net cmd app mac ip and status to set as parameters and result is in console text
+
+### Broadlink
+
+for SP2 device is also simple by sending python script mac ip and action to do as parametrs
+
+but for RM2 it is more difficult so what i did is:
+i maped all codes in `xx` file (to read them i recomended this project that kept all in ini file eusy)
+and saved all last action in cash file becuase the tecnolege is very bad
+
+// TODO
+### xiaomi/yeelight
+// TODO
+### xiaomi/philips
+// TODO
 
 ## Credits & Licence 
  I used external libraries to communicate with sockets, and changed the code slightly to fit this project, so I will give a link to the original code repositiry and in addition to the fork I created for the changes,
