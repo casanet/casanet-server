@@ -14,8 +14,8 @@ Node.js server with basic REST api for home IoT devices
 * Broadlink SC1 Smart Switch
 
 ## Purpose
-In this project, I came to solve a number of troublesome problems. First of all, anyone who uses a number of smart devices (smart ir, smart socket, or anything like that) of different companies knows the problem of dealing with a number of different applications,
-(Try convincing your wife that the light in the living room will light up with the Broadlink app and the light in the bedroom will light up with the Xiaomi app) and in addition, the servers, some of which are small Chinese companies, do not always work well, so there is no external access, and there is no normal and clear message about why it does not work.
+In this project, I came to solve a number of troublesome. first of all, anyone who uses a number of smart devices (smart ir, smart socket, or anything like that) of different companies knows the problem of dealing with a number of different applications,
+(try convincing your wife that the light in the living room will light up with the Broadlink app and the light in the bedroom will light up with the Xiaomi app) and in addition, the servers, some of which are small Chinese companies, do not always work well, so there is no external access, and there is no normal and clear message about why it does not work.
 
 As a solution to this problem this project consolidates all the smart home appliances into one simple and clear and easy to access API.
 
@@ -23,7 +23,7 @@ It is runs on a computer at home (or any other device that can run node.js)
 And to operate it at a basic level all you need to know is to give static IP addresses to devices,
 And for access outside the internal network make sure that the address in your home is public and redirect ports to the computer running the server (DDNS is recommended for easy access to the home address).
 
-The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device, and the like, and for each physical device its own module that realizes the capabilities that the device of its kind enables,(And the advanced options that each company realizes in a different way like timing thrown), and on all devices there is a switch component with on\off option.
+The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device, and the like, and for each physical device its own module that realizes the capabilities that the device of its kind enables,(and the advanced options that each company realizes in a different way like timing, thrown), and on all devices there is a switch component with on\off option.
 
 This structure enables the creation of a separate server, and a collection of modules that enable communication by implementing preset methods for each device type (such as the OOP interface).
 
@@ -149,7 +149,7 @@ or to change only value of light:
 or to change only value of ac:
 ```javascript
 {
-    "type": "light",
+    "type": "ac",
     "value": {
             "mode" : "fun" , 
             "fun_strength": "low" , 
