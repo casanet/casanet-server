@@ -9,18 +9,23 @@ Node.js server with basic REST api for home IoT devices
 * Xiaomi Yeelight Smart LED Ceiling Light
 * Xiaomi Philips LED Ceiling Lamp
 
+### comming soon
+* Xiaomi Yeelight RGBW E27 Smart LED Bulb 
+* Broadlink SC1 Smart Switch
+
 ## Purpose
-Instead of managing each smart socket (or any device with an on / off option) in a separate API for each brand, even though their operation is quite similar, we will consolidate all into one API and only behind the scenes will we perform the logical operations of the I / O for each brand according to its protocol. 
-Which is why I completely ignored the advanced capabilities of the smart devices from all the companies and left only a simple API With such a structure: 
+In this project, I came to solve a number of troublesome problems. First of all, anyone who uses a number of smart devices (smart ir, smart socket, or anything like that) of different companies knows the problem of dealing with a number of different applications,
+(Try convincing your wife that the light in the living room will light up with the Broadlink app and the light in the bedroom will light up with the Xiaomi app) and in addition, the servers, some of which are small Chinese companies, do not always work well, so there is no external access, and there is no normal and clear message about why it does not work.
 
-Each device "realizes" a switch interface
-Which enables receiving status, turning on and off
-Each lighting device "realizes" a light interface that also allows changing brightness and color temperature
-And later the "realization" will be added to a color lighting device that will also be able to edit color details (RGB)
-(In addition to being a standard lighting fixture and a standard switch)
-And an interface will be added to the air conditioner that will allow controling the temperature, fan volume and operating status (heat, cold and ventilation)
+As a solution to this problem this project consolidates all the smart home appliances into one simple and clear and easy to access API.
 
-And so in this way we maintain a rigid and basic structure that allows us to "talk" with each device without knowing its mode of operation and its unique protocol.
+It is runs on a computer at home (or any other device that can run node.js)
+And to operate it at a basic level all you need to know is to give static IP addresses to devices,
+And for access outside the internal network make sure that the address in your home is public and redirect ports to the computer running the server (DDNS is recommended for easy access to the home address).
+
+The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device, and the like, and for each physical device its own module that realizes the capabilities that the device of its kind enables,(And the advanced options that each company realizes in a different way like timing thrown), and on all devices there is a switch component with on\off option.
+
+This structure enables the creation of a separate server, and a collection of modules that enable communication by implementing preset methods for each device type (such as the OOP interface).
 
 ## Run it
 > This part is for the Windows operating system, of course you can run the server on Linux, but the connection with Orvibo Sockets is through .NET and it's a bit of a problem in Linux, so I did not try the server in Linux but everything else should work.
