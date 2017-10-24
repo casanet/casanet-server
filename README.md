@@ -37,13 +37,7 @@ So if you change such modules, you do not need to install Python or .Net
 1. Install Node.js 
 1. Go to path of the project in CMD and press `npm install --save`
 1. Go to `DB\devices.json` file and change the values to the correct data and save the structure (note that id should be unique)
-1. Run the server by pressing `node app.js` or clicking the ActiveServer.bat file
-
-### Current modules dependents:
-1. Install .Net
-
-If there are errors in the cmd window, note that you have set all the variables that the external libraries I have used have been properly arranged (the links to these projects are attached at the end of the page)
-
+1. Run the server by pressing `node app.js` or clicking on `RunServer.bat` file
 
 ## Using (HTTP API)
 After the server runing we can access to all devices in devices.json file simply, 
@@ -63,7 +57,7 @@ to get all devices GET http://127.0.0.1:3000/devices
     "id0": {
         "mac": "34ea348ee66f",
         "ip": "192.168.1.30",
-        "name": "מיזוג חדש בסלון",
+        "name": "IRDevice",
         "brand": "Broadlink",
         "types": [
             "switch",
@@ -309,7 +303,7 @@ but for RM2 it is more difficult so what i did is:
 map all codes in `irCommandsMap.json` file 
 and saved all last action in cash file becuase the tecnolege is very bad
 
-to read IR codes i recomended https://github.com/davorf/BlackBeanControl project that kept all in ini file Easily or http://rm-bridge.fun2code.de/ , and after getting code, insert them to map file. 
+to read IR codes i recomended https://github.com/davorf/BlackBeanControl project that kept all in ini file easily or http://rm-bridge.fun2code.de/ , and after getting code, insert them to map file. 
 
 Dependencies:
 * Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7) 
@@ -355,6 +349,9 @@ Original code repositiry-
 https://github.com/0x00string/kankuncontroller
 My Fork-
 https://github.com/haimkastner/kankuncontroller
+
+Dependencies:
+* Installation of pyhthon (see in broadlink)  
 
 ## Credits & Licence 
 I used external libraries to communicate with sockets, and changed the code slightly to fit this project, 
