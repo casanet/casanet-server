@@ -40,7 +40,6 @@ So if you change such modules, you do not need to install Python or .Net
 1. Run the server by pressing `node app.js` or clicking the ActiveServer.bat file
 
 ### Current modules dependents:
-1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7) 
 1. Install .Net
 
 If there are errors in the cmd window, note that you have set all the variables that the external libraries I have used have been properly arranged (the links to these projects are attached at the end of the page)
@@ -285,58 +284,81 @@ note that in `device` you get the object from `DB\devices.json` so you can add a
 * Give a new name to the device brand field in the `DB\devices.json` file
 * Go to the `modules\brandModulesMap.js` file to add a require to the module you have written and add to `switch` in function `GetBrandModule` a `case` with the name you gave in the brand field and set return the module that you wrote.
 
-## Current Modules Explanations
+## Current Modules Explanations & Dependencies
+I tried to add installation instructions to all module dependencies, but I may have missed something I did not notice, so if something does not work try going to the original code of the module and see the installation instructions there
 
 ### Orvibo
 very simple use by sending to .net cmd app mac ip and status to set as parameters and result is in console text
+
+Dependencies:
+* Install .Net
+
+Credits:
+
+Original code repositiry-
+https://github.com/DynamicDevices/orvibocontroller
+My Fork-
+https://github.com/haimkastner/orvibocontroller
+
 
 ### Broadlink
 
 for SP2 device is also simple by sending python script mac ip and action to do as parametrs
 
 but for RM2 it is more difficult so what i did is:
-i maped all codes in `xx` file (to read them i recomended this project that kept all in ini file eusy)
+map all codes in `irCommandsMap.json` file 
 and saved all last action in cash file becuase the tecnolege is very bad
 
-// TODO
-### xiaomi/yeelight
-// TODO
-### xiaomi/philips
-// TODO
+to read IR codes i recomended https://github.com/davorf/BlackBeanControl project that kept all in ini file Easily or http://rm-bridge.fun2code.de/ , and after getting code, insert them to map file. 
 
-## Credits & Licence 
- I used external libraries to communicate with sockets, and changed the code slightly to fit this project, so I will give a link to the original code repositiry and in addition to the fork I created for the changes,
-Please note that usage licenses are limited by any restrictions set by the original code authors.
+Dependencies:
+* Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7) 
+* Install Microsoft Visual C++ Compiler for Python 2.7 https://www.microsoft.com/en-us/download/details.aspx?id=44266 
+In cmd at server path press: 
+* pip install broadlink
 
+Credits:
 
-### links
-For BroadLink sockests:
 Original code repositiry-
 https://github.com/NightRang3r/Broadlink-NodeSP2
 My Fork-
 https://github.com/haimkastner/Broadlink-NodeSP2
 
-For Orvibo sockests:
-Original code repositiry-
-https://github.com/DynamicDevices/orvibocontroller
-My Fork-
-https://github.com/haimkastner/orvibocontroller
 
-For Kankun sockests:
+### xiaomi/yeelight
+To send messages and receive information i  used `miio` protocol project 
+The part of listening to the device when it changes by the remote that comes with the device as well as sending new color values I have done by project node-yeelight-wifi
+
+to use `miio` protocol it need a token so after getting it insert it at token filed in `devices.json` file
+
+To get xiaomi token
+https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token_mirobot_new.md
+or call device.discover() in https://github.com/aholstenson/miio#advanced-device-management
+
+Credits:
+
+https://www.npmjs.com/package/node-yeelight-wifi
+
+https://www.npmjs.com/package/miio
+
+### xiaomi/philips
+To send messages and receive information i  used `miio` protocol project
+
+For token see xiaomi/yeelight
+
+### Kankun
+simple, by sending python script mac ip and action to do as parametrs
+
+Credits:
+
 Original code repositiry-
 https://github.com/0x00string/kankuncontroller
 My Fork-
 https://github.com/haimkastner/kankuncontroller
 
-For yeelight:
-https://www.npmjs.com/package/node-yeelight-wifi
-
-For Xiaomi philips:
-https://www.npmjs.com/package/miio
-
-To get xiaomi token (for current yeelight and philips modules)
-https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token_mirobot_new.md
-or call device.discover() in https://github.com/aholstenson/miio#advanced-device-management
+## Credits & Licence 
+I used external libraries to communicate with sockets, and changed the code slightly to fit this project, 
+Please note that usage licenses are limited by any restrictions set by the original code authors.
 
 ### TODO:
 - [x] yeelight need refresh after start app
