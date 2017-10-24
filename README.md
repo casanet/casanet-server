@@ -311,8 +311,9 @@ to read IR codes i recomended https://github.com/davorf/BlackBeanControl project
 Dependencies:
 * Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7) 
 * Install Microsoft Visual C++ Compiler for Python 2.7 https://www.microsoft.com/en-us/download/details.aspx?id=44266 
-In cmd at server path press: 
-* pip install broadlink
+* Install pip (if not install yet by python installer) 
+In cmd (administration mode) at server path press: 
+* C:\Python27\Scripts\pip.exe install broadlink
 
 Credits:
 
