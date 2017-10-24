@@ -15,8 +15,8 @@ Node.js server with basic REST api for home IoT devices
 
 ## Purpose
 In this project, I came to solve a number of troublesome. first of all, anyone who uses a number of smart devices (smart ir, smart socket, or anything like that) of different companies knows the problem of dealing with a number of different applications,
-Hold 10 applications for each home appliance that each is completely different in the interface and operations and authentication,
-It's a very annoying thing and in addition, the servers, some of which are small Chinese companies, do not always work well, so there is no external access, and there is no normal and clear message about why it does not work.
+hold 10 applications for each home appliance that each is completely different in the interface and operations and authentication,
+it's a very annoying thing and in addition, the servers, some of which are small Chinese companies, do not always work well, so there is no external access, and there is no normal and clear message about why it does not work.
 
 As a solution to this problem this project consolidates all the smart home appliances into one simple and clear and easy to access API.
 
