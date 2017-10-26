@@ -157,8 +157,22 @@ and
 POST http://127.0.0.1:3000/refresh to scan all devices again (in LAN),
 
 In addition to get update (by [SSE](https://en.wikipedia.org/wiki/Server-sent_events "Wikipedia")) of changes GET http://127.0.0.1:3000/devices-feed
+with struct:
+```javascript
+            {
+                "deviceID": "id2",
+                "data": {
+                    "mac": "34ea34f1a482",
+                    "ip": "192.168.1.12",
+                    "name": "X",
+                    "brand": "Broadlink",
+                    "types": ["switch"],
+                    "state": "on"
+                }
+            }
+```
 
-to get static files (in public folder) GET http://127.0.0.1:3000/static/{{path}}
+to get static files (in public folder) GET http://127.0.0.1:3000/static/{path}
 
 also the application support a events, 
 that every event hold a array of action to do, when every action contains mac of device, state and if it 
