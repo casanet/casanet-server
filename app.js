@@ -17,7 +17,10 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use('/static', express.static('public')); // serve every static file in public folder
 app.use(function (req, res, next) { // middelwhere for security
-  if (req.url == '/login' || req.url == '/logout') { // it login logout or static file continue
+  if (req.url == '/' ||
+    req.url.indexOf('static') != -1 ||
+    req.url == '/login' ||
+    req.url == '/logout') { // it login logout or static file continue
     next();
     return;
   }
@@ -78,7 +81,10 @@ app.put('/devices/:id', (req, res) => {
   var params = req.body;
   var value;
   try {
-    value = JSON.parse(params.value);
+    if ((typeof params.value) == 'string')
+      value = JSON.parse(params.value);
+    else
+      value = params.value;
   } catch (error) {
     if (params.type == 'switch') {
       value = params.value;
@@ -127,7 +133,9 @@ app.post('/events', (req, res) => {
 
   // chack params
   try {
-    var actions = JSON.parse(actions);
+    if ((typeof actions) == 'string')
+      actions = JSON.parse(actions);
+
     hasError = !eventsHandler.ActionsValidation(actions);
   } catch (error) {
     hasError = true;
@@ -157,7 +165,7 @@ app.put('/events/:id', (req, res) => {
 
   // check params
   try {
-    var actions = JSON.parse(actions);
+    var actions = (typeof actions == 'string') ? JSON.parse(actions) : actions;
     hasError = !eventsHandler.ActionsValidation(actions);
   } catch (error) {
     hasError = true;
