@@ -40,6 +40,11 @@ So if you change such modules, you do not need to install Python or .Net
 1. Go to `DB\devices.json` file and change the values to the correct data and save the structure (note that id should be unique)
 1. Run the server by pressing `node app.js` or clicking on `RunServer.bat` file
 
+## Using (web application)
+http://127.0.0.1:3000/
+
+very basic application (compatible to mobile)
+
 ## Using (HTTP API)
 After the server runing we can access to all devices in devices.json file simply, 
 
