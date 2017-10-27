@@ -54,7 +54,7 @@ To get xiaomi token:
 https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token_mirobot_new.md
 or call device.discover() in https://github.com/aholstenson/miio#advanced-device-management
 
-for more information about token and ir codes see [current modules explanations & dependencies](#current-modules-explanations--dependencies) 
+for more information about token and ir codes see [Current Modules Explanations](#current-modules-explanations) 
 
 ## Using (web application)
 http://127.0.0.1:3000/
