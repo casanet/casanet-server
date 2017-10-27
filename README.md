@@ -384,5 +384,7 @@ Please note that usage licenses are limited by any restrictions set by the origi
 
 ### TODO:
 - [x] yeelight need refresh after start app
-- [ ] writing client side (in web tech, and android application)
+- [x] writing client side
+- [ ] create better web app
+- [ ] writing android application
 - [ ] logs and comments
