@@ -1,1 +1,82 @@
-index file
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home IoT Server</title>
+
+    <!--jquery-->
+
+    <script src="static/libs/jquery.min.js"></script>
+
+    <!-- angular -->
+    <script src="static/libs/angular.min.js"></script>
+    <script src="static/libs/angular-route.min.js"></script>
+    
+    <!--bootstrap-->
+    <link rel="stylesheet" href="static/libs/bootstrap.min.css">
+    <link rel="stylesheet" href="static/libs/bootstrap-theme.min.css">
+    <script src="static/libs/bootstrap.min.js"></script>
+
+    <!--sweet alert -->
+    <link rel="stylesheet" href="static/libs/sweetalert.min.css">
+    <script src="static/libs/sweetalert.min.js"></script>
+
+    <!-- app css-->
+    <link rel="stylesheet" href="static/index.css">
+
+    <!-- app js-->
+    <script type="text/javascript" src="static/index.js"></script>
+
+</head>
+
+<!--app-->
+
+<body ng-app="IoTApp">
+    <!--container-->
+    <div class="container">
+        <div ng-controller="indexCtrl">
+            <!--app navbar menu-->
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <a class="active navbar-brand" href="#/" style="color: #fff;">
+                            <strong>Home IoT Server</strong>
+                        </a>
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-navbar-collapse" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <!-- app navbar menu options -->
+                    <div class="collapse navbar-collapse" id="menu-navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a titel=Main href="#main">Main screen
+                                    <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a title="Login" href=#login>Login
+                                    <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a title="About" href=#about>About
+                                    <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!--all view of app is here-->
+            <ng-view/>
+        </div>
+</body>
+
+</html>
