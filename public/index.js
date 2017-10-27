@@ -65,7 +65,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
             },
             function (response) { // optional
                 if (response.status == 403) {
-                    $scope.error += "\n Athontication error";
+                    $scope.error += "Login first! ";
                     console.error("Athontication error");
                 }
                 $scope.error += '\n' + "error get devices";
@@ -94,7 +94,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
             function (response) { // optional
                 if (response.status == 403) {
                     console.error("Athontication error");
-                    $scope.error += "\n Athontication error";
+                    $scope.error += "Login first! ";
                     
                 }
                 console.error("error set devices switch");
@@ -125,12 +125,12 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
             },
             function (response) { // optional
                 if (response.status == 403) {
-                    $scope.error += "\n Athontication error";
+                    $scope.error += "Login first! ";
                     
                     console.error("Athontication error");
                 }
                 
-                $scope.error += "\n error set devices light";
+                $scope.error += "error set devices light";
                 console.error("error set devices light");
             });
 
@@ -148,7 +148,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
             },
             function (response) { // optional
                 if (response.status == 403) {
-                    $scope.error += "\n Athontication error";
+                    $scope.error += "Login first! ";
                     console.error("Athontication error");
                 }
                     $scope.error += "\n error set devices ac";
@@ -169,7 +169,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
             },
             function (response) { // optional
                 if (response.status == 403) {
-                    $scope.error += "\n Athontication error";
+                    $scope.error += "Login first! ";
                     console.error("Athontication error");
                 }
                 $scope.error += "\n error devices refresh";
@@ -189,6 +189,7 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
         })
             .then(function (response) {
                 console.log("login successfully");
+                $scope.error = "login successfully";
             },
             function (response) { // optional
                 console.error("error in login");
