@@ -9,8 +9,7 @@
                 <h2 class=device-name>{{device.name}}</h2>
 
                 <label for="switch{{device.deviceID}}">
-                    <input ng-disabled="{{device.state == 'error'}}" type="checkbox" 
-                    ng-checked="device.state == 'on'" ng-click="SetState(device)"
+                    <input ng-disabled="{{device.state == 'error'}}" type="checkbox" ng-checked="device.state == 'on'" ng-click="SetState(device)"
                         id="switch{{device.deviceID}}" />
                     <span class="switch">
                     </span>
@@ -30,33 +29,59 @@
                 <div class="brightness">
                     Brightness
                     <br>
-                    <input type="number" min="1" max="100" ng-change="SetLight(light)" 
-                           ng-model="light.light.bright"
-                    />
+                    <input type="number" min="1" max="100" ng-change="SetLight(light)" ng-model="light.light.bright" />
                 </div>
 
                 <div class="color">
                     Color
                     <br>
-                    <input type="number" min="1" max="100" ng-model="light.light.color" 
-                    ng-change="SetLight(light)"
-                    />
+                    <input type="number" min="1" max="100" ng-model="light.light.color" ng-change="SetLight(light)" />
                 </div>
             </div>
         </div>
 
         <h1 ng-show="GetFiltedDevices('ac').length > 0"> Air conditioners:</h1>
         <div class="row">
-            <div ng-repeat="device in GetFiltedDevices('ac') | orderBy : 'name' " class="card card-5 ">
-                <h2 class=device-name>{{device.name}}</h2>
+            <div ng-repeat="ac in GetFiltedDevices('ac') | orderBy : 'name' " class="card card-5 ">
+                <h3 class=light-name>{{ac.name}}</h3>
+                
+                <div class="ac-mode">
+                    Mode
+                    <br>
+
+                    <select  ng-model="ac.ac.mode" ng-change="SetAC(ac)">
+                        <option value=auto>auto</option>
+                        <option value=hot>hot </option>
+                        <option value=cold>cold </option>
+                        <option value=dry>dry</option>
+                        <option value=fun>fun</option>
+                    </select>
+                </div>
+
+                <div class="fun_strength">
+                    fun_strength
+                    <br>
+
+                    <select  ng-model="ac.ac.fun_strength" ng-change="SetAC(ac)">
+                        <option value=auto>auto</option>
+                        <option value=high>high </option>
+                        <option value=med>med </option>
+                        <option value=low>low</option>
+                    </select>
+                </div>
+                <div class="ac-temp">
+                    Temp
+                    <br>
+                    <input type="number" min="16" max="30" ng-model="ac.ac.temp" ng-change="SetAC(ac)" />
+                </div>
+            </div>
+
+
+
+            <br>
+            <br>
+            <br>
+            <a class="btn btn-default btn-lg " ng-click="GetDevices()">Refresh data</a>
+            <a class="btn btn-default btn-lg " ng-click="RefreshData()">Rescan lan devices</a>
         </div>
-
-
-
-        <br>
-        <br>
-        <br>
-        <a class="btn btn-default btn-lg " ng-click="GetDevices()">Refresh data</a>
-        <a class="btn btn-default btn-lg " ng-click="RefreshData()">Rescan lan devices</a>
     </div>
-</div>

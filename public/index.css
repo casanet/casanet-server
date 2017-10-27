@@ -108,6 +108,24 @@ input[type='checkbox']:checked ~ .switch {
     left: 100px;
   }
   
+  .ac-temp {
+    position: absolute;
+    top: 40px;
+    left: 180px;
+  }
+
+  .fun_strength {
+    position: absolute;
+    top: 50px;
+    left: 80px;
+  }
+
+  .ac-mode {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+  }
+
   input[type=number] {
     background-color: antiquewhite;
     color: black;

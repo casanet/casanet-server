@@ -140,7 +140,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         $http({
             url: 'devices/' + device.deviceID,
             method: "PUT",
-            data: { 'type': 'ac', 'value': device.light }
+            data: { 'type': 'ac', 'value': device.ac }
         })
             .then(function (response) {
                 $scope.error = "";
