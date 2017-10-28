@@ -48,11 +48,13 @@ So if you change such modules, you do not need to install Python or .Net
 1. In cmd (in administration mode) press: `C:\Python27\Scripts\pip.exe install broadlink`
 
 to read IR codes:
-i recomended https://github.com/davorf/BlackBeanControl project that kept all in ini file easily or http://rm-bridge.fun2code.de/ , and after getting code, insert them to map file. 
+i recomended https://github.com/davorf/BlackBeanControl project that kept all in ini file easily or http://rm-bridge.fun2code.de/ , and after getting code, insert them to `modules\Broadlink\irCommandsMap.json` file. 
 
 To get xiaomi token:
 https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token_mirobot_new.md
 or call device.discover() in https://github.com/aholstenson/miio#advanced-device-management
+
+Note that all modules work only after the device is connected to the internal network at home. To connect the appliance, use the official manufacturer's application.
 
 for more information about token and ir codes see [Current Modules Explanations](#current-modules-explanations) 
 
@@ -315,8 +317,6 @@ note that in `device` you get the object from `DB\devices.json` so you can add a
 * Go to the `modules\brandModulesMap.js` file to add a require to the module you have written and add to `switch` in function `GetBrandModule` a `case` with the name you gave in the brand field and set return the module that you wrote.
 
 ## Current Modules Explanations
-Note that all modules work only after the device is connected to the internal network at home. To connect the appliance, use the official manufacturer's application.
-
 I tried to add installation instructions to all module dependencies, but I may have missed something I did not notice, so if something does not work try going to the original code of the module and see the installation instructions there
 
 ### Orvibo
@@ -337,8 +337,8 @@ https://github.com/haimkastner/orvibocontroller
 
 for SP2 device is also simple by sending python script mac ip and action to do as parametrs
 
-but for RM2 it is more difficult so what i did is:
-map all codes in `irCommandsMap.json` file by deviceIdentity filed in `devices.json` file , this is allow to hold several logic devices by one physical ir transmitter, 
+but for RM2 it is more complicated so what i did is:
+map all codes in `modules\Broadlink\irCommandsMap.json` file by deviceIdentity filed in `devices.json` file , this is allow to hold several logic devices by one physical ir transmitter, 
 and because the ir device can only send data , and it is no way to know the AC (or such device) status  
 last action saved in cash file. 
 
