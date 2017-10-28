@@ -38,6 +38,7 @@ So if you change such modules, you do not need to install Python or .Net
 1. Install Node.js 
 1. Go to path of the project in CMD and press `npm install --save`
 1. Go to `DB\devices.json` file and change the values to the correct data and save the structure (note that id should be unique)
+1. Go to `DB\users.json` file and set user name and password
 1. Run the server by pressing `node app.js` or clicking on `RunServer.bat` file
 
 ### Current Modules Dependencies installation :
