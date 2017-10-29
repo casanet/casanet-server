@@ -12,38 +12,39 @@ updateChangesCallbacks = [];
 lookup.on("detected", (light) => {
     // Save obj
     lights[light.mac] = { power: light.power, obj: light };
-    console.log("new yeelight detected: id=" + light.id + " name=" + light.name);
+    //console.log("new yeelight detected: id=" + light.id + " name=" + light.name);
 
     light.on("connected", () => {
         lights[light.mac] = { power: light.power, obj: light };
 
         updateChangesCallbacks.forEach((item, i) => {
-            item(light.mac.replace(/:/g, ''), light.power);
+            item(light.mac.replace(/:/g, ''), light.power? 'on' : 'off');
         });
 
-        console.log("connected");
+        //console.log("connected");
     });
 
     light.on("disconnected", () => {
         updateChangesCallbacks.forEach((item, i) => {
-            item(light.mac.replace(/:/g, ''), false);
+            item(light.mac.replace(/:/g, ''), 'error');
         });
         if (!(light.mac in lights))
-            lights[light.mac].power = false;
+            lights[light.mac].power = 'error';
     });
 
     light.on("stateUpdate", (light) => {
 
+        // TODO: Not supprted yet changes in color and temp
         if (!(light.mac in lights) || lights[light.mac].power == light.power)
             return;
 
         lights[light.mac].power = light.power;
 
         updateChangesCallbacks.forEach((item, i) => {
-            item(light.mac.replace(/:/g, ''), light.power);
+            item(light.mac.replace(/:/g, ''), light.power ? 'on' : 'off');
         });
 
-        console.log(light.mac + ' updated');
+        console.log('yeelight ' + light.mac + ' updated event sent');
     });
 });
 

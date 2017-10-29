@@ -1,6 +1,7 @@
 var shortid = require('shortid');
 
 var brandModulesMap = require('./brandModulesMap');
+var YeelightHandler = require('./Yeelight/yeelightHandler');
 
 var devices = require('../DB/devices.json');
 var devicesKeysArray = [];
@@ -156,7 +157,7 @@ RefreshDevicesData((err) => {
 
 
 
-// Push changes enents
+// Push changes events
 
 // callbacks to invoke when event happend
 var updateCallbacks = [];
@@ -167,12 +168,24 @@ var PushChanges = (id) => {
     updateCallbacks.forEach((registardMethod) => {
         registardMethod(id, devices[id]);
     })
+    console.log('Update-feed send for device ' + id);
 };
 
 // Let registar to change state event
 var UpdateChangesEventRegistar = function (callback) {
     updateCallbacks.push(callback);
 }
+
+// registar to yeelight events
+YeelightHandler.UpdateChangesRegistar((mac, newState) => {
+    devicesKeysArray.forEach((id) => {
+        if(devices[id].mac == mac){
+            devices[id].state = newState;
+            PushChanges(id);
+            return;
+        }
+    });
+})
 
 // comments, sse, events, 
 module.exports = {
