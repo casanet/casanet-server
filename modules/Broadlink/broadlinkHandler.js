@@ -25,9 +25,9 @@ var UpdateCache = (deviceInentity, operationIrCode, state, value) => {
   // Save to operationIrCode file
   fs.writeFile(chachFilePath, JSON.stringify(cacheLastOperation, null, '\t'), 'utf-8', function (err) {
     if (err)
-      console.log('Error to write cacheLastOperation file!')
+      console.log('Error to write cacheLastOperation file')
     else
-      console.log('Done to update cacheLastOperation file!')
+      console.log('Done to update cacheLastOperation file')
   })
 }
 

@@ -36,9 +36,9 @@ var UpdateSession = function (ip, isAccess) {
   // Save to session file
   fs.writeFile('./DB/sessions.json', JSON.stringify(sessions), 'utf-8', function (err) {
     if (err)
-      console.log('Error to write session file!')
+      console.log('Error to write session file')
     else
-      console.log('Done to update session file!')
+      console.log('Done to update session file')
   })
 }
 

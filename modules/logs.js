@@ -9,8 +9,8 @@ module.exports = {
 
         fs.appendFile('./DB/logs.log', dataToLog, function (err) {
             if (err)
-                console.log('Error log writing!');
-            console.log('Loggs Saved!');
+                console.log('Error log writing');
+            console.log('Loggs Saved');
         });
     }
 }

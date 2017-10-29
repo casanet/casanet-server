@@ -14,9 +14,9 @@ try {
 var SaveToDB = () => {
     fs.writeFile('./DB/events.json', JSON.stringify(events, null, '\t'), 'utf-8', function (err) {
         if (err)
-            console.log('Error to write events file!')
+            console.log('Error to write events file')
         else
-            console.log('Done to update events file!')
+            console.log('Done to update events file')
     })
 }
 
