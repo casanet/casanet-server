@@ -91,7 +91,7 @@ var GetACData = (device, next) => {
 }
 
 var SetACData = (device, value, next) => {
-  var ircode = irCommands[device.deviceIdentity].mode[value.mode][value.fun_strength][value.temp];
+  var ircode = irCommands[device.deviceIdentity].mode[value.mode][value.fan_strength][value.temp];
 
   if (!ircode) {
     next("Error, ir code not found");

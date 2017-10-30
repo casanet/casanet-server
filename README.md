@@ -91,8 +91,8 @@ to get all devices GET http://127.0.0.1:3000/devices
         "deviceIdentity": "SalonAC",
         "state": "off",
         "ac": {
-            "mode": "fun",
-            "fun_strength": "low",
+            "mode": "fan",
+            "fan_strength": "low",
             "temp": 23
         }
     },
@@ -169,8 +169,8 @@ or to change only value of ac:
 {
     "type": "ac",
     "value": {
-            "mode" : "fun" , 
-            "fun_strength": "low" , 
+            "mode" : "fan" , 
+            "fan_strength": "low" , 
             "temp" : 23
         }
 };
@@ -213,8 +213,8 @@ to get all events GET http://127.0.0.1:3000/events
                 "type": "ac",
                 "state": "on",
                 "set": {
-                    "mode": "fun",
-                    "fun_strength": "low",
+                    "mode": "fan",
+                    "fan_strength": "low",
                     "temp": 22
                 }
             }
@@ -305,9 +305,9 @@ SetACData(device, value, callback(err))
 ```
 while `value` is struct of keys 
 
-`mode` can be : `auto` , `hot` , `cold` , `dry` , `fun`
+`mode` can be : `auto` , `hot` , `cold` , `dry` , `fan`
 
-`fun_strength` can be : `auto` , `high`, `med` , `low`
+`fan_strength` can be : `auto` , `high`, `med` , `low`
 
 `temp` with value 16 - 30
 

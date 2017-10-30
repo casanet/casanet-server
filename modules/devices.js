@@ -56,7 +56,7 @@ var InitDevicesData = function (deviceIndex, next) {
             case ('ac'):
                 brandModuleHandler.GetACData(device, (value, err) => {
                     device.ac = value;
-                    console.log('Device ' + device.name + " value: mode -" + value.mode + "- fun_strength: -" + value.fun_strength + "- temp:" + value.temp);
+                    console.log('Device ' + device.name + " value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
                     getDeviceProperty(propertyIndex + 1);
                 });
                 return;

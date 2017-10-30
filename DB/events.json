@@ -7,8 +7,8 @@
 				"type": "ac",
 				"state": "on",
 				"set": {
-					"mode": "fun",
-					"fun_strength": "low",
+					"mode": "fan",
+					"fan_strength": "low",
 					"temp": 22
 				}
 			}
