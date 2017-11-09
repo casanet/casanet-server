@@ -5,6 +5,7 @@ var YeelightHandler = require('./Yeelight/yeelightHandler');
 
 var devices = require('../DB/devices.json');
 var devicesKeysArray = [];
+
 Object.keys(devices).forEach((id) => {
     devicesKeysArray.push(id);
 })
@@ -47,9 +48,23 @@ var InitDevicesData = function (deviceIndex, next) {
                 });
                 return;
             case ('light'):
-                brandModuleHandler.GetBrightnessAndColor(device, (value, err) => {
-                    device.light = value;
-                    console.log('Device ' + device.name + ' value: bright ' + value.bright + ' color ' + value.color);
+                brandModuleHandler.GetBrightness(device, (value, err) => {
+                    device.bright = value;
+                    console.log('Device ' + device.name + ' bright ' + value);
+                    getDeviceProperty(propertyIndex + 1);
+                });
+                return;
+            case ('white_temp'):
+                brandModuleHandler.GetColorTemperature(device, (value, err) => {
+                    device.white_temp = value;
+                    console.log('Device ' + device.name + ' white_temp ' + value);
+                    getDeviceProperty(propertyIndex + 1);
+                });
+                return;
+            case ('light_color'):
+                brandModuleHandler.GetRGB(device, (value, err) => {
+                    device.light_color = value;
+                    console.log('Device ' + device.name + ' light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
                     getDeviceProperty(propertyIndex + 1);
                 });
                 return;
@@ -103,11 +118,33 @@ var SetDeviceProperty = (id, type, value, next) => {
             });
             break;
         case ('light'):
-            brandModuleHandler.SetBrightnessAndColor(device, value, (err) => {
+            brandModuleHandler.SetBrightness(device, value, (err) => {
                 if (err)
                     next(err);
                 else {
-                    device.light = value;
+                    device.bright = value;
+                    next();
+                    PushChanges(id);
+                }
+            });
+            break;
+        case ('white_temp'):
+            brandModuleHandler.SetColorTemperature(device, value, (err) => {
+                if (err)
+                    next(err);
+                else {
+                    device.white_temp = value;
+                    next();
+                    PushChanges(id);
+                }
+            });
+            break;
+        case ('light_color'):
+            brandModuleHandler.SetRGB(device, value, (err) => {
+                if (err)
+                    next(err);
+                else {
+                    device.light_color = value;
                     next();
                     PushChanges(id);
                 }
@@ -179,7 +216,7 @@ var UpdateChangesEventRegistar = function (callback) {
 // registar to yeelight events
 YeelightHandler.UpdateChangesRegistar((mac, newState) => {
     devicesKeysArray.forEach((id) => {
-        if(devices[id].mac == mac){
+        if (devices[id].mac == mac) {
             devices[id].state = newState;
             PushChanges(id);
             return;

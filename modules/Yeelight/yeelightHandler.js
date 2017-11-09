@@ -18,7 +18,7 @@ lookup.on("detected", (light) => {
         lights[light.mac] = { power: light.power, obj: light };
 
         updateChangesCallbacks.forEach((item, i) => {
-            item(light.mac.replace(/:/g, ''), light.power? 'on' : 'off');
+            item(light.mac.replace(/:/g, ''), light.power ? 'on' : 'off');
         });
 
         //console.log("connected");
@@ -49,35 +49,40 @@ lookup.on("detected", (light) => {
 });
 
 //////////////////////////////////
-// Using miio protocoll like philips 
+// Using miio protocoll
 const miio = require('miio');
 
-var miioLights = {};
-var ChangeState = function (device, state, next) {
-    if (!(device.mac in miioLights)) {
-        next('Mac not exsist in module lights');
-        return;
-    }
+var ChangeState = (device, state, next) => {
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token,
+        model: 'datamodel'
+    });
 
-    miioLights[device.mac].call('set_power', [state])
-        .then((result) => {
-            next(result[0] == 'ok' ? null : 'Error');
+    lightDevice.init()
+        .then(() => {
+            lightDevice.call('set_power', [state])
+                .then((result) => {
+                    next(result[0] == 'ok' ? null : 'Error');
+                })
+                .catch((err) => {
+                    next(err);
+                });
         })
         .catch((err) => {
             next(err);
         });
 };
 
-var GetState = function (device, next) {
+var GetState = (device, next) => {
     const lightDevice = miio.createDevice({
         address: device.ip,
         token: device.token, //'3d5f7ae53b51aa312e464b150b37453b',
-        model: device.mac
+        model: 'datamodel'
     });
 
     lightDevice.init()
         .then(() => {
-            miioLights[device.mac] = lightDevice;
             lightDevice.call('get_prop', ['power'])
                 .then((power) => {
                     next(power[0]);
@@ -91,104 +96,206 @@ var GetState = function (device, next) {
         });
 };
 
-var GetBrightnessAndColor = function (device, next) {
+var GetBrightness = (device, next) => {
     const lightDevice = miio.createDevice({
         address: device.ip,
         token: device.token,
-        model: device.mac
+        model: 'datamodel'
     });
 
     lightDevice.init()
         .then(() => {
-            miioLights[device.mac] = lightDevice;
             lightDevice.call('get_prop', ['bright'])
                 .then((bright) => {
-                    lightDevice.call('get_prop', ['ct'])
-                        .then((cct) => {
-                            next({ bright: parseInt(bright[0]), color: GeneralMethods.SetRangeToPercent(parseInt(cct[0]), 4100, 6500) });
-                        })
-                        .catch((err) => {
-                            next({ bright: -1, color: -1 }, err);
-                        });
+                    next(parseInt(bright[0]));
                 })
                 .catch((err) => {
-                    next({ bright: -1, color: -1 }, err);
+                    next('error', err);
                 });
         })
         .catch((err) => {
-            next({ bright: -1, color: -1 }, err);
+            next('error', err);
         });
 }
 
-// var SetBrightnessAndColor = function (ip, mac, value, next) {
-//     if (!(mac in lights)) {
-//         next(false);
-//         return;
-//     }
+var SetBrightness = (device, value, next) => {
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token,
+        model: 'datamodel'
+    });
 
-//     lights[mac].call('set_bricct', [value.bright, value.color])
-//         .then((result) => {
-//             console.log('philips light bricct ' + mac + ' set successfuly');
-//             next(result[0] == 'ok' ? true : false);
-//         })
-//         .catch((err) => {
-//             next(false);
-//         });
+    lightDevice.init()
+        .then(() => {
+            lightDevice.call('set_bright', [value])
+                .then((res) => {
+                    next();
+                })
+                .catch((err) => {
+                    next(err);
+                });
+        })
+        .catch((err) => {
+            next(err);
+        });
+}
 
-// }
+var GetColorTemperature = (device, next) => {
 
-/////////////////////////////////
-/// using node-yeelight-wifi
+    // Using node-yeelight-wifi insted of miio!!!
+    // Light temp range
+    var startRange = 1800;
+    var endRange = 6500;
 
-// var ChangeState = function (ip, mac, state, next) {
-//     mac = GeneralMethods.ToReadbleMac(mac);
-//     if (mac in lights) {
-//         lights[mac].obj.setPower(state).then(() => {
-//             next(true);
-//         }).catch((error => {
-//             next(false);
-//         }));
-//     }
-//     else {
-//         next(false);
-//     }
-// };
+    var mac = GeneralMethods.ToReadbleMac(device.mac);    
+    // If this is ceiling change the temp range values
+    if (mac in lights && lights[mac].obj.model == 'ceiling') {
+        startRange = 4100;
+        endRange = 6500;
+    }
 
-// var GetState = function (ip, mac, next) {
-//     mac = GeneralMethods.ToReadbleMac(mac);
-//     if (mac in lights) {
-//         next(true, lights[mac].power);
-//     }
-//     else {
-//         next(false, 'Error');
-//     }
-// };
 
-// var GetBrightnessAndColor = function (ip, mac, next) {
-//     mac = GeneralMethods.ToReadbleMac(mac);
-//     if (mac in lights) {
-//         next(true, { bright: lights[mac].obj.bright, color: lights[mac].obj.bright });//bright // rgb
-//     } else {
-//         next(false, {});
-//     }
-// }
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token,
+        model: 'datamodel'
+    });
 
-var SetBrightnessAndColor = function (device, value, next) {
+    lightDevice.init()
+        .then(() => {
+            // lightDevice.call('get_prop', ['rgb'])
+            lightDevice.call('get_prop', ['ct'])
+                .then((temperature) => {
+                    next(GeneralMethods.SetRangeToPercent(parseInt(temperature[0]), startRange, endRange));
+                })
+                .catch((err) => {
+                    next('error', err);
+                });
+        })
+        .catch((err) => {
+            next('error', err);
+        });
+}
+
+var SetColorTemperature = (device, value, next) => {
+    // TODO temp if !!! need to reorder in code
+
+
+    // Using node-yeelight-wifi insted of miio!!!
     mac = GeneralMethods.ToReadbleMac(device.mac);
-    if (mac in lights) {
-        lights[mac].obj.setBright(value.bright).then(() => {
-            lights[mac].obj.setCT(GeneralMethods.GetRangeFromPercent(value.color, 4100, 6500)).then(() => {
-                next();
-            }).catch((error => {
-                next(error);
-            }));
+    // If the light is a ceiling 
+    if (mac in lights && lights[mac].obj.model == 'ceiling') {
+        lights[mac].obj.setCT(GeneralMethods.GetRangeFromPercent(value, 4100, 6500)).then(() => {
+            next();
         }).catch((error => {
             next(error);
         }));
     }
     else {
-        next('Mac not exsist in current module');
+        const lightDevice = miio.createDevice({
+            address: device.ip,
+            token: device.token,
+            model: 'datamodel'
+        });
+
+        lightDevice.init()
+            .then(() => {
+                value = GeneralMethods.GetRangeFromPercent(value, 1800, 6500);
+                const args = Array.isArray(value) ? value : [value];
+                args.push('smooth');
+                args.push(500);
+
+                lightDevice.call('set_ct_abx', args, {
+                    refresh: true
+                })
+                    .then((res) => {
+                        next();
+                    })
+                    .catch((err) => {
+                        next(err);
+                    });
+            })
+            .catch((err) => {
+                next(err);
+            });
     }
+}
+
+var GetRGB = (device, next) => {
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token,
+        model: 'datamodel'
+    });
+
+    lightDevice.init()
+        .then(() => {
+            lightDevice.call('get_prop', ['rgb'])
+                .then((rgb) => {
+                    var value = IntToRgb(parseInt(rgb[0]));
+                    next(value);
+                })
+                .catch((err) => {
+                    next('error', err);
+                });
+        })
+        .catch((err) => {
+            next('error', err);
+        });
+}
+
+
+var SetRGB = (device, value, next) => {
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token,
+        model: 'datamodel'
+    });
+
+    lightDevice.init()
+        .then(() => {
+            var rgbInt = RgbToInt(value);
+            lightDevice.call('set_rgb', [rgbInt])
+                .then((r) => {
+                    next();
+                })
+                .catch((err) => {
+                    next('error', err);
+                });
+        })
+        .catch((err) => {
+            next('error', err);
+        });
+}
+
+
+// the RGB in yeelight is hold in one int var , with struct of 0x00RRGGBB
+// so every color has 256 options (16 bits === 2 bytes when byte is 8 bits)
+var IntToRgb = (theInt) => {
+    var red = theInt;
+    for (var i = 0; i < 16; i++) {
+        red = parseInt(red / 2);
+    }
+
+    var green = theInt;
+    for (var i = 0; i < 8; i++) {
+        green = parseInt(green / 2);
+    }
+    green = green % (Math.pow(2, 8));
+
+
+    var blue = theInt;
+    blue = blue % (Math.pow(2, 8));
+
+    return {
+        red: red,
+        green: green,
+        blue: blue
+    }
+}
+
+var RgbToInt = (color) => {
+    return color.red * 65536 + color.green * 256 + color.blue
 }
 
 var UpdateChangesRegistar = function (callback) {
@@ -198,7 +305,11 @@ var UpdateChangesRegistar = function (callback) {
 module.exports = {
     GetState: GetState,
     ChangeState: ChangeState,
-    GetBrightnessAndColor: GetBrightnessAndColor,
-    SetBrightnessAndColor: SetBrightnessAndColor,
+    GetBrightness: GetBrightness,
+    SetBrightness: SetBrightness,
+    GetColorTemperature: GetColorTemperature,
+    SetColorTemperature: SetColorTemperature,
+    GetRGB: GetRGB,
+    SetRGB: SetRGB,
     UpdateChangesRegistar: UpdateChangesRegistar
 };

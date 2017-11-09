@@ -20,6 +20,7 @@
         </div>
 
         <h1 ng-show="GetFiltedDevices('light').length > 0"> Lights:</h1>
+
         <div class="row">
             <div ng-repeat="light in GetFiltedDevices('light') | orderBy : 'name' " class="card card-5 ">
 
@@ -29,13 +30,49 @@
                 <div class="brightness">
                     Brightness
                     <br>
-                    <input type="number" min="1" max="100" ng-change="SetLight(light)" ng-model="light.light.bright" />
+                    <input type="number" min="1" max="100" ng-change="SetLight(light, 'light')" ng-model="light.bright" />
                 </div>
+            </div>
+        </div>
 
-                <div class="color">
-                    Color
+        <h1 ng-show="GetFiltedDevices('white_temp').length > 0"> Lights Temp:</h1>
+
+        <div class="row">
+            <div ng-repeat="light in GetFiltedDevices('white_temp') | orderBy : 'name' " class="card card-5 ">
+
+                <h3 class=light-name>{{light.name}}</h3>
+
+
+                <div class="brightness">
+                    Temperature
                     <br>
-                    <input type="number" min="1" max="100" ng-model="light.light.color" ng-change="SetLight(light)" />
+                    <input type="number" min="1" max="100" ng-change="SetLight(light, 'white_temp')" ng-model="light.white_temp" />
+                </div>
+            </div>
+        </div>
+
+        <h1 ng-show="GetFiltedDevices('light_color').length > 0"> Lights Temp:</h1>
+
+        <div class="row">
+            <div ng-repeat="light in GetFiltedDevices('light_color') | orderBy : 'name' " class="card card-5 ">
+
+                <h3 class=light-name>{{light.name}}</h3>
+
+
+                <div class="color-red">
+                    Red
+                    <br>
+                    <input type="number" min="1" max="255" ng-change="SetLight(light, 'light_color')" ng-model="light.light_color.red" />
+                </div>
+                <div class="color-green">
+                    Green
+                    <br>
+                    <input type="number" min="1" max="255" ng-change="SetLight(light, 'light_color')" ng-model="light.light_color.green" />
+                </div>
+                <div  class="color-blue">
+                    Blue
+                    <br>
+                    <input type="number" min="1" max="255" ng-change="SetLight(light, 'light_color')" ng-model="light.light_color.blue" />
                 </div>
             </div>
         </div>
@@ -44,12 +81,12 @@
         <div class="row">
             <div ng-repeat="ac in GetFiltedDevices('ac') | orderBy : 'name' " class="card card-5 ">
                 <h3 class=light-name>{{ac.name}}</h3>
-                
+
                 <div class="ac-mode">
                     Mode
                     <br>
 
-                    <select  ng-model="ac.ac.mode" ng-change="SetAC(ac)">
+                    <select ng-model="ac.ac.mode" ng-change="SetAC(ac)">
                         <option value=auto>auto</option>
                         <option value=hot>hot </option>
                         <option value=cold>cold </option>
@@ -62,7 +99,7 @@
                     fan_strength
                     <br>
 
-                    <select  ng-model="ac.ac.fan_strength" ng-change="SetAC(ac)">
+                    <select ng-model="ac.ac.fan_strength" ng-change="SetAC(ac)">
                         <option value=auto>auto</option>
                         <option value=high>high </option>
                         <option value=med>med </option>

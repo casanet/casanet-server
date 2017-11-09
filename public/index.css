@@ -95,12 +95,31 @@ input[type='checkbox']:checked ~ .switch {
     left: 24px;
     font-family: socketsName;
   }
-  
+
   .brightness {
     position: absolute;
     top: 40px;
     left: 24px;
   }
+
+  .color-blue {
+    position: absolute;
+    top: 40px;
+    left: 184px;
+  }
+
+  .color-green {
+    position: absolute;
+    top: 40px;
+    left: 104px;
+  }
+
+  .color-red {
+    position: absolute;
+    top: 40px;
+    left: 24px;
+  }
+
   
   .color {
     position: absolute;

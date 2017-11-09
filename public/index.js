@@ -113,11 +113,11 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         return l;
     };
 
-    $scope.SetLight = (device) => {
+    $scope.SetLight = (device, PropToChange) => {
         $http({
             url: 'devices/' + device.deviceID,
             method: "PUT",
-            data: { 'type': 'light', 'value': device.light }
+            data: { 'type': PropToChange , 'value': PropToChange == 'light' ? device['bright'] : device[PropToChange] }
         })
             .then(function (response) {
                 $scope.error = "";
