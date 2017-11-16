@@ -8,9 +8,10 @@ Node.js server with basic REST api for home IoT devices
 * Kankun Smart Wifi Plug
 * Xiaomi Yeelight Smart LED Ceiling Light
 * Xiaomi Philips LED Ceiling Lamp
+* Xiaomi Yeelight RGBW E27 Smart LED Bulb
 
 ### comming soon
-* Xiaomi Yeelight RGBW E27 Smart LED Bulb 
+ 
 * Broadlink SC1 Smart Switch
 
 ## Purpose
@@ -55,6 +56,9 @@ To get xiaomi token:
 https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token_mirobot_new.md
 or call device.discover() in https://github.com/aholstenson/miio#advanced-device-management
 
+For yeelight devices:
+Enable developer mode in yeelight app
+
 Note that all modules work only after the device is connected to the internal network at home. To connect the appliance, use the official manufacturer's application.
 
 for more information about token and ir codes see [Current Modules Explanations](#current-modules-explanations) 
@@ -82,14 +86,14 @@ to get all devices GET http://127.0.0.1:3000/devices
     "id0": {
         "mac": "34ea348ee66f",
         "ip": "192.168.1.30",
-        "name": "IRDevice",
+        "name": "Broadlink Ac logic device",
         "brand": "Broadlink",
         "types": [
             "switch",
             "ac"
         ],
-        "deviceIdentity": "SalonAC",
-        "state": "off",
+        "deviceIdentity": "AC_In_Room_x",
+        "state": "on",
         "ac": {
             "mode": "fan",
             "fan_strength": "low",
@@ -99,72 +103,121 @@ to get all devices GET http://127.0.0.1:3000/devices
     "id1": {
         "mac": "34ea34f5b7d2",
         "ip": "192.168.1.25",
-        "name": "a",
+        "name": "Broadlink switch device",
         "brand": "Broadlink",
         "types": [
             "switch"
         ],
         "state": "off"
     },
-    "id2": {
+    "id3": {
         "mac": "accf2334e632",
         "ip": "192.168.1.22",
-        "name": "b",
+        "name": "Orvibo switch device",
         "brand": "Orvibo",
         "types": [
             "switch"
         ],
-        "state": "on"
+        "state": "off"
     },
-    "id3": {
+    "id5": {
+        "mac": "34ce00bc9b57",
+        "ip": "192.168.1.16",
+        "name": "Yeelight ceiling light",
+        "brand": "Yeelight",
+        "types": [
+            "switch",
+            "light",
+            "white_temp"
+        ],
+        "token": "b726e337ade22fb026aa2f7dfbe4cd12",
+        "state": "on",
+        "bright": 1,
+        "white_temp": 49.44
+    },
+    "id6": {
         "mac": "34ce0092edcf",
-        "ip": "192.168.1.21",
-        "name": "c",
+        "ip": "192.168.1.26",
+        "name": "Philips ceiling light",
         "brand": "Philips",
         "types": [
             "switch",
-            "light"
+            "light",
+            "white_temp"
         ],
         "token": "3d5f7ae53b51aa312e464b150b37453b",
         "state": "on",
-        "light": {
-            "bright": 1,
-            "color": 50
+        "bright": 50,
+        "white_temp": 50
+    },
+    "id7": {
+        "mac": "34ce008cd7bc",
+        "ip": "192.168.1.32",
+        "name": "Yeelight color light",
+        "brand": "Yeelight",
+        "types": [
+            "switch",
+            "light",
+            "white_temp",
+            "light_color"
+        ],
+        "token": "28dc5d6c9a7c3ee43e3fe49a2038b4ea",
+        "state": "on",
+        "bright": 100,
+        "white_temp": 100,
+        "light_color": {
+            "red": 25,
+            "green": 255,
+            "blue": 25
         }
     }
 }
 ``` 
-to get device status GET http://127.0.0.1:3000/devices/id1
+to get device status GET http://127.0.0.1:3000/devices/{id}
 ```javascript
 {
     "mac": "34ea34f5b7d2",
     "ip": "192.168.1.25",
-    "name": "a",
+    "name": "Broadlink switch device",
     "brand": "Broadlink",
     "types": [
         "switch"
     ],
-    "state": "on"
+    "state": "off"
 }
 ``` 
-to chnage device value or state PUT http://127.0.0.1:3000/devices/id3 
+to chnage device value or state PUT http://127.0.0.1:3000/devices/{id}
+for every device set on or off
 ```javascript
 {
     "type": "switch",
     "value" : "off"
 };
 ``` 
-or to change only value of light:
+for change value of light brightness:
 ```javascript
 {
     "type": "light",
+    "value": 44
+};
+```
+for change value of light white temperature:
+```javascript
+{
+    "type": "white_temp",
+    "value": 48
+};
+for change value of light color:
+```javascript
+{
+    "type": "light_color",
     "value": {
-            "bright": 4,
-            "color'": 44
+            "red": 20,
+            "green": 255,
+            "blue": 7
         }
 };
-``` 
-or to change only value of ac:
+for change value of ac:
 ```javascript
 {
     "type": "ac",
@@ -190,7 +243,9 @@ with struct:
                     "ip": "192.168.1.12",
                     "name": "X",
                     "brand": "Broadlink",
-                    "types": ["switch"],
+                    "types": [
+                        "switch"
+                        ],
                     "state": "on"
                 }
             }
@@ -291,12 +346,26 @@ ChangeState(device, state, callback(err))
 ```
 while `state` can be `on` of `off`
 
-for light:
+for light (brightness):
 ```javascript
-GetBrightnessAndColor(device, callback(value, err))
-SetBrightnessAndColor(device, value, callback(err))
+GetBrightness(device, callback(value, err))
+SetBrightness(device, value, callback(err))
 ```
-while `value` is struce of key `bright` with value 1 - 100 and `color` with value 1 - 100
+while `value` is number between 1 - 100
+
+for white temperature:
+```javascript
+GetColorTemperature(device, callback(value, err))
+SetColorTemperature(device, value, callback(err))
+```
+while `value` is number between 1 - 100
+
+for white temperature:
+```javascript
+GetRGB(device, callback(value, err))
+SetRGB(device, value, callback(err))
+```
+while `value` is struct of 3 keys, `red` `green` and `blue` with value between 1 - 255  
 
 for ac (air conditioner)
 ```javascript
