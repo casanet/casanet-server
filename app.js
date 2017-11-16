@@ -73,7 +73,7 @@ app.get('/devices', (req, res) => {
   devicesHandler.GetDevices((devices, err) => {
     if (err)
       res.statusCode = 503;
-    res.send(!err ? device : err);
+    res.send(!err ? devices : err);
   });
 });
 
