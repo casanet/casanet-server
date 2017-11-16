@@ -6,6 +6,7 @@
     "body-parser": "^1.17.2",
     "express": "^4.14.0",
     "express-sse": "^0.4.1",
+    "log4js": "^2.3.12",
     "miio": "^0.13.0",
     "node-cmd": "^3.0.0",
     "node-yeelight-wifi": "^0.1.2",

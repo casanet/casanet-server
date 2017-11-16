@@ -1,3 +1,6 @@
+// Logger
+var logger = require('./logs');
+
 var fs = require('fs')
 var logs = require('./logs');
 
@@ -36,9 +39,9 @@ var UpdateSession = function (ip, isAccess) {
   // Save to session file
   fs.writeFile('./DB/sessions.json', JSON.stringify(sessions), 'utf-8', function (err) {
     if (err)
-      console.log('Error to write session file')
+      logger.error('Error to write session file');
     else
-      console.log('Done to update session file')
+      logger.debug('Done to update session file');
   })
 }
 
@@ -47,7 +50,7 @@ var CheckSession = function (ip) {
     ip &&
     ip in sessions &&
     sessions[ip].allow;
-     
+
   return checkResult;
 }
 

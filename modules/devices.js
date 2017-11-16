@@ -1,3 +1,6 @@
+// Logger
+var logger = require('./logs');
+
 var shortid = require('shortid');
 
 var brandModulesMap = require('./brandModulesMap');
@@ -26,6 +29,7 @@ var InitDevicesData = function (deviceIndex, next) {
     var brandModuleHandler = brandModulesMap.GetBrandModule(device.brand);
 
     if (brandModuleHandler == null) {
+        logger.error('Cant find module that map to brand: ' + device.brand)
         next('Cant find module that map to brand: ' + device.brand);
         return;
     }
@@ -43,40 +47,41 @@ var InitDevicesData = function (deviceIndex, next) {
             case ('switch'):
                 brandModuleHandler.GetState(device, (state, err) => {
                     device.state = state;
-                    console.log('Device ' + device.name + ' status ' + state);
+                    logger.info('Device ' + device.name + ' status ' + state);
                     getDeviceProperty(propertyIndex + 1);
                 });
                 return;
             case ('light'):
                 brandModuleHandler.GetBrightness(device, (value, err) => {
                     device.bright = value;
-                    console.log('Device ' + device.name + ' bright ' + value);
+                    logger.info('Device ' + device.name + ' bright ' + value);
                     getDeviceProperty(propertyIndex + 1);
                 });
                 return;
             case ('white_temp'):
                 brandModuleHandler.GetColorTemperature(device, (value, err) => {
                     device.white_temp = value;
-                    console.log('Device ' + device.name + ' white_temp ' + value);
+                    logger.info('Device ' + device.name + ' white_temp ' + value);
                     getDeviceProperty(propertyIndex + 1);
                 });
                 return;
             case ('light_color'):
                 brandModuleHandler.GetRGB(device, (value, err) => {
                     device.light_color = value;
-                    console.log('Device ' + device.name + ' light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
+                    logger.info('Device ' + device.name + ' light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
                     getDeviceProperty(propertyIndex + 1);
                 });
                 return;
             case ('ac'):
                 brandModuleHandler.GetACData(device, (value, err) => {
                     device.ac = value;
-                    console.log('Device ' + device.name + " value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
+                    logger.info('Device ' + device.name + " value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
                     getDeviceProperty(propertyIndex + 1);
                 });
                 return;
             // Here extenad types getting
             default:
+                logger.error('Cant handle unknown type: ' + device.types[propertyIndex]);
                 next('Cant handle unknown type: ' + device.types[propertyIndex])
                 return;
         }
@@ -91,15 +96,18 @@ var SetDeviceProperty = (id, type, value, next) => {
     var device = devices[id];
 
     if (!device) {
+        logger.warn('Cant find device with id: ' + id);
         next('Cant find device with id: ' + id);
         return;
     } else if (device.types.indexOf(type) == -1) {
+        logger.warn('Device id: ' + id + ' not supported : ' + type);
         next('Device id: ' + id + ' not supported : ' + type);
         return;
     }
     var brandModuleHandler = brandModulesMap.GetBrandModule(device.brand);
 
     if (brandModuleHandler == null) {
+        logger.error('Cant find module that map to brand: ' + device.brand);
         next('Cant find module that map to brand: ' + device.brand);
         return;
     }
@@ -111,6 +119,7 @@ var SetDeviceProperty = (id, type, value, next) => {
                 if (err)
                     next(err);
                 else {
+                    logger.info(device.name + ' set ' + type + ' to ' + value);
                     device.state = value;
                     next();
                     PushChanges(id);
@@ -122,6 +131,7 @@ var SetDeviceProperty = (id, type, value, next) => {
                 if (err)
                     next(err);
                 else {
+                    logger.info(device.name + ' set ' + type + ' to ' + value);
                     device.bright = value;
                     next();
                     PushChanges(id);
@@ -133,6 +143,7 @@ var SetDeviceProperty = (id, type, value, next) => {
                 if (err)
                     next(err);
                 else {
+                    logger.info(device.name + ' set ' + type + ' to ' + value);
                     device.white_temp = value;
                     next();
                     PushChanges(id);
@@ -144,6 +155,7 @@ var SetDeviceProperty = (id, type, value, next) => {
                 if (err)
                     next(err);
                 else {
+                    logger.info('Device ' + device.name + 'set light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
                     device.light_color = value;
                     next();
                     PushChanges(id);
@@ -155,6 +167,7 @@ var SetDeviceProperty = (id, type, value, next) => {
                 if (err)
                     next(err);
                 else {
+                    logger.info(device.name + "set value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
                     device.ac = value;
                     next();
                     PushChanges(id);
@@ -181,18 +194,17 @@ var GetDevices = (next) => {
 // Scan lan devices data one by one
 // next = (err)
 var RefreshDevicesData = (next) => {
+    logger.info('Start rescan all LAN devices')
     InitDevicesData(0, next);
 };
 
 // In startup of server scan all lan devices
-console.log('Getting devices data...');
+logger.info('Getting devices data...');
 RefreshDevicesData((err) => {
-    console.log('Done getting device data');
+    logger.info('Done getting device data');
     if (err)
-        console.error(err);
+        logger.error(err);
 });
-
-
 
 // Push changes events
 
@@ -205,7 +217,6 @@ var PushChanges = (id) => {
     updateCallbacks.forEach((registardMethod) => {
         registardMethod(id, devices[id]);
     })
-    console.log('Update-feed send for device ' + id);
 };
 
 // Let registar to change state event

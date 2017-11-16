@@ -1,3 +1,6 @@
+// Logger
+var logger = require('./logs');
+
 var fs = require('fs')
 var shortid = require('shortid');
 
@@ -14,9 +17,9 @@ try {
 var SaveToDB = () => {
     fs.writeFile('./DB/events.json', JSON.stringify(events, null, '\t'), 'utf-8', function (err) {
         if (err)
-            console.log('Error to write events file')
+            logger.error('Error to write events file');
         else
-            console.log('Done to update events file')
+            logger.debug('Done to update events file');
     })
 }
 
@@ -114,9 +117,11 @@ var RunActionsRecursion = (actions, index, next) => {
 // Start invoke event by its id
 var InvokeEvent = (id, next) => {
     if (!(id in events)) {
+        logger.warn('event id ' + id + ' not exist');
         next('event id not exist');
         return;
     }
+    logger.info('Start invoking event id ' + id);
     RunActionsRecursion(events[id].actions, 0, next);
 }
 

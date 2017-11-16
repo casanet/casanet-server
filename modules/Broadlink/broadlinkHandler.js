@@ -1,3 +1,6 @@
+// Logger
+var logger = require('../logs');
+
 var python = require('../Commons/pythonHandler');
 var fs = require('fs')
 
@@ -25,9 +28,9 @@ var UpdateCache = (deviceInentity, operationIrCode, state, value) => {
   // Save to operationIrCode file
   fs.writeFile(chachFilePath, JSON.stringify(cacheLastOperation, null, '\t'), 'utf-8', function (err) {
     if (err)
-      console.log('Error to write cacheLastOperation file')
+      logger.error('Error to write cacheLastOperation file');
     else
-      console.log('Done to update cacheLastOperation file')
+      logger.debug('Done to update cacheLastOperation file');
   })
 }
 
@@ -42,18 +45,19 @@ var TouchDevice = function (ip, mac, state, next) {
 var ChangeState = function (device, state, next) {
   if (device.deviceIdentity) {
     var ircode = (state == 'on' ? cacheLastOperation[device.deviceIdentity].ircode : irCommands[device.deviceIdentity].off);
-    
+
     if (!ircode) {
-      next("Error, ir code not found");
+      logger.warn('ir code not found');
+      next("ir code not found");
       return;
     }
 
     python.PythonCommand(__dirname, 'sp2.py', [device.ip, device.mac, 3, ircode], function (err, results) {
       var isSuccess = results[0].indexOf('ok') != -1;
       if (isSuccess)
-        UpdateCache(device.deviceIdentity, 
-                    cacheLastOperation[device.deviceIdentity].ircode ,// Dont change operation
-                    state)
+        UpdateCache(device.deviceIdentity,
+          cacheLastOperation[device.deviceIdentity].ircode,// Dont change operation
+          state)
       next(isSuccess ? null : "The IR transmitter is probably not connected");
     });
 

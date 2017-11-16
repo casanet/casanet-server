@@ -1,3 +1,7 @@
+// Logger
+var logger = require('./modules/logs');
+
+logger.info('Home-IoT-Server application start runing');
 
 // Project moduls 
 var devicesHandler = require('./modules/devices');
@@ -36,11 +40,15 @@ app.use(function (req, res, next) { // middelwhere for security
 // Login
 // body should be { userName : 'theUserName', password : 'thePassword' } 
 app.post('/login', function (req, res) {
+  logger.debug('requset POST for /login arrived');
   var params = req.body;
   securityHandler.CheckIn(req, params.userName, params.password, (result) => {
-    if (result)
-      res.send(`you connected seccessfuly`)
+    if (result) {
+      logger.info('user: ' + params.userName + ' connected seccessfuly');
+      res.send(`you connected seccessfuly`);
+    }
     else {
+      logger.info('user: ' + params.userName + ' try to enter without success');
       res.statusCode = 403;
       res.send(`you send wrong password`)
     }
@@ -49,6 +57,8 @@ app.post('/login', function (req, res) {
 
 // Logout 
 app.post('/logout', function (req, res) {
+  logger.debug('requset POST for /logout arrived');  
+  logger.info('user logout seccessfuly');
   securityHandler.CheckOut(req);
   res.send(`Logout seccessfuly`);
 });
@@ -59,16 +69,17 @@ app.post('/logout', function (req, res) {
 
 // Get all devices 
 app.get('/devices', (req, res) => {
+  logger.debug('requset GET for /devices arrived');  
   devicesHandler.GetDevices((devices, err) => {
     if (err)
       res.statusCode = 503;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(!err ? JSON.stringify(devices) : err);
+    res.send(!err ? device : err);
   });
 });
 
 // Get device by id
 app.get('/devices/:id', (req, res) => {
+  logger.debug('requset GET for /devices/'+ req.params.id + ' arrived');    
   devicesHandler.GetDevice(req.params.id, (device, err) => {
     if (err)
       res.statusCode = 503;
@@ -78,6 +89,7 @@ app.get('/devices/:id', (req, res) => {
 
 // Change devices value by id
 app.put('/devices/:id', (req, res) => {
+  logger.debug('requset PUT for /devices/'+ req.params.id + ' arrived');    
   var params = req.body;
   var value;
   try {
@@ -90,6 +102,7 @@ app.put('/devices/:id', (req, res) => {
       value = params.value;
     } else {
       res.statusCode = 503;
+      logger.error('param value parsing error');
       res.send('param value parsing error');
       return;
     }
@@ -106,6 +119,7 @@ app.put('/devices/:id', (req, res) => {
 
 // Trigger event by its id
 app.post('/events/invoke/:id', (req, res) => {
+  logger.debug('requset POST for /events/invoke/'+ req.params.id + ' arrived');    
   eventsHandler.InvokeEvent(req.params.id, (err) => {
     if (err)
       res.statusCode = 503;
@@ -115,6 +129,7 @@ app.post('/events/invoke/:id', (req, res) => {
 
 // Get all events
 app.get('/events', (req, res) => {
+  logger.debug('requset GET for /events arrived');      
   eventsHandler.GetEvents((events, err) => {
     if (err)
       res.statusCode = 503;
@@ -124,6 +139,7 @@ app.get('/events', (req, res) => {
 
 // Send new event
 app.post('/events', (req, res) => {
+  logger.debug('requset POST for /events arrived');        
   var params = req.body;
 
   var name = params.name;
@@ -156,6 +172,7 @@ app.post('/events', (req, res) => {
 
 // change event 
 app.put('/events/:id', (req, res) => {
+  logger.debug('requset PUT for /events/'+ req.params.id + ' arrived');      
   var params = req.body;
 
   var name = params.name;
@@ -186,6 +203,8 @@ app.put('/events/:id', (req, res) => {
 
 // delete event by its id
 app.delete('/events/:id', function (req, res) {
+  logger.debug('requset DELETE for /events/'+ req.params.id + ' arrived');      
+  
   eventsHandler.DeleteEvent(req.params.id, (err) => {
     if (err)
       res.statusCode = 503;
@@ -195,6 +214,7 @@ app.delete('/events/:id', function (req, res) {
 
 // Refresh data of deviced (read angin all deviced status)
 app.post('/refresh', function (req, res) {
+  logger.debug('requset POST for /refresh arrived');        
   devicesHandler.RefreshDevicesData((err) => {
     if (err)
       res.statusCode = 503;
@@ -212,6 +232,7 @@ app.get('/devices-feed', devicesSse.init);
 
 // Registar to devices push updates  
 devicesHandler.UpdateChangesEventRegistar((id, data) => {
+  logger.info('event sent to all clients about device id:' + id)
   devicesSse.send({ 'deviceID': id, 'data': data });
 })
 
@@ -235,7 +256,7 @@ app.set('port', (process.env.PORT || 3000));
 
 // Invoke app and listen to requests
 app.listen(app.get('port'), function () {
-  console.log('home IoT server run on port ' + app.get('port'));
+  logger.info('home IoT server run on port ' + app.get('port'));
 });
 
 

@@ -1,3 +1,6 @@
+// Logger
+var logger = require('../logs');
+
 var GeneralMethods = require('../generalMethods');
 var devices = require('../../DB/devices.json');
 
@@ -44,7 +47,7 @@ lookup.on("detected", (light) => {
             item(light.mac.replace(/:/g, ''), light.power ? 'on' : 'off');
         });
 
-        console.log('yeelight ' + light.mac + ' updated event sent');
+        logger.debug('yeelight ' + light.mac + ' updated event sent');
     });
 });
 
