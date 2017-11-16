@@ -116,9 +116,10 @@ var SetDeviceProperty = (id, type, value, next) => {
     switch (type) {
         case ('switch'):
             brandModuleHandler.ChangeState(device, value, (err) => {
-                if (err)
+                if (err) {
+                    logger.warn(type + ' request not executed, error : ' + err);
                     next(err);
-                else {
+                } else {
                     logger.info(device.name + ' set ' + type + ' to ' + value);
                     device.state = value;
                     next();
@@ -128,9 +129,10 @@ var SetDeviceProperty = (id, type, value, next) => {
             break;
         case ('light'):
             brandModuleHandler.SetBrightness(device, value, (err) => {
-                if (err)
+                if (err) {
+                    logger.warn(type + ' request not executed, error : ' + err);
                     next(err);
-                else {
+                } else {
                     logger.info(device.name + ' set ' + type + ' to ' + value);
                     device.bright = value;
                     next();
@@ -140,9 +142,10 @@ var SetDeviceProperty = (id, type, value, next) => {
             break;
         case ('white_temp'):
             brandModuleHandler.SetColorTemperature(device, value, (err) => {
-                if (err)
+                if (err) {
+                    logger.warn(type + ' request not executed, error : ' + err);
                     next(err);
-                else {
+                } else {
                     logger.info(device.name + ' set ' + type + ' to ' + value);
                     device.white_temp = value;
                     next();
@@ -152,9 +155,10 @@ var SetDeviceProperty = (id, type, value, next) => {
             break;
         case ('light_color'):
             brandModuleHandler.SetRGB(device, value, (err) => {
-                if (err)
+                if (err) {
+                    logger.warn(type + ' request not executed, error : ' + err);
                     next(err);
-                else {
+                } else {
                     logger.info('Device ' + device.name + 'set light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
                     device.light_color = value;
                     next();
@@ -164,9 +168,10 @@ var SetDeviceProperty = (id, type, value, next) => {
             break;
         case ('ac'):
             brandModuleHandler.SetACData(device, value, (err) => {
-                if (err)
+                if (err) {
+                    logger.warn(type + ' request not executed, error : ' + err);
                     next(err);
-                else {
+                } else {
                     logger.info(device.name + "set value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
                     device.ac = value;
                     next();
@@ -176,6 +181,7 @@ var SetDeviceProperty = (id, type, value, next) => {
             break;
         // Here add your new type 
         default:
+            logger.warn('Cant handle unknown type: ' + type);
             next('Cant handle unknown type: ' + type)
             return;
     }

@@ -40,7 +40,7 @@ app.use(function (req, res, next) { // middelwhere for security
 // Login
 // body should be { userName : 'theUserName', password : 'thePassword' } 
 app.post('/login', function (req, res) {
-  logger.debug('requset POST for /login arrived');
+  logger.debug('requset POST  /login arrived');
   var params = req.body;
   securityHandler.CheckIn(req, params.userName, params.password, (result) => {
     if (result) {
@@ -57,7 +57,7 @@ app.post('/login', function (req, res) {
 
 // Logout 
 app.post('/logout', function (req, res) {
-  logger.debug('requset POST for /logout arrived');  
+  logger.debug('requset POST  /logout arrived');  
   logger.info('user logout seccessfuly');
   securityHandler.CheckOut(req);
   res.send(`Logout seccessfuly`);
@@ -69,7 +69,7 @@ app.post('/logout', function (req, res) {
 
 // Get all devices 
 app.get('/devices', (req, res) => {
-  logger.debug('requset GET for /devices arrived');  
+  logger.debug('requset GET  /devices arrived');  
   devicesHandler.GetDevices((devices, err) => {
     if (err)
       res.statusCode = 503;
@@ -79,7 +79,7 @@ app.get('/devices', (req, res) => {
 
 // Get device by id
 app.get('/devices/:id', (req, res) => {
-  logger.debug('requset GET for /devices/'+ req.params.id + ' arrived');    
+  logger.debug('requset GET  /devices/'+ req.params.id + ' arrived');    
   devicesHandler.GetDevice(req.params.id, (device, err) => {
     if (err)
       res.statusCode = 503;
@@ -89,7 +89,7 @@ app.get('/devices/:id', (req, res) => {
 
 // Change devices value by id
 app.put('/devices/:id', (req, res) => {
-  logger.debug('requset PUT for /devices/'+ req.params.id + ' arrived');    
+  logger.debug('requset PUT  /devices/'+ req.params.id + ' arrived');    
   var params = req.body;
   var value;
   try {
@@ -119,7 +119,7 @@ app.put('/devices/:id', (req, res) => {
 
 // Trigger event by its id
 app.post('/events/invoke/:id', (req, res) => {
-  logger.debug('requset POST for /events/invoke/'+ req.params.id + ' arrived');    
+  logger.debug('requset POST  /events/invoke/'+ req.params.id + ' arrived');    
   eventsHandler.InvokeEvent(req.params.id, (err) => {
     if (err)
       res.statusCode = 503;
@@ -129,7 +129,7 @@ app.post('/events/invoke/:id', (req, res) => {
 
 // Get all events
 app.get('/events', (req, res) => {
-  logger.debug('requset GET for /events arrived');      
+  logger.debug('requset GET  /events arrived');      
   eventsHandler.GetEvents((events, err) => {
     if (err)
       res.statusCode = 503;
@@ -139,7 +139,7 @@ app.get('/events', (req, res) => {
 
 // Send new event
 app.post('/events', (req, res) => {
-  logger.debug('requset POST for /events arrived');        
+  logger.debug('requset POST  /events arrived');        
   var params = req.body;
 
   var name = params.name;
@@ -172,7 +172,7 @@ app.post('/events', (req, res) => {
 
 // change event 
 app.put('/events/:id', (req, res) => {
-  logger.debug('requset PUT for /events/'+ req.params.id + ' arrived');      
+  logger.debug('requset PUT  /events/'+ req.params.id + ' arrived');      
   var params = req.body;
 
   var name = params.name;
@@ -203,7 +203,7 @@ app.put('/events/:id', (req, res) => {
 
 // delete event by its id
 app.delete('/events/:id', function (req, res) {
-  logger.debug('requset DELETE for /events/'+ req.params.id + ' arrived');      
+  logger.debug('requset DELETE  /events/'+ req.params.id + ' arrived');      
   
   eventsHandler.DeleteEvent(req.params.id, (err) => {
     if (err)
@@ -214,7 +214,7 @@ app.delete('/events/:id', function (req, res) {
 
 // Refresh data of deviced (read angin all deviced status)
 app.post('/refresh', function (req, res) {
-  logger.debug('requset POST for /refresh arrived');        
+  logger.debug('requset POST  /refresh arrived');        
   devicesHandler.RefreshDevicesData((err) => {
     if (err)
       res.statusCode = 503;
