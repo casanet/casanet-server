@@ -1,8 +1,8 @@
 {
     "id0": {
         "mac": "34ea348ee66f",
-        "ip": "192.168.1.30",
-        "name": "מיזוג חדש בסלון",
+        "ip": "192.168.1.16",
+        "name": "מיזוג  בסלון",
         "brand": "Broadlink",
         "types": [
             "switch",
@@ -10,19 +10,21 @@
         ],
         "deviceIdentity": "SalonAC"
     },
-    "id1": {
-        "mac": "34ea34f5b7d2",
-        "ip": "192.168.1.25",
-        "name": "מזגן מושי",
+    "id01": {
+        "mac": "34ea34409ba8",
+        "ip": "192.168.1.13",
+        "name": "מיזוג  שינה",
         "brand": "Broadlink",
         "types": [
-            "switch"
-        ]
+            "switch",
+            "ac"
+        ],
+        "deviceIdentity": "SleepAC"
     },
-    "id2": {
-        "mac": "34ea34f1a482",
-        "ip": "192.168.1.12",
-        "name": "ספוטים",
+    "id1": {
+        "mac": "34ea34f5b7d2",
+        "ip": "192.168.1.82",
+        "name": "מזגן מושי",
         "brand": "Broadlink",
         "types": [
             "switch"
@@ -30,17 +32,8 @@
     },
     "id3": {
         "mac": "accf2334e632",
-        "ip": "192.168.1.22",
-        "name": "מזגן סלון",
-        "brand": "Orvibo",
-        "types": [
-            "switch"
-        ]
-    },
-    "id4": {
-        "mac": "accf2329ac86",
-        "ip": "192.168.1.18",
-        "name": "מזגן חדר שינה",
+        "ip": "192.168.1.21",
+        "name": "בוילר",
         "brand": "Orvibo",
         "types": [
             "switch"
@@ -48,7 +41,7 @@
     },
     "id5": {
         "mac": "34ce00bc9b57",
-        "ip": "192.168.1.16",
+        "ip": "192.168.1.72",
         "name": "תאורת חדר שינה",
         "brand": "Yeelight",
         "types": [
@@ -73,7 +66,7 @@
     "id7": {
         "mac": "34ce008cd7bc",
         "ip": "192.168.1.32",
-        "name": "תאורה בחדר מחשבים",
+        "name": "תאורה צבעונית",
         "brand": "Yeelight",
         "types": [
             "switch",
