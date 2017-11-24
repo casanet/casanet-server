@@ -73,10 +73,22 @@ var ChangeState = function (device, state, next) {
 var GetState = function (device, next) {
   // state 2 is for pythn script to know only get status
   if (device.deviceIdentity) {
-    if (!(device.deviceIdentity in cacheLastOperation))
-      next({}, "Device not have alredy cache of last operation");
-    else
-      next(cacheLastOperation[device.deviceIdentity].state);
+    if (!(device.deviceIdentity in cacheLastOperation)) {
+      UpdateCache(device.deviceIdentity,
+        'empty',
+        'off',
+        {
+          mode: "hot",
+          fan_strength: "low",
+          temp: 16
+        });
+    }
+
+    python.PythonCommand(__dirname, 'sp2.py', [device.ip, device.mac, 3, 'CheckAlive'], function (err, results) {
+      var isSuccess = results[0].indexOf('ok') != -1;
+      next(cacheLastOperation[device.deviceIdentity].state, isSuccess ? null : "The IR transmitter is probably not connected");
+    });
+
     return;
   }
 
@@ -88,10 +100,21 @@ var GetState = function (device, next) {
 var GetACData = (device, next) => {
   if (!(device.deviceIdentity))
     next({}, "Device not have identity field");
-  else if (!(device.deviceIdentity in cacheLastOperation))
-    next({}, "Device not have alredy cache of last operation");
-  else
-    next(cacheLastOperation[device.deviceIdentity].value);
+  else if (!(device.deviceIdentity in cacheLastOperation)) {
+    UpdateCache(device.deviceIdentity,
+      'empty',
+      'off',
+      {
+        mode: "hot",
+        fan_strength: "low",
+        temp: 16
+      });
+  }
+
+  python.PythonCommand(__dirname, 'sp2.py', [device.ip, device.mac, 3, 'CheckAlive'], function (err, results) {
+    var isSuccess = results[0].indexOf('ok') != -1;
+    next(cacheLastOperation[device.deviceIdentity].value, isSuccess ? null : "The IR transmitter is probably not connected");
+  });
 }
 
 var SetACData = (device, value, next) => {

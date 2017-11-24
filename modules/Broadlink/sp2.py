@@ -23,12 +23,14 @@ try:
                         device.set_power(False)
                         print "off"
         else :
-                ir_value = sys.argv[4]
                 device = broadlink.rm(host=(ip,80), mac=bytearray.fromhex(macaddr))
                 device.auth()
                 time.sleep(3)
 
-                device.send_data(ir_value.decode('hex'))
+                ir_value = sys.argv[4]
+
+                if ir_value != "CheckAlive":
+                        device.send_data(ir_value.decode('hex'))
                 print "ok"
        
 except:
