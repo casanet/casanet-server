@@ -46,16 +46,16 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         })
     });
 
-    $scope.GetDevices = function (method) {
-        $scope.error = "";
+    $scope.GetDevices = function (dontCleanError) {
         $scope.devices = [];
+        if (!dontCleanError)
+            $scope.error = "";
         $http({
             url: 'devices',
             method: 'GET'
         })
             .then(function (response) {
                 console.log("get devices successfully");
-                $scope.error = "";
                 Object.keys(response.data).forEach((key) => {
                     var device = response.data[key];
                     device.deviceID = key;
@@ -68,8 +68,8 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                     $scope.error += "Login first! ";
                     console.error("Athontication error");
                 }
-                $scope.error += '\n' + "error get devices";
-                console.error("error get devices");
+                $scope.error = response.data;
+                console.error(response.data);
             });
     };
 
@@ -78,8 +78,6 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
 
     $scope.SetState = function (device) {
 
-        // change the status
-        device.lastState = device.state;
         device.state = device.state == 'on' ? 'off' : 'on';
 
         $http({
@@ -95,11 +93,11 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 if (response.status == 403) {
                     console.error("Athontication error");
                     $scope.error += "Login first! ";
-                    
+
                 }
-                console.error("error set devices switch");
-                $scope.error += "\n error set devices switch";
-                device.state = device.lastState;
+                $scope.GetDevices(true);
+                $scope.error = response.data;
+                console.error(response.data);
             });
     };
 
@@ -117,7 +115,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         $http({
             url: 'devices/' + device.deviceID,
             method: "PUT",
-            data: { 'type': PropToChange , 'value': PropToChange == 'light' ? device['bright'] : device[PropToChange] }
+            data: { 'type': PropToChange, 'value': PropToChange == 'light' ? device['bright'] : device[PropToChange] }
         })
             .then(function (response) {
                 $scope.error = "";
@@ -126,14 +124,14 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
             function (response) { // optional
                 if (response.status == 403) {
                     $scope.error += "Login first! ";
-                    
+
                     console.error("Athontication error");
                 }
-                
-                $scope.error += "error set devices light";
-                console.error("error set devices light");
-            });
 
+                $scope.GetDevices(true);
+                $scope.error = response.data;
+                console.error(response.data);
+            });
     }
 
     $scope.SetAC = (device) => {
@@ -151,20 +149,22 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                     $scope.error += "Login first! ";
                     console.error("Athontication error");
                 }
-                    $scope.error += "\n error set devices ac";
-                    console.error("error set devices ac");
+                $scope.GetDevices(true);
+                $scope.error = response.data;
+                console.error(response.data);
             });
 
     }
 
     $scope.RefreshData = () => {
+
+        $scope.devices = [];
         $http({
             url: 'refresh',
             method: "POST"
         })
             .then(function (response) {
                 console.log("devices refreshd successfully");
-                $scope.error = "";
                 $scope.GetDevices();
             },
             function (response) { // optional
@@ -172,10 +172,15 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                     $scope.error += "Login first! ";
                     console.error("Athontication error");
                 }
-                $scope.error += "\n error devices refresh";
-                console.error("error devices refresh");
+                $scope.error = response.data;
+                console.error(response.data);
             });
     }
+
+    $scope.FullScreen = () => {
+        document.documentElement.webkitRequestFullScreen();
+    }
+
 });
 
 IoTApp.controller('loginCtrl', function ($scope, $http) {
