@@ -64,12 +64,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
 
             },
             function (response) { // optional
-                if (response.status == 403) {
-                    $scope.error += "Login first! ";
-                    console.error("Athontication error");
-                }
-                $scope.error = response.data;
-                console.error(response.data);
+                $scope.ErrorResponse(response);
             });
     };
 
@@ -90,14 +85,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 $scope.error = "";
             },
             function (response) { // optional
-                if (response.status == 403) {
-                    console.error("Athontication error");
-                    $scope.error += "Login first! ";
-
-                }
-                $scope.GetDevices(true);
-                $scope.error = response.data;
-                console.error(response.data);
+                $scope.ErrorResponse(response);
             });
     };
 
@@ -112,6 +100,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     };
 
     $scope.SetLight = (device, PropToChange) => {
+
         $http({
             url: 'devices/' + device.deviceID,
             method: "PUT",
@@ -121,20 +110,19 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 $scope.error = "";
                 console.log("change device light successfully");
             },
-            function (response) { // optional
-                if (response.status == 403) {
-                    $scope.error += "Login first! ";
-
-                    console.error("Athontication error");
-                }
-
-                $scope.GetDevices(true);
-                $scope.error = response.data;
-                console.error(response.data);
+            function (response) {
+                $scope.ErrorResponse(response);
             });
     }
 
+    $scope.ErrorResponse = (response) => {
+        $scope.GetDevices(true);
+        $scope.error = response.data;
+        console.error(response.data);
+    }
+
     $scope.SetAC = (device) => {
+
         $http({
             url: 'devices/' + device.deviceID,
             method: "PUT",
@@ -145,13 +133,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 console.log("change device ac successfully");
             },
             function (response) { // optional
-                if (response.status == 403) {
-                    $scope.error += "Login first! ";
-                    console.error("Athontication error");
-                }
-                $scope.GetDevices(true);
-                $scope.error = response.data;
-                console.error(response.data);
+                $scope.ErrorResponse(response);
             });
 
     }
@@ -168,12 +150,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 $scope.GetDevices();
             },
             function (response) { // optional
-                if (response.status == 403) {
-                    $scope.error += "Login first! ";
-                    console.error("Athontication error");
-                }
-                $scope.error = response.data;
-                console.error(response.data);
+                $scope.ErrorResponse(response);
             });
     }
 

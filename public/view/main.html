@@ -30,7 +30,11 @@
                 <div class="brightness">
                     Brightness
                     <br>
-                    <input type="number" min="1" max="100" ng-change="SetLight(light, 'light')" ng-model="light.bright" />
+                    <input type="number" min="1" max="100" ng-model="light.bright" />
+                </div>
+
+                <div class="submit_value">
+                    <a class="btn btn-default btn-sm" ng-click="SetLight(light, 'light')">Update</a>
                 </div>
             </div>
         </div>
@@ -46,12 +50,16 @@
                 <div class="brightness">
                     Temperature
                     <br>
-                    <input type="number" min="1" max="100" ng-change="SetLight(light, 'white_temp')" ng-model="light.white_temp" />
+                    <input type="number" min="1" max="100" ng-model="light.white_temp" />
+                </div>
+
+                <div class="submit_value">
+                    <a class="btn btn-default btn-sm" ng-click="SetLight(light, 'white_temp')">Update</a>
                 </div>
             </div>
         </div>
 
-        <h1 ng-show="GetFiltedDevices('light_color').length > 0"> Lights Temp:</h1>
+        <h1 ng-show="GetFiltedDevices('light_color').length > 0"> Lights Color:</h1>
 
         <div class="row">
             <div ng-repeat="light in GetFiltedDevices('light_color') | orderBy : 'name' " class="card card-5 ">
@@ -62,17 +70,21 @@
                 <div class="color-red">
                     Red
                     <br>
-                    <input type="number" min="1" max="255" ng-change="SetLight(light, 'light_color')" ng-model="light.light_color.red" />
+                    <input type="number" min="1" max="255" ng-model="light.light_color.red" />
                 </div>
                 <div class="color-green">
                     Green
                     <br>
-                    <input type="number" min="1" max="255" ng-change="SetLight(light, 'light_color')" ng-model="light.light_color.green" />
+                    <input type="number" min="1" max="255" ng-model="light.light_color.green" />
                 </div>
-                <div  class="color-blue">
+                <div class="color-blue">
                     Blue
                     <br>
-                    <input type="number" min="1" max="255" ng-change="SetLight(light, 'light_color')" ng-model="light.light_color.blue" />
+                    <input type="number" min="1" max="255"  ng-model="light.light_color.blue" />
+                </div>
+
+                <div class="submit_value">
+                    <a class="btn btn-default btn-sm" ng-click="SetLight(light, 'light_color')">Update</a>
                 </div>
             </div>
         </div>
@@ -86,7 +98,7 @@
                     Mode
                     <br>
 
-                    <select ng-model="ac.ac.mode" ng-change="SetAC(ac)">
+                    <select ng-model="ac.ac.mode" >
                         <option value=auto>auto</option>
                         <option value=hot>hot </option>
                         <option value=cold>cold </option>
@@ -99,7 +111,7 @@
                     fan_strength
                     <br>
 
-                    <select ng-model="ac.ac.fan_strength" ng-change="SetAC(ac)">
+                    <select ng-model="ac.ac.fan_strength">
                         <option value=auto>auto</option>
                         <option value=high>high </option>
                         <option value=med>med </option>
@@ -109,7 +121,11 @@
                 <div class="ac-temp">
                     Temp
                     <br>
-                    <input type="number" min="16" max="30" ng-model="ac.ac.temp" ng-change="SetAC(ac)" />
+                    <input type="number" min="16" max="30" ng-model="ac.ac.temp" />
+                </div>
+
+                <div class="submit_value">
+                    <a class="btn btn-default btn-sm" ng-click="SetAC(ac)">Update</a>
                 </div>
             </div>
 

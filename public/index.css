@@ -102,6 +102,11 @@ input[type='checkbox']:checked ~ .switch {
     left: 24px;
   }
 
+  .submit_value {
+    position: absolute;
+    top: 65px;
+    left: 235px;
+  }
   .color-blue {
     position: absolute;
     top: 40px;
@@ -129,8 +134,8 @@ input[type='checkbox']:checked ~ .switch {
   
   .ac-temp {
     position: absolute;
-    top: 40px;
-    left: 180px;
+    top: 47px;
+    left: 160px;
   }
 
   .fan_strength {
