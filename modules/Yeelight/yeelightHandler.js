@@ -9,7 +9,7 @@ let lookup = new Lookup();
 
 // struc of all light obj map by its mac
 var lights = {};
-updateChangesCallbacks = [];
+var updateChangesCallbacks = [];
 
 // Registar to detect new light
 lookup.on("detected", (light) => {
@@ -122,6 +122,11 @@ var GetBrightness = (device, next) => {
 }
 
 var SetBrightness = (device, value, next) => {
+    if (device.brand == 'Yeelight' && device.state == 'off') {
+        next('device must be turned on when values changed');
+        return;
+    }
+
     const lightDevice = miio.createDevice({
         address: device.ip,
         token: device.token,
@@ -150,7 +155,7 @@ var GetColorTemperature = (device, next) => {
     var startRange = 1800;
     var endRange = 6500;
 
-    var mac = GeneralMethods.ToReadbleMac(device.mac);    
+    var mac = GeneralMethods.ToReadbleMac(device.mac);
     // If this is ceiling change the temp range values
     if (mac in lights && lights[mac].obj.model == 'ceiling') {
         startRange = 4100;
@@ -181,6 +186,11 @@ var GetColorTemperature = (device, next) => {
 }
 
 var SetColorTemperature = (device, value, next) => {
+    if (device.state == 'off') {
+        next('device must be turned on when values changed');
+        return;
+    }
+
     // TODO temp if !!! need to reorder in code
 
 
@@ -249,6 +259,11 @@ var GetRGB = (device, next) => {
 
 
 var SetRGB = (device, value, next) => {
+    if (device.state == 'off') {
+        next('device must be turned on when values changed');
+        return;
+    }
+
     const lightDevice = miio.createDevice({
         address: device.ip,
         token: device.token,

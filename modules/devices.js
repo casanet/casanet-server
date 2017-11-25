@@ -4,7 +4,12 @@ var logger = require('./logs');
 var shortid = require('shortid');
 
 var brandModulesMap = require('./brandModulesMap');
+
+// for events registration
+// TODO : set them in other file that will registar and invoke update
 var YeelightHandler = require('./Yeelight/yeelightHandler');
+var PhilipsHandler = require('./Philips/philipsHandler');
+var BroadLinkHandler = require('./Broadlink/broadlinkHandler');
 
 var devices = require('../DB/devices.json');
 var devicesKeysArray = [];
@@ -48,7 +53,7 @@ var InitDevicesData = function (deviceIndex, next) {
                 brandModuleHandler.GetState(device, (state, err) => {
                     device.state = state;
                     logger.info('Device ' + device.name + ' status ' + state);
-                    if(err){
+                    if (err) {
                         logger.error('Device ' + device.name + ' while get -switch- has ' + err);
                         device.state = 'error';
                     }
@@ -59,7 +64,7 @@ var InitDevicesData = function (deviceIndex, next) {
                 brandModuleHandler.GetBrightness(device, (value, err) => {
                     device.bright = value;
                     logger.info('Device ' + device.name + ' bright ' + value);
-                    if(err){
+                    if (err) {
                         logger.error('Device ' + device.name + ' while get -light- has ' + err);
                         device.state = 'error';
                     }
@@ -70,7 +75,7 @@ var InitDevicesData = function (deviceIndex, next) {
                 brandModuleHandler.GetColorTemperature(device, (value, err) => {
                     device.white_temp = value;
                     logger.info('Device ' + device.name + ' white_temp ' + value);
-                    if(err){
+                    if (err) {
                         logger.error('Device ' + device.name + ' while get -white_temp- has ' + err);
                         device.state = 'error';
                     }
@@ -81,7 +86,7 @@ var InitDevicesData = function (deviceIndex, next) {
                 brandModuleHandler.GetRGB(device, (value, err) => {
                     device.light_color = value;
                     logger.info('Device ' + device.name + ' light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
-                    if(err){
+                    if (err) {
                         logger.error('Device ' + device.name + ' while get -light_color- has ' + err);
                         device.state = 'error';
                     }
@@ -92,7 +97,7 @@ var InitDevicesData = function (deviceIndex, next) {
                 brandModuleHandler.GetACData(device, (value, err) => {
                     device.ac = value;
                     logger.info('Device ' + device.name + " value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
-                    if(err){
+                    if (err) {
                         logger.error('Device ' + device.name + ' while get -a- has ' + err);
                         device.state = 'error';
                     }
@@ -155,7 +160,6 @@ var SetDeviceProperty = (id, type, value, next) => {
                 } else {
                     logger.info(device.name + ' set ' + type + ' to ' + value);
                     device.bright = value;
-                    device.state = 'on';
                     next();
                     PushChanges(id);
                 }
@@ -169,7 +173,6 @@ var SetDeviceProperty = (id, type, value, next) => {
                 } else {
                     logger.info(device.name + ' set ' + type + ' to ' + value);
                     device.white_temp = value;
-                    device.state = 'on';
                     next();
                     PushChanges(id);
                 }
@@ -183,7 +186,6 @@ var SetDeviceProperty = (id, type, value, next) => {
                 } else {
                     logger.info('Device ' + device.name + 'set light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
                     device.light_color = value;
-                    device.state = 'on';
                     next();
                     PushChanges(id);
                 }
@@ -197,7 +199,6 @@ var SetDeviceProperty = (id, type, value, next) => {
                 } else {
                     logger.info(device.name + "set value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
                     device.ac = value;
-                    device.state = 'on';
                     next();
                     PushChanges(id);
                 }
@@ -254,7 +255,7 @@ var UpdateChangesEventRegistar = function (callback) {
     updateCallbacks.push(callback);
 }
 
-// registar to yeelight events
+// registar to modulas events
 YeelightHandler.UpdateChangesRegistar((mac, newState) => {
     devicesKeysArray.forEach((id) => {
         if (devices[id].mac == mac) {
@@ -264,6 +265,25 @@ YeelightHandler.UpdateChangesRegistar((mac, newState) => {
         }
     });
 })
+
+PhilipsHandler.UpdateChangesRegistar((device) => {
+    devicesKeysArray.forEach((id) => {
+        if (devices[id].mac == device.mac) {
+            PushChanges(id);
+            return;
+        }
+    });
+});
+
+BroadLinkHandler.UpdateChangesRegistar((device) => {
+    devicesKeysArray.forEach((id) => {
+        if (devices[id].mac == device.mac &&
+            devices[id].deviceIdentity == devices.deviceIdentity) {
+            PushChanges(id);
+            return;
+        }
+    });
+});
 
 // comments, sse, events, 
 module.exports = {

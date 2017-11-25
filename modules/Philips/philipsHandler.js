@@ -2,6 +2,8 @@ var YeelightHandler = require('../Yeelight/yeelightHandler');
 
 const miio = require('miio');
 
+var updateChangesCallbacks = [];
+
 var ChangeState = (device, state, next) => {
     YeelightHandler.ChangeState(device, state, next);
 };
@@ -15,7 +17,16 @@ var GetBrightness = (device, next) => {
 }
 
 var SetBrightness = (device, value, next) => {
-    YeelightHandler.SetBrightness(device, value, next);
+    YeelightHandler.SetBrightness(device, value, (err) => {
+        // if success, light turn on auto
+        if (!err) {
+            device.state = 'on';
+            updateChangesCallbacks.forEach((methodRegistrad) => {
+                methodRegistrad(device);
+            });
+        }
+        next(err);
+    });
 }
 
 var GetColorTemperature = (device, next) => {
@@ -53,6 +64,11 @@ var SetColorTemperature = (device, value, next) => {
             lightDevice.call('set_bricct', [device.bright, value])
                 .then((res) => {
                     next();
+                    // if success, light turn on auto
+                    device.state = 'on';
+                    updateChangesCallbacks.forEach((methodRegistrad) => {
+                        methodRegistrad(device);
+                    });
                 })
                 .catch((err) => {
                     next(err);
@@ -63,11 +79,17 @@ var SetColorTemperature = (device, value, next) => {
         });
 }
 
+
+var UpdateChangesRegistar = function (callback) {
+    updateChangesCallbacks.push(callback);
+}
+
 module.exports = {
     GetState: GetState,
     ChangeState: ChangeState,
     GetBrightness: GetBrightness,
     SetBrightness: SetBrightness,
     GetColorTemperature: GetColorTemperature,
-    SetColorTemperature: SetColorTemperature
+    SetColorTemperature: SetColorTemperature,
+    UpdateChangesRegistar: UpdateChangesRegistar
 };

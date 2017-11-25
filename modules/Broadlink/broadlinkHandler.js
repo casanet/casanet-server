@@ -8,6 +8,8 @@ var irCommands = require('./irCommandsMap.json');
 var chachFilePath = __dirname + '\\cacheLastOperation.json';
 var cacheLastOperation;
 
+var updateChangesCallbacks = [];
+
 try {
   cacheLastOperation = require(chachFilePath);
 } catch (error) {
@@ -137,10 +139,21 @@ var SetACData = (device, value, next) => {
 
   python.PythonCommand(__dirname, 'sp2.py', [device.ip, device.mac, 3, ircode], function (err, results) {
     var isSuccess = results[0].indexOf('ok') != -1;
-    if (isSuccess)
+    if (isSuccess) {
       UpdateCache(device.deviceIdentity, ircode, "on", value);
+      // if success, ac turn on auto
+      device.state = 'on';
+      updateChangesCallbacks.forEach((methodRegistrad) => {
+        methodRegistrad(device);
+      });
+    }
     next(isSuccess ? null : "The IR transmitter is probably not connected or IR code is not valid");
   });
+}
+
+
+var UpdateChangesRegistar = function (callback) {
+  updateChangesCallbacks.push(callback);
 }
 
 // TODO if switch for rm need send correct command and not like sp2
@@ -148,5 +161,6 @@ module.exports = {
   GetState: GetState,
   ChangeState: ChangeState,
   SetACData: SetACData,
-  GetACData: GetACData
+  GetACData: GetACData,
+  UpdateChangesRegistar: UpdateChangesRegistar
 };
