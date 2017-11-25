@@ -58,7 +58,7 @@ var ChangeState = function (device, state, next) {
         UpdateCache(device.deviceIdentity,
           cacheLastOperation[device.deviceIdentity].ircode,// Dont change operation
           state)
-      next(isSuccess ? null : "The IR transmitter is probably not connected");
+      next(isSuccess ? null : "The IR transmitter is probably not connected or IR code invalid");
     });
 
 
@@ -82,11 +82,13 @@ var GetState = function (device, next) {
           fan_strength: "low",
           temp: 16
         });
+      next({}, 'please insret ir code in irCommandsMapFile');
+      return;
     }
 
     python.PythonCommand(__dirname, 'sp2.py', [device.ip, device.mac, 3, 'CheckAlive'], function (err, results) {
       var isSuccess = results[0].indexOf('ok') != -1;
-      next(cacheLastOperation[device.deviceIdentity].state, isSuccess ? null : "The IR transmitter is probably not connected");
+      next(cacheLastOperation[device.deviceIdentity].state, isSuccess ? null : "The IR transmitter is probably not connected or IR code is invalid");
     });
 
     return;
@@ -109,16 +111,24 @@ var GetACData = (device, next) => {
         fan_strength: "low",
         temp: 16
       });
+    next({}, 'please insret ir code in irCommandsMapFile');
+    return;
   }
 
   python.PythonCommand(__dirname, 'sp2.py', [device.ip, device.mac, 3, 'CheckAlive'], function (err, results) {
     var isSuccess = results[0].indexOf('ok') != -1;
-    next(cacheLastOperation[device.deviceIdentity].value, isSuccess ? null : "The IR transmitter is probably not connected");
+    next(cacheLastOperation[device.deviceIdentity].value, isSuccess ? null : "The IR transmitter is probably not connected or IR code is invalid");
   });
 }
 
 var SetACData = (device, value, next) => {
-  var ircode = irCommands[device.deviceIdentity].mode[value.mode][value.fan_strength][value.temp];
+
+  var ircode;
+  try {
+    ircode = irCommands[device.deviceIdentity].mode[value.mode][value.fan_strength][value.temp];
+  } catch (error) {
+    ircode = false;
+  }
 
   if (!ircode) {
     next("Error, ir code not found");
@@ -129,7 +139,7 @@ var SetACData = (device, value, next) => {
     var isSuccess = results[0].indexOf('ok') != -1;
     if (isSuccess)
       UpdateCache(device.deviceIdentity, ircode, "on", value);
-    next(isSuccess ? null : "The IR transmitter is probably not connected");
+    next(isSuccess ? null : "The IR transmitter is probably not connected or IR code is not valid");
   });
 }
 
