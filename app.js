@@ -6,6 +6,7 @@ logger.info('Home-IoT-Server application start runing');
 // Project moduls 
 var devicesHandler = require('./modules/devices');
 var eventsHandler = require('./modules/events');
+var timingHandler = require('./modules/timing');
 var securityHandler = require('./modules/security');
 
 // Depenencies moduls
@@ -57,7 +58,7 @@ app.post('/login', function (req, res) {
 
 // Logout 
 app.post('/logout', function (req, res) {
-  logger.debug('requset POST  /logout arrived');  
+  logger.debug('requset POST  /logout arrived');
   logger.info('user logout seccessfuly');
   securityHandler.CheckOut(req);
   res.send(`Logout seccessfuly`);
@@ -69,7 +70,7 @@ app.post('/logout', function (req, res) {
 
 // Get all devices 
 app.get('/devices', (req, res) => {
-  logger.debug('requset GET  /devices arrived');  
+  logger.debug('requset GET  /devices arrived');
   devicesHandler.GetDevices((devices, err) => {
     if (err)
       res.statusCode = 503;
@@ -79,7 +80,7 @@ app.get('/devices', (req, res) => {
 
 // Get device by id
 app.get('/devices/:id', (req, res) => {
-  logger.debug('requset GET  /devices/'+ req.params.id + ' arrived');    
+  logger.debug('requset GET  /devices/' + req.params.id + ' arrived');
   devicesHandler.GetDevice(req.params.id, (device, err) => {
     if (err)
       res.statusCode = 503;
@@ -89,7 +90,7 @@ app.get('/devices/:id', (req, res) => {
 
 // Change devices value by id
 app.put('/devices/:id', (req, res) => {
-  logger.debug('requset PUT  /devices/'+ req.params.id + ' arrived');    
+  logger.debug('requset PUT  /devices/' + req.params.id + ' arrived');
   var params = req.body;
   var value;
   try {
@@ -115,11 +116,21 @@ app.put('/devices/:id', (req, res) => {
   });
 });
 
+// Refresh data of deviced (read angin all deviced status)
+app.post('/refresh', function (req, res) {
+  logger.debug('requset POST  /refresh arrived');
+  devicesHandler.RefreshDevicesData((err) => {
+    if (err)
+      res.statusCode = 503;
+    res.send(err);
+  });
+});
+
 // Events API
 
 // Trigger event by its id
 app.post('/events/invoke/:id', (req, res) => {
-  logger.debug('requset POST  /events/invoke/'+ req.params.id + ' arrived');    
+  logger.debug('requset POST  /events/invoke/' + req.params.id + ' arrived');
   eventsHandler.InvokeEvent(req.params.id, (err) => {
     if (err)
       res.statusCode = 503;
@@ -129,7 +140,7 @@ app.post('/events/invoke/:id', (req, res) => {
 
 // Get all events
 app.get('/events', (req, res) => {
-  logger.debug('requset GET  /events arrived');      
+  logger.debug('requset GET  /events arrived');
   eventsHandler.GetEvents((events, err) => {
     if (err)
       res.statusCode = 503;
@@ -139,7 +150,7 @@ app.get('/events', (req, res) => {
 
 // Send new event
 app.post('/events', (req, res) => {
-  logger.debug('requset POST  /events arrived');        
+  logger.debug('requset POST  /events arrived');
   var params = req.body;
 
   var name = params.name;
@@ -172,7 +183,7 @@ app.post('/events', (req, res) => {
 
 // change event 
 app.put('/events/:id', (req, res) => {
-  logger.debug('requset PUT  /events/'+ req.params.id + ' arrived');      
+  logger.debug('requset PUT  /events/' + req.params.id + ' arrived');
   var params = req.body;
 
   var name = params.name;
@@ -203,19 +214,95 @@ app.put('/events/:id', (req, res) => {
 
 // delete event by its id
 app.delete('/events/:id', function (req, res) {
-  logger.debug('requset DELETE  /events/'+ req.params.id + ' arrived');      
-  
+  logger.debug('requset DELETE  /events/' + req.params.id + ' arrived');
+
   eventsHandler.DeleteEvent(req.params.id, (err) => {
+    if (err)
+      res.statusCode = 503;
+    res.send(err);
+  });
+});
+
+
+
+// Timings API
+
+// Get all timings
+app.get('/timings', (req, res) => {
+  logger.debug('requset GET  /timings arrived');
+  timingHandler.GetTimings((timings, err) => {
+    if (err)
+      res.statusCode = 503;
+    res.send(!err ? timings : err)
+  });
+});
+
+// Send new timings
+app.post('/timings', (req, res) => {
+  logger.debug('requset POST  /timings arrived');
+  var params = req.body;
+  var timing = params.timing;
+
+  var hasError = false;
+
+  // chack params
+  try {
+    if ((typeof timing) == 'string')
+      timing = JSON.parse(timing);
+
+    hasError = !timingHandler.TimingValidation(timing);
+  } catch (error) {
+    hasError = true;
+  }
+
+  if (hasError) {
+    res.statusCode = 503;
+    res.send('params errer');
+    return;
+  }
+
+  timingHandler.CreateTiming(timing, (err) => {
     if (err)
       res.statusCode = 503;
     res.send(err)
   });
 });
 
-// Refresh data of deviced (read angin all deviced status)
-app.post('/refresh', function (req, res) {
-  logger.debug('requset POST  /refresh arrived');        
-  devicesHandler.RefreshDevicesData((err) => {
+// change timings 
+app.put('/timings/:id', (req, res) => {
+  logger.debug('requset PUT  /timings/' + req.params.id + ' arrived');
+  var params = req.body;
+
+  var timing = params.timing;
+
+  // chack params
+  try {
+    if ((typeof timing) == 'string')
+      timing = JSON.parse(timing);
+
+    hasError = !timingHandler.TimingValidation(timing);
+  } catch (error) {
+    hasError = true;
+  }
+
+  if (hasError) {
+    res.statusCode = 503;
+    res.send('params errer');
+    return;
+  }
+
+  timingHandler.EditTiming(req.params.id, timing, (err) => {
+    if (err)
+      res.statusCode = 503;
+    res.send(err)
+  });
+});
+
+// delete timings by its id
+app.delete('/timings/:id', function (req, res) {
+  logger.debug('requset DELETE  /timings/' + req.params.id + ' arrived');
+
+  timingHandler.DeleteTiming(req.params.id, (err) => {
     if (err)
       res.statusCode = 503;
     res.send(err);
@@ -226,14 +313,28 @@ app.post('/refresh', function (req, res) {
 
 // Init the sse objects
 var devicesSse = new SSE(['init'], { isSerialized: true });
+var timingsSse = new SSE(['init'], { isSerialized: true });
+var timingTriggeredSse = new SSE(['init'], { isSerialized: true });
 
 // SSE object to get push notifications updates of devices changes
 app.get('/devices-feed', devicesSse.init);
+app.get('/timings-feed', timingsSse.init);
+app.get('/timing-triggered-feed', timingTriggeredSse.init);
 
 // Registar to devices push updates  
 devicesHandler.UpdateChangesEventRegistar((id, data) => {
   logger.info('event sent to all clients about device id:' + id)
   devicesSse.send({ 'deviceID': id, 'data': data });
+})
+
+// Registar to timings push updates  
+timingHandler.UpdateChangesTimingsRegistar((timings) => {
+  logger.info('send the new timings struct to clients')
+  timingsSse.send(timings);
+})
+timingHandler.UpdateTimingEventsRegistar((id, timing, err) => {
+  logger.info('timing event triggerd data sent to all clients')
+  timingTriggeredSse.send({ timingId: id, timing: timing, err: err });
 })
 
 // Other API 
@@ -258,5 +359,3 @@ app.set('port', (process.env.PORT || 3000));
 app.listen(app.get('port'), function () {
   logger.info('home IoT server run on port ' + app.get('port'));
 });
-
-
