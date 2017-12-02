@@ -1,0 +1,84 @@
+<div class="panel panel-warning">
+    <!-- panel to show current event name -->
+    <div class="panel-heading">Daily timings</div>
+    <!-- panel to show current event menu -->
+    <div class="panel-body">
+        <div style="margin:20px;">
+            <!--show menues in expender view-->
+            <div class="panel-group" id="accordion{{timing.id}}">
+                <div ng-repeat="timing in dailyTimings" class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion{{timing.id}}" data-target="#{{timing.id}}">Trigger: {{timing.triggerName}}</a>
+                        </h4>
+                    </div>
+                    <div id="{{timing.id}}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            Days:
+                            <ul>
+                                <li ng-repeat="day in timing.days">{{day}}</li>
+                            </ul>
+
+                            Time:
+                            <b> {{timing.time}} </b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-info">
+    <!-- panel to show current event name -->
+    <div class="panel-heading">Once timings</div>
+    <!-- panel to show current event menu -->
+    <div class="panel-body">
+        <div style="margin:20px;">
+            <!--show menues in expender view-->
+            <div class="panel-group" id="accordion{{timing.id}}">
+                <div ng-repeat="timing in onceTimings" class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion{{timing.id}}" data-target="#{{timing.id}}">Trigger: {{timing.triggerName}}</a>
+                        </h4>
+                    </div>
+                    <div id="{{timing.id}}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            Date:
+                            <b> {{timing.date}} </b>
+
+                            Time:
+                            <b> {{timing.time}} </b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-danger">
+    <!-- panel to show current event name -->
+    <div class="panel-heading">Timer timings</div>
+    <!-- panel to show current event menu -->
+    <div class="panel-body">
+        <div style="margin:20px;">
+            <!--show menues in expender view-->
+            <div class="panel-group" id="accordion{{timing.id}}">
+                <div ng-repeat="timing in timerTimings" class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion{{timing.id}}" data-target="#{{timing.id}}">Trigger: {{timing.triggerName}}</a>
+                        </h4>
+                    </div>
+                    <div id="{{timing.id}}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            
+                            Duration in minutes:
+                            <b> {{timing.durationInMinuts}} </b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

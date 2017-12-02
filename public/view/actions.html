@@ -1,0 +1,30 @@
+<div ng-repeat="event in events" class="panel panel-info">
+        <!-- panel to show current event name -->
+        <div class="panel-heading">{{event.name}}</div>
+        <!-- panel to show current event menu -->
+        <div class="panel-body">
+            <div style="margin:20px;">
+                <!--show menues in expender view-->
+                <div class="panel-group" id="accordion{{timing.id}}">
+                    <div ng-repeat="action in event.actions" class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                Set: {{action.deviceName}}
+                            </h4>
+                        </div>
+                        <div id="{{timing.id}}" class="panel">
+                            <div class="panel-body">
+                                State set to: 
+                                <b> {{action.state}} </b>
+                                <br>
+                                Use as device type with value: 
+                                <b> {{action.type}} </b>
+                                 <br>
+                                <b> {{action.set}} </b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

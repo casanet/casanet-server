@@ -25,6 +25,16 @@ IoTApp.service('updatesService', ['$http', function (http) {
         });
 
     };
+
+    var timinges = new EventSource('/timing-triggered-feed');
+
+    timinges.onmessage = function (event) {
+        var data = JSON.parse(event.data);
+        if (data == 'init')
+            return;
+        alert('timing activeted , row message data: '  + event.data);
+
+    };
 }]);
 
 // Controller defnition
@@ -195,8 +205,116 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
     };
 });
 
-IoTApp.controller('aboutCtrl', function ($scope) {
-    // For next use
+IoTApp.controller('timingsCtrl', function ($scope, $http) {
+    $scope.SetTimingsAsLists = (timingsStruct) => {
+        $scope.dailyTimings = [];
+        $scope.onceTimings = [];
+        $scope.timerTimings = [];
+        $scope.GetActions((actions, err) => {
+            Object.keys(timingsStruct).forEach((key) => {
+                var currTiming = timingsStruct[key];
+                currTiming.id = key;
+                currTiming.triggerName = actions[currTiming.trigger].name;
+
+                switch (currTiming.timingType) {
+                    case "daily":
+                        $scope.dailyTimings.push(currTiming);
+                        break;
+                    case "once":
+                        $scope.onceTimings.push(currTiming);
+                        break;
+                    case "timer":
+                        $scope.timerTimings.push(currTiming);
+                        break;
+                    default:
+                        break;
+                }
+            });
+
+        })
+    };
+
+    $scope.GetActions = function (callback) {
+
+        $http({
+            url: 'events',
+            method: 'GET'
+        })
+            .then(function (response) {
+                console.log("get actions successfully");
+                callback(response.data);
+            },
+            function (response) {
+                callback({}, response);
+            });
+    };
+
+    $scope.GetTimings = function () {
+
+        $http({
+            url: 'timings',
+            method: 'GET'
+        })
+            .then(function (response) {
+                console.log("get timings successfully");
+                $scope.SetTimingsAsLists(response.data);
+            },
+            function (response) {
+
+            });
+    };
+
+    $scope.GetTimings();
+});
+
+IoTApp.controller('actionsCtrl', function ($scope, $http) {
+    $scope.GetActions = function () {
+        $http({
+            url: 'events',
+            method: 'GET'
+        })
+            .then(function (response) {
+                console.log("get actions successfully");
+
+                var temp = response.data;
+                $scope.GetDevices((devices) => {
+
+                    $scope.events = [];
+                    Object.keys(temp).forEach((key) => {
+                        var item = temp[key];
+                        item.actions.forEach((i) => {
+                            if (i.deviceID in devices)
+                                i.deviceName = devices[i.deviceID].name;
+                            else
+                                i.deviceName = i.deviceID + " - id not exist in devices";
+                        })
+
+                        $scope.events.push(item);
+                    });
+
+                });
+
+            },
+            function (response) {
+            });
+    };
+    $scope.GetActions();
+
+    $scope.GetDevices = function (callback) {
+
+        $http({
+            url: 'devices',
+            method: 'GET'
+        })
+            .then(function (response) {
+                console.log("get devices successfully");
+                callback(response.data);
+            },
+            function (response) {
+                callback({}, response);
+            });
+    };
+
 });
 
 // // angular SPA routing definition
@@ -205,6 +323,12 @@ IoTApp.config(function ($routeProvider) {
         .when('/main', {
             templateUrl: '/static/view/main.html',
             controller: 'mainCtrl'
+        }).when('/timings', {
+            templateUrl: '/static/view/timings.html',
+            controller: 'timingsCtrl'
+        }).when('/actions', {
+            templateUrl: '/static/view/actions.html',
+            controller: 'actionsCtrl'
         }).when('/login', {
             templateUrl: '/static/view/login.html',
             controller: 'loginCtrl'
