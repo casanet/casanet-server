@@ -312,10 +312,10 @@ with data in body like:
     ]
 }
 ```
-or to edit event by its id PUT http://127.0.0.1:3000/events/r1igRA5iZ
+or to edit event by its id PUT http://127.0.0.1:3000/events/{id}
 with body like posting new event
-for remove event DELETE http://127.0.0.1:3000/events/r1igRA5iZ
-and to invoke event POST http://127.0.0.1:3000/events/invoke/r1igRA5iZ
+for remove event DELETE http://127.0.0.1:3000/events/{id}
+and to invoke event POST http://127.0.0.1:3000/events/invoke/{id}
 
 ### Timings API
 
@@ -325,7 +325,47 @@ there is 3 types of timings
 * One-time, by date and time
 * Timer, by minutes duration
 
-
+to get all timings GET  http://127.0.0.1:3000/timings
+```javascript
+{
+    "1": {
+        "timingType": "daily",
+        "days": [
+            "sunday",
+            "thursday",
+            "saturday"
+        ],
+        "time": "17:32",
+        "trigger": "testing"
+    },
+    "2": {
+        "timingType": "once",
+        "date": "01-12-17",
+        "time": "13:58",
+        "trigger": "testing"
+    },
+    "3": {
+        "timingType": "timer",
+        "durationInMinuts": 30,
+        "trigger": "testing"
+    }
+}
+```
+for create new timing POST http://127.0.0.1:3000/timings 
+with data in body like:
+```javascript
+{
+    "timing": {
+       "timingType": "once",
+       "date": "02-12-17",
+       "time": "23:37",
+       "trigger": "testing"
+    }
+}
+```
+or to edit timings by its id PUT http://127.0.0.1:3000/timings/{id}
+with body like posting new timing
+for remove timiming DELETE http://127.0.0.1:3000/timings/{id}
 
 
 ### Updates feed API
@@ -333,30 +373,37 @@ there is 3 types of timings
 In addition to get update (by [SSE](https://en.wikipedia.org/wiki/Server-sent_events "Wikipedia")) of changes GET http://127.0.0.1:3000/devices-feed
 with struct:
 ```javascript
-            {
-                "deviceID": "id2",
-                "data": {
-                    "mac": "34ea34f1a482",
-                    "ip": "192.168.1.12",
-                    "name": "X",
-                    "brand": "Broadlink",
-                    "types": [
-                        "switch"
-                        ],
-                    "state": "on"
-                }
-            }
+{
+    "deviceID": "id2",
+    "data": {
+        "mac": "34ea34f1a482",
+        "ip": "192.168.1.12",
+        "name": "X",
+        "brand": "Broadlink",
+        "types": [
+            "switch"
+            ],
+        "state": "on"
+    }
+}
 ```
 http://127.0.0.1:3000/timing-triggered-feed
 with struct
 ```javascript
-         
+{
+    "timingId": "vftthgde",
+    "timing:": {
+        "timingType": "once",
+        "date": "02-12-17",
+        "time": "23:37",
+        "trigger": "testing"
+    },
+    "err" : ""
+}
 ```
 http://127.0.0.1:3000/timing-feed
-with struct
-```javascript
-       
-```
+with struct like getting timing
+
 ### Static files serve API
 
 to get static files (in public folder) GET http://127.0.0.1:3000/static/{path}
