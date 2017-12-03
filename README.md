@@ -69,7 +69,8 @@ http://127.0.0.1:3000/
 very basic application (compatible to mobile)
 
 ## Using (HTTP API)
-After the server runing we can access to all devices in devices.json file simply, 
+
+### Athontication API
 
 to login POST http://127.0.0.1:3000/login
 ```javascript
@@ -79,6 +80,8 @@ in body (users and passwords are in `DB\users.json` file)
 and your IP address will be allow to access until logout
 
 to logout POST http://127.0.0.1:3000/logout
+
+### Devices API
 
 to get all devices GET http://127.0.0.1:3000/devices 
 ```javascript
@@ -233,29 +236,9 @@ and
 
 POST http://127.0.0.1:3000/refresh to scan all devices again (in LAN),
 
-In addition to get update (by [SSE](https://en.wikipedia.org/wiki/Server-sent_events "Wikipedia")) of changes GET http://127.0.0.1:3000/devices-feed
-with struct:
-```javascript
-            {
-                "deviceID": "id2",
-                "data": {
-                    "mac": "34ea34f1a482",
-                    "ip": "192.168.1.12",
-                    "name": "X",
-                    "brand": "Broadlink",
-                    "types": [
-                        "switch"
-                        ],
-                    "state": "on"
-                }
-            }
-```
 
-to get static files (in public folder) GET http://127.0.0.1:3000/static/{path}
-
-also the application support a events, 
-that every event hold a array of action to do, when every action contains mac of device, state and if it 
-more that just switch it can declare in type field and set the wanted value in set fiele
+### Events\Actions
+action is collection of actions to set devices status
 
 to get all events GET http://127.0.0.1:3000/events 
 ```javascript
@@ -333,6 +316,55 @@ or to edit event by its id PUT http://127.0.0.1:3000/events/r1igRA5iZ
 with body like posting new event
 for remove event DELETE http://127.0.0.1:3000/events/r1igRA5iZ
 and to invoke event POST http://127.0.0.1:3000/events/invoke/r1igRA5iZ
+
+### Timings
+
+Timing can be set based on a specified event,
+there is 3 types of timings
+* daily, by days and time
+* One-time, by date and time
+* Timer, by minutes duration
+
+
+
+
+### Updates feed
+
+In addition to get update (by [SSE](https://en.wikipedia.org/wiki/Server-sent_events "Wikipedia")) of changes GET http://127.0.0.1:3000/devices-feed
+with struct:
+```javascript
+            {
+                "deviceID": "id2",
+                "data": {
+                    "mac": "34ea34f1a482",
+                    "ip": "192.168.1.12",
+                    "name": "X",
+                    "brand": "Broadlink",
+                    "types": [
+                        "switch"
+                        ],
+                    "state": "on"
+                }
+            }
+```
+http://127.0.0.1:3000/timing-triggered-feed
+with struct
+```javascript
+         
+```
+http://127.0.0.1:3000/timing-feed
+with struct
+```javascript
+       
+```
+### Static files serve
+
+to get static files (in public folder) GET http://127.0.0.1:3000/static/{path}
+
+also the application support a events, 
+that every event hold a array of action to do, when every action contains mac of device, state and if it 
+more that just switch it can declare in type field and set the wanted value in set fiele
+
 
 ## Extand server modules
 It is not really complicated but a bit required to understand some of the existing code
