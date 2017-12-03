@@ -237,7 +237,7 @@ and
 POST http://127.0.0.1:3000/refresh to scan all devices again (in LAN),
 
 
-### Events\Actions
+### Events\Actions API
 action is collection of actions to set devices status
 
 to get all events GET http://127.0.0.1:3000/events 
@@ -317,7 +317,7 @@ with body like posting new event
 for remove event DELETE http://127.0.0.1:3000/events/r1igRA5iZ
 and to invoke event POST http://127.0.0.1:3000/events/invoke/r1igRA5iZ
 
-### Timings
+### Timings API
 
 Timing can be set based on a specified event,
 there is 3 types of timings
@@ -328,7 +328,7 @@ there is 3 types of timings
 
 
 
-### Updates feed
+### Updates feed API
 
 In addition to get update (by [SSE](https://en.wikipedia.org/wiki/Server-sent_events "Wikipedia")) of changes GET http://127.0.0.1:3000/devices-feed
 with struct:
@@ -357,7 +357,7 @@ with struct
 ```javascript
        
 ```
-### Static files serve
+### Static files serve API
 
 to get static files (in public folder) GET http://127.0.0.1:3000/static/{path}
 
