@@ -1,6 +1,6 @@
 <div ng-repeat="event in events" class="panel panel-info">
         <!-- panel to show current event name -->
-        <div class="panel-heading">{{event.name}}</div>
+        <div class="panel-heading"><a class="btn btn-info btn-sm" ng-click="RunEvent(event)">Invoke Event: <b>{{event.name}}</b> </a> </div>
         <!-- panel to show current event menu -->
         <div class="panel-body">
             <div style="margin:20px;">
@@ -9,7 +9,7 @@
                     <div ng-repeat="action in event.actions" class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                Set: {{action.deviceName}}
+                                Action on device: {{action.deviceName}}
                             </h4>
                         </div>
                         <div id="{{timing.id}}" class="panel">

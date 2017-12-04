@@ -32,8 +32,12 @@ IoTApp.service('updatesService', ['$http', function (http) {
         var data = JSON.parse(event.data);
         if (data == 'init')
             return;
-        alert('timing activeted , row message data: '  + event.data);
-
+        // alert('timing activeted , row message data: '  + event.data);
+        console.log('timing activeted , row message data: ' + event.data)
+        swal({
+            title: "Timing Activated!",
+            timer: 60000
+        });
     };
 }]);
 
@@ -282,6 +286,7 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
                     $scope.events = [];
                     Object.keys(temp).forEach((key) => {
                         var item = temp[key];
+                        item.id = key;
                         item.actions.forEach((i) => {
                             if (i.deviceID in devices)
                                 i.deviceName = devices[i.deviceID].name;
@@ -312,6 +317,20 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
             },
             function (response) {
                 callback({}, response);
+            });
+    };
+
+    $scope.RunEvent = function (event) {
+
+        $http({
+            url: 'events/invoke/' + event.id,
+            method: 'POST'
+        })
+            .then(function (response) {
+                console.log("event invoked successfully");
+            },
+            function (response) {
+                console.log("error while event invoked");
             });
     };
 

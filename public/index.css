@@ -128,7 +128,6 @@ input[type='checkbox']:checked ~ .switch {
     position: absolute;
     top: 40px;
     left: 24px;
-    width: 7px;
   }
 
   
