@@ -107,6 +107,11 @@ input[type='checkbox']:checked ~ .switch {
     top: 65px;
     left: 235px;
   }
+  .submit_value_color {
+    position: absolute;
+    top: 15px;
+    left: 235px;
+  }
   .color-blue {
     position: absolute;
     top: 40px;
@@ -123,6 +128,7 @@ input[type='checkbox']:checked ~ .switch {
     position: absolute;
     top: 40px;
     left: 24px;
+    width: 7px;
   }
 
   
