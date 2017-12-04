@@ -130,8 +130,15 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     }
 
     $scope.ErrorResponse = (response) => {
-        $scope.GetDevices(true);
-        $scope.error = response.data;
+        
+        if(response.status != 403)
+            $scope.GetDevices(true);
+        swal({
+            title: "Error with requst action",
+            text: response.data,
+            type: "warning",
+            timer: 60000
+        });
         console.error(response.data);
     }
 
@@ -185,11 +192,20 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
         })
             .then(function (response) {
                 console.log("login successfully");
-                $scope.error = "login successfully";
+                swal({
+                    title: "Login successfully",
+                    type: "success",
+                    timer: 60000
+                });
             },
             function (response) { // optional
                 console.error("error in login");
-                $scope.error = "error in login";
+                swal({
+                    title: "Error in login",
+                    text: "usename or password incorrect",
+                    type: "warning",
+                    timer: 60000
+                });
             });
     };
 
@@ -323,14 +339,25 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
     $scope.RunEvent = function (event) {
 
         $http({
-            url: 'events/invoke/' + event.id,
+            url: 'events/invoke/' + event.id ,
             method: 'POST'
         })
             .then(function (response) {
                 console.log("event invoked successfully");
+                swal({
+                    title: "Event invoked successfully",
+                    type: "success",
+                    timer: 60000
+                });
             },
             function (response) {
                 console.log("error while event invoked");
+                swal({
+                    title: "Error while event invoked",
+                    text: response.data,
+                    type: "warning",
+                    timer: 60000
+                });
             });
     };
 
