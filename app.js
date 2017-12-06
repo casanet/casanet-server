@@ -273,7 +273,7 @@ app.put('/timings/:id', (req, res) => {
   logger.debug('requset PUT  /timings/' + req.params.id + ' arrived');
   var params = req.body;
 
-  var timing = params.timing;
+  var timing = params;
 
   // chack params
   try {

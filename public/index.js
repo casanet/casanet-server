@@ -130,8 +130,8 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     }
 
     $scope.ErrorResponse = (response) => {
-        
-        if(response.status != 403)
+
+        if (response.status != 403)
             $scope.GetDevices(true);
         swal({
             title: "Error with requst action",
@@ -285,6 +285,28 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
     };
 
     $scope.GetTimings();
+
+    $scope.TuggelTimingActive = function (timing) {
+
+        var newTiming = JSON.parse(JSON.stringify(timing));
+        delete newTiming['id'];
+        delete newTiming['triggerName'];
+        newTiming['active'] = timing.active == 'on' ? 'off' : 'on';
+        $http({
+            url: 'timings/' + timing.id,
+            method: 'PUT',
+            data: newTiming
+        })
+            .then(function (response) {
+                console.log("chnage timings active successfully");
+                timing.active = newTiming['active'];
+
+            },
+            function (response) {
+
+            });
+    };
+
 });
 
 IoTApp.controller('actionsCtrl', function ($scope, $http) {
@@ -339,7 +361,7 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
     $scope.RunEvent = function (event) {
 
         $http({
-            url: 'events/invoke/' + event.id ,
+            url: 'events/invoke/' + event.id,
             method: 'POST'
         })
             .then(function (response) {

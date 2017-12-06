@@ -150,6 +150,9 @@ setInterval(() => {
 
     Object.keys(timings).forEach((id) => {
 
+        if(timings[id].active != 'on')
+            return;
+
         switch (timings[id].timingType) {
             case "daily":
                 dailyHandler(now, timings[id], id);

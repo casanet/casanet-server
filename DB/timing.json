@@ -3,21 +3,26 @@
 		"timingType": "daily",
 		"days": [
 			"sunday",
-			"thursday",
-			"saturday"
+			"monday",
+			"tuesday",
+			"wednesday",
+			"thursday"
 		],
-		"time": "17:32",
-		"trigger": "testing"
+		"time": "19:50",
+		"trigger": "testing",
+		"active": "off"
 	},
 	"2": {
 		"timingType": "once",
 		"date": "01-12-17",
 		"time": "13:58",
-		"trigger": "testing"
-    },
-    "3" : {
-        "timingType" : "timer",
-        "durationInMinuts" : 300,
-        "trigger" : "testing"
-    }
+		"trigger": "testing",
+		"active": "on"
+	},
+	"3": {
+		"timingType": "timer",
+		"durationInMinuts": 300,
+		"trigger": "testing",
+		"active": "off"
+	}
 }
