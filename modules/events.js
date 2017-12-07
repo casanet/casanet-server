@@ -17,9 +17,9 @@ try {
 var SaveToDB = () => {
     fs.writeFile('./DB/events.json', JSON.stringify(events, null, '\t'), 'utf-8', function (err) {
         if (err)
-            logger.error('Error to write events file');
+            logger.write.error('Error to write events file');
         else
-            logger.debug('Done to update events file');
+            logger.write.debug('Done to update events file');
     })
 }
 
@@ -117,11 +117,11 @@ var RunActionsRecursion = (actions, index, next) => {
 // Start invoke event by its id
 var InvokeEvent = (id, next) => {
     if (!(id in events)) {
-        logger.warn('event id ' + id + ' not exist');
+        logger.write.warn('event id ' + id + ' not exist');
         next('event id not exist');
         return;
     }
-    logger.info('Start invoking event id ' + id);
+    logger.write.info('Start invoking event id ' + id);
     RunActionsRecursion(events[id].actions, 0, next);
 }
 

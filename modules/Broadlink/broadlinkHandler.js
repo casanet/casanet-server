@@ -30,9 +30,9 @@ var UpdateCache = (deviceInentity, operationIrCode, state, value) => {
   // Save to operationIrCode file
   fs.writeFile(chachFilePath, JSON.stringify(cacheLastOperation, null, '\t'), 'utf-8', function (err) {
     if (err)
-      logger.error('Error to write cacheLastOperation file');
+      logger.write.error('Error to write cacheLastOperation file');
     else
-      logger.debug('Done to update cacheLastOperation file');
+      logger.write.debug('Done to update cacheLastOperation file');
   })
 }
 
@@ -49,7 +49,7 @@ var ChangeState = function (device, state, next) {
     var ircode = (state == 'on' ? cacheLastOperation[device.deviceIdentity].ircode : irCommands[device.deviceIdentity].off);
 
     if (!ircode) {
-      logger.warn('ir code not found');
+      logger.write.warn('ir code not found');
       next("ir code not found");
       return;
     }

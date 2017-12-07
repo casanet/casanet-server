@@ -1,0 +1,15 @@
+
+<input type="text" class="form-control" placeholder="Search" ng-model="search">
+
+<table class="table table-striped">
+    <tr>
+        <th> Date </th>
+        <th> Level </th>
+        <th> Message </th>
+    </tr>
+    <tr ng-repeat="log in logs | filter : search" ng-class="log.level == 'ERROR' ? 'danger' : ''">
+        <td>{{DateToString(log.time)}}</td>
+        <td>{{log.level}}</td>
+        <td>{{log.message}}</td>
+    </tr>
+</table>

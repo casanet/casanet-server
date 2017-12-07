@@ -385,6 +385,26 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
 
 });
 
+IoTApp.controller('logsCtrl', function ($scope, $http) {
+    $scope.GetLogs = function () {
+        $http({
+            url: 'logs',
+            method: 'GET'
+        })
+            .then(function (response) {
+                console.log("get logs successfully");
+                $scope.logs = response.data;
+            },
+            function (response) {
+            });
+    };
+
+    $scope.GetLogs();
+    $scope.DateToString = (date) => {
+        return date.toString().split('T')[0] + ' ' + date.toString().split('T')[1].split('.')[0];
+    }
+});
+
 // // angular SPA routing definition
 IoTApp.config(function ($routeProvider) {
     $routeProvider
@@ -400,6 +420,9 @@ IoTApp.config(function ($routeProvider) {
         }).when('/login', {
             templateUrl: '/static/view/login.html',
             controller: 'loginCtrl'
+        }).when('/logs', {
+            templateUrl: '/static/view/logs.html',
+            controller: 'logsCtrl'
         }).when('/about', {
             templateUrl: '/static/view/about.html',
             controller: 'aboutCtrl'

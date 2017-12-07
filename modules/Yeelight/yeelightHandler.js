@@ -47,7 +47,7 @@ lookup.on("detected", (light) => {
             item(light.mac.replace(/:/g, ''), light.power ? 'on' : 'off');
         });
 
-        logger.debug('yeelight ' + light.mac + ' updated event sent');
+        logger.write.debug('yeelight ' + light.mac + ' updated event sent');
     });
 });
 

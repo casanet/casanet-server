@@ -23,16 +23,16 @@ var timings;
 try {
     timings = require('../DB/timing.json');
 } catch (error) {
-    logger.warn("Error while reading timing.json file")
+    logger.write.warn("Error while reading timing.json file")
     timings = {}
 }
 
 var SaveToDB = () => {
     fs.writeFile('./DB/timing.json', JSON.stringify(timings, null, '\t'), 'utf-8', function (err) {
         if (err)
-            logger.error('Error to write timing file');
+            logger.write.error('Error to write timing file');
         else
-            logger.debug('Done to update timing file');
+            logger.write.debug('Done to update timing file');
     })
 }
 
@@ -49,13 +49,13 @@ var dailyHandler = (now, timing, id) => {
         timing.days.indexOf(now.getDayName()) == -1)
         return;
 
-    logger.info("timing daily id " + id + " activate");
+    logger.write.info("timing daily id " + id + " activate");
 
     eventsHandle.InvokeEvent(timing.trigger, (err) => {
         if (err)
-            logger.error("invoke event " + timing.trigger + " by trigger of daily timing fail, error ditail: " + err);
+            logger.write.error("invoke event " + timing.trigger + " by trigger of daily timing fail, error ditail: " + err);
         else
-            logger.info("invoke event " + timing.trigger + " by trigger of daily timing done");
+            logger.write.info("invoke event " + timing.trigger + " by trigger of daily timing done");
 
         TimingEventTriggerdChanged(id, timing, err);
     })
@@ -78,13 +78,13 @@ var onceHandler = (now, timing, id) => {
     SaveToDB();
     TimingStructChanged();
 
-    logger.info("timing once id " + id + " activate");
+    logger.write.info("timing once id " + id + " activate");
 
     eventsHandle.InvokeEvent(timing.trigger, (err) => {
         if (err)
-            logger.error("invoke event " + timing.trigger + " by trigger of once timing fail, error ditail: " + err);
+            logger.write.error("invoke event " + timing.trigger + " by trigger of once timing fail, error ditail: " + err);
         else
-            logger.info("invoke event " + timing.trigger + " by trigger of once timing done");
+            logger.write.info("invoke event " + timing.trigger + " by trigger of once timing done");
 
         TimingEventTriggerdChanged(id, timing, err);
     })
@@ -97,9 +97,9 @@ var timerHandler = (now, timing, id) => {
     var active = (trigger) => {
         eventsHandle.InvokeEvent(timing.trigger, (err) => {
             if (err)
-                logger.error("invoke event " + timing.trigger + " by trigger of timer timing fail, error ditail: " + err);
+                logger.write.error("invoke event " + timing.trigger + " by trigger of timer timing fail, error ditail: " + err);
             else
-                logger.info("invoke event " + timing.trigger + " by trigger of timer timing done");
+                logger.write.info("invoke event " + timing.trigger + " by trigger of timer timing done");
 
             TimingEventTriggerdChanged(id, timing, err);
             // delete the timing and sent event about it
@@ -124,7 +124,7 @@ var timerHandler = (now, timing, id) => {
         timerActivate[iid].last_minut = new Date().getMinutes();
         timerActivate[iid].duration--;
         if (timerActivate[iid].duration <= 0) {
-            logger.info("timing timer id " + iid + " activate");
+            logger.write.info("timing timer id " + iid + " activate");
             active(timerActivate[iid].trigger);
             clearInterval(timerActivate[iid].interval);
             delete timings[iid];
@@ -137,7 +137,7 @@ var timerHandler = (now, timing, id) => {
     // run with interval of 1 minut and subtract until you get 0, then active and remove
 };
 
-logger.info("Start interval of timings");
+logger.write.info("Start interval of timings");
 // base interval of timing
 var lastMinuue;
 setInterval(() => {
@@ -164,7 +164,7 @@ setInterval(() => {
                 timerHandler(now, timings[id], id);
                 break;
             default:
-                logger.warn("type -" + timings[id].timingType + "- in timing id " + id + " is invalid")
+                logger.write.warn("type -" + timings[id].timingType + "- in timing id " + id + " is invalid")
                 break;
         }
     });

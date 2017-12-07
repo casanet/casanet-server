@@ -34,7 +34,7 @@ var InitDevicesData = function (deviceIndex, next) {
     var brandModuleHandler = brandModulesMap.GetBrandModule(device.brand);
 
     if (brandModuleHandler == null) {
-        logger.error('Cant find module that map to brand: ' + device.brand)
+        logger.write.error('Cant find module that map to brand: ' + device.brand)
         next('Cant find module that map to brand: ' + device.brand);
         return;
     }
@@ -52,9 +52,9 @@ var InitDevicesData = function (deviceIndex, next) {
             case ('switch'):
                 brandModuleHandler.GetState(device, (state, err) => {
                     device.state = state;
-                    logger.info('Device ' + device.name + ' status ' + state);
+                    logger.write.info('Device ' + device.name + ' status ' + state);
                     if (err) {
-                        logger.error('Device ' + device.name + ' while get -switch- has ' + err);
+                        logger.write.error('Device ' + device.name + ' while get -switch- has ' + err);
                         device.state = 'error';
                     }
                     getDeviceProperty(propertyIndex + 1);
@@ -63,9 +63,9 @@ var InitDevicesData = function (deviceIndex, next) {
             case ('light'):
                 brandModuleHandler.GetBrightness(device, (value, err) => {
                     device.bright = value;
-                    logger.info('Device ' + device.name + ' bright ' + value);
+                    logger.write.info('Device ' + device.name + ' bright ' + value);
                     if (err) {
-                        logger.error('Device ' + device.name + ' while get -light- has ' + err);
+                        logger.write.error('Device ' + device.name + ' while get -light- has ' + err);
                         device.state = 'error';
                     }
                     getDeviceProperty(propertyIndex + 1);
@@ -74,9 +74,9 @@ var InitDevicesData = function (deviceIndex, next) {
             case ('white_temp'):
                 brandModuleHandler.GetColorTemperature(device, (value, err) => {
                     device.white_temp = value;
-                    logger.info('Device ' + device.name + ' white_temp ' + value);
+                    logger.write.info('Device ' + device.name + ' white_temp ' + value);
                     if (err) {
-                        logger.error('Device ' + device.name + ' while get -white_temp- has ' + err);
+                        logger.write.error('Device ' + device.name + ' while get -white_temp- has ' + err);
                         device.state = 'error';
                     }
                     getDeviceProperty(propertyIndex + 1);
@@ -85,9 +85,9 @@ var InitDevicesData = function (deviceIndex, next) {
             case ('light_color'):
                 brandModuleHandler.GetRGB(device, (value, err) => {
                     device.light_color = value;
-                    logger.info('Device ' + device.name + ' light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
+                    logger.write.info('Device ' + device.name + ' light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
                     if (err) {
-                        logger.error('Device ' + device.name + ' while get -light_color- has ' + err);
+                        logger.write.error('Device ' + device.name + ' while get -light_color- has ' + err);
                         device.state = 'error';
                     }
                     getDeviceProperty(propertyIndex + 1);
@@ -96,9 +96,9 @@ var InitDevicesData = function (deviceIndex, next) {
             case ('ac'):
                 brandModuleHandler.GetACData(device, (value, err) => {
                     device.ac = value;
-                    logger.info('Device ' + device.name + " value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
+                    logger.write.info('Device ' + device.name + " value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
                     if (err) {
-                        logger.error('Device ' + device.name + ' while get -a- has ' + err);
+                        logger.write.error('Device ' + device.name + ' while get -a- has ' + err);
                         device.state = 'error';
                     }
                     getDeviceProperty(propertyIndex + 1);
@@ -106,7 +106,7 @@ var InitDevicesData = function (deviceIndex, next) {
                 return;
             // Here extenad types getting
             default:
-                logger.error('Cant handle unknown type: ' + device.types[propertyIndex]);
+                logger.write.error('Cant handle unknown type: ' + device.types[propertyIndex]);
                 next('Cant handle unknown type: ' + device.types[propertyIndex])
                 return;
         }
@@ -121,18 +121,18 @@ var SetDeviceProperty = (id, type, value, next) => {
     var device = devices[id];
 
     if (!device) {
-        logger.warn('Cant find device with id: ' + id);
+        logger.write.warn('Cant find device with id: ' + id);
         next('Cant find device with id: ' + id);
         return;
     } else if (device.types.indexOf(type) == -1) {
-        logger.warn('Device id: ' + id + ' not supported : ' + type);
+        logger.write.warn('Device id: ' + id + ' not supported : ' + type);
         next('Device id: ' + id + ' not supported : ' + type);
         return;
     }
     var brandModuleHandler = brandModulesMap.GetBrandModule(device.brand);
 
     if (brandModuleHandler == null) {
-        logger.error('Cant find module that map to brand: ' + device.brand);
+        logger.write.error('Cant find module that map to brand: ' + device.brand);
         next('Cant find module that map to brand: ' + device.brand);
         return;
     }
@@ -142,10 +142,10 @@ var SetDeviceProperty = (id, type, value, next) => {
         case ('switch'):
             brandModuleHandler.ChangeState(device, value, (err) => {
                 if (err) {
-                    logger.warn(type + ' request not executed, error : ' + err);
+                    logger.write.warn(type + ' request not executed, error : ' + err);
                     next(err);
                 } else {
-                    logger.info(device.name + ' set ' + type + ' to ' + value);
+                    logger.write.info(device.name + ' set ' + type + ' to ' + value);
                     device.state = value;
                     next();
                     PushChanges(id);
@@ -155,10 +155,10 @@ var SetDeviceProperty = (id, type, value, next) => {
         case ('light'):
             brandModuleHandler.SetBrightness(device, value, (err) => {
                 if (err) {
-                    logger.warn(type + ' request not executed, error : ' + err);
+                    logger.write.warn(type + ' request not executed, error : ' + err);
                     next(err);
                 } else {
-                    logger.info(device.name + ' set ' + type + ' to ' + value);
+                    logger.write.info(device.name + ' set ' + type + ' to ' + value);
                     device.bright = value;
                     next();
                     PushChanges(id);
@@ -168,10 +168,10 @@ var SetDeviceProperty = (id, type, value, next) => {
         case ('white_temp'):
             brandModuleHandler.SetColorTemperature(device, value, (err) => {
                 if (err) {
-                    logger.warn(type + ' request not executed, error : ' + err);
+                    logger.write.warn(type + ' request not executed, error : ' + err);
                     next(err);
                 } else {
-                    logger.info(device.name + ' set ' + type + ' to ' + value);
+                    logger.write.info(device.name + ' set ' + type + ' to ' + value);
                     device.white_temp = value;
                     next();
                     PushChanges(id);
@@ -181,10 +181,10 @@ var SetDeviceProperty = (id, type, value, next) => {
         case ('light_color'):
             brandModuleHandler.SetRGB(device, value, (err) => {
                 if (err) {
-                    logger.warn(type + ' request not executed, error : ' + err);
+                    logger.write.warn(type + ' request not executed, error : ' + err);
                     next(err);
                 } else {
-                    logger.info('Device ' + device.name + 'set light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
+                    logger.write.info('Device ' + device.name + 'set light_color R:' + value.red + ' G:' + value.green + ' B:' + value.blue);
                     device.light_color = value;
                     next();
                     PushChanges(id);
@@ -194,10 +194,10 @@ var SetDeviceProperty = (id, type, value, next) => {
         case ('ac'):
             brandModuleHandler.SetACData(device, value, (err) => {
                 if (err) {
-                    logger.warn(type + ' request not executed, error : ' + err);
+                    logger.write.warn(type + ' request not executed, error : ' + err);
                     next(err);
                 } else {
-                    logger.info(device.name + "set value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
+                    logger.write.info(device.name + "set value: mode -" + value.mode + "- fan_strength: -" + value.fan_strength + "- temp:" + value.temp);
                     device.ac = value;
                     next();
                     PushChanges(id);
@@ -206,7 +206,7 @@ var SetDeviceProperty = (id, type, value, next) => {
             break;
         // Here add your new type 
         default:
-            logger.warn('Cant handle unknown type: ' + type);
+            logger.write.warn('Cant handle unknown type: ' + type);
             next('Cant handle unknown type: ' + type)
             return;
     }
@@ -225,16 +225,16 @@ var GetDevices = (next) => {
 // Scan lan devices data one by one
 // next = (err)
 var RefreshDevicesData = (next) => {
-    logger.info('Start rescan all LAN devices')
+    logger.write.info('Start rescan all LAN devices')
     InitDevicesData(0, next);
 };
 
 // In startup of server scan all lan devices
-logger.info('Getting devices data...');
+logger.write.info('Getting devices data...');
 RefreshDevicesData((err) => {
-    logger.info('Done getting device data');
+    logger.write.info('Done getting device data');
     if (err)
-        logger.error(err);
+        logger.write.error(err);
 });
 
 // Push changes events
