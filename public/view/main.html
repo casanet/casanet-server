@@ -9,7 +9,7 @@
                 <h2 class=device-name>{{device.name}}</h2>
 
                 <label for="switch{{device.deviceID}}">
-                    <input ng-disabled="{{device.state == 'error'}}" type="checkbox" ng-checked="device.state == 'on'" ng-click="SetState(device)"
+                    <input type="checkbox" ng-checked="device.state == 'on'" ng-click="SetState(device)"
                         id="switch{{device.deviceID}}" />
                     <span class="switch">
                     </span>
