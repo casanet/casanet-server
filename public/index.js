@@ -401,7 +401,7 @@ IoTApp.controller('logsCtrl', function ($scope, $http) {
 
     $scope.GetLogs();
     $scope.DateToString = (date) => {
-        return date.toString().split('T')[0] + ' ' + date.toString().split('T')[1].split('.')[0];
+        return new Date(date).toLocaleString();
     }
 });
 
