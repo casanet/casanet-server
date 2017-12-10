@@ -13,6 +13,7 @@ Node.js server with basic REST api for home IoT devices
 ### comming soon
  
 * Broadlink SC1 Smart Switch
+* Itead Sonoff Wireless Smart Switch
 
 ## Purpose
 In this project, I came to solve a number of troublesome. first of all, anyone who uses a number of smart devices (smart ir, smart socket, or anything like that) of different companies knows the problem of dealing with a number of different applications,
