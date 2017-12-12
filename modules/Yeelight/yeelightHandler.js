@@ -8,46 +8,47 @@ const Lookup = require("node-yeelight-wifi").Lookup;
 let lookup = new Lookup();
 
 // struc of all light obj map by its mac
-var lights = {};
+//var lights = {};
 var updateChangesCallbacks = [];
 
+var UpdateDeviceByDeviceSelfUpdate = (deviceMac, state) => {
+
+    var deviceMac = deviceMac.replace(/:/g, '');
+
+    logger.write.info('yeelight device mac' + deviceMac + ' send update with state ' + state);
+    updateChangesCallbacks.forEach((item) => {
+        item(deviceMac, state);
+    });
+};
+
+// Use to send update only if status realy changed
+// map by device mac
+var deviceObjCache = {};
 // Registar to detect new light
 lookup.on("detected", (light) => {
-    // Save obj
-    lights[light.mac] = { power: light.power, obj: light };
-    //console.log("new yeelight detected: id=" + light.id + " name=" + light.name);
+
+    // add device to map;
+    deviceObjCache[light.mac] = light.power;
+
+    logger.write.info('yeelight detected event arrive mac:' + light.mac);
 
     light.on("connected", () => {
-        lights[light.mac] = { power: light.power, obj: light };
-
-        updateChangesCallbacks.forEach((item, i) => {
-            item(light.mac.replace(/:/g, ''), light.power ? 'on' : 'off');
-        });
-
-        //console.log("connected");
+        UpdateDeviceByDeviceSelfUpdate(light.mac, light.power ? 'on' : 'off');
+        logger.write.info('yeelight connected event arrive');
     });
 
     light.on("disconnected", () => {
-        updateChangesCallbacks.forEach((item, i) => {
-            item(light.mac.replace(/:/g, ''), 'error');
-        });
-        if (!(light.mac in lights))
-            lights[light.mac].power = 'error';
+        UpdateDeviceByDeviceSelfUpdate(light.mac, 'error');
+        logger.write.info('yeelight disconnected event arrive');
     });
 
     light.on("stateUpdate", (light) => {
-
-        // TODO: Not supprted yet changes in color and temp
-        if (!(light.mac in lights) || lights[light.mac].power == light.power)
+        // if state not realy changed, skip
+        // TODO  update also bright changes
+        if (deviceObjCache[light.mac] == light.power)
             return;
-
-        lights[light.mac].power = light.power;
-
-        updateChangesCallbacks.forEach((item, i) => {
-            item(light.mac.replace(/:/g, ''), light.power ? 'on' : 'off');
-        });
-
-        logger.write.debug('yeelight ' + light.mac + ' updated event sent');
+        UpdateDeviceByDeviceSelfUpdate(light.mac, light.power ? 'on' : 'off');
+        logger.write.info('yeelight stateUpdate event arrive');
     });
 });
 
@@ -150,18 +151,12 @@ var SetBrightness = (device, value, next) => {
 
 var GetColorTemperature = (device, next) => {
 
-    // Using node-yeelight-wifi insted of miio!!!
     // Light temp range
     var startRange = 1800;
     var endRange = 6500;
 
-    var mac = GeneralMethods.ToReadbleMac(device.mac);
-    // If this is ceiling change the temp range values
-    if (mac in lights && lights[mac].obj.model == 'ceiling') {
+    if (device.model == 'Ceiling')
         startRange = 4100;
-        endRange = 6500;
-    }
-
 
     const lightDevice = miio.createDevice({
         address: device.ip,
@@ -191,47 +186,38 @@ var SetColorTemperature = (device, value, next) => {
         return;
     }
 
-    // TODO temp if !!! need to reorder in code
+    var startRange = 1800;
+    var endRange = 6500;
 
+    if (device.model == 'Ceiling')
+        startRange = 4100;
 
-    // Using node-yeelight-wifi insted of miio!!!
-    mac = GeneralMethods.ToReadbleMac(device.mac);
-    // If the light is a ceiling 
-    if (mac in lights && lights[mac].obj.model == 'ceiling') {
-        lights[mac].obj.setCT(GeneralMethods.GetRangeFromPercent(value, 4100, 6500)).then(() => {
-            next();
-        }).catch((error => {
-            next(error);
-        }));
-    }
-    else {
-        const lightDevice = miio.createDevice({
-            address: device.ip,
-            token: device.token,
-            model: 'datamodel'
-        });
+    const lightDevice = miio.createDevice({
+        address: device.ip,
+        token: device.token,
+        model: 'datamodel'
+    });
 
-        lightDevice.init()
-            .then(() => {
-                value = GeneralMethods.GetRangeFromPercent(value, 1800, 6500);
-                const args = Array.isArray(value) ? value : [value];
-                args.push('smooth');
-                args.push(500);
+    lightDevice.init()
+        .then(() => {
+            value = GeneralMethods.GetRangeFromPercent(value, startRange, endRange);
+            const args = Array.isArray(value) ? value : [value];
+            args.push('smooth');
+            args.push(500);
 
-                lightDevice.call('set_ct_abx', args, {
-                    refresh: true
-                })
-                    .then((res) => {
-                        next();
-                    })
-                    .catch((err) => {
-                        next(err);
-                    });
+            lightDevice.call('set_ct_abx', args, {
+                refresh: true
             })
-            .catch((err) => {
-                next(err);
-            });
-    }
+                .then((res) => {
+                    next();
+                })
+                .catch((err) => {
+                    next(err);
+                });
+        })
+        .catch((err) => {
+            next(err);
+        });
 }
 
 var GetRGB = (device, next) => {
