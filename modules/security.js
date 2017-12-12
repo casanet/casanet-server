@@ -79,8 +79,21 @@ var CheckAccess = function (req, res, next) {
   }
 }
 
+var ClearCashe = (callback) => {
+  sessions = {};
+  fs.writeFile('./DB/sessions.json', JSON.stringify(sessions), 'utf-8', function (err) {
+    if (err)
+      logger.write.error('Error to write session file');
+    else
+      logger.write.debug('Done to update session file');
+
+    callback(err);
+  })
+}
+
 module.exports = {
   CheckIn: CheckIn,
   CheckOut: CheckOut,
   CheckAccess: CheckAccess,
+  ClearCashe : ClearCashe
 }; 

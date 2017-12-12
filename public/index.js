@@ -209,18 +209,29 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
             });
     };
 
-    $scope.Logout = function () {
+    $scope.Logout = function (all) {
         $scope.error = "";
         $http({
-            url: 'logout',
+            url: 'logout/' + (all ? 'all' : ''),
             method: "POST"
         })
             .then(function (response) {
                 console.log("logout successfully");
+                swal({
+                    title: "Requst done",
+                    type: "success",
+                    timer: 60000
+                });
             },
             function (response) { // optional
                 console.error("error in logout");
-                $scope.error = "error in logout";
+                 
+                swal({
+                    title: "Error in requst",
+                    text: response.data,
+                    type: "warning",
+                    timer: 60000
+                });
             });
     };
 });

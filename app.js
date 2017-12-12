@@ -64,6 +64,17 @@ app.post('/logout', function (req, res) {
   res.send(`Logout seccessfuly`);
 });
 
+// Logout for all users and connectd ip`s
+app.post('/logout/all', function (req, res) {
+  logger.write.debug('requset POST /logout/all arrived');
+  securityHandler.ClearCashe((err) => {
+    if (err)
+      res.statusCode = 503;
+    res.send(err ? err : `Logout all seccessfuly`);
+  });
+});
+
+
 // RESTful API
 
 // Devices API
@@ -314,7 +325,7 @@ app.delete('/timings/:id', function (req, res) {
 app.get('/logs', function (req, res) {
   logger.write.debug('requset GET /logs arrived');
 
-  logger.read(1000, (logs, err) => {
+  logger.read(1500, (logs, err) => {
     if (err)
       res.statusCode = 503;
     res.send(!err ? logs : err);
