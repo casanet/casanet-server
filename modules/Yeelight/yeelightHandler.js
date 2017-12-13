@@ -33,13 +33,14 @@ lookup.on("detected", (light) => {
     logger.write.info('yeelight detected event arrive mac:' + light.mac);
 
     light.on("connected", () => {
-        UpdateDeviceByDeviceSelfUpdate(light.mac, light.power ? 'on' : 'off');
         logger.write.info('yeelight connected event arrive');
+        deviceObjCache[light.mac] == light.power;
+        UpdateDeviceByDeviceSelfUpdate(light.mac, light.power ? 'on' : 'off');
     });
 
     light.on("disconnected", () => {
-        UpdateDeviceByDeviceSelfUpdate(light.mac, 'error');
         logger.write.info('yeelight disconnected event arrive');
+        UpdateDeviceByDeviceSelfUpdate(light.mac, 'error');
     });
 
     light.on("stateUpdate", (light) => {
@@ -47,8 +48,9 @@ lookup.on("detected", (light) => {
         // TODO  update also bright changes
         if (deviceObjCache[light.mac] == light.power)
             return;
-        UpdateDeviceByDeviceSelfUpdate(light.mac, light.power ? 'on' : 'off');
         logger.write.info('yeelight stateUpdate event arrive');
+        deviceObjCache[light.mac] = light.power;
+        UpdateDeviceByDeviceSelfUpdate(light.mac, light.power ? 'on' : 'off');
     });
 });
 
