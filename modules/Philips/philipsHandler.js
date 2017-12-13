@@ -42,12 +42,8 @@ var GetBrightness = (device, next) => {
 var SetBrightness = (device, value, next) => {
     YeelightHandler.SetBrightness(device, value, (err) => {
         // if success, light turn on auto
-        if (!err) {
+        if (!err)
             device.state = 'on';
-            updateChangesCallbacks.forEach((methodRegistrad) => {
-                methodRegistrad(device);
-            });
-        }
         next(err);
     });
 }
