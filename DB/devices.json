@@ -1,9 +1,9 @@
 {
     "id0": {
         "mac": "34ea348ee66f",
-        "ip": "192.168.1.16",
         "name": "מיזוג  בסלון",
         "brand": "Broadlink",
+        "model" : "RM3",
         "types": [
             "switch",
             "ac"
@@ -12,38 +12,49 @@
     },
     "id01": {
         "mac": "34ea34409ba8",
-        "ip": "192.168.1.13",
         "name": "מיזוג  שינה",
         "brand": "Broadlink",
+        "model" : "RM3",
         "types": [
             "switch",
             "ac"
         ],
         "deviceIdentity": "SleepAC"
     },
+    "id02": {
+        "mac": "34ea3442a91b",
+        "name": "מיזוג  מושי חדש",
+        "brand": "Broadlink",
+        "model" : "RM3",
+        "types": [
+            "switch",
+            "ac"
+        ],
+        "deviceIdentity": "MusheAC"
+    },
     "id1": {
         "mac": "34ea34f5b7d2",
-        "ip": "192.168.1.82",
         "name": "מזגן מושי",
         "brand": "Broadlink",
+        "model" : "SP2",
         "types": [
             "switch"
         ]
     },
     "id3": {
         "mac": "accf2334e632",
-        "ip": "192.168.1.21",
         "name": "בוילר",
         "brand": "Orvibo",
+        "model" : "S20",
         "types": [
             "switch"
         ]
     },
     "id5": {
         "mac": "34ce00bc9b57",
-        "ip": "192.168.1.72",
         "name": "תאורת חדר שינה",
         "brand": "Yeelight",
+        "model" : "Ceiling",
         "types": [
             "switch",
             "light",
@@ -53,9 +64,9 @@
     },
     "id6": {
         "mac": "34ce0092edcf",
-        "ip": "192.168.1.26",
         "name": "תאורת סלון",
         "brand": "Philips",
+        "model" : "Ceiling",
         "types": [
             "switch",
             "light",
@@ -65,9 +76,9 @@
     },
     "id7": {
         "mac": "34ce008cd7bc",
-        "ip": "192.168.1.32",
-        "name": "תאורה צבעונית",
+        "name": "תאורת חדר מושי",
         "brand": "Yeelight",
+        "model" : "E27-Bulb",
         "types": [
             "switch",
             "light",

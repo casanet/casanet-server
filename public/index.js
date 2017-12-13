@@ -440,7 +440,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     }
 
     $scope.ShowDetails = (device) => {
-        swal(device.name, 'ID: ' + device.deviceID  + '\nBRAND: ' + device.brand + '\nMODEL: ' + device.model + '\nMAC: ' + device.mac + '\nIP: ' + device.ip );
+        swal(device.name, 'ID: ' + device.deviceID  + '\nBRAND: ' + device.brand + '\nMODEL: ' + device.model + '\nMAC: ' + device.mac + '\nIP: ' + device.ip +'\nVENDOR: ' + device.vendor);
     }
 
     $scope.FullScreen = () => {

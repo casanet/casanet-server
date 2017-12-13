@@ -2,6 +2,7 @@
 var logger = require('./logs');
 
 var shortid = require('shortid');
+const netList = require('network-list');
 
 var brandModulesMap = require('./brandModulesMap');
 
@@ -17,6 +18,37 @@ var devicesKeysArray = [];
 Object.keys(devices).forEach((id) => {
     devicesKeysArray.push(id);
 })
+
+var InjectIPsToDevices = (callback, err) => {
+    logger.write.debug('Start reading ARP info...');
+    netList.scan({}, (err, arr) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        var lanMacMap = {};
+        arr.forEach((lanDevice) => {
+            if (lanDevice.alive && lanDevice.mac) {
+                lanMacMap[lanDevice.mac.replace(/:/g, '').toLowerCase()] = {
+                    ip: lanDevice.ip,
+                    vendor: lanDevice.vendor
+                }
+            }
+        });
+
+        devicesKeysArray.forEach((id) => {
+            if (!(devices[id].mac in lanMacMap)) {
+                logger.write.error('Cant find ARP info in LAN for device id : ' + id + ' name: ' + devices[id].name + ' mac: ' + devices[id].mac);
+                return;
+            }
+            devices[id].ip = lanMacMap[devices[id].mac].ip;
+            devices[id].vendor = lanMacMap[devices[id].mac].vendor;
+        });
+
+        callback();
+    });
+}
 
 // Recursive function to run on every dd\evie 
 // not in parallel
@@ -114,7 +146,6 @@ var InitDevicesData = function (deviceIndex, next) {
     // Start getting device properties
     getDeviceProperty(0);
 }
-
 
 // next =  (err)
 var SetDeviceProperty = (id, type, value, next) => {
@@ -225,8 +256,15 @@ var GetDevices = (next) => {
 // Scan lan devices data one by one
 // next = (err)
 var RefreshDevicesData = (next) => {
-    logger.write.info('Start rescan all LAN devices')
-    InitDevicesData(0, next);
+    InjectIPsToDevices((err) => {
+        if(err){
+            next(err);
+            return;
+        }
+
+        logger.write.info('Start rescan all LAN devices')
+        InitDevicesData(0, next);
+    })
 };
 
 // In startup of server scan all lan devices
