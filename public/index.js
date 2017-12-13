@@ -1,5 +1,5 @@
 // Init angular app 
-var IoTApp = angular.module("IoTApp", ['ngRoute']);
+var IoTApp = angular.module("IoTApp", ['rzModule', 'ui.bootstrap', 'ngRoute']);
 
 // Services
 IoTApp.service('updatesService', ['$http', function (http) {
@@ -47,14 +47,266 @@ IoTApp.controller('indexCtrl', function ($scope) {
 });
 
 IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
+    $scope.onMouseUpCallbacks = [];
+
+    $(document).ready(function () {
+
+
+        document.body.ontouchend = function () {
+            $scope.onMouseUpCallbacks.forEach((method) => {
+                method();
+            });
+        }
+
+        document.body.onmouseup = function () {
+            $scope.onMouseUpCallbacks.forEach((method) => {
+                method();
+            });
+        }
+    });
+
+    $scope.CreateAcTempSlider = (device) => {
+        device.acTempSlider = {
+            value: device.ac.temp,
+            options: {
+                floor: 16,
+                ceil: 30,
+                showSelectionBar: true,
+                translate: function (value) {
+                    return value + '°';
+                },
+                id: device.deviceID + 'acTemp',
+                onChange: function (id) {
+                    device.ac.temp = device.acTempSlider.value;
+
+                    device.acTempSlider.hasChanged = true;
+                },
+                getPointerColor: function (value) {
+                    return '#121540';
+                },
+                getSelectionBarColor: function (value) {
+                    return '#121571';
+                }
+            }
+        }
+        $scope.onMouseUpCallbacks.push(() => {
+            if (!(device.acTempSlider.hasChanged))
+                return;
+            device.acTempSlider.hasChanged = false;
+            // TODO send to API
+            $scope.SetAC(device);
+        })
+    }
+
+    $scope.CreateBrightnessSlider = (device) => {
+        device.brightnessSlider = {
+            value: device.bright,
+            options: {
+                floor: 1,
+                ceil: 100,
+                showSelectionBar: true,
+                translate: function (value) {
+                    return value + '%';
+                },
+                id: device.deviceID + 'brightness',
+                onChange: function (id) {
+                    device.bright = device.brightnessSlider.value;
+                    device.brightnessSlider.hasChanged = true;
+                },
+                getPointerColor: function (value) {
+                    return '#ffcc00';
+                },
+                getSelectionBarColor: function (value) {
+                    if (value <= 30)
+                        return '#fff0b3';
+                    if (value <= 60)
+                        return '#ffe680';
+                    if (value <= 90)
+                        return '#ffdb4d';
+                    return '#ffd11a';
+                }
+            }
+        }
+        $scope.onMouseUpCallbacks.push(() => {
+            if (!(device.brightnessSlider.hasChanged))
+                return;
+            device.brightnessSlider.hasChanged = false;
+            // send to API
+            $scope.SetLight(device, 'light');
+        })
+    }
+
+    $scope.CreateWhiteTempSlider = (device) => {
+        device.whiteTempSlider = {
+            value: device.white_temp,
+            options: {
+                floor: 1,
+                ceil: 100,
+                showSelectionBar: true,
+                translate: function (value) {
+                    return '-' + value + '%';
+                },
+                id: device.deviceID + 'whitetemp',
+                onChange: function (id) {
+                    device.white_temp = device.whiteTempSlider.value;
+                    device.whiteTempSlider.hasChanged = true;
+                },
+                getPointerColor: function (value) {
+                    return '#ff9900';
+                },
+                getSelectionBarColor: function (value) {
+                    if (value <= 30)
+                        return '#ffebcc';
+                    if (value <= 60)
+                        return '#ffd699';
+                    if (value <= 90)
+                        return '#ffc266';
+                    return '#ffad33';
+                }
+            }
+        }
+        $scope.onMouseUpCallbacks.push(() => {
+            if (!(device.whiteTempSlider.hasChanged))
+                return;
+            device.whiteTempSlider.hasChanged = false;
+            // TODO send to API
+            $scope.SetLight(device, 'white_temp');
+        })
+    }
+
+    $scope.CreateColorSlider = (device) => {
+        device.colorSlider = {};
+
+        device.redSlider = {
+            value: device.light_color.red,
+            options: {
+                floor: 1,
+                ceil: 255,
+                vertical: true,
+                showSelectionBar: true,
+                translate: function (value) {
+                    return '';
+                },
+                id: device.deviceID + 'red',
+                onChange: function (id) {
+                    device.colorSlider.hasChanged = true;
+                    device.light_color.red = device.redSlider.value;
+                },
+                getPointerColor: function (value) {
+                    return 'red';
+                },
+                getSelectionBarColor: function (value) {
+                    return 'red';
+                }
+            }
+        }
+
+        device.greenSlider = {
+            value: device.light_color.green,
+            options: {
+                floor: 1,
+                ceil: 255,
+                vertical: true,
+                showSelectionBar: true,
+                translate: function (value) {
+                    return '';
+                },
+                id: device.deviceID + 'green',
+                onChange: function (id) {
+                    device.colorSlider.hasChanged = true;
+                    device.light_color.green = device.greenSlider.value;
+                },
+                getPointerColor: function (value) {
+                    return 'green';
+                },
+                getSelectionBarColor: function (value) {
+                    return 'green';
+                }
+            }
+        }
+
+        device.blueSlider = {
+            value: device.light_color.blue,
+            options: {
+                floor: 1,
+                ceil: 255,
+                vertical: true,
+                showSelectionBar: true,
+                translate: function (value) {
+                    return '';
+                },
+                id: device.deviceID + 'blue',
+                onChange: function (id) {
+                    device.colorSlider.hasChanged = true;
+                    device.light_color.blue = device.blueSlider.value;
+                },
+                getPointerColor: function (value) {
+                    return 'blue';
+                },
+                getSelectionBarColor: function (value) {
+                    return 'blue';
+                }
+            }
+        }
+        $scope.onMouseUpCallbacks.push(() => {
+            if (!(device.colorSlider.hasChanged))
+                return;
+            device.colorSlider.hasChanged = false;
+            // TODO send to API
+            $scope.SetLight(device, 'light_color');
+        })
+    }
+
+
+    $scope.GetDeviceClass = (device) => {
+        if (device.isSwitch)
+            return '';
+        else if (device.isAC)
+            return 'card-ac';
+
+        var lightClass = '';
+        if (device.isBrightness)
+            lightClass += ' card card-brightness ';
+        if (device.isWhiteTemp)
+            lightClass += ' card-white-color ';
+        if (device.isColor)
+            lightClass += ' card-color ';
+        return lightClass;
+    }
+    /// END
+
+
     $scope.devices = [];
 
     // updates
     updatesService.GivCallbackToListen((data) => {
         $scope.devices.forEach((item, index) => {
             if (item.deviceID == data.deviceID) {
-                $scope.devices[index] = data.data;
-                $scope.devices[index].deviceID = data.deviceID;
+
+                item.state = data.data.state;
+
+                if (item.isBrightness) {
+                    item.bright = data.data.bright;
+                    item.brightnessSlider.value = item.bright;
+                }
+
+                if (item.isWhiteTemp) {
+                    item.white_temp = data.data.white_temp;
+                    item.whiteTempSlider.value = item.white_temp;
+                }
+
+                if (item.isColor) {
+                    item.light_color = data.data.light_color;
+                    item.redSlider.value = item.light_color.red;
+                    item.greenSlider.value = item.light_color.green;
+                    item.blueSlider.value = item.light_color.blue;
+                }
+
+                if (item.isAC) {
+                    item.ac = data.data.ac;
+                    item.acTempSlider.value = item.ac.temp;
+                }
+
                 $scope.$apply();
             }
         })
@@ -73,6 +325,29 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 Object.keys(response.data).forEach((key) => {
                     var device = response.data[key];
                     device.deviceID = key;
+
+                    if (device.types.indexOf('ac') != -1) {
+                        device.typeName = 'ac';
+                        device.isAC = true;
+                        $scope.CreateAcTempSlider(device);
+                    }
+                    else if (device.types.indexOf('light') != -1) {
+                        device.typeName = 'light';
+                        device.isBrightness = true;
+                        $scope.CreateBrightnessSlider(device);
+                        if (device.types.indexOf('white_temp') != -1) {
+                            device.typeName = 'white_temp';
+                            device.isWhiteTemp = true;
+                            $scope.CreateWhiteTempSlider(device);
+                        }
+                        if (device.types.indexOf('light_color') != -1) {
+                            device.typeName = 'light_color';
+                            device.isColor = true;
+                            $scope.CreateColorSlider(device);
+                        }
+                    } else {
+                        device.isSwitch = true;
+                    }
                     $scope.devices.push(device);
                 });
 
@@ -83,7 +358,6 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     };
 
     $scope.GetDevices();
-
 
     $scope.SetState = function (device) {
 
@@ -101,16 +375,6 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
             function (response) { // optional
                 $scope.ErrorResponse(response);
             });
-    };
-
-    $scope.GetFiltedDevices = (filterByType) => {
-        var l = [];
-        $scope.devices.forEach((d) => {
-            if (d.types.indexOf(filterByType) != -1 &&
-                d.state != 'error')
-                l.push(d);
-        })
-        return l;
     };
 
     $scope.SetLight = (device, PropToChange) => {
@@ -175,6 +439,10 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
             });
     }
 
+    $scope.ShowDetails = (device) => {
+        swal(device.name, 'ID: ' + device.deviceID  + '\nBRAND: ' + device.brand + '\nMODEL: ' + device.model + '\nMAC: ' + device.mac + '\nIP: ' + device.ip );
+    }
+
     $scope.FullScreen = () => {
         document.documentElement.webkitRequestFullScreen();
     }
@@ -225,7 +493,7 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
             },
             function (response) { // optional
                 console.error("error in logout");
-                 
+
                 swal({
                     title: "Error in requst",
                     text: response.data,

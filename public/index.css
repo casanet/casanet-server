@@ -9,6 +9,22 @@
   width: 300px;
 }
 
+.card-brightness {
+  height: 200px;
+}
+
+.card-white-color {
+  height: 287px;
+}
+
+.card-color {
+  height: 430px;
+}
+
+.card-ac {
+  height: 250px;
+}
+
 .card-1 {
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
@@ -83,78 +99,73 @@ input[type='checkbox']:checked ~ .switch {
   transition: 0.5s;
 }
 
+.ac-mode-area {
+  position: absolute;
+  top: 75px;
+  left: 40px;
+}
+
+.fan_strength-area {
+  position: absolute;
+  top: 75px;
+  left: 150px;
+}
+
+.ac-temp-area {
+  height: 36px;
+  width: 280px;
+  position: absolute;
+  top: 130px;
+  left: 10px;
+}
+
+.brightness-area {
+  height: 36px;
+  width: 280px;
+  position: absolute;
+  top: 85px;
+  left: 10px;
+}
+
+.white-color-area {
+  height: 36px;
+  width: 280px;
+  position: absolute;
+  top: 170px;
+  left: 10px;
+}
+
+.color-area {
+  height: 120px;
+  position: absolute;
+  bottom: 50px;
+  left: 20px;
+}
+
+.color-red-area {
+  left: 20px;
+}
+
+.color-green-area {
+  left: 60px;
+}
+
+.color-blue-area {
+  left: 90px;
+}
+
 .device-name {
   position: absolute;
   top: 0px;
   left: 24px;
 }
 
-.light-name {
-    position: absolute;
-    top: 0;
-    left: 24px;
-    font-family: socketsName;
-  }
-
-  .brightness {
-    position: absolute;
-    top: 40px;
-    left: 24px;
-  }
-
   .submit_value {
     position: absolute;
-    top: 65px;
-    left: 235px;
+    bottom: 5px;
+    left: 5px;
   }
-  .submit_value_color {
-    position: absolute;
-    top: 15px;
-    left: 235px;
-  }
-  .color-blue {
-    position: absolute;
-    top: 40px;
-    left: 184px;
-  }
-
-  .color-green {
-    position: absolute;
-    top: 40px;
-    left: 104px;
-  }
-
-  .color-red {
-    position: absolute;
-    top: 40px;
-    left: 24px;
-  }
-
-  
-  .color {
-    position: absolute;
-    top: 40px;
-    left: 100px;
-  }
-  
-  .ac-temp {
-    position: absolute;
-    top: 47px;
-    left: 160px;
-  }
-
-  .fan_strength {
-    position: absolute;
-    top: 50px;
-    left: 80px;
-  }
-
-  .ac-mode {
-    position: absolute;
-    top: 50px;
-    left: 20px;
-  }
-
+ 
   input[type=number] {
     background-color: antiquewhite;
     color: black;

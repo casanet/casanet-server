@@ -1,136 +1,91 @@
 <div>
-
     <div class=container>
-        <h3 style="color: red"> {{error}} </h3>
-        <h1> Switchs:</h1>
-        <div class="row">
-            <div ng-repeat="device in devices | orderBy : 'name' " class="card card-5 ">
+            <div ng-repeat="device in devices | orderBy : 'typeName' " class="card card-5 " 
+                 ng-class="GetDeviceClass(device)">
 
                 <h2 class=device-name>{{device.name}}</h2>
 
                 <label for="switch{{device.deviceID}}">
-                    <input type="checkbox" ng-checked="device.state == 'on'" ng-click="SetState(device)"
-                        id="switch{{device.deviceID}}" />
+                    <input type="checkbox" ng-checked="device.state == 'on'" ng-click="SetState(device)" id="switch{{device.deviceID}}" />
                     <span class="switch">
                     </span>
                     <span ng-class="device.state == 'error' ? 'disable' : ''" class="toggle">
                     </span>
                 </label>
+
+                <!-- brightness -->
+                <div ng-if="device.isBrightness">
+                    <div class="brightness-area">
+                        Brightness:
+                        <br>
+                        <article>
+                            <rzslider rz-slider-model="device.brightnessSlider.value" rz-slider-options="device.brightnessSlider.options"></rzslider>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- white temp -->
+                <div ng-if="device.isWhiteTemp">
+                    <div class="white-color-area">
+                        White Temp:
+                        <br>
+                        <article>
+                            <rzslider rz-slider-model="device.whiteTempSlider.value" rz-slider-options="device.whiteTempSlider.options"></rzslider>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- color -->
+                <div ng-if="device.isColor">
+                    <div class="color-area">
+                        <rzslider class="color-red-area" rz-slider-model="device.redSlider.value" rz-slider-options="device.redSlider.options"></rzslider>
+                        <rzslider class="color-green-area" rz-slider-model="device.greenSlider.value" rz-slider-options="device.greenSlider.options"></rzslider>
+                        <rzslider class="color-blue-area" rz-slider-model="device.blueSlider.value" rz-slider-options="device.blueSlider.options"></rzslider>
+                    </div>
+
+                </div>
+                <!-- ac -->
+                <div ng-if="device.isAC">
+                    <div class="ac-mode-area">
+                        Mode
+                        <br>
+
+                        <select ng-model="device.ac.mode">
+                            <option value=auto>auto</option>
+                            <option value=hot>hot </option>
+                            <option value=cold>cold </option>
+                            <option value=dry>dry</option>
+                            <option value=fan>fan</option>
+                        </select>
+                    </div>
+
+                    <div class="fan_strength-area">
+                        fan_strength
+                        <br>
+
+                        <select ng-model="device.ac.fan_strength">
+                            <option value=auto>auto</option>
+                            <option value=high>high </option>
+                            <option value=med>med </option>
+                            <option value=low>low</option>
+                        </select>
+                    </div>
+
+                    <div class="ac-temp-area">
+                        Temp:
+                        <br>
+                        <article>
+                            <rzslider rz-slider-model="device.acTempSlider.value" rz-slider-options="device.acTempSlider.options"></rzslider>
+                        </article>
+                    </div>
+                </div>
+
+
+                <div class="submit_value" >
+                    <a class="btn btn-default btn-sm" ng-click="ShowDetails(device)">Tech details</a>
+                </div>
             </div>
         </div>
-
-        <h1 ng-show="GetFiltedDevices('light').length > 0"> Lights:</h1>
-
-        <div class="row">
-            <div ng-repeat="light in GetFiltedDevices('light') | orderBy : 'name' " class="card card-5 ">
-
-                <h3 class=light-name>{{light.name}}</h3>
-
-
-                <div class="brightness">
-                    Brightness
-                    <br>
-                    <input type="number" min="1" max="100" ng-model="light.bright" />
-                </div>
-
-                <div class="submit_value">
-                    <a class="btn btn-default btn-sm" ng-click="SetLight(light, 'light')">Update</a>
-                </div>
-            </div>
-        </div>
-
-        <h1 ng-show="GetFiltedDevices('white_temp').length > 0"> Lights Temp:</h1>
-
-        <div class="row">
-            <div ng-repeat="light in GetFiltedDevices('white_temp') | orderBy : 'name' " class="card card-5 ">
-
-                <h3 class=light-name>{{light.name}}</h3>
-
-
-                <div class="brightness">
-                    Temperature
-                    <br>
-                    <input type="number" min="1" max="100" ng-model="light.white_temp" />
-                </div>
-
-                <div class="submit_value">
-                    <a class="btn btn-default btn-sm" ng-click="SetLight(light, 'white_temp')">Update</a>
-                </div>
-            </div>
-        </div>
-
-        <h1 ng-show="GetFiltedDevices('light_color').length > 0"> Lights Color:</h1>
-
-        <div class="row">
-            <div ng-repeat="light in GetFiltedDevices('light_color') | orderBy : 'name' " class="card card-5 ">
-
-                <h3 class=light-name>{{light.name}}</h3>
-
-
-                <div class="color-red">
-                    Red
-                    <br>
-                    <input type="number" min="1" max="255" ng-model="light.light_color.red" />
-                </div>
-                <div class="color-green">
-                    Green
-                    <br>
-                    <input type="number" min="1" max="255" ng-model="light.light_color.green" />
-                </div>
-                <div class="color-blue">
-                    Blue
-                    <br>
-                    <input type="number" min="1" max="255"  ng-model="light.light_color.blue" />
-                </div>
-
-                <div class="submit_value_color">
-                    <a class="btn btn-default btn-sm" ng-click="SetLight(light, 'light_color')">Update</a>
-                </div>
-            </div>
-        </div>
-
-        <h1 ng-show="GetFiltedDevices('ac').length > 0"> Air conditioners:</h1>
-        <div class="row">
-            <div ng-repeat="ac in GetFiltedDevices('ac') | orderBy : 'name' " class="card card-5 ">
-                <h3 class=light-name>{{ac.name}}</h3>
-
-                <div class="ac-mode">
-                    Mode
-                    <br>
-
-                    <select ng-model="ac.ac.mode" >
-                        <option value=auto>auto</option>
-                        <option value=hot>hot </option>
-                        <option value=cold>cold </option>
-                        <option value=dry>dry</option>
-                        <option value=fan>fan</option>
-                    </select>
-                </div>
-
-                <div class="fan_strength">
-                    fan_strength
-                    <br>
-
-                    <select ng-model="ac.ac.fan_strength">
-                        <option value=auto>auto</option>
-                        <option value=high>high </option>
-                        <option value=med>med </option>
-                        <option value=low>low</option>
-                    </select>
-                </div>
-                <div class="ac-temp">
-                    Temp
-                    <br>
-                    <input type="number" min="16" max="30" ng-model="ac.ac.temp" />
-                </div>
-
-                <div class="submit_value">
-                    <a class="btn btn-default btn-sm" ng-click="SetAC(ac)">Update</a>
-                </div>
-            </div>
-
-
-
             <br>
             <br>
             <br>
