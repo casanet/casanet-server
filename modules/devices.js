@@ -223,6 +223,11 @@ var SetDeviceProperty = (id, type, value, next) => {
             });
             break;
         case ('ac'):
+            // Protect AC device 
+            if (device.state != 'on') {
+                next('Cant change AC value while status is off');
+                return;
+            }
             brandModuleHandler.SetACData(device, value, (err) => {
                 if (err) {
                     logger.write.warn(type + ' request not executed, error : ' + err);
@@ -257,7 +262,7 @@ var GetDevices = (next) => {
 // next = (err)
 var RefreshDevicesData = (next) => {
     InjectIPsToDevices((err) => {
-        if(err){
+        if (err) {
             next(err);
             return;
         }

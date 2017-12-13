@@ -76,15 +76,20 @@ var GetState = function (device, next) {
   // state 2 is for pythn script to know only get status
   if (device.deviceIdentity) {
     if (!(device.deviceIdentity in cacheLastOperation)) {
+      try {
+        ircode = irCommands[device.deviceIdentity].mode['hot']['low'][16];
+      } catch (error) {
+        ircode = 'empty';
+      }
       UpdateCache(device.deviceIdentity,
-        'empty',
+        ircode,
         'off',
         {
           mode: "hot",
           fan_strength: "low",
           temp: 16
         });
-      next({}, 'please insret ir code in irCommandsMapFile');
+      next('error', 'There is no ir code in irCommandsMapFile for ' + device.deviceIdentity + ' device');
       return;
     }
 
