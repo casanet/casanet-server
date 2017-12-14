@@ -50,7 +50,7 @@
                         Mode
                         <br>
 
-                        <select ng-model="device.ac.mode">
+                        <select ng-model="device.ac.mode" ng-change="SetAC(device)">
                             <option value=auto>auto</option>
                             <option value=hot>hot </option>
                             <option value=cold>cold </option>
@@ -63,7 +63,7 @@
                         fan_strength
                         <br>
 
-                        <select ng-model="device.ac.fan_strength">
+                        <select ng-model="device.ac.fan_strength" ng-change="SetAC(device)">
                             <option value=auto>auto</option>
                             <option value=high>high </option>
                             <option value=med>med </option>
