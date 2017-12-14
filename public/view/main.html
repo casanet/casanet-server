@@ -1,4 +1,56 @@
 <div>
+    <!-- modal -->
+    <div id="fsModal" class="modal animated bounceIn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <!-- dialog -->
+        <div class="modal-dialog">
+            <!-- content -->
+            <div class="modal-content">
+                <!-- thanks to https://codepen.io/akhil_001/pen/RGmqZB -->
+                <htmlc>
+                <bodyc>
+                    <div class='box'>
+                        <div class="wave" id='waveone' style="margin-top:-10%;"></div>
+                        <div class="wave" id='wavetwo' style="margin-top:-10%;"></div>
+                        <div class="wave" id='wavethree' style="margin-top:-10%;"></div>
+                        <div class='title' id="title">Timer</div>
+                        <div class='date-title' id="date-title">Date</div>
+                        <div class='day-title' id="day-title">Day</div>
+                    </div>
+                    <script>
+                        var daysInWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                        // var daysInWeek = ['יום ראשון','יום שני','יום שלישי','יום רביעי','יום חמישי','יום שישי','שבת קודש'];
+                        timer();
+                        function timer() {
+                            var d = new Date();
+                            min = d.getMinutes();
+                            sec = d.getSeconds();
+                            hr = d.getHours();
+                            if (hr < 10)
+                                hr = "0" + hr;
+                            if (d.getMinutes() < 10)
+                                min = "0" + d.getMinutes();
+                            if (d.getSeconds() < 10)
+                                sec = "0" + d.getSeconds();
+                            document.getElementById("title").innerHTML = "" + hr + ":" + min + ":" + sec;
+                            document.getElementById("date-title").innerHTML = d.toLocaleDateString();
+                            document.getElementById("day-title").innerHTML = daysInWeek[d.getDay()];
+
+                            document.getElementById("wavethree").style.marginTop = "-" + (d.getSeconds() + 2) * 2.5 + "%";
+                            document.getElementById("wavetwo").style.marginTop = "-" + (d.getMinutes() + 2) * 2.4 + "%";
+                            document.getElementById("waveone").style.marginTop = "-" + (d.getHours() + 2) * 2.3 + "%";
+
+                            var x2 = document.getElementById("wavethree").style.marginTop;
+                            // console.log(x2);
+                            var x3 = document.getElementById("wavethree").style.top;
+                        }
+                        setInterval(timer, 100);
+                    </script>
+                </bodyc>
+                </htmlc>
+            </div>
+        </div>
+    </div>
+    <!-- modal -->
     <div class=container>
 
         <!-- Loading animation -->
@@ -121,5 +173,6 @@
     <a class="btn btn-default btn-lg " ng-click="GetDevices()">Refresh data</a>
     <a class="btn btn-default btn-lg " ng-click="RefreshData()">Rescan lan devices</a>
     <a class="btn btn-default btn-lg " ng-click="FullScreen()">Set FullScreen</a>
+    <a class="btn btn-default btn-lg " data-toggle="modal" data-target="#fsModal">View Screensaver</a>
 </div>
 </div>

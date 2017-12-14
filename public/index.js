@@ -46,7 +46,10 @@ IoTApp.controller('indexCtrl', function ($scope) {
     // For next use
 });
 
+
 IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
+    $scope.noActionInc = 0
+   
     $scope.onMouseUpCallbacks = [];
 
     $(document).ready(function () {
@@ -63,6 +66,24 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 method();
             });
         }
+
+        document.body.ontouchstart = function () {
+            $scope.noActionInc = 0;
+            $('#fsModal').modal('hide');                
+            
+        }
+
+        document.body.onmousedown = function () {
+            $scope.noActionInc = 0;
+            $('#fsModal').modal('hide');                
+            
+        }
+        setInterval(() => {
+            $scope.noActionInc ++;
+            if($scope.noActionInc > 30){// after 30 seconds of not tuching screnn
+                $('#fsModal').modal('show');                
+            }
+        }, 1000)
     });
 
     $scope.CreateAcTempSlider = (device) => {
@@ -397,7 +418,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
 
     $scope.ErrorResponse = (response) => {
 
-        if (response.status && response.status != 403 )
+        if (response.status && response.status != 403)
             $scope.GetDevices();
         swal({
             title: "Error with requst action",
