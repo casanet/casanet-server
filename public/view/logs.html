@@ -8,7 +8,7 @@
         <th> Message </th>
     </tr>
     <tr ng-repeat="log in logs | filter : search" ng-class="log.level == 'ERROR' ? 'danger' : ''">
-        <td>{{DateToString(log.time)}}</td>
+        <td>{{log.time}}</td>
         <td>{{log.level}}</td>
         <td>{{log.message}}</td>
     </tr>

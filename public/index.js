@@ -673,15 +673,16 @@ IoTApp.controller('logsCtrl', function ($scope, $http) {
             .then(function (response) {
                 console.log("get logs successfully");
                 $scope.logs = response.data;
+
+                $scope.logs.forEach((log) => {
+                    log.time = new Date(log.time).toLocaleString();                    
+                });
             },
             function (response) {
             });
     };
 
     $scope.GetLogs();
-    $scope.DateToString = (date) => {
-        return new Date(date).toLocaleString();
-    }
 });
 
 // // angular SPA routing definition
