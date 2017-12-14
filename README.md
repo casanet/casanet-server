@@ -419,12 +419,10 @@ for create new timing POST http://127.0.0.1:3000/timings
 with data in body like:
 ```javascript
 {
-    "timing": {
-       "timingType": "once",
-       "date": "02-12-17",
-       "time": "23:37",
-       "trigger": "testing"
-    }
+   "timingType": "once",
+   "date": "02-12-17",
+   "time": "23:37",
+   "trigger": "testing"
 }
 ```
 or to edit timings by its id PUT http://127.0.0.1:3000/timings/{id}
