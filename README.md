@@ -23,7 +23,7 @@ it's a very annoying thing and in addition, the servers, some of which are small
 As a solution to this problem this project consolidates all the smart home appliances into one simple and clear and easy to access API.
 
 It is runs on a computer at home (or any other device that can run node.js)
-And to operate it at a basic level all you need to know is to give static IP addresses to devices,
+And to operate it at a basic level all you need to know is to get MAC address of eatch device,
 And for access outside the internal network make sure that the address in your home is public and redirect ports to the computer running the server (DDNS is recommended for easy access to the home address).
 
 The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device, and the like, and for each physical device its own module that realizes the capabilities that the device of its kind enables,(and the advanced options that each company realizes in a different way like timing, thrown), and on all devices there is a switch component with on\off option.
@@ -39,7 +39,7 @@ So if you change such modules, you do not need to install Python or .Net
 ### Server installation :
 1. Install Node.js 
 1. Go to path of the project in CMD and press `npm install --save`
-1. Go to `DB\devices.json` file and change the values to the correct data and save the structure (note that id should be unique)
+1. Go to `DB\devices.json` file and change the values (mac name brand etc.) to the correct data and save the structure (note that id should be unique)
 1. Go to `DB\users.json` file and set user name and password
 1. Run the server by pressing `node app.js` or clicking on `RunServer.bat` file
 
@@ -66,99 +66,150 @@ for more information about token and ir codes see [Current Modules Explanations]
 
 ## Using (web application)
 http://127.0.0.1:3000/
-
 very basic application (compatible to mobile)
+Screenshots:
+![screenshot](https://user-images.githubusercontent.com/28386247/33982470-4e18ab06-e0b9-11e7-8e05-378aede9def5.png)
+![screenshot](https://user-images.githubusercontent.com/28386247/33982469-4de70592-e0b9-11e7-8007-770bf571c6ae.png)
+![screenshot](https://user-images.githubusercontent.com/28386247/33982468-4dbb0136-e0b9-11e7-90bf-3d705805b33a.png)
+![screenshot](https://user-images.githubusercontent.com/28386247/33982467-4d80d556-e0b9-11e7-9261-fa885c838b6a.png)
 
 ## Using (HTTP API)
 
 ### Athontication API
 
-to login POST http://127.0.0.1:3000/login
+Login: POST http://127.0.0.1:3000/login
 ```javascript
 {userName : 'myuser@domain.com', password : "myPass" } 
 ``` 
 in body (users and passwords are in `DB\users.json` file)
 and your IP address will be allow to access until logout
 
-to logout POST http://127.0.0.1:3000/logout
+Logout POST http://127.0.0.1:3000/logout
+Logout all users POST http://127.0.0.1:3000/logout/all
 
 ### Devices API
 
-to get all devices GET http://127.0.0.1:3000/devices 
+Get all devices GET http://127.0.0.1:3000/devices 
 ```javascript
 {
     "id0": {
         "mac": "34ea348ee66f",
-        "ip": "192.168.1.30",
-        "name": "Broadlink Ac logic device",
+        "name": "Dining AC",
         "brand": "Broadlink",
+        "model": "RM3",
         "types": [
             "switch",
             "ac"
         ],
-        "deviceIdentity": "AC_In_Room_x",
-        "state": "on",
+        "deviceIdentity": "SalonAC",
+        "ip": "192.168.1.16",
+        "vendor": "HangZhou Gubei Electronics Technology Co.,Ltd",
+        "state": "off",
         "ac": {
-            "mode": "fan",
+            "mode": "hot",
             "fan_strength": "low",
-            "temp": 23
+            "temp": 16
+        }
+    },
+    "id01": {
+        "mac": "34ea34409ba8",
+        "name": "Sleep AC",
+        "brand": "Broadlink",
+        "model": "RM3",
+        "types": [
+            "switch",
+            "ac"
+        ],
+        "deviceIdentity": "SleepAC",
+        "ip": "192.168.1.12",
+        "vendor": "HangZhou Gubei Electronics Technology Co.,Ltd",
+        "state": "off",
+        "ac": {
+            "mode": "hot",
+            "fan_strength": "low",
+            "temp": 21
+        }
+    },
+    "id02": {
+        "mac": "34ea3442a91b",
+        "name": "Child AC",
+        "brand": "Broadlink",
+        "model": "RM3",
+        "types": [
+            "switch",
+            "ac"
+        ],
+        "deviceIdentity": "MusheAC",
+        "ip": "192.168.1.13",
+        "vendor": "HangZhou Gubei Electronics Technology Co.,Ltd",
+        "state": "off",
+        "ac": {
+            "mode": "hot",
+            "fan_strength": "low",
+            "temp": 20
         }
     },
     "id1": {
         "mac": "34ea34f5b7d2",
-        "ip": "192.168.1.25",
-        "name": "Broadlink switch device",
+        "name": "Radiator",
         "brand": "Broadlink",
+        "model": "SP2",
         "types": [
             "switch"
         ],
-        "state": "off"
+        "state": "error"
     },
     "id3": {
         "mac": "accf2334e632",
-        "ip": "192.168.1.22",
-        "name": "Orvibo switch device",
+        "name": "Water heater",
         "brand": "Orvibo",
+        "model": "S20",
         "types": [
             "switch"
         ],
+        "ip": "192.168.1.22",
+        "vendor": "Hi-flying electronics technology Co.,Ltd",
         "state": "off"
     },
     "id5": {
         "mac": "34ce00bc9b57",
-        "ip": "192.168.1.16",
-        "name": "Yeelight ceiling light",
+        "name": "Sleep light",
         "brand": "Yeelight",
+        "model": "Ceiling",
         "types": [
             "switch",
             "light",
             "white_temp"
         ],
         "token": "b726e337ade22fb026aa2f7dfbe4cd12",
-        "state": "on",
+        "ip": "192.168.1.72",
+        "vendor": "XIAOMI Electronics,CO.,LTD",
+        "state": "off",
         "bright": 1,
-        "white_temp": 49.44
+        "white_temp": 98
     },
     "id6": {
         "mac": "34ce0092edcf",
-        "ip": "192.168.1.26",
-        "name": "Philips ceiling light",
+        "name": "Dining light",
         "brand": "Philips",
+        "model": "Ceiling",
         "types": [
             "switch",
             "light",
             "white_temp"
         ],
         "token": "3d5f7ae53b51aa312e464b150b37453b",
-        "state": "on",
+        "ip": "192.168.1.26",
+        "vendor": "XIAOMI Electronics,CO.,LTD",
+        "state": "off",
         "bright": 50,
-        "white_temp": 50
+        "white_temp": 100
     },
     "id7": {
         "mac": "34ce008cd7bc",
-        "ip": "192.168.1.32",
-        "name": "Yeelight color light",
+        "name": "Child light",
         "brand": "Yeelight",
+        "model": "E27-Bulb",
         "types": [
             "switch",
             "light",
@@ -166,52 +217,66 @@ to get all devices GET http://127.0.0.1:3000/devices
             "light_color"
         ],
         "token": "28dc5d6c9a7c3ee43e3fe49a2038b4ea",
+        "ip": "192.168.1.32",
+        "vendor": "XIAOMI Electronics,CO.,LTD",
         "state": "on",
-        "bright": 100,
-        "white_temp": 100,
+        "bright": 81,
+        "white_temp": 95,
         "light_color": {
-            "red": 25,
-            "green": 255,
-            "blue": 25
+            "red": 1,
+            "green": 1,
+            "blue": 243
         }
+    }
+}    
+```
+
+Get device GET http://127.0.0.1:3000/devices/{id}
+```javascript
+{
+    "mac": "34ea348ee66f",
+    "name": "Dining AC",
+    "brand": "Broadlink",
+    "model": "RM3",
+    "types": [
+        "switch",
+        "ac"
+    ],
+    "deviceIdentity": "SalonAC",
+    "ip": "192.168.1.16",
+    "vendor": "HangZhou Gubei Electronics Technology Co.,Ltd",
+    "state": "off",
+    "ac": {
+        "mode": "hot",
+        "fan_strength": "low",
+        "temp": 16
     }
 }
 ``` 
-to get device status GET http://127.0.0.1:3000/devices/{id}
-```javascript
-{
-    "mac": "34ea34f5b7d2",
-    "ip": "192.168.1.25",
-    "name": "Broadlink switch device",
-    "brand": "Broadlink",
-    "types": [
-        "switch"
-    ],
-    "state": "off"
-}
-``` 
-to chnage device value or state PUT http://127.0.0.1:3000/devices/{id}
-for every device set on or off
+Chnage device value or state PUT http://127.0.0.1:3000/devices/{id}
+And in body:
+For every device set on or off
 ```javascript
 {
     "type": "switch",
     "value" : "off"
-};
+}
 ``` 
-for change value of light brightness:
+To change value of light brightness:
 ```javascript
 {
     "type": "light",
     "value": 44
-};
+}
 ```
-for change value of light white temperature:
+To change value of light white temperature:
 ```javascript
 {
     "type": "white_temp",
     "value": 48
-};
-for change value of light color:
+}
+```
+To change value of light color:
 ```javascript
 {
     "type": "light_color",
@@ -220,8 +285,9 @@ for change value of light color:
             "green": 255,
             "blue": 7
         }
-};
-for change value of ac:
+}
+```
+To change value of ac:
 ```javascript
 {
     "type": "ac",
@@ -230,18 +296,15 @@ for change value of ac:
             "fan_strength": "low" , 
             "temp" : 23
         }
-};
+}
 ``` 
 
-and 
-
-POST http://127.0.0.1:3000/refresh to scan all devices again (in LAN),
-
+POST http://127.0.0.1:3000/refresh to scan agine all devices (Getting IPs and status)
 
 ### Events\Actions API
-action is collection of actions to set devices status
+Event is a collection of actions to set devices status
 
-to get all events GET http://127.0.0.1:3000/events 
+Get all events GET http://127.0.0.1:3000/events 
 ```javascript
 {
     "vwwrp55sq": {
@@ -290,7 +353,7 @@ to get all events GET http://127.0.0.1:3000/events
     }
 }
 ``` 
-for create new event POST http://127.0.0.1:3000/events 
+Create new event POST http://127.0.0.1:3000/events 
 with data in body like:
 ```javascript
 {
@@ -553,4 +616,4 @@ Please note that usage licenses are limited by any restrictions set by the origi
 - [x] writing client side
 - [ ] create better web app
 - [ ] writing android application
-- [ ] logs and comments
+- [x] logs and comments
