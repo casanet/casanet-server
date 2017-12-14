@@ -312,10 +312,9 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         })
     });
 
-    $scope.GetDevices = function (dontCleanError) {
+    $scope.GetDevices = function () {
         $scope.devices = [];
-        if (!dontCleanError)
-            $scope.error = "";
+        $scope.loading = true;
         $http({
             url: 'devices',
             method: 'GET'
@@ -350,9 +349,10 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                     }
                     $scope.devices.push(device);
                 });
-
+                $scope.loading = false;
             },
             function (response) { // optional
+                $scope.loading = false;
                 $scope.ErrorResponse(response);
             });
     };
@@ -362,7 +362,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     $scope.SetState = function (device) {
 
         device.state = device.state == 'on' ? 'off' : 'on';
-
+        device.sending = true;
         $http({
             url: 'devices/' + device.deviceID,
             method: "PUT",
@@ -370,36 +370,38 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         })
             .then(function (response) {
                 console.log("change device successfully");
-                $scope.error = "";
+                device.sending = false;
             },
             function (response) { // optional
+                device.sending = false;
                 $scope.ErrorResponse(response);
             });
     };
 
     $scope.SetLight = (device, PropToChange) => {
-
+        device.sending = true;
         $http({
             url: 'devices/' + device.deviceID,
             method: "PUT",
             data: { 'type': PropToChange, 'value': PropToChange == 'light' ? device['bright'] : device[PropToChange] }
         })
             .then(function (response) {
-                $scope.error = "";
+                device.sending = false;
                 console.log("change device light successfully");
             },
             function (response) {
+                device.sending = false;
                 $scope.ErrorResponse(response);
             });
     }
 
     $scope.ErrorResponse = (response) => {
 
-        if (response.status != 403)
-            $scope.GetDevices(true);
+        if (response.status && response.status != 403 )
+            $scope.GetDevices();
         swal({
             title: "Error with requst action",
-            text: response.data,
+            text: response.status == 0 ? 'NO LAN CONNECTION' : response.data,
             type: "warning",
             timer: 60000
         });
@@ -407,17 +409,18 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     }
 
     $scope.SetAC = (device) => {
-
+        device.sending = true;
         $http({
             url: 'devices/' + device.deviceID,
             method: "PUT",
             data: { 'type': 'ac', 'value': device.ac }
         })
             .then(function (response) {
-                $scope.error = "";
+                device.sending = false;
                 console.log("change device ac successfully");
             },
             function (response) { // optional
+                device.sending = false;
                 $scope.ErrorResponse(response);
             });
 
@@ -426,6 +429,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     $scope.RefreshData = () => {
 
         $scope.devices = [];
+        $scope.loading = true;
         $http({
             url: 'refresh',
             method: "POST"
@@ -440,7 +444,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     }
 
     $scope.ShowDetails = (device) => {
-        swal(device.name, 'ID: ' + device.deviceID  + '\nBRAND: ' + device.brand + '\nMODEL: ' + device.model + '\nMAC: ' + device.mac + '\nIP: ' + device.ip +'\nVENDOR: ' + device.vendor);
+        swal(device.name, 'ID: ' + device.deviceID + '\nBRAND: ' + device.brand + '\nMODEL: ' + device.model + '\nMAC: ' + device.mac + '\nIP: ' + device.ip + '\nVENDOR: ' + device.vendor);
     }
 
     $scope.FullScreen = () => {
@@ -675,7 +679,7 @@ IoTApp.controller('logsCtrl', function ($scope, $http) {
                 $scope.logs = response.data;
 
                 $scope.logs.forEach((log) => {
-                    log.time = new Date(log.time).toLocaleString();                    
+                    log.time = new Date(log.time).toLocaleString();
                 });
             },
             function (response) {
