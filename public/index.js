@@ -53,8 +53,16 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     $scope.onMouseUpCallbacks = [];
 
     $scope.isScreeensaverOn = false;
+    $scope.useScreensaver = false;
+
     $(document).ready(function () {
 
+        var isMobile = window.matchMedia("only screen and (max-width: 760px)");
+
+        if (isMobile.matches) {
+            $scope.useScreensaver = true;   
+            $("#screensaver-tuggel").addClass("active");         
+        }
 
         document.body.ontouchend = function () {
             $scope.onMouseUpCallbacks.forEach((method) => {
@@ -69,6 +77,8 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         }
 
         document.body.ontouchstart = function () {
+            if (!$scope.useScreensaver)
+                return;
             $scope.noActionInc = 0;
             if ($scope.isScreeensaverOn) {
                 $scope.isScreeensaverOn = false;
@@ -77,6 +87,8 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         }
 
         document.body.onmousedown = function () {
+            if (!$scope.useScreensaver)
+                return;
             $scope.noActionInc = 0;
             if ($scope.isScreeensaverOn) {
                 $scope.isScreeensaverOn = false;
@@ -84,6 +96,8 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
             }
         }
         setInterval(() => {
+            if (!$scope.useScreensaver)
+                return;
             $scope.noActionInc++;
             if ($scope.isScreeensaverOn == false && $scope.noActionInc > 30) {// after 30 seconds of not tuching screnn
                 $('#fsModal').modal('show');
@@ -93,6 +107,9 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
     });
 
     $scope.ShowScreensaver = () => {
+        if (!$scope.useScreensaver)
+            return;
+        useScreensaver
         $('#fsModal').modal('show');
         $scope.isScreeensaverOn = true;
     };
