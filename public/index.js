@@ -52,6 +52,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
 
     $scope.onMouseUpCallbacks = [];
 
+    $scope.isScreeensaverOn = false;
     $(document).ready(function () {
 
 
@@ -69,22 +70,32 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
 
         document.body.ontouchstart = function () {
             $scope.noActionInc = 0;
-            $('#fsModal').modal('hide');
-
+            if ($scope.isScreeensaverOn) {
+                $scope.isScreeensaverOn = false;
+                $('#fsModal').modal('hide');
+            }
         }
 
         document.body.onmousedown = function () {
             $scope.noActionInc = 0;
-            $('#fsModal').modal('hide');
-
+            if ($scope.isScreeensaverOn) {
+                $scope.isScreeensaverOn = false;
+                $('#fsModal').modal('hide');
+            }
         }
         setInterval(() => {
             $scope.noActionInc++;
-            if ($scope.noActionInc > 30) {// after 30 seconds of not tuching screnn
+            if ($scope.isScreeensaverOn == false && $scope.noActionInc > 30) {// after 30 seconds of not tuching screnn
                 $('#fsModal').modal('show');
+                $scope.isScreeensaverOn = true;
             }
         }, 1000)
     });
+
+    $scope.ShowScreensaver = () => {
+        $('#fsModal').modal('show');
+        $scope.isScreeensaverOn = true;
+    };
 
     $scope.CreateAcTempSlider = (device) => {
         device.acTempSlider = {
@@ -390,7 +401,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         })
             .then(function (response) {
                 device.sending = false;
-                $scope.updateDeviceProps(device, response.data);                
+                $scope.updateDeviceProps(device, response.data);
             },
             function (response) { // optional
                 device.sending = false;
