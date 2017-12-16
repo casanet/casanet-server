@@ -19,9 +19,13 @@
 
             <h2 class=device-name>{{device.name}}</h2>
 
+
             <!-- Thanks to https://codepen.io/aanjulena/pen/ZLZjzV?editors=1000 -->
             <div>
                 <div class="switch-area">
+                    <div ng-if="device.state == 'error'" style="color: red">
+                        Error with device!!!
+                    </div>
                     <button type="button" class="btn btn-lg btn-secondary btn-toggle " ng-class="device.state == 'on' ? 'active' : ''" ng-click="SetState(device)">
                         <div class="handle"></div>
                     </button>
