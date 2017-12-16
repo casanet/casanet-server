@@ -274,7 +274,7 @@ var GetRGB = (device, next) => {
 
     lightDevice.init()
         .then(() => {
-            lightDevice.all('get_prop', ['rgb'])
+            lightDevice.call('get_prop', ['rgb'])
                 .then((rgb) => {
                     var value = IntToRgb(parseInt(rgb[0]));
                     next(value);
