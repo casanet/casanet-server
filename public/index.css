@@ -50,47 +50,6 @@
   box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 }
 
-/*area of tuggle button*/
-input[type='checkbox'] {
-  display: none;
-}
-
-input[type='checkbox']:checked ~ .toggle {
-  background: rgb(84, 85, 85);
-  left: 237px;
-  transition: 0.5s;
-}
-input[type='checkbox']:checked ~ .switch {
-  background:rgb(106, 109, 109);
-  transition: 0.5s;
-}
-.switch {
-  display: block;
-  width: 60px;
-  height: 20px;
-  background: #939393;
-  border-radius: 20px;
-  position: absolute;
-  top: 40px;
-  /*10 top*/
-  left: 205px;
-  /*45 left*/
-  transition: 0.5s;
-}
-.toggle {
-  height: 36px;
-  width: 36px;
-  border-radius: 50%;
-  background: white;
-  position: absolute;
-  top: 32px;
-  left: 197px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .4);
-  transition: 0.5s;
-}
-.disable {
-  background: rgba(160, 160, 160, 1);
-}
 .loading-animate {
  
   position: absolute;
@@ -99,6 +58,11 @@ input[type='checkbox']:checked ~ .switch {
   transition: 0.5s;
 }
 
+.switch-area{
+  position: relative;
+  top: 25px;
+  left: 160px;
+}
 .sending-animation-area{
   position: absolute;
   bottom: 12px;

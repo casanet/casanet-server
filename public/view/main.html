@@ -19,13 +19,14 @@
 
             <h2 class=device-name>{{device.name}}</h2>
 
-            <label for="switch{{device.deviceID}}">
-                <input type="checkbox" ng-checked="device.state == 'on'" ng-click="SetState(device)" id="switch{{device.deviceID}}" />
-                <span class="switch">
-                </span>
-                <span ng-class="device.state == 'error' ? 'disable' : ''" class="toggle">
-                </span>
-            </label>
+            <!-- Thanks to https://codepen.io/aanjulena/pen/ZLZjzV?editors=1000 -->
+            <div>
+                <div class="switch-area">
+                    <button type="button" class="btn btn-lg btn-secondary btn-toggle " ng-class="device.state == 'on' ? 'active' : ''" ng-click="SetState(device)">
+                        <div class="handle"></div>
+                    </button>
+                </div>
+            </div>
 
             <!-- brightness -->
             <div ng-if="device.isBrightness">
