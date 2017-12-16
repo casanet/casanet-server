@@ -59,11 +59,17 @@ lookup.on("detected", (light) => {
 const miio = require('miio');
 
 var ChangeState = (device, state, next) => {
-    const lightDevice = miio.createDevice({
-        address: device.ip,
-        token: device.token,
-        model: 'datamodel'
-    });
+    var lightDevice;
+    try {
+        lightDevice = miio.createDevice({
+            address: device.ip,
+            token: device.token,
+            model: 'datamodel'
+        });
+    } catch (error) {
+        next(error);
+        return;
+    }
 
     lightDevice.init()
         .then(() => {
@@ -81,11 +87,17 @@ var ChangeState = (device, state, next) => {
 };
 
 var GetState = (device, next) => {
-    const lightDevice = miio.createDevice({
-        address: device.ip,
-        token: device.token, //'3d5f7ae53b51aa312e464b150b37453b',
-        model: 'datamodel'
-    });
+    var lightDevice;
+    try {
+        lightDevice = miio.createDevice({
+            address: device.ip,
+            token: device.token,
+            model: 'datamodel'
+        });
+    } catch (error) {
+        next('error', error);
+        return;
+    }
 
     lightDevice.init()
         .then(() => {
@@ -103,11 +115,17 @@ var GetState = (device, next) => {
 };
 
 var GetBrightness = (device, next) => {
-    const lightDevice = miio.createDevice({
-        address: device.ip,
-        token: device.token,
-        model: 'datamodel'
-    });
+    var lightDevice;
+    try {
+        lightDevice = miio.createDevice({
+            address: device.ip,
+            token: device.token,
+            model: 'datamodel'
+        });
+    } catch (error) {
+        next('error', error);
+        return;
+    }
 
     lightDevice.init()
         .then(() => {
@@ -130,11 +148,18 @@ var SetBrightness = (device, value, next) => {
         return;
     }
 
-    const lightDevice = miio.createDevice({
-        address: device.ip,
-        token: device.token,
-        model: 'datamodel'
-    });
+    var lightDevice;
+    try {
+        lightDevice = miio.createDevice({
+            address: device.ip,
+            token: device.token,
+            model: 'datamodel'
+        });
+    } catch (error) {
+        next(error);
+        return;
+    }
+
 
     lightDevice.init()
         .then(() => {
@@ -160,11 +185,17 @@ var GetColorTemperature = (device, next) => {
     if (device.model == 'Ceiling')
         startRange = 4100;
 
-    const lightDevice = miio.createDevice({
-        address: device.ip,
-        token: device.token,
-        model: 'datamodel'
-    });
+    var lightDevice;
+    try {
+        lightDevice = miio.createDevice({
+            address: device.ip,
+            token: device.token,
+            model: 'datamodel'
+        });
+    } catch (error) {
+        next('error', err);
+        return;
+    }
 
     lightDevice.init()
         .then(() => {
@@ -194,11 +225,17 @@ var SetColorTemperature = (device, value, next) => {
     if (device.model == 'Ceiling')
         startRange = 4100;
 
-    const lightDevice = miio.createDevice({
-        address: device.ip,
-        token: device.token,
-        model: 'datamodel'
-    });
+    var lightDevice;
+    try {
+        lightDevice = miio.createDevice({
+            address: device.ip,
+            token: device.token,
+            model: 'datamodel'
+        });
+    } catch (error) {
+        next(error);
+        return;
+    }
 
     lightDevice.init()
         .then(() => {
@@ -223,15 +260,21 @@ var SetColorTemperature = (device, value, next) => {
 }
 
 var GetRGB = (device, next) => {
-    const lightDevice = miio.createDevice({
-        address: device.ip,
-        token: device.token,
-        model: 'datamodel'
-    });
+    var lightDevice;
+    try {
+        lightDevice = miio.createDevice({
+            address: device.ip,
+            token: device.token,
+            model: 'datamodel'
+        });
+    } catch (error) {
+        next('error', err);
+        return;
+    }
 
     lightDevice.init()
         .then(() => {
-            lightDevice.call('get_prop', ['rgb'])
+            lightDevice.all('get_prop', ['rgb'])
                 .then((rgb) => {
                     var value = IntToRgb(parseInt(rgb[0]));
                     next(value);
@@ -252,11 +295,17 @@ var SetRGB = (device, value, next) => {
         return;
     }
 
-    const lightDevice = miio.createDevice({
-        address: device.ip,
-        token: device.token,
-        model: 'datamodel'
-    });
+    var lightDevice;
+    try {
+        lightDevice = miio.createDevice({
+            address: device.ip,
+            token: device.token,
+            model: 'datamodel'
+        });
+    } catch (err) {
+        next(err);
+        return;
+    }
 
     lightDevice.init()
         .then(() => {
@@ -266,11 +315,11 @@ var SetRGB = (device, value, next) => {
                     next();
                 })
                 .catch((err) => {
-                    next('error', err);
+                    next(err);
                 });
         })
         .catch((err) => {
-            next('error', err);
+            next(err);
         });
 }
 
