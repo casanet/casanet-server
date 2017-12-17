@@ -13,7 +13,7 @@ var GetState = function (device, next) {
     __dirname + '\\' + 'OrviboController.exe query ' + device.mac.toUpperCase() + ' ' + device.ip,
     function (err, data, stderr) {
       // the tow !! is to get boolien and not value of data
-      var isSuccess = !err && !!data;
+      var isSuccess = !err && !!data && data.indexOf("Exception") == -1;
       next(isSuccess ? (data.indexOf('True') != -1 ? 'on' : 'off') : 'error',  err);
     });
 };

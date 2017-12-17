@@ -192,7 +192,7 @@ var GetColorTemperature = (device, next) => {
             token: device.token,
             model: 'datamodel'
         });
-    } catch (error) {
+    } catch (err) {
         next('error', err);
         return;
     }
@@ -267,7 +267,7 @@ var GetRGB = (device, next) => {
             token: device.token,
             model: 'datamodel'
         });
-    } catch (error) {
+    } catch (err) {
         next('error', err);
         return;
     }
