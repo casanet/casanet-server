@@ -3,26 +3,26 @@
   background:rgba(255, 255, 255, 0.5);
   border-radius: 3px;
   display: inline-block;
-  height: 100px;
+  height: 170px;
   margin: 1rem;
   position: relative;
   width: 300px;
 }
 
 .card-brightness {
-  height: 200px;
+  height: 270px;
 }
 
 .card-white-color {
-  height: 287px;
+  height: 357px;
 }
 
 .card-color {
-  height: 430px;
+  height: 500px;
 }
 
 .card-ac {
-  height: 250px;
+  height: 320px;
 }
 
 .card-1 {
@@ -60,9 +60,10 @@
 
 .switch-area{
   position: relative;
-  top: 25px;
-  left: 160px;
+  top: 65px;
+  left: 50px;
 }
+
 .sending-animation-area{
   position: absolute;
   bottom: 12px;
@@ -71,13 +72,13 @@
 
 .ac-mode-area {
   position: absolute;
-  top: 75px;
+  top: 145px;
   left: 40px;
 }
 
 .fan_strength-area {
   position: absolute;
-  top: 75px;
+  top: 145px;
   left: 150px;
 }
 
@@ -85,7 +86,7 @@
   height: 36px;
   width: 280px;
   position: absolute;
-  top: 130px;
+  top: 200px;
   left: 10px;
 }
 
@@ -93,7 +94,7 @@
   height: 36px;
   width: 280px;
   position: absolute;
-  top: 85px;
+  top: 155px;
   left: 10px;
 }
 
@@ -101,7 +102,7 @@
   height: 36px;
   width: 280px;
   position: absolute;
-  top: 170px;
+  top: 240px;
   left: 10px;
 }
 

@@ -29,13 +29,13 @@
     transition: opacity .25s;
   }
   .btn-toggle:before {
-    content: 'Off';
-    left: -4rem;
+    /* content: 'Off';
+    left: -4rem; */
   }
   .btn-toggle:after {
-    content: 'On';
+    /* content: 'On';
     right: -4rem;
-    opacity: .5;
+    opacity: .5; */
   }
   .btn-toggle > .handle {
     position: absolute;
@@ -97,8 +97,8 @@
     padding: 0;
     position: relative;
     border: none;
-    height: 2.5rem;
-    width: 5rem;
+    height: 5rem;
+    width: 10rem;
     border-radius: 2.5rem;
   }
   .btn-toggle.btn-lg:focus,
@@ -121,29 +121,42 @@
     transition: opacity .25s;
   }
   .btn-toggle.btn-lg:before {
-    content: 'Off';
-    left: -5rem;
+    /* content: 'Off';
+    left: -5rem; */
   }
   .btn-toggle.btn-lg:after {
-    content: 'On';
+    /* content: 'On';
     right: -5rem;
-    opacity: .5;
+    opacity: .5; */
   }
   .btn-toggle.btn-lg > .handle {
     position: absolute;
-    top: 0.3125rem;
-    left: 0.3125rem;
-    width: 1.875rem;
-    height: 1.875rem;
+    top: 0.625rem;
+    left: 0.625rem;
+    width: 3.75rem;
+    height: 3.75rem;
     border-radius: 1.875rem;
     background: #fff;
-    transition: left .25s;
+    transition: left .50s;
   }
+  
+  
+  .btn-toggle.btn-lg > .handle-error {
+    position: absolute;
+    top: 0.625rem;
+    left: 0.625rem;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 1.875rem;
+    background: gray;
+    transition: left .50s;
+  }
+
   .btn-toggle.btn-lg.active {
     transition: background-color 0.25s;
   }
   .btn-toggle.btn-lg.active > .handle {
-    left: 2.8125rem;
+    left: 5.625rem;
     transition: left .25s;
   }
   .btn-toggle.btn-lg.active:before {
