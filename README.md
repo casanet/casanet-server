@@ -82,7 +82,7 @@ Login: POST http://127.0.0.1:3000/login
 {userName : 'myuser@domain.com', password : "myPass" } 
 ``` 
 in body (users and passwords are in `DB\users.json` file)
-and your IP address will be allow to access until logout
+and the authentication in every request is by unique cookie that live 5 days
 
 Logout POST http://127.0.0.1:3000/logout
 Logout all users POST http://127.0.0.1:3000/logout/all
