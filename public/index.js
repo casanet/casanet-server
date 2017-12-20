@@ -588,6 +588,81 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
 
     $scope.GetTimings();
 
+    $scope.events = [];
+    $scope.GetActions((events, err) => {
+        if (err)
+            return;
+
+        Object.keys(events).forEach((id) => {
+            var event = events[id];
+            event.id = id;
+            $scope.events.push(event);
+        });
+    });
+
+    $scope.CreateTimer = (selectedEventToTimer, selectedMinutsToTimer) => {
+        $http({
+            url: 'timings',
+            method: 'POST',
+            data: {
+                timingType: "timer",
+                durationInMinuts: selectedMinutsToTimer,
+                trigger: selectedEventToTimer,
+                active: "on"
+            }
+        })
+            .then(function (response) {
+                console.log("carete timer successfully");
+                $scope.GetTimings();
+                swal({
+                    title: "Carete timer successfully",
+                    type: "success",
+                    timer: 60000
+                });
+            },
+            function (response) {
+                swal({
+                    title: "Carete timer fail",
+                    text: response.data,
+                    type: "warning",
+                    timer: 60000
+                });
+            });
+    };
+
+    $scope.CreateOnceTiming = (selectedEventToOnce, selectedTimeToOnce) => {
+        var t = selectedTimeToOnce ; //new Date();
+        $http({
+            url: 'timings',
+            method: 'POST',
+            data: {
+                timingType: "once",
+                date : t.getDate() + '-' + (t.getMonth() + 1) + '-' + (t.getFullYear() % 100),
+                time : t.getHours()  + ':' + t.getMinutes() ,
+                trigger: selectedEventToOnce,
+                active: "on"
+            }
+        })
+            .then(function (response) {
+                console.log("carete once timing successfully");
+                $scope.GetTimings();
+                swal({
+                    title: "Carete once timing successfully",
+                    type: "success",
+                    timer: 60000
+                });
+            },
+            function (response) {
+                swal({
+                    title: "Carete once timing fail",
+                    text: response.data,
+                    type: "warning",
+                    timer: 60000
+                });
+            });
+    };
+
+
     $scope.TuggelTimingActive = function (timing) {
 
         var newTiming = JSON.parse(JSON.stringify(timing));
