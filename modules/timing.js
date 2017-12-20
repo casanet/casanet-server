@@ -74,9 +74,9 @@ var onceHandler = (now, timing, id) => {
     if (now.getTime() != timingDate.getTime())
         return;
 
-    delete timings[id];
-    SaveToDB();
-    TimingStructChanged();
+    //delete timings[id];
+    //SaveToDB();
+    //TimingStructChanged();
 
     logger.write.info("timing once id " + id + " activate");
 

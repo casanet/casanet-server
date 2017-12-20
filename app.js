@@ -251,8 +251,7 @@ app.get('/timings', (req, res) => {
 // Send new timings
 app.post('/timings', (req, res) => {
   logger.write.debug('requset POST  /timings arrived');
-  var params = req.body;
-  var timing = params.timing;
+  var timing = req.body;
 
   var hasError = false;
 
