@@ -12,12 +12,14 @@ var securityHandler = require('./modules/security');
 // Depenencies moduls
 var express = require('express');
 var app = express();
+var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var SSE = require('express-sse');
 
 // MiddelWhare Area 
 
 // Parse every request body to json
+app.use(cookieParser());
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use('/static', express.static('public')); // serve every static file in public folder
@@ -43,7 +45,7 @@ app.use(function (req, res, next) { // middelwhere for security
 app.post('/login', function (req, res) {
   logger.write.debug('requset POST  /login arrived');
   var params = req.body;
-  securityHandler.CheckIn(req, params.userName, params.password, (result) => {
+  securityHandler.CheckIn(req, res, params.userName, params.password, (result) => {
     if (result) {
       logger.write.info('user: ' + params.userName + ' connected seccessfuly');
       res.send(`you connected seccessfuly`);
@@ -60,14 +62,14 @@ app.post('/login', function (req, res) {
 app.post('/logout', function (req, res) {
   logger.write.debug('requset POST  /logout arrived');
   logger.write.info('user logout seccessfuly');
-  securityHandler.CheckOut(req);
+  securityHandler.CheckOut(req, res);
   res.send(`Logout seccessfuly`);
 });
 
 // Logout for all users and connectd ip`s
 app.post('/logout/all', function (req, res) {
   logger.write.debug('requset POST /logout/all arrived');
-  securityHandler.ClearCashe((err) => {
+  securityHandler.ClearCache((err) => {
     if (err)
       res.statusCode = 503;
     res.send(err ? err : `Logout all seccessfuly`);

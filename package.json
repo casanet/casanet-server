@@ -4,6 +4,7 @@
   "main": "app.js",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "express-sse": "^0.4.1",
     "log4js": "^2.3.12",

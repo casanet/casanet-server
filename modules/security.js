@@ -3,6 +3,7 @@ var logger = require('./logs');
 
 var fs = require('fs')
 var logs = require('./logs');
+var shortid = require('shortid');
 
 var sessions;
 try {
@@ -10,6 +11,8 @@ try {
 } catch (error) {
   sessions = {}
 }
+
+var sessionsIdMap = {};
 
 var GetIp = function (req) {
   var ipAddr = req.headers["x-forwarded-for"];
@@ -55,21 +58,35 @@ var CheckSession = function (ip) {
 }
 
 
-var CheckIn = function (req, useName, pass, next) {
+var CheckIn = function (req, res, useName, pass, next) {
   ip = GetIp(req);
   isAccess = GetUserAccess(useName, pass);
 
   UpdateSession(ip, isAccess);
 
+  if (isAccess) {
+    var sessionId = shortid.generate()
+    sessionsIdMap[sessionId] = true;
+    res.cookie('sessionID' , sessionId, {maxAge : 4.32e+8}); // 5 days
+  }
   next(isAccess);
 }
 
-var CheckOut = function (req) {
+var CheckOut = function (req, res) {
   ip = GetIp(req);
+  var sessionCookie = req.cookies.sessionID;
+  delete sessionsIdMap[sessionCookie];
+  res.cookie('sessionID', 'empty');
   UpdateSession(ip, false);
 }
 
 var CheckAccess = function (req, res, next) {
+  var sessionCookie = req.cookies.sessionID;
+  if (sessionCookie in sessionsIdMap) {
+    next();
+    return;
+  }
+
   ip = GetIp(req);
   if (!CheckSession(ip)) {
     res.statusCode = 403;
@@ -79,8 +96,9 @@ var CheckAccess = function (req, res, next) {
   }
 }
 
-var ClearCashe = (callback) => {
+var ClearCache = (callback) => {
   sessions = {};
+  sessionsIdMap = {};
   fs.writeFile('./DB/sessions.json', JSON.stringify(sessions), 'utf-8', function (err) {
     if (err)
       logger.write.error('Error to write session file');
@@ -95,5 +113,5 @@ module.exports = {
   CheckIn: CheckIn,
   CheckOut: CheckOut,
   CheckAccess: CheckAccess,
-  ClearCashe : ClearCashe
+  ClearCache: ClearCache
 }; 
