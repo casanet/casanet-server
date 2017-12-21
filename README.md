@@ -82,7 +82,7 @@ Login: POST http://127.0.0.1:3000/login
 {userName : 'myuser@domain.com', password : "myPass" } 
 ``` 
 in body (users and passwords are in `DB\users.json` file)
-and the authentication in every request is by unique cookie that live 5 days
+and the authentication in every request is by unique cookie that live until logout or other client will post logout/all requst
 
 Logout POST http://127.0.0.1:3000/logout
 Logout all users POST http://127.0.0.1:3000/logout/all
@@ -396,22 +396,27 @@ to get all timings GET  http://127.0.0.1:3000/timings
         "timingType": "daily",
         "days": [
             "sunday",
-            "thursday",
-            "saturday"
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday"
         ],
-        "time": "17:32",
-        "trigger": "testing"
+        "time": "19:50",
+        "trigger": "H1MXuQzhW",
+        "active": "off"
     },
     "2": {
         "timingType": "once",
         "date": "01-12-17",
         "time": "13:58",
-        "trigger": "testing"
+        "trigger": "H1MXuQzhW",
+        "active": "on"
     },
     "3": {
         "timingType": "timer",
-        "durationInMinuts": 30,
-        "trigger": "testing"
+        "durationInMinuts": 300,
+        "trigger": "H1MXuQzhW",
+        "active": "off"
     }
 }
 ```
@@ -422,7 +427,8 @@ with data in body like:
    "timingType": "once",
    "date": "02-12-17",
    "time": "23:37",
-   "trigger": "testing"
+   "trigger": "H1MXuQzhW",
+   "active": "off"
 }
 ```
 or to edit timings by its id PUT http://127.0.0.1:3000/timings/{id}
