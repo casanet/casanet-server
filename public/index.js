@@ -684,6 +684,29 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
             });
     };
 
+    $scope.RemoveTiming = (id) => {
+        $http({
+            url: 'timings/' + id,
+            method: 'DELETE'
+        })
+            .then(function (response) {
+                console.log("DELETE timing successfully");
+                $scope.GetTimings();
+                swal({
+                    title: "Removed timing successfully",
+                    type: "success",
+                    timer: 60000
+                });
+            },
+            function (response) {
+                swal({
+                    title: "Removed timing fail",
+                    text: response.data,
+                    type: "warning",
+                    timer: 60000
+                });
+            });
+    }
 });
 
 IoTApp.controller('actionsCtrl', function ($scope, $http) {
