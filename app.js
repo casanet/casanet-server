@@ -354,7 +354,7 @@ app.delete('/timings/:id', function (req, res) {
 app.get('/logs/:security', function (req, res) {
   logger.write.debug('requset GET /logs/' + req.params.security + ' arrived');
 
-  logger.read(req.params.security == 1 , 1500, (logs, err) => {
+  logger.read(req.params.security == 1 ,req.params.security == 1 ? 5000 : 1500, (logs, err) => {
     if (err) {
       res.statusCode = 503;
       logger.write.warn('Error with requset GET /logs/' + req.params.security + ' ,' + err);
