@@ -786,9 +786,10 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
 });
 
 IoTApp.controller('logsCtrl', function ($scope, $http) {
+    $scope.showSecutity = false;
     $scope.GetLogs = function () {
         $http({
-            url: 'logs',
+            url: 'logs/' + ($scope.showSecutity ? '1' : '0'),
             method: 'GET'
         })
             .then(function (response) {
