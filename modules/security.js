@@ -20,7 +20,7 @@ var CheckIn = function (req, res, useName, pass, next) {
   if (isAccess) {
     var sessionId = shortid.generate()
     sessionsIdMap[sessionId] = true;
-    res.cookie('sessionID', sessionId, { maxAge: 4.32e+8 }); // 5 days
+    res.cookie('sessionID', sessionId);//, { maxAge: 4.32e+8 }); // 5 days
   }
   next(isAccess);
 }
