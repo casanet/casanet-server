@@ -15,6 +15,7 @@
                                 <div class="handle"></div>
                             </button>
                         </h4>
+
                     </div>
                     <div id="{{timing.id}}" class="panel-collapse collapse">
                         <div class="panel-body">
@@ -25,6 +26,9 @@
 
                             Time:
                             <b> {{timing.time}} </b>
+                            <br>
+                            <br>
+                            <button class="btn btn-danger btn-xs" ng-click="RemoveTiming(timing.id)" data-title="Delete">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -37,7 +41,7 @@
     <div class="panel-heading">Once timings</div>
     <!-- panel to show current event menu -->
     <div class="panel-body">
-        
+
 
         <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#onceModal">Create new timing</button>
 
@@ -59,8 +63,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" 
-                        ng-click="CreateOnceTiming(selectedEventToOnce, selectedTimeToOnce)">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CreateOnceTiming(selectedEventToOnce, selectedTimeToOnce)">
                             Save Timing</button>
                     </div>
                 </div>
@@ -87,6 +90,9 @@
 
                             Time:
                             <b> {{timing.time}} </b>
+                            <br>
+                            <br>
+                            <button class="btn btn-danger btn-xs" ng-click="RemoveTiming(timing.id)" data-title="Delete">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -119,8 +125,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" 
-                        ng-click="CreateTimer(selectedEventToTimer, selectedMinutsToTimer)">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CreateTimer(selectedEventToTimer, selectedMinutsToTimer)">
                             Save Timer</button>
                     </div>
                 </div>
@@ -146,6 +151,9 @@
 
                             Duration in minutes:
                             <b> {{timing.durationInMinuts}} </b>
+                            <br>
+                            <br>
+                            <button class="btn btn-danger btn-xs" ng-click="RemoveTiming(timing.id)" data-title="Delete">Delete</button>
                         </div>
                     </div>
                 </div>
