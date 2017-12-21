@@ -76,6 +76,7 @@ var InitDevicesData = function (deviceIndex, next) {
     var getDeviceProperty = (propertyIndex) => {
         // If finish get current device properties go to next device
         if (propertyIndex >= device.types.length) {
+            PushChanges(id);
             InitDevicesData(deviceIndex + 1, next);
             return
         }
