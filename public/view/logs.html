@@ -1,7 +1,12 @@
 
 Show secutity logs 
 <input type="checkbox" ng-model="showSecutity" ng-change="GetLogs()">
+<br>
+<br>
 
+Number of rows to get:
+<input type="number" ng-model="logRoes"/>
+<button class="btn btn-xs btn-info" ng-click="GetLogs()">Get current logs</button>
 <br>
 <br>
 Filter by:
