@@ -7,6 +7,7 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "express-sse": "^0.4.1",
+    "express-useragent": "^1.0.8",
     "log4js": "^2.3.12",
     "miio": "^0.13.0",
     "network-list": "^1.1.2",

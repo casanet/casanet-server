@@ -14,8 +14,8 @@ try {
 
 var SaveToCache = () => {
   fs.writeFile('cacheSessionsIdMap.json', JSON.stringify(sessionsIdMap), 'utf-8', function (err) {
-      if (err)
-          logger.write.warn('Error to write cacheSessionsIdMap file');
+    if (err)
+      logger.write.warn('Error to write cacheSessionsIdMap file');
   })
 }
 
@@ -30,6 +30,12 @@ var GetIp = function (req) {
   return ipAddr;
 }
 
+
+var GetAllRquestInfo = (req) => {
+  return ' IP: ' + GetIp(req) + ',    SESSION_ID: ' + req.cookies.sessionID + ',    REQUEST: ' + req.method + ' ' + req.url + ',    DEVICE: ' + req.useragent.platform + ',    OS: ' + req.useragent.os + ',    BROWSER: ' + req.useragent.browser + '/' + req.useragent.version + ',    IS MOBILE: ' + req.useragent.isMobile;
+}
+
+
 var GetUserAccess = function (userName, pass) {
   var users = require('../DB/users.json');;// read users file
   if ((typeof (userName) !== "undefined" && userName) &&
@@ -39,18 +45,18 @@ var GetUserAccess = function (userName, pass) {
 }
 
 var CheckIn = function (req, res, userName, pass, next) {
-  logger.security.info('username ' + userName + ' try to login with password: ' + pass + ' from IP: ' + GetIp(req));
-  
+  logger.security.info('username ' + userName + ' try to login with password: ' + pass + GetAllRquestInfo(req));
+
   isAccess = GetUserAccess(userName, pass);
 
-  if (!isAccess){
-    logger.security.warn('username ' + userName + ' fail to login with password ' + pass + ' from IP: ' + GetIp(req));
+  if (!isAccess) {
+    logger.security.warn('username ' + userName + ' fail to login with password ' + pass + GetAllRquestInfo(req));
   } else {
     var sessionId = shortid.generate()
     sessionsIdMap[sessionId] = userName;
     SaveToCache();
     res.cookie('sessionID', sessionId);//, { maxAge: 4.32e+8 }); // 5 days
-    logger.security.info('username ' + userName + ' login successfuly with password: ' + pass + ' from IP: ' + GetIp(req) + ' and sessionID is: ' + sessionId);
+    logger.security.info('username ' + userName + ' login successfuly with password: ' + pass + GetAllRquestInfo(req));
   }
 
   next(isAccess);
@@ -59,30 +65,28 @@ var CheckIn = function (req, res, userName, pass, next) {
 var CheckOut = function (req, res) {
   var sessionCookie = req.cookies.sessionID;
   delete sessionsIdMap[sessionCookie];
-  SaveToCache();  
+  SaveToCache();
   res.cookie('sessionID', 'empty');
-  logger.security.info('user try to logout from IP: ' + GetIp(req) + ' session id: ' + sessionCookie);
+  logger.security.info('User try to logout ' + GetAllRquestInfo(req));
 }
 
 var CheckAccess = function (req, res, next) {
   var sessionCookie = req.cookies.sessionID;
-  logger.security.info('checking access to IP: ' + GetIp(req) + ' session id: ' + sessionCookie + ' for requst: ' + req.method + ' ' + req.url);
-  
+  logger.security.info('Checking access to ' + GetAllRquestInfo(req));
+
   if (sessionCookie in sessionsIdMap) {
-    res.cookie('sessionID', sessionCookie, { maxAge: 4.32e+8 }); // 5 days    
     next();
   } else {
-    logger.security.warn('access for IP: ' + GetIp(req) + ' session id: ' + sessionCookie + ' for requst: ' + req.method + ' ' + req.url + ' was forbidden');
+    logger.security.warn('Access forbidden ' + GetAllRquestInfo(req));
     res.statusCode = 403;
     res.send('Athontication error');
   }
 }
 
 var ClearCache = (req, callback) => {
-  var sessionCookie = req.cookies.sessionID;
-  logger.security.info('Clean all access cookie, from IP: ' + GetIp(req) + ' session id: ' + sessionCookie);
+  logger.security.info('Clean all access cookie, '  + GetAllRquestInfo(req));
   sessionsIdMap = {};
-  SaveToCache();  
+  SaveToCache();
   callback();
 }
 

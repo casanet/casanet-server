@@ -15,13 +15,15 @@ var app = express();
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var SSE = require('express-sse');
-
+var useragent = require('express-useragent');
+ 
 // MiddelWhare Area 
 
 // Parse every request body to json
 app.use(cookieParser());
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(useragent.express());
 app.use('/static', express.static('public')); // serve every static file in public folder
 app.use(function (req, res, next) { // middelwhere for security
   if (req.url == '/' ||
