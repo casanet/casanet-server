@@ -351,10 +351,10 @@ app.delete('/timings/:id', function (req, res) {
 
 // Logs API
 // delete timings by its id
-app.get('/logs/:security', function (req, res) {
-  logger.write.debug('requset GET /logs/' + req.params.security + ' arrived');
+app.get('/logs/:security/:rows', function (req, res) {
+  logger.write.debug('requset GET /logs/' + req.params.security + '/' + req.params.rows + ' arrived');
 
-  logger.read(req.params.security == 1 ,req.params.security == 1 ? 5000 : 1500, (logs, err) => {
+  logger.read(req.params.security == 1 , req.params.rows , (logs, err) => {
     if (err) {
       res.statusCode = 503;
       logger.write.warn('Error with requset GET /logs/' + req.params.security + ' ,' + err);
