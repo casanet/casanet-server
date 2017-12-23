@@ -6,14 +6,14 @@ var fs = require('fs')
 
 var sessionsIdMap = {};
 try {
-  sessionsIdMap = require('../cacheSessionsIdMap.json');
+  sessionsIdMap = require('../cache/cacheSessionsIdMap.json');
 } catch (error) {
   logger.write.warn("Error while reading cacheSessionsIdMap.json file")
   sessionsIdMap = {}
 }
 
 var SaveToCache = () => {
-  fs.writeFile('cacheSessionsIdMap.json', JSON.stringify(sessionsIdMap), 'utf-8', function (err) {
+  fs.writeFile('cache/cacheSessionsIdMap.json', JSON.stringify(sessionsIdMap), 'utf-8', function (err) {
     if (err)
       logger.write.warn('Error to write cacheSessionsIdMap file');
   })
