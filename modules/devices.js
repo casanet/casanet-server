@@ -5,6 +5,7 @@ var shortid = require('shortid');
 const netList = require('network-list');
 
 var brandModulesMap = require('./brandModulesMap');
+var lanManager = require('./lanManager');
 
 // for events registration
 // TODO : set them in other file that will registar and invoke update
@@ -19,31 +20,21 @@ Object.keys(devices).forEach((id) => {
     devicesKeysArray.push(id);
 })
 
-var InjectIPsToDevices = (callback, err) => {
-    logger.write.debug('Start reading ARP info...');
-    netList.scan({}, (err, arr) => {
+var InjectIPsToDevices = (callback) => {
+    lanManager.ScanLanNetworkDevicesInfo((lanDevices, err) => {
         if (err) {
             callback(err);
             return;
         }
 
-        var lanMacMap = {};
-        arr.forEach((lanDevice) => {
-            if (lanDevice.alive && lanDevice.mac) {
-                lanMacMap[lanDevice.mac.replace(/:/g, '').toLowerCase()] = {
-                    ip: lanDevice.ip,
-                    vendor: lanDevice.vendor
-                }
-            }
-        });
-
         devicesKeysArray.forEach((id) => {
-            if (!(devices[id].mac in lanMacMap)) {
+            if (!(devices[id].mac in lanDevices)) {
                 logger.write.error('Cant find ARP info in LAN for device id : ' + id + ' name: ' + devices[id].name + ' mac: ' + devices[id].mac);
                 return;
             }
-            devices[id].ip = lanMacMap[devices[id].mac].ip;
-            devices[id].vendor = lanMacMap[devices[id].mac].vendor;
+            devices[id].ip = lanDevices[devices[id].mac].ip;
+            devices[id].vendor = lanDevices[devices[id].mac].vendor;
+            devices[id].lanDeviceName = lanDevices[devices[id].mac].name;
         });
 
         callback();

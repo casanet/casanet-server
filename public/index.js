@@ -1,3 +1,4 @@
+
 // Init angular app 
 var IoTApp = angular.module("IoTApp", ['rzModule', 'ui.bootstrap', 'ngRoute']);
 
@@ -420,7 +421,7 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
         swal({
             title: "Error with requst action",
             text: response.status == 0 ? 'NO LAN CONNECTION' : response.data,
-            type: "warning",
+            icon: "warning",
             timer: 60000
         });
         console.error(response.data);
@@ -485,7 +486,7 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
                 console.log("login successfully");
                 swal({
                     title: "Login successfully",
-                    type: "success",
+                    icon: "success",
                     timer: 60000
                 });
             },
@@ -494,7 +495,7 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
                 swal({
                     title: "Error in login",
                     text: "usename or password incorrect",
-                    type: "warning",
+                    icon: "warning",
                     timer: 60000
                 });
             });
@@ -510,7 +511,7 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
                 console.log("logout successfully");
                 swal({
                     title: "Requst done",
-                    type: "success",
+                    icon: "success",
                     timer: 60000
                 });
             },
@@ -520,7 +521,7 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
                 swal({
                     title: "Error in requst",
                     text: response.data,
-                    type: "warning",
+                    icon: "warning",
                     timer: 60000
                 });
             });
@@ -616,7 +617,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 $scope.GetTimings();
                 swal({
                     title: "Carete timer successfully",
-                    type: "success",
+                    icon: "success",
                     timer: 60000
                 });
             },
@@ -624,21 +625,21 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 swal({
                     title: "Carete timer fail",
                     text: response.data,
-                    type: "warning",
+                    icon: "warning",
                     timer: 60000
                 });
             });
     };
 
     $scope.CreateOnceTiming = (selectedEventToOnce, selectedTimeToOnce) => {
-        var t = selectedTimeToOnce ; //new Date();
+        var t = selectedTimeToOnce; //new Date();
         $http({
             url: 'timings',
             method: 'POST',
             data: {
                 timingType: "once",
-                date : t.getDate() + '-' + (t.getMonth() + 1) + '-' + (t.getFullYear() % 100),
-                time : t.getHours()  + ':' + t.getMinutes() ,
+                date: t.getDate() + '-' + (t.getMonth() + 1) + '-' + (t.getFullYear() % 100),
+                time: t.getHours() + ':' + t.getMinutes(),
                 trigger: selectedEventToOnce,
                 active: "on"
             }
@@ -648,7 +649,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 $scope.GetTimings();
                 swal({
                     title: "Carete once timing successfully",
-                    type: "success",
+                    icon: "success",
                     timer: 60000
                 });
             },
@@ -656,7 +657,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 swal({
                     title: "Carete once timing fail",
                     text: response.data,
-                    type: "warning",
+                    icon: "warning",
                     timer: 60000
                 });
             });
@@ -694,7 +695,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 $scope.GetTimings();
                 swal({
                     title: "Removed timing successfully",
-                    type: "success",
+                    icon: "success",
                     timer: 60000
                 });
             },
@@ -702,7 +703,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 swal({
                     title: "Removed timing fail",
                     text: response.data,
-                    type: "warning",
+                    icon: "warning",
                     timer: 60000
                 });
             });
@@ -768,7 +769,7 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
                 console.log("event invoked successfully");
                 swal({
                     title: "Event invoked successfully",
-                    type: "success",
+                    icon: "success",
                     timer: 60000
                 });
             },
@@ -777,7 +778,7 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
                 swal({
                     title: "Error while event invoked",
                     text: response.data,
-                    type: "warning",
+                    icon: "warning",
                     timer: 60000
                 });
             });
@@ -808,6 +809,115 @@ IoTApp.controller('logsCtrl', function ($scope, $http) {
     $scope.GetLogs();
 });
 
+IoTApp.controller('networkCtrl', function ($scope, $http) {
+    $scope.GetNetWork = function () {
+        $http({
+            url: 'network',
+            method: 'GET'
+        })
+            .then(function (response) {
+                console.log("get network successfully");
+                var devicesMap = response.data;
+
+                $scope.lanDevices = [];
+                Object.keys(devicesMap).forEach((mac) => {
+                    $scope.lanDevices.push(devicesMap[mac]);
+                });
+            },
+            function (response) {
+
+            });
+    };
+
+    // for class, to set color for convoy row
+    $scope.getColor = function (device) {
+        if ($scope.selectedDevice && $scope.selectedDevice.mac == device.mac) {
+            return "info";
+        }
+        return "";
+    };
+
+    $scope.selectDevice = function (device) {
+        $scope.selectedDevice = device;
+    };
+
+    $scope.ScanLanDevices = () => {
+        $scope.message = "Scaning LAN network...";
+        $scope.lanDevices = [];
+        $http({
+            url: 'network/refresh',
+            method: 'POST'
+        })
+            .then(function (response) {
+                var devicesMap = response.data;
+
+                $scope.lanDevices = [];
+                Object.keys(devicesMap).forEach((mac) => {
+                    $scope.lanDevices.push(devicesMap[mac]);
+                });
+                $scope.message = "";                
+            },
+            function (response) {
+                $scope.message = "";                
+                swal({
+                    title: 'Error in requst',
+                    text : response.data,
+                    icon: "warning",
+                    timer: 60000
+                });
+            });
+    }
+
+    $scope.UpdateLanName = (mac, name) => {
+        $http({
+            url: 'network/' + mac + '/' + name,
+            method: 'POST'
+        })
+            .then(function (response) {
+                console.log("SET NAME successfully");
+                swal({
+                    text: 'Name changed successfuly',
+                    icon: "success",
+                    timer: 60000
+                });
+
+                $scope.GetNetWork();
+
+            },
+            function (response) {
+                swal({
+                    title: 'Error in requst',
+                    text : response.data,
+                    icon: "warning",
+                    timer: 60000
+                });
+            });
+
+    };
+
+    $scope.SetName = (device) => {
+
+        swal({
+            title: 'Edit name',
+            text: 'Deviec mac: ' + device.mac + '\nVendor: ' + device.vendor,
+            content: "input",
+            buttons: [true, "Update name"],
+        })
+            .then((value) => {
+                if (value == "")
+                    swal({
+                        text: 'Enter valid name',
+                        icon: "warning",
+                        timer: 60000
+                    });
+                else if (value)
+                    $scope.UpdateLanName(device.mac, value);
+            });
+    }
+
+    $scope.GetNetWork();
+});
+
 // // angular SPA routing definition
 IoTApp.config(function ($routeProvider) {
     $routeProvider
@@ -826,6 +936,9 @@ IoTApp.config(function ($routeProvider) {
         }).when('/logs', {
             templateUrl: '/static/view/logs.html',
             controller: 'logsCtrl'
+        }).when('/network', {
+            templateUrl: '/static/view/network.html',
+            controller: 'networkCtrl'
         }).when('/about', {
             templateUrl: '/static/view/about.html',
             controller: 'aboutCtrl'

@@ -1,0 +1,1 @@
+in current path all temp cache file will be

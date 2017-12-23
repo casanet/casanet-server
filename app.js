@@ -8,6 +8,7 @@ var devicesHandler = require('./modules/devices');
 var eventsHandler = require('./modules/events');
 var timingHandler = require('./modules/timing');
 var securityHandler = require('./modules/security');
+var lanManagerHandler = require('./modules/lanManager');
 
 // Depenencies moduls
 var express = require('express');
@@ -16,7 +17,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var SSE = require('express-sse');
 var useragent = require('express-useragent');
- 
+
 // MiddelWhare Area 
 
 // Parse every request body to json
@@ -351,15 +352,50 @@ app.delete('/timings/:id', function (req, res) {
   });
 });
 
+// Nenwork & devices managing 
+app.get('/network', function (req, res) {
+  logger.write.debug('requset GET /network arrived');
+
+  lanManagerHandler.GetLastLanNetworkDevicesInfo((networkDevices) => {
+    res.send(networkDevices);
+  })
+});
+
+app.post('/network/refresh', function (req, res) {
+  logger.write.debug('requset POST /network/refresh arrived');
+
+  lanManagerHandler.ScanLanNetworkDevicesInfo((lanDevices ,err) => {
+    if (err) {
+      res.statusCode = 503;
+      logger.write.warn('Error with requset POST /network/refresh ,' + err);
+    }
+    res.send(err ? err : lanDevices);
+  })
+});
+
+
+app.post('/network/:mac/:name', function (req, res) {
+  logger.write.debug('requset POST /network/' + req.params.mac + '/' + req.params.name + ' arrived');
+
+  lanManagerHandler.SetLanDeviceName(req.params.mac, req.params.name, (err) => {
+    if (err) {
+      res.statusCode = 503;
+      logger.write.warn('Error with requset POST /network/' + req.params.mac +'/' + req.params.name + ' ,' + err);
+    }
+    res.send(err);
+  })
+});
+
+// TODO: add option to create device by it and not by tuching json device file
 // Logs API
-// delete timings by its id
+
 app.get('/logs/:security/:rows', function (req, res) {
   logger.write.debug('requset GET /logs/' + req.params.security + '/' + req.params.rows + ' arrived');
 
-  logger.read(req.params.security == 1 , req.params.rows , (logs, err) => {
+  logger.read(req.params.security == 1, req.params.rows, (logs, err) => {
     if (err) {
       res.statusCode = 503;
-      logger.write.warn('Error with requset GET /logs/' + req.params.security + ' ,' + err);
+      logger.write.warn('Error with requset GET /logs/' + req.params.security +'/' + req.params.security + ' ,' + err);
     }
     res.send(!err ? logs : err);
   });
