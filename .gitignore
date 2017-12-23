@@ -4,4 +4,4 @@ prog_log.log
 security_log.log
 cacheSessionsIdMap.json
 cacheNetworkMacNameMap.json
-
+cacheLastBroadlinkIROperation.json

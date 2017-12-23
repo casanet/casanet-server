@@ -5,13 +5,11 @@ var python = require('../Commons/pythonHandler');
 var fs = require('fs')
 
 var irCommands = require('./irCommandsMap.json');
-var chachFilePath = __dirname + '\\cacheLastOperation.json';
-var cacheLastOperation;
 
 var updateChangesCallbacks = [];
 
 try {
-  cacheLastOperation = require(chachFilePath);
+  cacheLastOperation = require('../../cache/cacheLastBroadlinkIROperation.json');
 } catch (error) {
   cacheLastOperation = {}
 }
@@ -28,11 +26,9 @@ var UpdateCache = (deviceInentity, operationIrCode, state, value) => {
     cacheLastOperation[deviceInentity].state = state;
 
   // Save to operationIrCode file
-  fs.writeFile(chachFilePath, JSON.stringify(cacheLastOperation, null, '\t'), 'utf-8', function (err) {
+  fs.writeFile('cache/cacheLastBroadlinkIROperation.json', JSON.stringify(cacheLastOperation, null, '\t'), 'utf-8', function (err) {
     if (err)
-      logger.write.error('Error to write cacheLastOperation file');
-    else
-      logger.write.debug('Done to update cacheLastOperation file');
+      logger.write.error('Error to write cacheLastBroadlinkIROperation file');
   })
 }
 
