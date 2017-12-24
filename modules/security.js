@@ -32,7 +32,8 @@ var GetIp = function (req) {
 
 
 var GetAllRquestInfo = (req) => {
-  return ' IP: ' + GetIp(req) + ',    SESSION_ID: ' + req.cookies.sessionID + ',    REQUEST: ' + req.method + ' ' + req.url + ',    DEVICE: ' + req.useragent.platform + ',    OS: ' + req.useragent.os + ',    BROWSER: ' + req.useragent.browser + '/' + req.useragent.version + ',    IS MOBILE: ' + req.useragent.isMobile;
+  var sessionId = req.cookies.sessionID;
+  return 'USER: ' + sessionsIdMap[sessionId] + ' IP: ' + GetIp(req) + ',    SESSION_ID: ' + sessionId + ',    REQUEST: ' + req.method + ' ' + req.url + ',    DEVICE: ' + req.useragent.platform + ',    OS: ' + req.useragent.os + ',    BROWSER: ' + req.useragent.browser + '/' + req.useragent.version + ',    IS MOBILE: ' + req.useragent.isMobile;
 }
 
 
@@ -56,7 +57,7 @@ var CheckIn = function (req, res, userName, pass, next) {
     sessionsIdMap[sessionId] = userName;
     SaveToCache();
     res.cookie('sessionID', sessionId);//, { maxAge: 4.32e+8 }); // 5 days
-    logger.security.info('username ' + userName + ' login successfuly with password: ' + pass + GetAllRquestInfo(req));
+    logger.security.info('username ' + userName + ' login successfuly with password: ' + pass + ' Generated session ID :' + sessionId + ' ' +  GetAllRquestInfo(req));
   }
 
   next(isAccess);
