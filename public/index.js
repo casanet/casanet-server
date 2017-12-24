@@ -790,19 +790,23 @@ IoTApp.controller('logsCtrl', function ($scope, $http) {
     $scope.logRoes = 2000;
     $scope.showSecutity = false;
     $scope.GetLogs = function () {
+        $scope.message = "Getting logs from server...";
         $http({
             url: 'logs/' + ($scope.showSecutity ? '1/' : '0/') + $scope.logRoes,
             method: 'GET'
         })
             .then(function (response) {
                 console.log("get logs successfully");
+
                 $scope.logs = response.data;
 
                 $scope.logs.forEach((log) => {
                     log.time = new Date(log.time).toLocaleString();
                 });
+                $scope.message = "";
             },
             function (response) {
+                $scope.message = response.data;
             });
     };
 
@@ -855,13 +859,13 @@ IoTApp.controller('networkCtrl', function ($scope, $http) {
                 Object.keys(devicesMap).forEach((mac) => {
                     $scope.lanDevices.push(devicesMap[mac]);
                 });
-                $scope.message = "";                
+                $scope.message = "";
             },
             function (response) {
-                $scope.message = "";                
+                $scope.message = "";
                 swal({
                     title: 'Error in requst',
-                    text : response.data,
+                    text: response.data,
                     icon: "warning",
                     timer: 60000
                 });
@@ -887,7 +891,7 @@ IoTApp.controller('networkCtrl', function ($scope, $http) {
             function (response) {
                 swal({
                     title: 'Error in requst',
-                    text : response.data,
+                    text: response.data,
                     icon: "warning",
                     timer: 60000
                 });

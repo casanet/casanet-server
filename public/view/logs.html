@@ -6,7 +6,7 @@ Show secutity logs
 
 Number of rows to get:
 <input type="number" ng-model="logRoes"/>
-<button class="btn btn-xs btn-info" ng-click="GetLogs()">Get current logs</button>
+<button ng-show="!message" class="btn btn-xs btn-info" ng-click="GetLogs()">Get current logs</button> {{message}}
 <br>
 <br>
 Filter by:
