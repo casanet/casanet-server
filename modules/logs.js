@@ -23,7 +23,7 @@ log4js.configure({
             level: 'debug'
         },
         security_category: {
-            appenders: [ 'security_log', 'console_log'],
+            appenders: [ 'security_log'],
             level: 'debug'
         }
     }

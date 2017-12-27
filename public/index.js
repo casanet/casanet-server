@@ -418,13 +418,15 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
 
         if (response.status && response.status != 403 && device)
             $scope.GetDevice(device);
+        var message = response.data;
+        if ((typeof response.data) != 'string')
+            message = JSON.stringify(response.data);
         swal({
             title: "Error with requst action",
-            text: response.status == 0 ? 'NO LAN CONNECTION' : response.data,
+            text: response.status == 0 ? 'NO LAN CONNECTION' : message,
             icon: "warning",
             timer: 60000
         });
-        console.error(response.data);
     }
 
 

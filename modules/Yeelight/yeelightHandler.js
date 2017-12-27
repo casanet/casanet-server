@@ -143,7 +143,7 @@ var GetBrightness = (device, next) => {
 }
 
 var SetBrightness = (device, value, next) => {
-    if (device.brand == 'Yeelight' && device.state == 'off') {
+    if (device.brand == 'Yeelight' && device.state != 'on') {
         next('device must be turned on when values changed');
         return;
     }
@@ -214,7 +214,7 @@ var GetColorTemperature = (device, next) => {
 }
 
 var SetColorTemperature = (device, value, next) => {
-    if (device.state == 'off') {
+    if (device.state != 'on') {
         next('device must be turned on when values changed');
         return;
     }
