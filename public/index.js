@@ -607,6 +607,43 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
         });
     });
 
+    $scope.newDailyDays = {};
+    $scope.CreateDaly = (selectedEventToTimer, selectedTimeToDaily) => {
+        var daysArray = [];
+        Object.keys($scope.newDailyDays).forEach((day) => {
+            if ($scope.newDailyDays[day] == true)
+                daysArray.push(day);
+        })
+        $http({
+            url: 'timings',
+            method: 'POST',
+            data: {
+                timingType: "daily",
+                days: daysArray,
+                time: selectedTimeToDaily.getHours() + ":" + selectedTimeToDaily.getMinutes(),
+                trigger: selectedEventToTimer,
+                active: "on"
+            }
+        })
+            .then(function (response) {
+                console.log("carete daily timing successfully");
+                $scope.GetTimings();
+                swal({
+                    title: "Carete daily timing successfully",
+                    icon: "success",
+                    timer: 60000
+                });
+            },
+            function (response) {
+                swal({
+                    title: "Carete daily fail",
+                    text: response.data,
+                    icon: "warning",
+                    timer: 60000
+                });
+            });
+    };
+
     $scope.CreateTimer = (selectedEventToTimer, selectedMinutsToTimer) => {
         $http({
             url: 'timings',

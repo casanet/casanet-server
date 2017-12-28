@@ -3,6 +3,65 @@
     <div class="panel-heading">Daily timings</div>
     <!-- panel to show current event menu -->
     <div class="panel-body">
+
+
+        <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#dailyModal">Create new timing</button>
+
+        <!-- Create timer Modal -->
+        <div class="modal fade" id="dailyModal" tabindex="-1" role="dialog" aria-labelledby="dailyModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="onceModalLabel">Create new daily timing</h5>
+
+                    </div>
+                    <div class="modal-body">
+                        action to invoke
+                        <select ng-model="selectedEventToDaily">
+                            <option ng-repeat="option in events" ng-value="option.id">{{option.name}}</option>
+                        </select>
+                        at
+                        <input type="time" ng-model="selectedTimeToDaily" /> in days:
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="" ng-model="newDailyDays.sunday">sunday</label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="" ng-model="newDailyDays.monday">monday</label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="" ng-model="newDailyDays.tuesday">tuesday</label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="" ng-model="newDailyDays.wednesday">wednesday</label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="" ng-model="newDailyDays.thursday">thursday</label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="" ng-model="newDailyDays.friday">friday</label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="" ng-model="newDailyDays.saturday">saturday</label>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CreateDaly(selectedEventToDaily, selectedTimeToDaily)">
+                            Save Timing</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div style="margin:20px;">
             <!--show menues in expender view-->
             <div class="panel-group" id="accordion{{timing.id}}">
@@ -20,9 +79,34 @@
                     <div id="{{timing.id}}" class="panel-collapse collapse">
                         <div class="panel-body">
                             Days:
-                            <ul>
-                                <li ng-repeat="day in timing.days">{{day}}</li>
-                            </ul>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" disabled ng-checked="{{timing.days.indexOf('sunday') == -1 ? false : true}}" >sunday</label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('monday') == -1 ? false : true}}">monday</label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('tuesday') == -1 ? false : true}}">tuesday</label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('wednesday') == -1 ? false : true}}">wednesday</label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('thursday') == -1 ? false : true}}">thursday</label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('friday') == -1 ? false : true}}">friday</label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('saturday') == -1 ? false : true}}">saturday</label>
+                            </div>
 
                             Time:
                             <b> {{timing.time}} </b>
@@ -148,11 +232,11 @@
                     </div>
                     <div id="{{timing.id}}" class="panel-collapse collapse">
                         <div class="panel-body">
-                            Start in : <b> {{timing.startTime}}</b>
-                            <br>
-                            Will operate in : <b> {{timing.operateTime}}</b>
-                            <br>                            
-                            Duration in minutes:
+                            Start in :
+                            <b> {{timing.startTime}}</b>
+                            <br> Will operate in :
+                            <b> {{timing.operateTime}}</b>
+                            <br> Duration in minutes:
                             <b> {{timing.durationInMinuts}} </b>
                             <br>
                             <br>
