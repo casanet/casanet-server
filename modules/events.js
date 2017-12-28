@@ -78,7 +78,7 @@ var DeleteEvent = (id, next) => {
 }
 
 // Invoke the action action by action by recusion
-var RunActionsRecursion = (actions, index, next) => {
+var RunActionsRecursion = (actions, index, next, errIndex) => {
 
     // Stop condition if run on all actions
     if (actions.length <= index) {
@@ -92,8 +92,14 @@ var RunActionsRecursion = (actions, index, next) => {
     // If all ok start next recursion call
     var nextAction = (err) => {
         if (err) {
-            next(err);
-            return;
+            logger.write.warn("Error while invoking action " + (errIndex ? " in try number " + errIndex : "") + " error: " + err);
+            // try 3 times to invoke action, if fail more then 3 continue,
+            if (!errIndex || errIndex <= 3) {
+                setTimeout(()=>{
+                    RunActionsRecursion(actions, index, next, errIndex ? errIndex + 1 : 1);
+                }, 5000);
+                return;
+            }
         }
 
         RunActionsRecursion(actions, index + 1, next);
@@ -101,15 +107,11 @@ var RunActionsRecursion = (actions, index, next) => {
 
     // First set the wanted state
     devicesHandle.SetDeviceProperty(action.deviceID, 'switch', action.state, (err) => {
-        if (err) {
-            next(err);
-            return;
-        }
-
-        // Then if it need addtional value set do it 
+       
+        
         if (action.type == 'switch')
-            nextAction();
-        else
+            nextAction(err);
+        else // Then if it need addtional value set do it 
             devicesHandle.SetDeviceProperty(action.deviceID, action.type, action.set, nextAction);
     });
 }
