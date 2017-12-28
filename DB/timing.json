@@ -19,10 +19,11 @@
 		"trigger": "testing",
 		"active": "on"
 	},
-	"3": {
+	"SkR0j_zXG": {
 		"timingType": "timer",
-		"durationInMinuts": 300,
+		"durationInMinuts": 5,
 		"trigger": "testing",
-		"active": "off"
+		"active": "on",
+		"startTime": "2017-12-28T14:12:37.805Z"
 	}
 }

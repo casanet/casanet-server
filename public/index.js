@@ -549,6 +549,10 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                         $scope.onceTimings.push(currTiming);
                         break;
                     case "timer":
+                        var startTime = new Date(currTiming.startTime);
+                        currTiming.startTime = startTime.toLocaleTimeString();
+                        startTime.setTime(startTime.getTime() + (currTiming.durationInMinuts * 60000)); // add the minuts to get operat time
+                        currTiming.operateTime = startTime.toLocaleTimeString();
                         $scope.timerTimings.push(currTiming);
                         break;
                     default:

@@ -150,7 +150,7 @@ setInterval(() => {
 
     Object.keys(timings).forEach((id) => {
 
-        if(timings[id].active != 'on')
+        if (timings[id].active != 'on')
             return;
 
         switch (timings[id].timingType) {
@@ -207,6 +207,8 @@ var GetTimings = (next) => {
 
 var CreateTiming = (timing, next) => {
 
+    if (timing.timingType == 'timer')
+        timing.startTime = new Date();
     timings[shortid.generate()] = timing;
     SaveToDB();
     TimingStructChanged();
