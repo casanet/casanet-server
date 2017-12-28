@@ -93,7 +93,7 @@ var RunActionsRecursion = (actions, index, next, errIndex) => {
     var nextAction = (err) => {
         if (err) {
             logger.write.warn("Error while invoking action " + (errIndex ? " in try number " + errIndex : "") + " error: " + err);
-            // try 3 times to invoke action, if fail more then 3 continue,
+            // try 4 times to invoke action, if fail more then 3 continue,
             if (!errIndex || errIndex <= 3) {
                 setTimeout(()=>{
                     RunActionsRecursion(actions, index, next, errIndex ? errIndex + 1 : 1);
