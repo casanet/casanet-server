@@ -74,7 +74,7 @@ Screenshots:
 ![screenshot](https://user-images.githubusercontent.com/28386247/33982467-4d80d556-e0b9-11e7-9261-fa885c838b6a.png)
 
 ## Using (HTTP API)
-
+> Note that headers contains : `Content-Type : application/json` and body is json
 ### Athontication API
 
 Login: POST http://127.0.0.1:3000/login
@@ -415,6 +415,7 @@ to get all timings GET  http://127.0.0.1:3000/timings
     "3": {
         "timingType": "timer",
         "durationInMinuts": 300,
+        "startTime": "2017-12-28T14:12:37.805Z",
         "trigger": "H1MXuQzhW",
         "active": "off"
     }
