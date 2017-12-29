@@ -1,7 +1,7 @@
 fs = require('fs')
 const log4js = require('log4js');
-const log_file_name = 'prog_log.log';
-const security_file_name = 'security_log.log';
+const log_file_name = 'logs/prog_log.log';
+const security_file_name = 'logs/security_log.log';
 
 log4js.configure({
     appenders: {
