@@ -7,14 +7,18 @@ log4js.configure({
     appenders: {
         prog_log: {
             type: 'file',
-            filename: log_file_name
+            filename: log_file_name,
+            maxLogSize: 10 * 1000000, // 10 mb
+            backups: 1000
         },
         console_log: {
             type: 'console',
         },
         security_log: {
             type: 'file',
-            filename: security_file_name
+            filename: security_file_name,
+            maxLogSize: 10 * 1000000, // 10mb
+            backups: 1000
         }
     },
     categories: {
