@@ -56,7 +56,7 @@ var CheckIn = function (req, res, userName, pass, next) {
     var sessionId = shortid.generate()
     sessionsIdMap[sessionId] = userName;
     SaveToCache();
-    res.cookie('sessionID', sessionId);//, { maxAge: 4.32e+8 }); // 5 days
+    res.cookie('sessionID', sessionId , { maxAge: 3.154e+10 }); // 365 days
     logger.security.info('username ' + userName + ' login successfuly with password: ' + pass + ' Generated session ID :' + sessionId + ' ' +  GetAllRquestInfo(req));
   }
 
