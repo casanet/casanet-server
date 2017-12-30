@@ -607,6 +607,18 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
         });
     });
 
+    $scope.GetTimeFromDate = (date) => {
+        var result = "";
+        if (date.getHours() < 10)
+            result += "0";
+        result += date.getHours();
+        result += ":";
+        if (date.getMinutes() < 10)
+            result += "0";
+        result += date.getMinutes();
+        return result;
+    }
+
     $scope.newDailyDays = {};
     $scope.CreateDaly = (selectedEventToTimer, selectedTimeToDaily) => {
         var daysArray = [];
@@ -620,7 +632,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
             data: {
                 timingType: "daily",
                 days: daysArray,
-                time: selectedTimeToDaily.getHours() + ":" + selectedTimeToDaily.getMinutes(),
+                time: $scope.GetTimeFromDate(selectedTimeToDaily),
                 trigger: selectedEventToTimer,
                 active: "on"
             }
@@ -682,7 +694,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
             data: {
                 timingType: "once",
                 date: t.getDate() + '-' + (t.getMonth() + 1) + '-' + (t.getFullYear() % 100),
-                time: t.getHours() + ':' + t.getMinutes(),
+                time: $scope.GetTimeFromDate(t),
                 trigger: selectedEventToOnce,
                 active: "on"
             }

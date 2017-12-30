@@ -44,6 +44,9 @@ var dailyHandler = (now, timing, id) => {
     var minuts = timing.time.split(":")[1];
     var hour = timing.time.split(":")[0];
 
+    minuts = parseInt(minuts);
+    hour = parseInt(hour);
+
     if (minuts != now.getMinutes() ||
         hour != now.getHours() ||
         timing.days.indexOf(now.getDayName()) == -1)
@@ -91,62 +94,51 @@ var onceHandler = (now, timing, id) => {
 
 };
 
+// hold every timer interval to know when invoke it
 var timerActivate = {};
+
 var timerHandler = (now, timing, id) => {
-    // remove from struct of timing 
-    var active = (trigger) => {
-        eventsHandle.InvokeEvent(timing.trigger, (err) => {
-            if (err)
-                logger.write.error("invoke event " + timing.trigger + " by trigger of timer timing fail, error ditail: " + err);
-            else
-                logger.write.info("invoke event " + timing.trigger + " by trigger of timer timing done");
 
-            TimingEventTriggerdChanged(id, timing, err);
-            // delete the timing and sent event about it
-            // TODO event with detail about id success and about new struct of timing
-        })
-    };
-
+    // if id already in system, return
     if (id in timerActivate)
         return;
+    timerActivate[id] = true;
 
-    timerActivate[id] = {
-        duration: timing.durationInMinuts,
-        trigger: timing.trigger,
-        last_minut: ""
-    };
+    setTimeout((timerID, timing) => {
+        
+        // if time stil on and not removed
+        if (timerID in timings) {
+            logger.write.info("timing timer id " + timerID + " activate");
 
-    // add to struct of current 
-    timerActivate[id].interval = setInterval((iid) => {
-        if (timerActivate[iid].last_minut == new Date().getMinutes())
-            return;
+            eventsHandle.InvokeEvent(timing.trigger, (err) => {
+                if (err)
+                    logger.write.error("invoke event " + timing.trigger + " by trigger of timer timing fail, error ditail: " + err);
+                else
+                    logger.write.info("invoke event " + timing.trigger + " by trigger of timer timing done");
 
-        timerActivate[iid].last_minut = new Date().getMinutes();
-        timerActivate[iid].duration--;
-        if (timerActivate[iid].duration <= 0) {
-            logger.write.info("timing timer id " + iid + " activate");
-            active(timerActivate[iid].trigger);
-            clearInterval(timerActivate[iid].interval);
-            delete timings[iid];
-            delete timerActivate[iid];
-            SaveToDB();
-            TimingStructChanged();
-            return;
+                TimingEventTriggerdChanged(timerID, timing, err);
+                // delete the timing and sent event about it
+                // TODO event with detail about id success and about new struct of timing
+            })
         }
-    }, 50000, id) //60000
-    // run with interval of 1 minut and subtract until you get 0, then active and remove
+
+        delete timings[timerID];
+        delete timerActivate[timerID];
+        SaveToDB();
+        TimingStructChanged();
+    }, timing.durationInMinuts * 60000, id, timing);
 };
 
 logger.write.info("Start interval of timings");
 // base interval of timing
-var lastMinuue;
+var lastMinute;
 setInterval(() => {
 
     var now = new Date();
 
-    if (lastMinuue == now.getMinutes())
+    if (lastMinute == now.getMinutes())
         return;
-    lastMinuue = now.getMinutes();
+    lastMinute = now.getMinutes();
 
     Object.keys(timings).forEach((id) => {
 
@@ -207,9 +199,13 @@ var GetTimings = (next) => {
 
 var CreateTiming = (timing, next) => {
 
-    if (timing.timingType == 'timer')
-        timing.startTime = new Date();
-    timings[shortid.generate()] = timing;
+    var newID = shortid.generate();
+    timings[newID] = timing;
+    if (timing.timingType == 'timer') {
+        timings[newID].startTime = new Date();
+        timerHandler(new Date(), timings[newID], newID);
+    }
+
     SaveToDB();
     TimingStructChanged();
     next();
@@ -225,6 +221,7 @@ var EditTiming = (id, timing, next) => {
 var DeleteTiming = (id, next) => {
     delete timings[id];
     SaveToDB();
+    TimingStructChanged();
 
     next();
 }
