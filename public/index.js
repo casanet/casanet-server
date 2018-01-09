@@ -539,6 +539,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
             Object.keys(timingsStruct).forEach((key) => {
                 var currTiming = timingsStruct[key];
                 currTiming.id = key;
+                currTiming.name = currTiming.name ? currTiming.name : "?????";
                 currTiming.triggerName = actions[currTiming.trigger].name;
 
                 switch (currTiming.timingType) {
@@ -620,7 +621,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
     }
 
     $scope.newDailyDays = {};
-    $scope.CreateDaly = (selectedEventToTimer, selectedTimeToDaily) => {
+    $scope.CreateDaly = (selectedEventToTimer, selectedTimeToDaily, name) => {
         var daysArray = [];
         Object.keys($scope.newDailyDays).forEach((day) => {
             if ($scope.newDailyDays[day] == true)
@@ -634,6 +635,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 days: daysArray,
                 time: $scope.GetTimeFromDate(selectedTimeToDaily),
                 trigger: selectedEventToTimer,
+                name : name,
                 active: "on"
             }
         })
@@ -656,7 +658,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
             });
     };
 
-    $scope.CreateTimer = (selectedEventToTimer, selectedMinutsToTimer) => {
+    $scope.CreateTimer = (selectedEventToTimer, selectedMinutsToTimer, name) => {
         $http({
             url: 'timings',
             method: 'POST',
@@ -664,6 +666,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 timingType: "timer",
                 durationInMinuts: selectedMinutsToTimer,
                 trigger: selectedEventToTimer,
+                name: name,
                 active: "on"
             }
         })
@@ -686,7 +689,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
             });
     };
 
-    $scope.CreateOnceTiming = (selectedEventToOnce, selectedTimeToOnce) => {
+    $scope.CreateOnceTiming = (selectedEventToOnce, selectedTimeToOnce, name) => {
         var t = selectedTimeToOnce; //new Date();
         $http({
             url: 'timings',
@@ -696,6 +699,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 date: t.getDate() + '-' + (t.getMonth() + 1) + '-' + (t.getFullYear() % 100),
                 time: $scope.GetTimeFromDate(t),
                 trigger: selectedEventToOnce,
+                name : name,
                 active: "on"
             }
         })

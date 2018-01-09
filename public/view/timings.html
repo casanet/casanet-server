@@ -16,7 +16,10 @@
 
                     </div>
                     <div class="modal-body">
-                        action to invoke
+                        Name for timing:
+                        <input type="text" ng-model="selectedNameToDaily" />
+
+                        <br> action to invoke
                         <select ng-model="selectedEventToDaily">
                             <option ng-repeat="option in events" ng-value="option.id">{{option.name}}</option>
                         </select>
@@ -55,7 +58,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CreateDaly(selectedEventToDaily, selectedTimeToDaily)">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CreateDaly(selectedEventToDaily, selectedTimeToDaily, selectedNameToDaily )">
                             Save Timing</button>
                     </div>
                 </div>
@@ -68,7 +71,7 @@
                 <div ng-repeat="timing in dailyTimings" class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion{{timing.id}}" data-target="#{{timing.id}}">Trigger: {{timing.triggerName}}</a>
+                            <a data-toggle="collapse" data-parent="#accordion{{timing.id}}" data-target="#{{timing.id}}">{{timing.name}}</a>
                             <button type="button" class="btn btn-sm btn-toggle" data-toggle="button" aria-pressed="({timing.active == 'on')}" autocomplete="{{timing.active == 'on' ? 'on' : 'off'}}"
                                 ng-class="timing.active == 'on' ? 'active' : ''" ng-click="TuggelTimingActive(timing)">
                                 <div class="handle"></div>
@@ -77,35 +80,38 @@
 
                     </div>
                     <div id="{{timing.id}}" class="panel-collapse collapse">
+                        <b>
+                            Trigger: {{timing.triggerName}}
+                        </b>
                         <div class="panel-body">
                             Days:
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" disabled ng-checked="{{timing.days.indexOf('sunday') == -1 ? false : true}}" >sunday</label>
+                                    <input type="checkbox" disabled ng-checked="{{timing.days.indexOf('sunday') == -1 ? false : true}}">sunday</label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('monday') == -1 ? false : true}}">monday</label>
+                                    <input type="checkbox" disabled ng-checked="{{timing.days.indexOf('monday') == -1 ? false : true}}">monday</label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('tuesday') == -1 ? false : true}}">tuesday</label>
+                                    <input type="checkbox" disabled ng-checked="{{timing.days.indexOf('tuesday') == -1 ? false : true}}">tuesday</label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('wednesday') == -1 ? false : true}}">wednesday</label>
+                                    <input type="checkbox" disabled ng-checked="{{timing.days.indexOf('wednesday') == -1 ? false : true}}">wednesday</label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('thursday') == -1 ? false : true}}">thursday</label>
+                                    <input type="checkbox" disabled ng-checked="{{timing.days.indexOf('thursday') == -1 ? false : true}}">thursday</label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('friday') == -1 ? false : true}}">friday</label>
+                                    <input type="checkbox" disabled ng-checked="{{timing.days.indexOf('friday') == -1 ? false : true}}">friday</label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox"  disabled ng-checked="{{timing.days.indexOf('saturday') == -1 ? false : true}}">saturday</label>
+                                    <input type="checkbox" disabled ng-checked="{{timing.days.indexOf('saturday') == -1 ? false : true}}">saturday</label>
                             </div>
 
                             Time:
@@ -138,7 +144,9 @@
 
                     </div>
                     <div class="modal-body">
-                        action to invoke
+                        Name for timing:
+                        <input type="text" ng-model="selectedNameToOnce" />
+                        <br> action to invoke
                         <select ng-model="selectedEventToOnce">
                             <option ng-repeat="option in events" ng-value="option.id">{{option.name}}</option>
                         </select>
@@ -147,7 +155,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CreateOnceTiming(selectedEventToOnce, selectedTimeToOnce)">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CreateOnceTiming(selectedEventToOnce, selectedTimeToOnce, selectedNameToOnce)">
                             Save Timing</button>
                     </div>
                 </div>
@@ -160,7 +168,7 @@
                 <div ng-repeat="timing in onceTimings" class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion{{timing.id}}" data-target="#{{timing.id}}">Trigger: {{timing.triggerName}}</a>
+                            <a data-toggle="collapse" data-parent="#accordion{{timing.id}}" data-target="#{{timing.id}}">{{timing.name}}</a>
                             <button type="button" class="btn btn-sm btn-toggle" data-toggle="button" aria-pressed="({timing.active == 'on')}" autocomplete="{{timing.active == 'on' ? 'on' : 'off'}}"
                                 ng-class="timing.active == 'on' ? 'active' : ''" ng-click="TuggelTimingActive(timing)">
                                 <div class="handle"></div>
@@ -168,6 +176,9 @@
                         </h4>
                     </div>
                     <div id="{{timing.id}}" class="panel-collapse collapse">
+                        <b>
+                            Trigger: {{timing.triggerName}}
+                        </b>
                         <div class="panel-body">
                             Date:
                             <b> {{timing.date}} </b>
@@ -200,7 +211,9 @@
 
                     </div>
                     <div class="modal-body">
-                        action to invoke
+                        Name for timing:
+                        <input type="text" ng-model="selectedNameToTimer" />
+                        <br> action to invoke
                         <select ng-model="selectedEventToTimer">
                             <option ng-repeat="option in events" ng-value="option.id">{{option.name}}</option>
                         </select>
@@ -209,7 +222,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CreateTimer(selectedEventToTimer, selectedMinutsToTimer)">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CreateTimer(selectedEventToTimer, selectedMinutsToTimer, selectedNameToTimer)">
                             Save Timer</button>
                     </div>
                 </div>
@@ -223,7 +236,7 @@
                 <div ng-repeat="timing in timerTimings" class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion{{timing.id}}" data-target="#{{timing.id}}">Trigger: {{timing.triggerName}}</a>
+                            <a data-toggle="collapse" data-parent="#accordion{{timing.id}}" data-target="#{{timing.id}}">{{timing.name}}</a>
                             <button type="button" class="btn btn-sm btn-toggle" data-toggle="button" aria-pressed="({timing.active == 'on')}" autocomplete="{{timing.active == 'on' ? 'on' : 'off'}}"
                                 ng-class="timing.active == 'on' ? 'active' : ''" ng-click="TuggelTimingActive(timing)">
                                 <div class="handle"></div>
@@ -231,6 +244,9 @@
                         </h4>
                     </div>
                     <div id="{{timing.id}}" class="panel-collapse collapse">
+                        <b>
+                            Trigger: {{timing.triggerName}}
+                        </b>
                         <div class="panel-body">
                             Start in :
                             <b> {{timing.startTime}}</b>
