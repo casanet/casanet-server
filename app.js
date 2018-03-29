@@ -27,7 +27,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 app.use(useragent.express());
 app.use('/static', express.static('public')); // serve every static file in public folder
 app.use(function (req, res, next) { // middelwhere for security
-  if (req.url == '/' ||
+  if (req.url == '/check-live') {
+    res.send('live');
+    return;
+  }
+  else if (req.url == '/' ||
     req.url.indexOf('static') != -1 ||
     req.url == '/login' ||
     req.url == '/logout') { // it login logout or static file continue
@@ -364,7 +368,7 @@ app.get('/network', function (req, res) {
 app.post('/network/refresh', function (req, res) {
   logger.write.debug('requset POST /network/refresh arrived');
 
-  lanManagerHandler.ScanLanNetworkDevicesInfo((lanDevices ,err) => {
+  lanManagerHandler.ScanLanNetworkDevicesInfo((lanDevices, err) => {
     if (err) {
       res.statusCode = 503;
       logger.write.warn('Error with requset POST /network/refresh ,' + err);
@@ -380,7 +384,7 @@ app.post('/network/:mac/:name', function (req, res) {
   lanManagerHandler.SetLanDeviceName(req.params.mac, req.params.name, (err) => {
     if (err) {
       res.statusCode = 503;
-      logger.write.warn('Error with requset POST /network/' + req.params.mac +'/' + req.params.name + ' ,' + err);
+      logger.write.warn('Error with requset POST /network/' + req.params.mac + '/' + req.params.name + ' ,' + err);
     }
     res.send(err);
   })
@@ -395,7 +399,7 @@ app.get('/logs/:security/:rows', function (req, res) {
   logger.read(req.params.security == 1, req.params.rows, (logs, err) => {
     if (err) {
       res.statusCode = 503;
-      logger.write.warn('Error with requset GET /logs/' + req.params.security +'/' + req.params.security + ' ,' + err);
+      logger.write.warn('Error with requset GET /logs/' + req.params.security + '/' + req.params.security + ' ,' + err);
     }
     res.send(!err ? logs : err);
   });

@@ -49,6 +49,25 @@ IoTApp.controller('indexCtrl', function ($scope) {
 
 
 IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
+    // Check alive
+    $scope.isOnline = true;
+
+    var checkIsAlive = () => {
+        $http({
+            url: 'check-live',
+            method: 'GET',
+            timeout : 3000 
+        })
+            .then(function (response) {
+                $scope.isOnline = true;
+            },
+                function (response) { // optional
+                    $scope.isOnline = false;
+                });
+    };
+    setInterval(checkIsAlive, 3000);
+
+    // 
     $scope.onMouseUpCallbacks = [];
 
     $(document).ready(function () {
@@ -354,10 +373,10 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                     $scope.devices.push(device);
                 });
             },
-            function (response) { // optional
-                $scope.loading = false;
-                $scope.ErrorResponse(response);
-            });
+                function (response) { // optional
+                    $scope.loading = false;
+                    $scope.ErrorResponse(response);
+                });
     };
 
     $scope.GetDevices();
@@ -372,10 +391,10 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 device.sending = false;
                 $scope.updateDeviceProps(device, response.data);
             },
-            function (response) { // optional
-                device.sending = false;
-                $scope.ErrorResponse(response);
-            });
+                function (response) { // optional
+                    device.sending = false;
+                    $scope.ErrorResponse(response);
+                });
     };
 
     $scope.SetState = function (device) {
@@ -391,10 +410,10 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 console.log("change device successfully");
                 device.sending = false;
             },
-            function (response) { // optional
-                device.sending = false;
-                $scope.ErrorResponse(response, device);
-            });
+                function (response) { // optional
+                    device.sending = false;
+                    $scope.ErrorResponse(response, device);
+                });
     };
 
     $scope.SetLight = (device, PropToChange) => {
@@ -408,10 +427,10 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 device.sending = false;
                 console.log("change device light successfully");
             },
-            function (response) {
-                device.sending = false;
-                $scope.ErrorResponse(response, device);
-            });
+                function (response) {
+                    device.sending = false;
+                    $scope.ErrorResponse(response, device);
+                });
     }
 
     $scope.ErrorResponse = (response, device) => {
@@ -441,10 +460,10 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 device.sending = false;
                 console.log("change device ac successfully");
             },
-            function (response) { // optional
-                device.sending = false;
-                $scope.ErrorResponse(response, device);
-            });
+                function (response) { // optional
+                    device.sending = false;
+                    $scope.ErrorResponse(response, device);
+                });
 
     }
 
@@ -460,9 +479,9 @@ IoTApp.controller('mainCtrl', function ($scope, $http, updatesService) {
                 console.log("devices refreshd successfully");
                 $scope.GetDevices();
             },
-            function (response) { // optional
-                $scope.ErrorResponse(response);
-            });
+                function (response) { // optional
+                    $scope.ErrorResponse(response);
+                });
     }
 
     $scope.ShowDetails = (device) => {
@@ -492,15 +511,15 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
                     timer: 60000
                 });
             },
-            function (response) { // optional
-                console.error("error in login");
-                swal({
-                    title: "Error in login",
-                    text: "usename or password incorrect",
-                    icon: "warning",
-                    timer: 60000
+                function (response) { // optional
+                    console.error("error in login");
+                    swal({
+                        title: "Error in login",
+                        text: "usename or password incorrect",
+                        icon: "warning",
+                        timer: 60000
+                    });
                 });
-            });
     };
 
     $scope.Logout = function (all) {
@@ -517,16 +536,16 @@ IoTApp.controller('loginCtrl', function ($scope, $http) {
                     timer: 60000
                 });
             },
-            function (response) { // optional
-                console.error("error in logout");
+                function (response) { // optional
+                    console.error("error in logout");
 
-                swal({
-                    title: "Error in requst",
-                    text: response.data,
-                    icon: "warning",
-                    timer: 60000
+                    swal({
+                        title: "Error in requst",
+                        text: response.data,
+                        icon: "warning",
+                        timer: 60000
+                    });
                 });
-            });
     };
 });
 
@@ -574,9 +593,9 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 console.log("get actions successfully");
                 callback(response.data);
             },
-            function (response) {
-                callback({}, response);
-            });
+                function (response) {
+                    callback({}, response);
+                });
     };
 
     $scope.GetTimings = function () {
@@ -589,9 +608,9 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 console.log("get timings successfully");
                 $scope.SetTimingsAsLists(response.data);
             },
-            function (response) {
+                function (response) {
 
-            });
+                });
     };
 
     $scope.GetTimings();
@@ -635,7 +654,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 days: daysArray,
                 time: $scope.GetTimeFromDate(selectedTimeToDaily),
                 trigger: selectedEventToTimer,
-                name : name,
+                name: name,
                 active: "on"
             }
         })
@@ -648,14 +667,14 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                     timer: 60000
                 });
             },
-            function (response) {
-                swal({
-                    title: "Carete daily fail",
-                    text: response.data,
-                    icon: "warning",
-                    timer: 60000
+                function (response) {
+                    swal({
+                        title: "Carete daily fail",
+                        text: response.data,
+                        icon: "warning",
+                        timer: 60000
+                    });
                 });
-            });
     };
 
     $scope.CreateTimer = (selectedEventToTimer, selectedMinutsToTimer, name) => {
@@ -679,14 +698,14 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                     timer: 60000
                 });
             },
-            function (response) {
-                swal({
-                    title: "Carete timer fail",
-                    text: response.data,
-                    icon: "warning",
-                    timer: 60000
+                function (response) {
+                    swal({
+                        title: "Carete timer fail",
+                        text: response.data,
+                        icon: "warning",
+                        timer: 60000
+                    });
                 });
-            });
     };
 
     $scope.CreateOnceTiming = (selectedEventToOnce, selectedTimeToOnce, name) => {
@@ -699,7 +718,7 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 date: t.getDate() + '-' + (t.getMonth() + 1) + '-' + (t.getFullYear() % 100),
                 time: $scope.GetTimeFromDate(t),
                 trigger: selectedEventToOnce,
-                name : name,
+                name: name,
                 active: "on"
             }
         })
@@ -712,14 +731,14 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                     timer: 60000
                 });
             },
-            function (response) {
-                swal({
-                    title: "Carete once timing fail",
-                    text: response.data,
-                    icon: "warning",
-                    timer: 60000
+                function (response) {
+                    swal({
+                        title: "Carete once timing fail",
+                        text: response.data,
+                        icon: "warning",
+                        timer: 60000
+                    });
                 });
-            });
     };
 
 
@@ -739,9 +758,9 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                 timing.active = newTiming['active'];
 
             },
-            function (response) {
+                function (response) {
 
-            });
+                });
     };
 
     $scope.RemoveTiming = (id) => {
@@ -758,14 +777,14 @@ IoTApp.controller('timingsCtrl', function ($scope, $http) {
                     timer: 60000
                 });
             },
-            function (response) {
-                swal({
-                    title: "Removed timing fail",
-                    text: response.data,
-                    icon: "warning",
-                    timer: 60000
+                function (response) {
+                    swal({
+                        title: "Removed timing fail",
+                        text: response.data,
+                        icon: "warning",
+                        timer: 60000
+                    });
                 });
-            });
     }
 });
 
@@ -798,8 +817,8 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
                 });
 
             },
-            function (response) {
-            });
+                function (response) {
+                });
     };
     $scope.GetActions();
 
@@ -813,9 +832,9 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
                 console.log("get devices successfully");
                 callback(response.data);
             },
-            function (response) {
-                callback({}, response);
-            });
+                function (response) {
+                    callback({}, response);
+                });
     };
 
     $scope.RunEvent = function (event) {
@@ -832,15 +851,15 @@ IoTApp.controller('actionsCtrl', function ($scope, $http) {
                     timer: 60000
                 });
             },
-            function (response) {
-                console.log("error while event invoked");
-                swal({
-                    title: "Error while event invoked",
-                    text: response.data,
-                    icon: "warning",
-                    timer: 60000
+                function (response) {
+                    console.log("error while event invoked");
+                    swal({
+                        title: "Error while event invoked",
+                        text: response.data,
+                        icon: "warning",
+                        timer: 60000
+                    });
                 });
-            });
     };
 
 });
@@ -864,9 +883,9 @@ IoTApp.controller('logsCtrl', function ($scope, $http) {
                 });
                 $scope.message = "";
             },
-            function (response) {
-                $scope.message = response.data;
-            });
+                function (response) {
+                    $scope.message = response.data;
+                });
     };
 
     $scope.GetLogs();
@@ -887,9 +906,9 @@ IoTApp.controller('networkCtrl', function ($scope, $http) {
                     $scope.lanDevices.push(devicesMap[mac]);
                 });
             },
-            function (response) {
+                function (response) {
 
-            });
+                });
     };
 
     // for class, to set color for convoy row
@@ -920,15 +939,15 @@ IoTApp.controller('networkCtrl', function ($scope, $http) {
                 });
                 $scope.message = "";
             },
-            function (response) {
-                $scope.message = "";
-                swal({
-                    title: 'Error in requst',
-                    text: response.data,
-                    icon: "warning",
-                    timer: 60000
+                function (response) {
+                    $scope.message = "";
+                    swal({
+                        title: 'Error in requst',
+                        text: response.data,
+                        icon: "warning",
+                        timer: 60000
+                    });
                 });
-            });
     }
 
     $scope.UpdateLanName = (mac, name) => {
@@ -947,14 +966,14 @@ IoTApp.controller('networkCtrl', function ($scope, $http) {
                 $scope.GetNetWork();
 
             },
-            function (response) {
-                swal({
-                    title: 'Error in requst',
-                    text: response.data,
-                    icon: "warning",
-                    timer: 60000
+                function (response) {
+                    swal({
+                        title: 'Error in requst',
+                        text: response.data,
+                        icon: "warning",
+                        timer: 60000
+                    });
                 });
-            });
 
     };
 

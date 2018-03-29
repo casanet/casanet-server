@@ -15,6 +15,16 @@
             <div class="cssload-shaft10"></div>
         </div>
 
+        <!-- <p class="bg-success">..bla.</p> -->
+        <div ng-show="isOnline" class="col-xs-6 bg-success" style="padding: 10px; ">
+            <span  class="visible-xs-block visible-lg-block">✔ Server is online</span>
+        </div>
+        <div ng-hide="isOnline" class="col-xs-6 bg-danger" style="padding: 10px; ">
+            <span  class="visible-xs-block visible-lg-block">✘ Server is offline , Trying to reconnect server...</span>
+        </div>
+        <br>
+        <br>
+
         <div ng-repeat="device in devices | orderBy : 'typeName' " class="card card-5 " ng-class="GetDeviceClass(device)">
 
             <h2 class=device-name>{{device.name}}</h2>
