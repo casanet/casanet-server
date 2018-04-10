@@ -74,7 +74,8 @@ Screenshots:
 ![screenshot](https://user-images.githubusercontent.com/28386247/33982467-4d80d556-e0b9-11e7-9261-fa885c838b6a.png)
 
 ## Using (HTTP API)
-> Note that headers contains : `Content-Type : application/json` and body is json
+> Note that content type (request and respons) are : `Content-Type : application/json`
+
 ### Athontication API
 
 Login: POST http://127.0.0.1:3000/login
@@ -84,8 +85,8 @@ Login: POST http://127.0.0.1:3000/login
 in body (users and passwords are in `DB\users.json` file)
 and the authentication in every request is by unique cookie that live until logout or other client will post logout/all requst
 
-Logout POST http://127.0.0.1:3000/logout
-Logout all users POST http://127.0.0.1:3000/logout/all
+To logout POST http://127.0.0.1:3000/logout
+To logout all users POST http://127.0.0.1:3000/logout/all
 
 ### Devices API
 
@@ -303,6 +304,9 @@ POST http://127.0.0.1:3000/refresh to scan agine all devices (Getting IPs and st
 
 ### Events\Actions API
 Event is a collection of actions to set devices status
+ 
+Every event hold a array of action to do, when every action contains id of device, state and if it 
+more than just switch it can declare in type field and set the wanted value in set fiele
 
 Get all events GET http://127.0.0.1:3000/events 
 ```javascript
@@ -439,7 +443,9 @@ for remove timiming DELETE http://127.0.0.1:3000/timings/{id}
 
 ### Updates feed API
 
-In addition to get update (by [SSE](https://en.wikipedia.org/wiki/Server-sent_events "Wikipedia")) of changes GET http://127.0.0.1:3000/devices-feed
+In addition to get update (by [SSE](https://en.wikipedia.org/wiki/Server-sent_events "Wikipedia")) when device status has changed:
+
+http://127.0.0.1:3000/devices-feed
 with struct:
 ```javascript
 {
@@ -456,6 +462,9 @@ with struct:
     }
 }
 ```
+
+when some timing triggered:
+
 http://127.0.0.1:3000/timing-triggered-feed
 with struct
 ```javascript
@@ -470,23 +479,21 @@ with struct
     "err" : ""
 }
 ```
+
+when timing changed:
+
 http://127.0.0.1:3000/timing-feed
 with struct like getting timing
 
 ### Static files serve API
 
-to get static files (in public folder) GET http://127.0.0.1:3000/static/{path}
-
-also the application support a events, 
-that every event hold a array of action to do, when every action contains mac of device, state and if it 
-more that just switch it can declare in type field and set the wanted value in set fiele
-
+To get static files (in public folder) GET http://127.0.0.1:3000/static/{path}
 
 ## Extand server modules
 It is not really complicated but a bit required to understand some of the existing code
 At the moment, I went from the server to external script programs in Python and cmd, the data is given with arguments and the results are called by reading the printing at the terminal.
 To expand what is currently needed
-* Create a `xxxxHandler.js` file in a new folder named `xxx` in the `modules` folder that implement the methods of device type. Note that maintaining the structure of the arguments and callbacks as in the rest of the modules no matter how it works inside, 
+* Create a `xxxHandler.js` file in a new folder named `xxx` in the `modules` folder that implement the methods of device type. Note that maintaining the structure of the arguments and callbacks as in the rest of the modules no matter how it works inside, 
 the struct of 'interface' is for switch: 
 ```javascript
 GetState(device, callback(state, err))
