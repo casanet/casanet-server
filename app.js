@@ -13,14 +13,30 @@ var lanManagerHandler = require('./modules/lanManager');
 // Depenencies moduls
 var express = require('express');
 var app = express();
+var https = require('https');
+var http = require('http');
+var fs = require('fs');
+var forceSsl = require('express-force-ssl');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var SSE = require('express-sse');
 var useragent = require('express-useragent');
 
+// SSL/HTTPS area
+var key = fs.readFileSync('encryption/private.key');
+var cert = fs.readFileSync('encryption/certificate.crt');
+var ca = fs.readFileSync('encryption/ca_bundle.crt');
+
+var options = {
+    key: key,
+    cert: cert,
+    ca: ca
+};
+
 // MiddelWhare Area 
 
 // Parse every request body to json
+app.use(forceSsl); // Use https/ssl only
 app.use(cookieParser());
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -448,10 +464,15 @@ app.get('*', function (req, res) {
 
 // Start application
 
+var httpsPort = 443;
 // Listen omn port 3000 or port that host give 
-app.set('port', (process.env.PORT || 3000));
+var httpPort = (process.env.PORT || 3000);
 
-// Invoke app and listen to requests
-app.listen(app.get('port'), function () {
-  logger.write.info('home IoT server run on port ' + app.get('port'));
+https.createServer(options, app).listen(httpsPort, ()=> {
+  logger.write.info('home IoT server with HTTPS/SSL run on port ' + httpsPort);
 });
+
+http.createServer(app).listen(httpPort, ()=> {
+  logger.write.info('home IoT server with HTTP run on port ' + httpPort);
+});
+
