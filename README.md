@@ -65,7 +65,12 @@ Note that all modules work only after the device is connected to the internal ne
 for more information about token and ir codes see [Current Modules Explanations](#current-modules-explanations) 
 
 ## Using (web application)
+
+> For HTTPS support change `USE_HTTPS = false` in `app.js` file (line 26)  to `true` and fill the certifications in `encryption` folder , the HTTPS will run on https://127.0.0.1:443/ and all requests will redirect to it.
+
+
 http://127.0.0.1:3000/
+
 very basic application (compatible to mobile)
 Screenshots:
 ![screenshot](https://user-images.githubusercontent.com/28386247/33982470-4e18ab06-e0b9-11e7-8e05-378aede9def5.png)
