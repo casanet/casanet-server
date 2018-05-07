@@ -48,7 +48,7 @@ So if you change such modules, you do not need to install Python or .Net
 1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7) 
 1. Install Microsoft Visual C++ Compiler for Python 2.7 https://www.microsoft.com/en-us/download/details.aspx?id=44266 
 1. Install pip (if not install yet by python installer) 
-1. In cmd (in administration mode) press: `C:\Python27\Scripts\pip.exe install broadlink`
+1. In cmd (in administration mode) press: `C:\Python27\Scripts\pip.exe install broadlink` <p style='color:red'> -- Note that API of this module was changed ,so now it not working very soon the support will comeback. -- </p>
 
 to read IR codes:
 i recomended https://github.com/davorf/BlackBeanControl project that kept all in ini file easily or http://rm-bridge.fun2code.de/ , and after getting code, insert them to `modules\Broadlink\irCommandsMap.json` file. 
