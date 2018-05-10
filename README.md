@@ -48,7 +48,7 @@ So if you change such modules, you do not need to install Python or .Net
 1. Install Python 2.7 At: `C:/Python27` (or change the value in: `modules\Commons\pythonHandler.js` line 7) 
 1. Install Microsoft Visual C++ Compiler for Python 2.7 https://www.microsoft.com/en-us/download/details.aspx?id=44266 
 1. Install pip (if not install yet by python installer) 
-1. In cmd (in administration mode) press: `C:\Python27\Scripts\pip.exe install broadlink`
+1. In cmd (in administration mode) press: `C:\Python27\Scripts\pip.exe install broadlink` <p style='color:red'> -- Note that API of broadlink module was recently changed ,so now it not working very soon the support will comeback. -- </p>
 
 to read IR codes:
 i recomended https://github.com/davorf/BlackBeanControl project that kept all in ini file easily or http://rm-bridge.fun2code.de/ , and after getting code, insert them to `modules\Broadlink\irCommandsMap.json` file. 
@@ -65,7 +65,12 @@ Note that all modules work only after the device is connected to the internal ne
 for more information about token and ir codes see [Current Modules Explanations](#current-modules-explanations) 
 
 ## Using (web application)
+
+> For HTTPS support change `USE_HTTPS = false` in `app.js` file (line 26)  to `true` and fill the certifications in `encryption` folder , the HTTPS will run on https://127.0.0.1:443/ and all requests will redirect to it.
+
+
 http://127.0.0.1:3000/
+
 very basic application (compatible to mobile)
 Screenshots:
 ![screenshot](https://user-images.githubusercontent.com/28386247/33982470-4e18ab06-e0b9-11e7-8e05-378aede9def5.png)
