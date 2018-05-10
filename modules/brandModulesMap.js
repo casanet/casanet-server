@@ -3,6 +3,7 @@ var OrviboHandler = require('./Orvibo/orviboHandler');
 var KankunHandler = require('./Kankun/kankunHandler');
 var YeelightHandler = require('./Yeelight/yeelightHandler');
 var PhilipsHandler = require('./Philips/philipsHandler');
+var SonoffHandler = require('./Sonoff/sonoffHandler');
 
 // Map between brand name to his handler module
 var GetBrandModule = (brand) => {
@@ -15,6 +16,8 @@ var GetBrandModule = (brand) => {
             return KankunHandler;
         case 'Yeelight':
             return YeelightHandler;
+        case 'Sonoff':
+            return SonoffHandler;
         case 'Philips':
             return PhilipsHandler;
         // Add here a case of any module......

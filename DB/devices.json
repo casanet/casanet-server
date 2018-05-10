@@ -86,5 +86,15 @@
             "light_color"            
         ],
         "token": "28dc5d6c9a7c3ee43e3fe49a2038b4ea"
+    },
+    "id8": {
+        "mac" : "ecfabc064daf",
+        "name": "Fun device",
+        "brand" : "Sonoff",
+        "model" : "Itead Sonoff Basic",
+        "types": [
+            "switch"
+        ],
+        "token": "10001b19d5"
     }
 }
