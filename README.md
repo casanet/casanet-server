@@ -9,11 +9,11 @@ Node.js server with basic REST api for home IoT devices
 * Xiaomi Yeelight Smart LED Ceiling Light
 * Xiaomi Philips LED Ceiling Lamp
 * Xiaomi Yeelight RGBW E27 Smart LED Bulb
+* Itead Sonoff Wireless Smart Switch
 
 ### comming soon
  
 * Broadlink SC1 Smart Switch
-* Itead Sonoff Wireless Smart Switch
 
 ## Purpose
 In this project, I came to solve a number of troublesome. first of all, anyone who uses a number of smart devices (smart ir, smart socket, or anything like that) of different companies knows the problem of dealing with a number of different applications,
@@ -63,6 +63,16 @@ Enable developer mode in yeelight app
 Note that all modules work only after the device is connected to the internal network at home. To connect the appliance, use the official manufacturer's application.
 
 for more information about token and ir codes see [Current Modules Explanations](#current-modules-explanations) 
+
+For itead sonoff device:
+
+Get the API device id (look like 1000xxxxxx) and put it in token filed of device in `DB\devices.json` file,
+to know how to getting it read this excellent guide https://blog.ipsumdomus.com/sonoff-switch-complete-hack-without-firmware-upgrade-1b2d6632c01
+
+In additional is need other server in local network to communicate with devices, the best option is to use this project
+https://github.com/mdopp/simple-sonoff-server
+ and after all set the currect server ip and port in `modules\Sonoff\sonoffConfig.json` file
+
 
 ## Using (web application)
 
@@ -623,6 +633,15 @@ https://github.com/haimkastner/kankuncontroller
 
 Dependencies:
 * Installation of pyhthon (see in broadlink)  
+
+### Sonoff / Itead
+
+Simple HTTP requests to get or set the current device value.
+only need the secret api device id in http request get it by this guide https://blog.ipsumdomus.com/sonoff-switch-complete-hack-without-firmware-upgrade-1b2d6632c01 and insert it in token filed in `devices.json` file, and need the ditails of local server in`sonoffConfig.json` file. 
+
+Dependencies:
+* Runing server of this excellent project https://github.com/mdopp/simple-sonoff-server
+
 
 ## Credits & Licence 
 I used external libraries to communicate with sockets, and changed the code slightly to fit this project, 
