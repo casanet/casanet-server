@@ -33,6 +33,7 @@ try:
                         device.send_data(ir_value.decode('hex'))
                 print "ok"
        
-except:
+except Exception as inner:
 		print "error"
+		print inner
 		pass
