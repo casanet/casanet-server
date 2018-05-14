@@ -63,7 +63,7 @@ for more information about token and ir codes see [Current Modules Explanations]
 
 For itead sonoff device:
 
-Get the API device id (look like 1000xxxxxx) and put it in token filed of device in `DB\devices.json` file,
+Get the API device id (look like 1000xxxxxx) and put it in token field of device in `DB\devices.json` file,
 to know how to getting it read this excellent guide https://blog.ipsumdomus.com/sonoff-switch-complete-hack-without-firmware-upgrade-1b2d6632c01
 
 In additional is need other server in local network to communicate with devices, the best option is to use this project
