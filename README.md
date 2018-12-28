@@ -1,7 +1,7 @@
 # Home IoT Server
 IoT server for local home network.
 
-Let`s create a smart home, without giving anyone access to our house 😊.
+Let's create a smart home, without giving anyone access to our house 😊.
 
 ## Main tech technology
 
@@ -9,5 +9,5 @@ Let`s create a smart home, without giving anyone access to our house 😊.
 * Angular - Client.
 * API - Swagger.
 
-## Credits @ licents
+## Credits & licents
 Shared with ❤️ by kastnet.
