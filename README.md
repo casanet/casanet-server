@@ -3,7 +3,7 @@ IoT server for local home network.
 
 Let's create a smart home, without giving anyone access to our house 😊.
 
-## Main tech technology
+## Main technologies
 
 * Node.js (TypeScript) - Server.
 * Angular - Client.
