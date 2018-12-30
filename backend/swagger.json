@@ -5,38 +5,2020 @@
 	],
 	"definitions": {
 		"Device": {
-			"description": "Device object (demo)",
+			"description": "Represents a pysical device in local home.",
 			"properties": {
-				"ip": {
+				"name": {
 					"type": "string",
+					"description": "Display name for device.",
 					"x-nullable": true
 				},
 				"mac": {
-					"type": "string"
-				},
-				"name": {
 					"type": "string",
+					"description": "The MAC address of device, the value is unique to each device."
+				},
+				"ip": {
+					"type": "string",
+					"description": "The device ip address, if it set it should be unique.",
+					"x-nullable": true
+				},
+				"vendor": {
+					"type": "string",
+					"description": "Info about device manufacturer.",
+					"x-nullable": true
+				},
+				"brand": {
+					"type": "string",
+					"description": "The brand of device."
+				},
+				"model": {
+					"type": "string",
+					"description": "The specific model of device."
+				},
+				"token": {
+					"type": "string",
+					"description": "Some of devices require a token for communication API.",
 					"x-nullable": true
 				}
 			},
 			"required": [
-				"mac"
+				"mac",
+				"brand",
+				"model"
+			],
+			"type": "object"
+		},
+		"ErrorResponse": {
+			"description": "Error response.",
+			"properties": {
+				"code": {
+					"type": "number",
+					"format": "double",
+					"description": "error code in system."
+				},
+				"message": {
+					"type": "string",
+					"description": "Readble message.",
+					"x-nullable": true
+				}
+			},
+			"required": [
+				"code"
+			],
+			"type": "object"
+		},
+		"DeviceKind": {
+			"description": "For each suppoeted device there is limitations and abilities of it.",
+			"properties": {
+				"brand": {
+					"type": "string",
+					"description": "The brand of current minion type. (see device model)."
+				},
+				"model": {
+					"type": "string",
+					"description": "The specific model of minion type. (see device model)."
+				},
+				"isUsedAsLogicDevice": {
+					"type": "boolean",
+					"description": "Is current device type can be minion per physical device only. \r\nFor example smart socket can be one minion only but IR sender device can be for many AC minions in room."
+				},
+				"isTokenRequierd": {
+					"type": "boolean",
+					"description": "Is device require token for communication API."
+				},
+				"suppotedMinionType": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": [
+							"tuggle",
+							"switch",
+							"airConditioning",
+							"light",
+							"temperatureLight",
+							"colorLight "
+						]
+					},
+					"description": "Supported minion types for current device."
+				}
+			},
+			"required": [
+				"brand",
+				"model",
+				"isUsedAsLogicDevice",
+				"isTokenRequierd",
+				"suppotedMinionType"
+			],
+			"type": "object"
+		},
+		"DeviceName": {
+			"description": "Simple struct for updating device name requests.",
+			"properties": {
+				"name": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"name"
+			],
+			"type": "object"
+		},
+		"Tuggle": {
+			"description": "A tuggel value, the tuggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone change the light status using pysical switche.",
+			"properties": {
+				"setTo": {
+					"type": "string",
+					"enum": [
+						"on",
+						"off"
+					]
+				}
+			},
+			"required": [
+				"setTo"
+			],
+			"type": "object"
+		},
+		"Switch": {
+			"description": "A switch status.\r\nUsed for a simple devices that can be turn on or off.",
+			"properties": {
+				"status": {
+					"type": "string",
+					"enum": [
+						"on",
+						"off"
+					]
+				}
+			},
+			"required": [
+				"status"
+			],
+			"type": "object"
+		},
+		"AirConditioning": {
+			"description": "A AC status.",
+			"properties": {
+				"status": {
+					"type": "string",
+					"enum": [
+						"on",
+						"off"
+					]
+				},
+				"temperature": {
+					"type": "string",
+					"enum": [
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30"
+					]
+				},
+				"mode": {
+					"type": "string",
+					"enum": [
+						"hot",
+						"cold",
+						"dry",
+						"auto"
+					]
+				},
+				"fanStrength": {
+					"type": "string",
+					"enum": [
+						"low",
+						"med",
+						"high",
+						"auto"
+					]
+				}
+			},
+			"required": [
+				"status",
+				"temperature",
+				"mode",
+				"fanStrength"
+			],
+			"type": "object"
+		},
+		"Light": {
+			"description": "A simple light status.\r\nUsed to devices that can chang it's brightness.",
+			"properties": {
+				"status": {
+					"type": "string",
+					"enum": [
+						"on",
+						"off"
+					]
+				},
+				"brightness": {
+					"type": "string",
+					"enum": [
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30",
+						"31",
+						"32",
+						"33",
+						"34",
+						"35",
+						"36",
+						"37",
+						"38",
+						"39",
+						"40",
+						"41",
+						"42",
+						"43",
+						"44",
+						"45",
+						"46",
+						"47",
+						"48",
+						"49",
+						"50",
+						"51",
+						"52",
+						"53",
+						"54",
+						"55",
+						"56",
+						"57",
+						"58",
+						"59",
+						"60",
+						"61",
+						"62",
+						"63",
+						"64",
+						"65",
+						"66",
+						"67",
+						"68",
+						"69",
+						"70",
+						"71",
+						"72",
+						"73",
+						"74",
+						"75",
+						"76",
+						"77",
+						"78",
+						"79",
+						"80",
+						"81",
+						"82",
+						"83",
+						"84",
+						"85",
+						"86",
+						"87",
+						"88",
+						"89",
+						"90",
+						"91",
+						"92",
+						"93",
+						"94",
+						"95",
+						"96",
+						"97",
+						"98",
+						"99",
+						"100"
+					],
+					"description": "Minimum 1% maximum 100% of light brightness."
+				}
+			},
+			"required": [
+				"status",
+				"brightness"
+			],
+			"type": "object"
+		},
+		"TemperatureLight": {
+			"description": "A light simple light status.\r\nUsed to devices that can chang also light temperature (warm or cold light).",
+			"properties": {
+				"status": {
+					"type": "string",
+					"enum": [
+						"on",
+						"off"
+					]
+				},
+				"brightness": {
+					"type": "string",
+					"enum": [
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30",
+						"31",
+						"32",
+						"33",
+						"34",
+						"35",
+						"36",
+						"37",
+						"38",
+						"39",
+						"40",
+						"41",
+						"42",
+						"43",
+						"44",
+						"45",
+						"46",
+						"47",
+						"48",
+						"49",
+						"50",
+						"51",
+						"52",
+						"53",
+						"54",
+						"55",
+						"56",
+						"57",
+						"58",
+						"59",
+						"60",
+						"61",
+						"62",
+						"63",
+						"64",
+						"65",
+						"66",
+						"67",
+						"68",
+						"69",
+						"70",
+						"71",
+						"72",
+						"73",
+						"74",
+						"75",
+						"76",
+						"77",
+						"78",
+						"79",
+						"80",
+						"81",
+						"82",
+						"83",
+						"84",
+						"85",
+						"86",
+						"87",
+						"88",
+						"89",
+						"90",
+						"91",
+						"92",
+						"93",
+						"94",
+						"95",
+						"96",
+						"97",
+						"98",
+						"99",
+						"100"
+					],
+					"description": "Minimum 1% maximum 100% of light brightness."
+				},
+				"temperature": {
+					"type": "string",
+					"enum": [
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30",
+						"31",
+						"32",
+						"33",
+						"34",
+						"35",
+						"36",
+						"37",
+						"38",
+						"39",
+						"40",
+						"41",
+						"42",
+						"43",
+						"44",
+						"45",
+						"46",
+						"47",
+						"48",
+						"49",
+						"50",
+						"51",
+						"52",
+						"53",
+						"54",
+						"55",
+						"56",
+						"57",
+						"58",
+						"59",
+						"60",
+						"61",
+						"62",
+						"63",
+						"64",
+						"65",
+						"66",
+						"67",
+						"68",
+						"69",
+						"70",
+						"71",
+						"72",
+						"73",
+						"74",
+						"75",
+						"76",
+						"77",
+						"78",
+						"79",
+						"80",
+						"81",
+						"82",
+						"83",
+						"84",
+						"85",
+						"86",
+						"87",
+						"88",
+						"89",
+						"90",
+						"91",
+						"92",
+						"93",
+						"94",
+						"95",
+						"96",
+						"97",
+						"98",
+						"99",
+						"100"
+					],
+					"description": "Spectrum is: 1% to warm light and 100% to cold light."
+				}
+			},
+			"required": [
+				"status",
+				"brightness",
+				"temperature"
+			],
+			"type": "object"
+		},
+		"ColorLight": {
+			"description": "A light simple light status.\r\nUsed to devices that can change also light color (RGB).",
+			"properties": {
+				"status": {
+					"type": "string",
+					"enum": [
+						"on",
+						"off"
+					]
+				},
+				"brightness": {
+					"type": "string",
+					"enum": [
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30",
+						"31",
+						"32",
+						"33",
+						"34",
+						"35",
+						"36",
+						"37",
+						"38",
+						"39",
+						"40",
+						"41",
+						"42",
+						"43",
+						"44",
+						"45",
+						"46",
+						"47",
+						"48",
+						"49",
+						"50",
+						"51",
+						"52",
+						"53",
+						"54",
+						"55",
+						"56",
+						"57",
+						"58",
+						"59",
+						"60",
+						"61",
+						"62",
+						"63",
+						"64",
+						"65",
+						"66",
+						"67",
+						"68",
+						"69",
+						"70",
+						"71",
+						"72",
+						"73",
+						"74",
+						"75",
+						"76",
+						"77",
+						"78",
+						"79",
+						"80",
+						"81",
+						"82",
+						"83",
+						"84",
+						"85",
+						"86",
+						"87",
+						"88",
+						"89",
+						"90",
+						"91",
+						"92",
+						"93",
+						"94",
+						"95",
+						"96",
+						"97",
+						"98",
+						"99",
+						"100"
+					],
+					"description": "Minimum 1% maximum 100% of light brightness."
+				},
+				"temperature": {
+					"type": "string",
+					"enum": [
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30",
+						"31",
+						"32",
+						"33",
+						"34",
+						"35",
+						"36",
+						"37",
+						"38",
+						"39",
+						"40",
+						"41",
+						"42",
+						"43",
+						"44",
+						"45",
+						"46",
+						"47",
+						"48",
+						"49",
+						"50",
+						"51",
+						"52",
+						"53",
+						"54",
+						"55",
+						"56",
+						"57",
+						"58",
+						"59",
+						"60",
+						"61",
+						"62",
+						"63",
+						"64",
+						"65",
+						"66",
+						"67",
+						"68",
+						"69",
+						"70",
+						"71",
+						"72",
+						"73",
+						"74",
+						"75",
+						"76",
+						"77",
+						"78",
+						"79",
+						"80",
+						"81",
+						"82",
+						"83",
+						"84",
+						"85",
+						"86",
+						"87",
+						"88",
+						"89",
+						"90",
+						"91",
+						"92",
+						"93",
+						"94",
+						"95",
+						"96",
+						"97",
+						"98",
+						"99",
+						"100"
+					],
+					"description": "Spectrum is: 1% to warm light and 100% to cold light."
+				},
+				"red": {
+					"type": "string",
+					"enum": [
+						"0",
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30",
+						"31",
+						"32",
+						"33",
+						"34",
+						"35",
+						"36",
+						"37",
+						"38",
+						"39",
+						"40",
+						"41",
+						"42",
+						"43",
+						"44",
+						"45",
+						"46",
+						"47",
+						"48",
+						"49",
+						"50",
+						"51",
+						"52",
+						"53",
+						"54",
+						"55",
+						"56",
+						"57",
+						"58",
+						"59",
+						"60",
+						"61",
+						"62",
+						"63",
+						"64",
+						"65",
+						"66",
+						"67",
+						"68",
+						"69",
+						"70",
+						"71",
+						"72",
+						"73",
+						"74",
+						"75",
+						"76",
+						"77",
+						"78",
+						"79",
+						"80",
+						"81",
+						"82",
+						"83",
+						"84",
+						"85",
+						"86",
+						"87",
+						"88",
+						"89",
+						"90",
+						"91",
+						"92",
+						"93",
+						"94",
+						"95",
+						"96",
+						"97",
+						"98",
+						"99",
+						"100",
+						"101",
+						"102",
+						"103",
+						"104",
+						"105",
+						"106",
+						"107",
+						"108",
+						"109",
+						"110",
+						"111",
+						"112",
+						"113",
+						"114",
+						"115",
+						"116",
+						"117",
+						"118",
+						"119",
+						"120",
+						"121",
+						"122",
+						"123",
+						"124",
+						"125",
+						"126",
+						"127",
+						"128",
+						"129",
+						"130",
+						"131",
+						"132",
+						"133",
+						"134",
+						"135",
+						"136",
+						"137",
+						"138",
+						"139",
+						"140",
+						"141",
+						"142",
+						"143",
+						"144",
+						"145",
+						"146",
+						"147",
+						"148",
+						"149",
+						"150",
+						"151",
+						"152",
+						"153",
+						"154",
+						"155",
+						"156",
+						"157",
+						"158",
+						"159",
+						"160",
+						"161",
+						"162",
+						"163",
+						"164",
+						"165",
+						"166",
+						"167",
+						"168",
+						"169",
+						"170",
+						"171",
+						"172",
+						"173",
+						"174",
+						"175",
+						"176",
+						"177",
+						"178",
+						"179",
+						"180",
+						"181",
+						"182",
+						"183",
+						"184",
+						"185",
+						"186",
+						"187",
+						"188",
+						"189",
+						"190",
+						"191",
+						"192",
+						"193",
+						"194",
+						"195",
+						"196",
+						"197",
+						"198",
+						"199",
+						"200",
+						"201",
+						"202",
+						"203",
+						"204",
+						"205",
+						"206",
+						"207",
+						"208",
+						"209",
+						"210",
+						"211",
+						"212",
+						"213",
+						"214",
+						"215",
+						"216",
+						"217",
+						"218",
+						"219",
+						"220",
+						"221",
+						"222",
+						"223",
+						"224",
+						"225",
+						"226",
+						"227",
+						"228",
+						"229",
+						"230",
+						"231",
+						"232",
+						"233",
+						"234",
+						"235",
+						"236",
+						"237",
+						"238",
+						"239",
+						"240",
+						"241",
+						"242",
+						"243",
+						"244",
+						"245",
+						"246",
+						"247",
+						"248",
+						"249",
+						"250",
+						"251",
+						"252",
+						"253",
+						"254",
+						"255"
+					],
+					"description": "Minimum 1 maximum 255 from red color."
+				},
+				"green": {
+					"type": "string",
+					"enum": [
+						"0",
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30",
+						"31",
+						"32",
+						"33",
+						"34",
+						"35",
+						"36",
+						"37",
+						"38",
+						"39",
+						"40",
+						"41",
+						"42",
+						"43",
+						"44",
+						"45",
+						"46",
+						"47",
+						"48",
+						"49",
+						"50",
+						"51",
+						"52",
+						"53",
+						"54",
+						"55",
+						"56",
+						"57",
+						"58",
+						"59",
+						"60",
+						"61",
+						"62",
+						"63",
+						"64",
+						"65",
+						"66",
+						"67",
+						"68",
+						"69",
+						"70",
+						"71",
+						"72",
+						"73",
+						"74",
+						"75",
+						"76",
+						"77",
+						"78",
+						"79",
+						"80",
+						"81",
+						"82",
+						"83",
+						"84",
+						"85",
+						"86",
+						"87",
+						"88",
+						"89",
+						"90",
+						"91",
+						"92",
+						"93",
+						"94",
+						"95",
+						"96",
+						"97",
+						"98",
+						"99",
+						"100",
+						"101",
+						"102",
+						"103",
+						"104",
+						"105",
+						"106",
+						"107",
+						"108",
+						"109",
+						"110",
+						"111",
+						"112",
+						"113",
+						"114",
+						"115",
+						"116",
+						"117",
+						"118",
+						"119",
+						"120",
+						"121",
+						"122",
+						"123",
+						"124",
+						"125",
+						"126",
+						"127",
+						"128",
+						"129",
+						"130",
+						"131",
+						"132",
+						"133",
+						"134",
+						"135",
+						"136",
+						"137",
+						"138",
+						"139",
+						"140",
+						"141",
+						"142",
+						"143",
+						"144",
+						"145",
+						"146",
+						"147",
+						"148",
+						"149",
+						"150",
+						"151",
+						"152",
+						"153",
+						"154",
+						"155",
+						"156",
+						"157",
+						"158",
+						"159",
+						"160",
+						"161",
+						"162",
+						"163",
+						"164",
+						"165",
+						"166",
+						"167",
+						"168",
+						"169",
+						"170",
+						"171",
+						"172",
+						"173",
+						"174",
+						"175",
+						"176",
+						"177",
+						"178",
+						"179",
+						"180",
+						"181",
+						"182",
+						"183",
+						"184",
+						"185",
+						"186",
+						"187",
+						"188",
+						"189",
+						"190",
+						"191",
+						"192",
+						"193",
+						"194",
+						"195",
+						"196",
+						"197",
+						"198",
+						"199",
+						"200",
+						"201",
+						"202",
+						"203",
+						"204",
+						"205",
+						"206",
+						"207",
+						"208",
+						"209",
+						"210",
+						"211",
+						"212",
+						"213",
+						"214",
+						"215",
+						"216",
+						"217",
+						"218",
+						"219",
+						"220",
+						"221",
+						"222",
+						"223",
+						"224",
+						"225",
+						"226",
+						"227",
+						"228",
+						"229",
+						"230",
+						"231",
+						"232",
+						"233",
+						"234",
+						"235",
+						"236",
+						"237",
+						"238",
+						"239",
+						"240",
+						"241",
+						"242",
+						"243",
+						"244",
+						"245",
+						"246",
+						"247",
+						"248",
+						"249",
+						"250",
+						"251",
+						"252",
+						"253",
+						"254",
+						"255"
+					],
+					"description": "Minimum 1 maximum 255 from green color."
+				},
+				"blue": {
+					"type": "string",
+					"enum": [
+						"0",
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30",
+						"31",
+						"32",
+						"33",
+						"34",
+						"35",
+						"36",
+						"37",
+						"38",
+						"39",
+						"40",
+						"41",
+						"42",
+						"43",
+						"44",
+						"45",
+						"46",
+						"47",
+						"48",
+						"49",
+						"50",
+						"51",
+						"52",
+						"53",
+						"54",
+						"55",
+						"56",
+						"57",
+						"58",
+						"59",
+						"60",
+						"61",
+						"62",
+						"63",
+						"64",
+						"65",
+						"66",
+						"67",
+						"68",
+						"69",
+						"70",
+						"71",
+						"72",
+						"73",
+						"74",
+						"75",
+						"76",
+						"77",
+						"78",
+						"79",
+						"80",
+						"81",
+						"82",
+						"83",
+						"84",
+						"85",
+						"86",
+						"87",
+						"88",
+						"89",
+						"90",
+						"91",
+						"92",
+						"93",
+						"94",
+						"95",
+						"96",
+						"97",
+						"98",
+						"99",
+						"100",
+						"101",
+						"102",
+						"103",
+						"104",
+						"105",
+						"106",
+						"107",
+						"108",
+						"109",
+						"110",
+						"111",
+						"112",
+						"113",
+						"114",
+						"115",
+						"116",
+						"117",
+						"118",
+						"119",
+						"120",
+						"121",
+						"122",
+						"123",
+						"124",
+						"125",
+						"126",
+						"127",
+						"128",
+						"129",
+						"130",
+						"131",
+						"132",
+						"133",
+						"134",
+						"135",
+						"136",
+						"137",
+						"138",
+						"139",
+						"140",
+						"141",
+						"142",
+						"143",
+						"144",
+						"145",
+						"146",
+						"147",
+						"148",
+						"149",
+						"150",
+						"151",
+						"152",
+						"153",
+						"154",
+						"155",
+						"156",
+						"157",
+						"158",
+						"159",
+						"160",
+						"161",
+						"162",
+						"163",
+						"164",
+						"165",
+						"166",
+						"167",
+						"168",
+						"169",
+						"170",
+						"171",
+						"172",
+						"173",
+						"174",
+						"175",
+						"176",
+						"177",
+						"178",
+						"179",
+						"180",
+						"181",
+						"182",
+						"183",
+						"184",
+						"185",
+						"186",
+						"187",
+						"188",
+						"189",
+						"190",
+						"191",
+						"192",
+						"193",
+						"194",
+						"195",
+						"196",
+						"197",
+						"198",
+						"199",
+						"200",
+						"201",
+						"202",
+						"203",
+						"204",
+						"205",
+						"206",
+						"207",
+						"208",
+						"209",
+						"210",
+						"211",
+						"212",
+						"213",
+						"214",
+						"215",
+						"216",
+						"217",
+						"218",
+						"219",
+						"220",
+						"221",
+						"222",
+						"223",
+						"224",
+						"225",
+						"226",
+						"227",
+						"228",
+						"229",
+						"230",
+						"231",
+						"232",
+						"233",
+						"234",
+						"235",
+						"236",
+						"237",
+						"238",
+						"239",
+						"240",
+						"241",
+						"242",
+						"243",
+						"244",
+						"245",
+						"246",
+						"247",
+						"248",
+						"249",
+						"250",
+						"251",
+						"252",
+						"253",
+						"254",
+						"255"
+					],
+					"description": "Minimum 1 maximum 255 from blue color."
+				}
+			},
+			"required": [
+				"status",
+				"brightness",
+				"temperature",
+				"red",
+				"green",
+				"blue"
+			],
+			"type": "object"
+		},
+		"MinionStatus": {
+			"description": "Minion status, the avalible values is depend on minion type.",
+			"properties": {
+				"tuggle": {
+					"$ref": "#/definitions/Tuggle",
+					"x-nullable": true
+				},
+				"switch": {
+					"$ref": "#/definitions/Switch",
+					"x-nullable": true
+				},
+				"airConditioning": {
+					"$ref": "#/definitions/AirConditioning",
+					"x-nullable": true
+				},
+				"light": {
+					"$ref": "#/definitions/Light",
+					"x-nullable": true
+				},
+				"temperatureLight": {
+					"$ref": "#/definitions/TemperatureLight",
+					"x-nullable": true
+				},
+				"colorLight": {
+					"$ref": "#/definitions/ColorLight",
+					"x-nullable": true
+				}
+			},
+			"type": "object"
+		},
+		"Minion": {
+			"description": "Represents a minion in system.\r\nMinion is a logic device in system, mean that device is a pysical device \r\nand minion is a logic device that use a pysical device to switch home kit status.\r\nFor example IR device can be a few minions one to main AC control and second for secondery AC control etc.",
+			"properties": {
+				"minionId": {
+					"type": "string",
+					"description": "Minion unique id.",
+					"x-nullable": true
+				},
+				"name": {
+					"type": "string",
+					"description": "Display name of minion."
+				},
+				"device": {
+					"$ref": "#/definitions/Device",
+					"description": "Pysical device of minion."
+				},
+				"isProperlyCommunicated": {
+					"type": "boolean",
+					"description": "Is communication with device status ok."
+				},
+				"minionStatus": {
+					"$ref": "#/definitions/MinionStatus",
+					"description": "Status of minion (based on minion type)."
+				},
+				"minionType": {
+					"type": "string",
+					"enum": [
+						"tuggle",
+						"switch",
+						"airConditioning",
+						"light",
+						"temperatureLight",
+						"colorLight "
+					],
+					"description": "minion type."
+				},
+				"minionAutoTrunOffMS": {
+					"type": "number",
+					"format": "double",
+					"description": "Auto turn off duration, *if* set member value then the minion will turn off in X ms after turning it on, \r\nUsed for example in boiler minion etc.",
+					"x-nullable": true
+				}
+			},
+			"required": [
+				"name",
+				"device",
+				"isProperlyCommunicated",
+				"minionStatus",
+				"minionType"
+			],
+			"type": "object"
+		},
+		"OperationActivity": {
+			"description": "Represents acivity.",
+			"properties": {
+				"minionId": {
+					"type": "string",
+					"description": "Minion id to set"
+				},
+				"minionStatus": {
+					"$ref": "#/definitions/MinionStatus",
+					"description": "Status to set to minion."
+				}
+			},
+			"required": [
+				"minionId",
+				"minionStatus"
+			],
+			"type": "object"
+		},
+		"Operation": {
+			"description": "Represents a operation in system.\r\nOperation is set of action to do.\r\nFor example to turn on all home light operation \r\nset a array of activitie for each light in home to set light status 'on'.",
+			"properties": {
+				"operationId": {
+					"type": "string",
+					"description": "Operation unique id."
+				},
+				"operationName": {
+					"type": "string",
+					"description": "Operation display name."
+				},
+				"activities": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/OperationActivity"
+					},
+					"description": "Activities array."
+				}
+			},
+			"required": [
+				"operationId",
+				"operationName",
+				"activities"
+			],
+			"type": "object"
+		},
+		"DailySunTrigger": {
+			"description": "Daily timing based on sun triggers.",
+			"properties": {
+				"days": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": [
+							"sunday",
+							"monday",
+							"tuesday",
+							"wednesday",
+							"thursday",
+							"friday",
+							"saturday"
+						]
+					},
+					"description": "Selected days in week."
+				},
+				"durationInMS": {
+					"type": "number",
+					"format": "double",
+					"description": "MS from sun trigger.\r\ncan be befor or after the sun trigger.\r\nFor example to invoke 4000 ms befor sunset set -4000 and to invoke 4000 ms after suset set 4000."
+				},
+				"sunTrigger": {
+					"type": "string",
+					"enum": [
+						"sunrise",
+						"sunset"
+					],
+					"description": "Sun trigger."
+				}
+			},
+			"required": [
+				"days",
+				"durationInMS",
+				"sunTrigger"
+			],
+			"type": "object"
+		},
+		"DailyTimeTrigger": {
+			"description": "Daily timing based on time in day.",
+			"properties": {
+				"days": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": [
+							"sunday",
+							"monday",
+							"tuesday",
+							"wednesday",
+							"thursday",
+							"friday",
+							"saturday"
+						]
+					},
+					"description": "Selected days in week."
+				},
+				"hour": {
+					"type": "string",
+					"enum": [
+						"0",
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23"
+					],
+					"description": "Hour in a day."
+				},
+				"minutes": {
+					"type": "string",
+					"enum": [
+						"0",
+						"1",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20",
+						"21",
+						"22",
+						"23",
+						"24",
+						"25",
+						"26",
+						"27",
+						"28",
+						"29",
+						"30",
+						"31",
+						"32",
+						"33",
+						"34",
+						"35",
+						"36",
+						"37",
+						"38",
+						"39",
+						"40",
+						"41",
+						"42",
+						"43",
+						"44",
+						"45",
+						"46",
+						"47",
+						"48",
+						"49",
+						"50",
+						"51",
+						"52",
+						"53",
+						"54",
+						"55",
+						"56",
+						"57",
+						"58",
+						"59"
+					],
+					"description": "Minutes in a hour."
+				}
+			},
+			"required": [
+				"days",
+				"hour",
+				"minutes"
+			],
+			"type": "object"
+		},
+		"OnceTiming": {
+			"description": "Once timing struct.",
+			"properties": {
+				"date": {
+					"type": "number",
+					"format": "double",
+					"description": "UTC time."
+				}
+			},
+			"required": [
+				"date"
+			],
+			"type": "object"
+		},
+		"TimeoutTiming": {
+			"description": "Timeout timing struct.",
+			"properties": {
+				"startDate": {
+					"type": "number",
+					"format": "double",
+					"description": "UTC time."
+				},
+				"durationInMs": {
+					"type": "number",
+					"format": "double",
+					"description": "Duration in miliseconds."
+				}
+			},
+			"required": [
+				"startDate",
+				"durationInMs"
+			],
+			"type": "object"
+		},
+		"TimingProperties": {
+			"description": "Timing properties, values depend on timing type.",
+			"properties": {
+				"dailySunTrigger": {
+					"$ref": "#/definitions/DailySunTrigger",
+					"x-nullable": true
+				},
+				"dailyTimeTrigger": {
+					"$ref": "#/definitions/DailyTimeTrigger",
+					"x-nullable": true
+				},
+				"once": {
+					"$ref": "#/definitions/OnceTiming",
+					"x-nullable": true
+				},
+				"timeout": {
+					"$ref": "#/definitions/TimeoutTiming",
+					"x-nullable": true
+				}
+			},
+			"type": "object"
+		},
+		"Timing": {
+			"description": "Represents a timing in system.",
+			"properties": {
+				"timingId": {
+					"type": "string",
+					"description": "Timing unique id."
+				},
+				"timingName": {
+					"type": "string",
+					"description": "Timing display name."
+				},
+				"triggerOperationId": {
+					"type": "string",
+					"description": "Operation id to invoke."
+				},
+				"isActive": {
+					"type": "boolean",
+					"description": "Is timing active or not."
+				},
+				"timingType": {
+					"type": "string",
+					"enum": [
+						"dailySunTrigger",
+						"dailyTimeTrigger",
+						"once",
+						"timeout"
+					],
+					"description": "The timing type."
+				},
+				"timingProperties": {
+					"$ref": "#/definitions/TimingProperties",
+					"description": "The timing properties."
+				}
+			},
+			"required": [
+				"timingId",
+				"timingName",
+				"triggerOperationId",
+				"isActive",
+				"timingType",
+				"timingProperties"
+			],
+			"type": "object"
+		},
+		"User": {
+			"description": "Represents a user in system.",
+			"properties": {
+				"firstName": {
+					"type": "string",
+					"description": "First name",
+					"x-nullable": true
+				},
+				"lastName": {
+					"type": "string",
+					"description": "Last name"
+				},
+				"sessionTimeOutMS": {
+					"type": "number",
+					"format": "double",
+					"description": "Time duration for session in miliseconds (1/1000 from second)."
+				},
+				"password": {
+					"type": "string",
+					"description": "User passwrod."
+				},
+				"ignoreTfa": {
+					"type": "boolean",
+					"description": "Ignore 2-step verification on login or not."
+				}
+			},
+			"required": [
+				"lastName",
+				"sessionTimeOutMS",
+				"password",
+				"ignoreTfa"
 			],
 			"type": "object"
 		}
 	},
 	"info": {
-		"title": "home-iot-server",
+		"title": "Home ioT Server - API",
 		"version": "2.0.0",
-		"description": "IoT server for local home network - Server side",
+		"description": "IoT server for local home network. hosted in https://github.com/haimkastner/Home-IoT-Server",
 		"license": {
 			"name": "ISC"
 		}
 	},
 	"paths": {
-		"/Devices/{deviceId}": {
+		"/devices": {
 			"get": {
-				"operationId": "GetDevice",
+				"operationId": "GetDevices",
 				"produces": [
 					"application/json"
 				],
@@ -44,22 +2026,806 @@
 					"200": {
 						"description": "Ok",
 						"schema": {
-							"$ref": "#/definitions/Device"
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Device"
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
 						}
 					}
 				},
+				"description": "Get all devices in local network.",
+				"tags": [
+					"Devices"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/devices/kinds": {
+			"get": {
+				"operationId": "GetDevicesKinds",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/DeviceKind"
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Get all supported devices kind info.",
+				"tags": [
+					"Devices"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/devices/{deviceMac}": {
+			"put": {
+				"operationId": "SetDeviceName",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Set new name to device.",
+				"tags": [
+					"Devices"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Device mac address.",
+						"in": "path",
+						"name": "deviceMac",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "New name to set.",
+						"in": "body",
+						"name": "newName",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/DeviceName"
+						}
+					}
+				]
+			}
+		},
+		"/devices/rescan": {
+			"post": {
+				"operationId": "RescanDevices",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Rescan all device in LAN.\r\nUse when there is changes in local network.\r\nFor example if the router (DHCP server) change IP's of devices , or new device in network etc.",
+				"tags": [
+					"Devices"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/minions": {
+			"get": {
+				"operationId": "GetMinions",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Minion"
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Get all minions in system.",
+				"tags": [
+					"Minions"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateMinion",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Creates new minion.",
+				"tags": [
+					"Minions"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "new minion to create.",
+						"in": "body",
+						"name": "minion",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Minion"
+						}
+					}
+				]
+			}
+		},
+		"/minions/{minionId}": {
+			"get": {
+				"operationId": "GetMinion",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"$ref": "#/definitions/Minion"
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Get minion by id.",
+				"tags": [
+					"Minions"
+				],
 				"security": [],
 				"parameters": [
 					{
 						"in": "path",
-						"name": "deviceId",
+						"name": "minionId",
+						"required": true,
+						"type": "string"
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetMinion",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Update minion status.",
+				"tags": [
+					"Minions"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Minon id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "Minion object to update to.",
+						"in": "body",
+						"name": "minion",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Minion"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteMinion",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Delete minion from system.",
+				"tags": [
+					"Minions"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Minon id.",
+						"in": "path",
+						"name": "minionId",
 						"required": true,
 						"type": "string"
 					}
 				]
 			}
 		},
-		"/Devices": {
+		"/minions/timeout/{minionId}": {
+			"put": {
+				"operationId": "SetMinionTimeout",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Update minion turn off timout.",
+				"tags": [
+					"Minions"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Minon id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "Minion object to update to.",
+						"in": "body",
+						"name": "minion",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Minion"
+						}
+					}
+				]
+			}
+		},
+		"/minions/command/{minionId}": {
+			"post": {
+				"operationId": "RecordMinionCommand",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Record a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status.",
+				"tags": [
+					"Minions"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Minon id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "Minion object status to get command for.",
+						"in": "body",
+						"name": "minion",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Minion"
+						}
+					}
+				]
+			}
+		},
+		"/minions/rescan": {
+			"post": {
+				"operationId": "RescanMinionsStatus",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Scan LAN to know to current status of the minion.\r\nNote that this is not the devices scan!\r\nThis scen only checks every minion API to know the current status.",
+				"tags": [
+					"Minions"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/operations": {
+			"get": {
+				"operationId": "GetOperations",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Operation"
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Get all operations in system.",
+				"tags": [
+					"Operations"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateOperation",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Creates new operation.",
+				"tags": [
+					"Operations"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "new operation to create.",
+						"in": "body",
+						"name": "operation",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Operation"
+						}
+					}
+				]
+			}
+		},
+		"/operations/{operationId}": {
+			"get": {
+				"operationId": "GetOperation",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"$ref": "#/definitions/Operation"
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Get operation by id.",
+				"tags": [
+					"Operations"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "operationId",
+						"required": true,
+						"type": "string"
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetOperation",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Update operation values.",
+				"tags": [
+					"Operations"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "OperationId id.",
+						"in": "path",
+						"name": "operationId",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "Operation object to update to.",
+						"in": "body",
+						"name": "operation",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Operation"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteOperation",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Delete operation from system.",
+				"tags": [
+					"Operations"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Operation id.",
+						"in": "path",
+						"name": "operationId",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/operations/trigger/{operationId}": {
+			"post": {
+				"operationId": "TriggerOperation",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Trigger operation by id.",
+				"tags": [
+					"Operations"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "operationId",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/timings": {
+			"get": {
+				"operationId": "GetTimings",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Timing"
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Get all timings in system.",
+				"tags": [
+					"Timings"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateTiming",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Creates new timing.",
+				"tags": [
+					"Timings"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "new timing to create.",
+						"in": "body",
+						"name": "timing",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Timing"
+						}
+					}
+				]
+			}
+		},
+		"/timings/{timingId}": {
+			"get": {
+				"operationId": "GetTiming",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"$ref": "#/definitions/Timing"
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Get operation by id.",
+				"tags": [
+					"Timings"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "timingId",
+						"required": true,
+						"type": "string"
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetTiming",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Update timing values.",
+				"tags": [
+					"Timings"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Timing id.",
+						"in": "path",
+						"name": "timingId",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"description": "Timing object to update to.",
+						"in": "body",
+						"name": "timing",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Timing"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteTiming",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Delete timing from system.",
+				"tags": [
+					"Timings"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Timing id.",
+						"in": "path",
+						"name": "timingId",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/users": {
+			"get": {
+				"operationId": "GetUsers",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/User"
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Get all users in system.",
+				"tags": [
+					"Users"
+				],
+				"security": [],
+				"parameters": []
+			},
 			"post": {
 				"operationId": "CreateUser",
 				"produces": [
@@ -68,17 +2834,131 @@
 				"responses": {
 					"204": {
 						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
 					}
 				},
+				"description": "Creates new user.",
+				"tags": [
+					"Users"
+				],
 				"security": [],
 				"parameters": [
 					{
 						"in": "body",
-						"name": "requestBody",
+						"name": "user",
 						"required": true,
 						"schema": {
-							"$ref": "#/definitions/Device"
+							"$ref": "#/definitions/User"
 						}
+					}
+				]
+			}
+		},
+		"/users/{userId}": {
+			"get": {
+				"operationId": "GetUser",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Get user by id.",
+				"tags": [
+					"Users"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"type": "string"
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetUser",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Update user values.",
+				"tags": [
+					"Users"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "User id.",
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "user",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteUser",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"schema": {
+							"$ref": "#/definitions/ErrorResponse"
+						}
+					}
+				},
+				"description": "Delete user from system.",
+				"tags": [
+					"Users"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"type": "string"
 					}
 				]
 			}
@@ -89,5 +2969,31 @@
 	],
 	"swagger": "2.0",
 	"securityDefinitions": {},
-	"host": "localhost:3000"
+	"host": "localhost:3000",
+	"tags": [
+		{
+			"name": "Devices",
+			"description": "Pysical device in local home managing."
+		},
+		{
+			"name": "Users",
+			"description": "Manage users in system."
+		},
+		{
+			"name": "Minions",
+			"description": "Manage the minions (logic devices in system) in home, such as turn on off etc."
+		},
+		{
+			"name": "Operations",
+			"description": "Manage operation in system, such as create operation to turn on all home lights etc."
+		},
+		{
+			"name": "Timings",
+			"description": "Manage timings in system, such as invoke turn off lights operation today 12 AM etc."
+		},
+		{
+			"name": "Authentication",
+			"description": "Manage system authentication, such as login logout etc."
+		}
+	]
 }

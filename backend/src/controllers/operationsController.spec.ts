@@ -2,16 +2,16 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import chaiHttp = require('chai-http');
 import app from '../App';
-import { User } from '../models/interfaces';
+import { Operation } from '../models/interfaces';
 
 chai.use(chaiHttp);
 const agent = chai.request.agent(app);
 
-describe('Users routing API', () => {
+describe('Operations routing API', () => {
 
-    describe('/GET users', () => {
+    describe('/GET operations', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/users')
+            agent.get('/API/operations')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -19,9 +19,9 @@ describe('Users routing API', () => {
         });
     });
 
-    describe('/GET users/{userId}', () => {
+    describe('/GET operations/{operationId}', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/users/userId')
+            agent.get('/API/operations/operationId')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -29,17 +29,15 @@ describe('Users routing API', () => {
         });
     });
 
-    describe('/POST users', () => {
+    describe('/POST operations', () => {
         it('it should respond 20x as status code', (done) => {
-            const user: User = {
-                firstName: '',
-                ignoreTfa: false,
-                lastName: '',
-                password: '',
-                sessionTimeOutMS: 334343232,
+            const operation: Operation = {
+                activities: [],
+                operationId: 'sdsds',
+                operationName: 'sdsd',
             };
-            agent.post('/API/users')
-                .send(user)
+            agent.post('/API/operations')
+                .send(operation)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -47,17 +45,15 @@ describe('Users routing API', () => {
         });
     });
 
-    describe('/PUT users/{userId}', () => {
+    describe('/PUT operations/{userId}', () => {
         it('it should respond 20x as status code', (done) => {
-            const user: User = {
-                firstName: '',
-                ignoreTfa: false,
-                lastName: '',
-                password: '',
-                sessionTimeOutMS: 334343232,
+            const operation: Operation = {
+                activities: [],
+                operationId: 'sdsds',
+                operationName: 'sdsd',
             };
-            agent.put('/API/users/userId')
-                .send(user)
+            agent.put('/API/operations/operationId')
+                .send(operation)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -65,9 +61,19 @@ describe('Users routing API', () => {
         });
     });
 
-    describe('/DELETE users/{userId}', () => {
+    describe('/DELETE operations/{operationId}', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.del('/API/users/userId')
+            agent.del('/API/operations/operationId')
+                .end((err, res) => {
+                    expect(res.statusType).eql(2);
+                    done();
+                });
+        });
+    });
+
+    describe('/POST operations/trigger/{operationId}', () => {
+        it('it should respond 20x as status code', (done) => {
+            agent.post('/API/operations/trigger/operationId')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();

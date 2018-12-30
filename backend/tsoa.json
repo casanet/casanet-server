@@ -3,11 +3,39 @@
         "outputDirectory": "./",
         "entryFile": "./src/index.ts",
         "host": "localhost:3000",
-        "basePath": "/API"
+        "basePath": "/API",
+        "tags": [
+            {
+                "name": "Devices",
+                "description": "Pysical device in local home managing."
+            },
+            {
+                "name": "Users",
+                "description": "Manage users in system."
+            },
+            {
+                "name": "Minions",
+                "description": "Manage the minions (logic devices in system) in home, such as turn on off etc."
+            },
+            {
+                "name": "Operations",
+                "description": "Manage operation in system, such as create operation to turn on all home lights etc."
+            },
+            {
+                "name": "Timings",
+                "description": "Manage timings in system, such as invoke turn off lights operation today 12 AM etc."
+            },
+            {
+                "name": "Authentication",
+                "description": "Manage system authentication, such as login logout etc."
+            }
+        ],
+        "name" : "Home ioT Server - API",
+        "description" : "IoT server for local home network. hosted in https://github.com/haimkastner/Home-IoT-Server"
     },
     "routes": {
         "basePath": "/API",
         "entryFile": "./src/index.ts",
-        "routesDir": "./src/"
+        "routesDir": "./src/routers"
     }
 }

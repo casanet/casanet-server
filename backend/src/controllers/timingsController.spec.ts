@@ -2,16 +2,16 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import chaiHttp = require('chai-http');
 import app from '../App';
-import { User } from '../models/interfaces';
+import { Timing } from '../models/interfaces';
 
 chai.use(chaiHttp);
 const agent = chai.request.agent(app);
 
-describe('Users routing API', () => {
+describe('Timings routing API', () => {
 
-    describe('/GET users', () => {
+    describe('/GET timings', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/users')
+            agent.get('/API/timings')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -19,9 +19,9 @@ describe('Users routing API', () => {
         });
     });
 
-    describe('/GET users/{userId}', () => {
+    describe('/GET timings/{timingId}', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/users/userId')
+            agent.get('/API/timings/timingId')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -29,17 +29,20 @@ describe('Users routing API', () => {
         });
     });
 
-    describe('/POST users', () => {
+    describe('/POST timings', () => {
         it('it should respond 20x as status code', (done) => {
-            const user: User = {
-                firstName: '',
-                ignoreTfa: false,
-                lastName: '',
-                password: '',
-                sessionTimeOutMS: 334343232,
+            const timing: Timing = {
+                isActive : true,
+                timingId : 'fdfd',
+                timingName : 'tm',
+                timingProperties : {
+
+                },
+                timingType : 'dailyTimeTrigger',
+                triggerOperationId : 'adfadf',
             };
-            agent.post('/API/users')
-                .send(user)
+            agent.post('/API/timings')
+                .send(timing)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -47,17 +50,20 @@ describe('Users routing API', () => {
         });
     });
 
-    describe('/PUT users/{userId}', () => {
+    describe('/PUT timings/{userId}', () => {
         it('it should respond 20x as status code', (done) => {
-            const user: User = {
-                firstName: '',
-                ignoreTfa: false,
-                lastName: '',
-                password: '',
-                sessionTimeOutMS: 334343232,
+            const timing: Timing = {
+                isActive : true,
+                timingId : 'fdfd',
+                timingName : 'tm',
+                timingProperties : {
+
+                },
+                timingType : 'dailyTimeTrigger',
+                triggerOperationId : 'adfadf',
             };
-            agent.put('/API/users/userId')
-                .send(user)
+            agent.put('/API/timings/timingId')
+                .send(timing)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -65,9 +71,9 @@ describe('Users routing API', () => {
         });
     });
 
-    describe('/DELETE users/{userId}', () => {
+    describe('/DELETE timings/{timingId}', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.del('/API/users/userId')
+            agent.del('/API/timings/timingId')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();

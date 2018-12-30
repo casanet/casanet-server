@@ -7,11 +7,15 @@ import * as useragent from 'express-useragent';
 import * as helmet from 'helmet';
 import * as path from 'path';
 import { Configuration } from './app.config';
-import { RegisterRoutes } from './routes';
+import { RegisterRoutes } from './routers/routes';
 import { SecurityGate } from './security/accessGate';
 import { logger } from './utilities/logger';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
+import './controllers/devicesController';
+import './controllers/minionsController';
+import './controllers/operationsController';
+import './controllers/timingsController';
 import './controllers/usersController';
 
 class App {
