@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
+import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse, Timing } from '../models/interfaces';
 
 @Tags('Timings')
@@ -9,6 +9,7 @@ export class TimingsController extends Controller {
      * Get all timings in system.
      * @returns Timings array.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getTimings(): Promise<Timing[]> {
@@ -20,6 +21,7 @@ export class TimingsController extends Controller {
      * Get operation by id.
      * @returns Operation.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('{timingId}')
     public async getTiming(timingId: string): Promise<Timing> {
@@ -32,6 +34,7 @@ export class TimingsController extends Controller {
      * @param timingId Timing id.
      * @param timing Timing object to update to.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{timingId}')
     public async setTiming(timingId: string, @Body() timing: Timing): Promise<void> {
@@ -43,6 +46,7 @@ export class TimingsController extends Controller {
      * Delete timing from system.
      * @param timingId Timing id.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{timingId}')
     public async deleteTiming(timingId: string): Promise<void> {
@@ -54,6 +58,7 @@ export class TimingsController extends Controller {
      *  Creates new timing.
      * @param timing new timing to create.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
     public async createTiming(@Body() timing: Timing): Promise<void> {

@@ -1,13 +1,34 @@
 /* tslint:disable */
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
+import { AuthController } from './../controllers/authController';
 import { DevicesController } from './../controllers/devicesController';
 import { MinionsController } from './../controllers/minionsController';
 import { OperationsController } from './../controllers/operationsController';
 import { TimingsController } from './../controllers/timingsController';
 import { UsersController } from './../controllers/usersController';
+import { expressAuthentication } from './../security/authentication';
 import * as express from 'express';
 
 const models: TsoaRoute.Models = {
+    "ErrorResponse": {
+        "properties": {
+            "code": { "dataType": "double", "required": true },
+            "message": { "dataType": "string" },
+        },
+    },
+    "Login": {
+        "properties": {
+            "email": { "dataType": "string", "required": true },
+            "password": { "dataType": "string", "required": true },
+        },
+    },
+    "LoginTfa": {
+        "properties": {
+            "email": { "dataType": "string", "required": true },
+            "password": { "dataType": "string", "required": true },
+            "tfaPassword": { "dataType": "string", "required": true },
+        },
+    },
     "Device": {
         "properties": {
             "name": { "dataType": "string" },
@@ -17,12 +38,6 @@ const models: TsoaRoute.Models = {
             "brand": { "dataType": "string", "required": true },
             "model": { "dataType": "string", "required": true },
             "token": { "dataType": "string" },
-        },
-    },
-    "ErrorResponse": {
-        "properties": {
-            "code": { "dataType": "double", "required": true },
-            "message": { "dataType": "string" },
         },
     },
     "DeviceKind": {
@@ -170,7 +185,67 @@ const models: TsoaRoute.Models = {
 const validationService = new ValidationService(models);
 
 export function RegisterRoutes(app: express.Express) {
+    app.post('/API/auth/login',
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+                login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AuthController();
+
+
+            const promise = controller.loginDocumentation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/auth/login/tfa',
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+                login: { "in": "body", "name": "login", "required": true, "ref": "LoginTfa" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AuthController();
+
+
+            const promise = controller.loginTfaDocumentation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/auth/logout',
+        authenticateMiddleware([{ "userAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AuthController();
+
+
+            const promise = controller.logoutDocumentation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
     app.get('/API/devices',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -189,6 +264,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/devices/kinds',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -207,6 +283,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/devices/:deviceMac',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 deviceMac: { "in": "path", "name": "deviceMac", "required": true, "dataType": "string" },
@@ -227,6 +304,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/devices/rescan',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -245,6 +323,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/minions',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -263,6 +342,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/minions/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -282,6 +362,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/minions/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -302,6 +383,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/minions/timeout/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -322,6 +404,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions/command/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -342,6 +425,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions/rescan',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -360,6 +444,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.delete('/API/minions/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -379,6 +464,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minion: { "in": "body", "name": "minion", "required": true, "ref": "Minion" },
@@ -398,6 +484,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/operations',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -416,6 +503,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/operations/:operationId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
@@ -435,6 +523,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/operations/:operationId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
@@ -455,6 +544,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.delete('/API/operations/:operationId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
@@ -474,6 +564,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/operations',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operation: { "in": "body", "name": "operation", "required": true, "ref": "Operation" },
@@ -493,6 +584,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/operations/trigger/:operationId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
@@ -512,6 +604,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/timings',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -530,6 +623,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/timings/:timingId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 timingId: { "in": "path", "name": "timingId", "required": true, "dataType": "string" },
@@ -549,6 +643,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/timings/:timingId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 timingId: { "in": "path", "name": "timingId", "required": true, "dataType": "string" },
@@ -569,6 +664,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.delete('/API/timings/:timingId',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 timingId: { "in": "path", "name": "timingId", "required": true, "dataType": "string" },
@@ -588,6 +684,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/timings',
+        authenticateMiddleware([{ "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 timing: { "in": "body", "name": "timing", "required": true, "ref": "Timing" },
@@ -607,6 +704,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/users',
+        authenticateMiddleware([{ "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -625,6 +723,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/users/:userId',
+        authenticateMiddleware([{ "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
@@ -644,6 +743,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/users/:userId',
+        authenticateMiddleware([{ "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
@@ -664,6 +764,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.delete('/API/users/:userId',
+        authenticateMiddleware([{ "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
@@ -683,6 +784,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/users',
+        authenticateMiddleware([{ "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 user: { "in": "body", "name": "user", "required": true, "ref": "User" },
@@ -702,6 +804,49 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
 
+    function authenticateMiddleware(security: TsoaRoute.Security[] = []) {
+        return (request: any, _response: any, next: any) => {
+            let responded = 0;
+            let success = false;
+
+            const succeed = function(user: any) {
+                if (!success) {
+                    success = true;
+                    responded++;
+                    request['user'] = user;
+                    next();
+                }
+            }
+
+            const fail = function(error: any) {
+                responded++;
+                if (responded == security.length && !success) {
+                    error.status = 401;
+                    next(error)
+                }
+            }
+
+            for (const secMethod of security) {
+                if (Object.keys(secMethod).length > 1) {
+                    let promises: Promise<any>[] = [];
+
+                    for (const name in secMethod) {
+                        promises.push(expressAuthentication(request, name, secMethod[name]));
+                    }
+
+                    Promise.all(promises)
+                        .then((users) => { succeed(users[0]); })
+                        .catch(fail);
+                } else {
+                    for (const name in secMethod) {
+                        expressAuthentication(request, name, secMethod[name])
+                            .then(succeed)
+                            .catch(fail);
+                    }
+                }
+            }
+        }
+    }
 
     function isController(object: any): object is Controller {
         return 'getHeaders' in object && 'getStatus' in object && 'setStatus' in object;

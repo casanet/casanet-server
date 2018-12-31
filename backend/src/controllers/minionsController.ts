@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
+import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { Device, ErrorResponse, Minion } from '../models/interfaces';
 
 @Tags('Minions')
@@ -9,6 +9,7 @@ export class MinionsController extends Controller {
      * Get all minions in system.
      * @returns Minions array.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getMinions(): Promise<Minion[]> {
@@ -20,7 +21,7 @@ export class MinionsController extends Controller {
      * Get minion by id.
      * @returns Minion.
      */
-    @Response<ErrorResponse>(501, 'Server error')
+    @Security('userAuth')
     @Get('{minionId}')
     public async getMinion(minionId: string): Promise<Minion> {
         return;
@@ -32,6 +33,7 @@ export class MinionsController extends Controller {
      * @param minionId Minon id.
      * @param minion Minion object to update to.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{minionId}')
     public async setMinion(minionId: string, @Body() minion: Minion): Promise<void> {
@@ -44,6 +46,7 @@ export class MinionsController extends Controller {
      * @param minionId Minon id.
      * @param minion Minion object to update to.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('timeout/{minionId}')
     public async setMinionTimeout(minionId: string, @Body() minion: Minion): Promise<void> {
@@ -57,6 +60,7 @@ export class MinionsController extends Controller {
      * @param minionId Minon id.
      * @param minion Minion object status to get command for.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('command/{minionId}')
     public async recordMinionCommand(minionId: string, @Body() minion: Minion): Promise<void> {
@@ -69,6 +73,7 @@ export class MinionsController extends Controller {
      * Note that this is not the devices scan!
      * This scen only checks every minion API to know the current status.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('rescan')
     public async rescanMinionsStatus(): Promise<void> {
@@ -80,6 +85,7 @@ export class MinionsController extends Controller {
      * Delete minion from system.
      * @param minionId Minon id.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{minionId}')
     public async deleteMinion(minionId: string): Promise<void> {
@@ -91,6 +97,7 @@ export class MinionsController extends Controller {
      *  Creates new minion.
      * @param minion new minion to create.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
     public async createMinion(@Body() minion: Minion): Promise<void> {

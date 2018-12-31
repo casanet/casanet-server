@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
+import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { Device, DeviceKind, ErrorResponse } from '../models/interfaces';
 
 @Tags('Devices')
@@ -9,6 +9,7 @@ export class DevicesController extends Controller {
      * Get all devices in local network.
      * @returns Local network devices array.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getDevices(): Promise<Device[]> {
@@ -26,6 +27,7 @@ export class DevicesController extends Controller {
      * Get all supported devices kind info.
      * @returns Local network devices array.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('kinds')
     public async getDevicesKinds(): Promise<DeviceKind[]> {
@@ -38,6 +40,7 @@ export class DevicesController extends Controller {
      * @param deviceMac Device mac address.
      * @param newName New name to set.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{deviceMac}')
     public async setDeviceName(deviceMac: string, @Body() newName: DeviceName): Promise<void> {
@@ -50,6 +53,7 @@ export class DevicesController extends Controller {
      * Use when there is changes in local network.
      * For example if the router (DHCP server) change IP's of devices , or new device in network etc.
      */
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('rescan')
     public async rescanDevices(): Promise<void> {

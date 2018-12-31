@@ -7,11 +7,12 @@ import * as useragent from 'express-useragent';
 import * as helmet from 'helmet';
 import * as path from 'path';
 import { Configuration } from './app.config';
+import { AuthenticationRouter } from './routers/authenticationRoute';
 import { RegisterRoutes } from './routers/routes';
-import { SecurityGate } from './security/accessGate';
 import { logger } from './utilities/logger';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
+import './controllers/authController';
 import './controllers/devicesController';
 import './controllers/minionsController';
 import './controllers/operationsController';
@@ -20,7 +21,7 @@ import './controllers/usersController';
 
 class App {
     public express: express.Express;
-    private securityGate: SecurityGate = new SecurityGate();
+    private authenticationRouter: AuthenticationRouter = new AuthenticationRouter();
 
     constructor() {
         /** Creat the express app */
@@ -32,9 +33,6 @@ class App {
         /** Parse the request */
         this.dataParsing();
 
-        /** Before any work with user request check his certificates */
-        this.accessGate();
-
         /** Serve static client side */
         this.serveStatic();
 
@@ -43,13 +41,6 @@ class App {
 
         /** And never sent errors back to client. */
         this.catchErrors();
-    }
-
-    /**
-     * Check access certificates of request, and abort request if not pass.
-     */
-    private accessGate() {
-        this.securityGate.checkAccess(this.express);
     }
 
     /**
@@ -67,6 +58,10 @@ class App {
      * Route requests to API.
      */
     private routes(): void {
+
+        /** Route authentication API */
+        this.authenticationRouter.routes(this.express);
+
         /** Use generated routers (by TSOA) */
         RegisterRoutes(this.express);
     }
@@ -119,8 +114,10 @@ class App {
         // no stacktraces leaked to user
         this.express.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
             try {
-                logger.warn('express route crash,  req:' + req.method + ' ' + req.path + ' body: ' + JSON.stringify(req.body));
-            } catch (error) { }
+                logger.warn(`express route crash,  req: ${req.method} ${req.path} error: ${err.message} body: ${JSON.stringify(req.body)}`);
+            } catch (error) {
+                logger.warn(`Ok... even the crash route catcher crashd...`);
+             }
             res.status(500).send();
         });
     }

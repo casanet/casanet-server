@@ -14,6 +14,21 @@ export declare interface ErrorResponse {
 }
 
 /**
+ * Login schema model.
+ */
+export declare interface Login {
+    email: string;
+    password: string;
+}
+
+/**
+ * 2-step verification login model.
+ */
+export declare interface LoginTfa extends Login {
+    tfaPassword: string;
+}
+
+/**
  * Use to support multi languages in UI.
  */
 export declare interface StringMap {
