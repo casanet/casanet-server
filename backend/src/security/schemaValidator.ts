@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as Joi from 'joi';
 import { JoiObject, ObjectSchema, ValidationResult } from 'joi';
+import { ErrorResponse } from '../models/interfaces';
 import { logger } from '../utilities/logger';
 import { SecurityGate } from './accessGate';
 
@@ -17,14 +18,13 @@ export const TfaSchema: ObjectSchema = Joi.object().keys({
 
 /**
  * Validate the req.body json by given scema
- * If fail, send back 422 http error and return false.
+ * If fail, reject with code 422.
  * Else return the object after clean.
  * @param {Request} req The express req object
- * @param {Response} res The express res object
  * @param {JoiObject} scema The Joi schema object
- * @returns {Promise<any>} Promise when seccess with cleaned data.
+ * @returns {Promise<any|ErrorResponse>} Promise when seccess with cleaned data.
  */
-export const schemaValidator = (req: Request, res: Response, scema: JoiObject): Promise<any> => {
+export const schemaValidator = (req: Request, scema: JoiObject): Promise<any | ErrorResponse> => {
     return new Promise((resolve, reject) => {
         const result: ValidationResult<any> = Joi.validate(req.body, scema);
         if (!result.error) {
@@ -34,6 +34,10 @@ export const schemaValidator = (req: Request, res: Response, scema: JoiObject): 
 
         logger.warn(`wrong scema data rrrived ` +
             `from ${SecurityGate.getIp(req)}, error: ${result.error.message}`);
-        res.status(422).send(result.error.message);
+        const error: ErrorResponse = {
+            code: 422,
+            message: result.error.message,
+        };
+        reject(error);
     });
 };

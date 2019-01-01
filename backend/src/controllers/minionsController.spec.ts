@@ -1,17 +1,12 @@
-import * as chai from 'chai';
 import { expect } from 'chai';
-import chaiHttp = require('chai-http');
-import app from '../App';
 import { Minion } from '../models/interfaces';
-
-chai.use(chaiHttp);
-const agent = chai.request.agent(app);
+import { validUserAgent } from './prepareAuthorizeSpecAgent';
 
 describe('Minions routing API', () => {
 
     describe('/GET minions', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/minions')
+            validUserAgent.get('/API/minions')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -21,7 +16,7 @@ describe('Minions routing API', () => {
 
     describe('/GET minions/{minionId}', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/minions/minionId')
+            validUserAgent.get('/API/minions/minionId')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -45,7 +40,7 @@ describe('Minions routing API', () => {
 
                 },
             };
-            agent.post('/API/minions')
+            validUserAgent.post('/API/minions')
                 .send(minion)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
@@ -70,7 +65,7 @@ describe('Minions routing API', () => {
 
                 },
             };
-            agent.put('/API/minions/minionId')
+            validUserAgent.put('/API/minions/minionId')
                 .send(minion)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
@@ -81,7 +76,7 @@ describe('Minions routing API', () => {
 
     describe('/DELETE minions/{minionId}', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.del('/API/minions/minionId')
+            validUserAgent.del('/API/minions/minionId')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -105,7 +100,7 @@ describe('Minions routing API', () => {
 
                 },
             };
-            agent.put('/API/minions/timeout/minionId')
+            validUserAgent.put('/API/minions/timeout/minionId')
                 .send(minion)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
@@ -130,7 +125,7 @@ describe('Minions routing API', () => {
 
                 },
             };
-            agent.post('/API/minions/command/minionId')
+            validUserAgent.post('/API/minions/command/minionId')
                 .send(minion)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
@@ -141,7 +136,7 @@ describe('Minions routing API', () => {
 
     describe('/POST minions/rescan', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.post('/API/minions/rescan')
+            validUserAgent.post('/API/minions/rescan')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();

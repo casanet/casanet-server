@@ -1,17 +1,12 @@
-import * as chai from 'chai';
 import { expect } from 'chai';
-import chaiHttp = require('chai-http');
-import app from '../App';
 import { DeviceName } from './devicesController';
-
-chai.use(chaiHttp);
-const agent = chai.request.agent(app);
+import { validUserAgent } from './prepareAuthorizeSpecAgent';
 
 describe('Devices routing API', () => {
 
     describe('/GET devices', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/devices')
+            validUserAgent.get('/API/devices')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -21,7 +16,7 @@ describe('Devices routing API', () => {
 
     describe('/GET devices/kinds', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/devices/kinds')
+            validUserAgent.get('/API/devices/kinds')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -32,9 +27,9 @@ describe('Devices routing API', () => {
     describe('/PUT devices/{deviceMac}', () => {
         it('it should respond 20x as status code', (done) => {
             const deviceName: DeviceName = {
-               name : 'dfdff',
+                name: 'dfdff',
             };
-            agent.put('/API/devices/deviceMac')
+            validUserAgent.put('/API/devices/deviceMac')
                 .send(deviceName)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
@@ -45,7 +40,7 @@ describe('Devices routing API', () => {
 
     describe('/POST devices/rescan', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.post('/API/devices/rescan')
+            validUserAgent.post('/API/devices/rescan')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();

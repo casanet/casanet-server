@@ -3,9 +3,9 @@ import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Respon
 import { ErrorResponse, Login, LoginTfa } from '../models/interfaces';
 
 /**
- * Because that express response object needs in auth logic (to r/w cookies)
+ * Because that express response object needs in auth logic (to write cookies)
  * The TSOA routing is for documentation only.
- * and one day i will extends TSOA lib to support request in parameter inject like request object.
+ * and one day i will extends TSOA lib to support response in parameter inject like request object.
  */
 @Tags('Authentication')
 @Route('auth')
@@ -15,6 +15,12 @@ export class AuthController extends Controller {
      * Login to system.
      */
     public async login(request: express.Request, response: express.Response, login: Login): Promise<void> {
+
+        if (login.email === 'aa@bb.com' && login.password === '1234') {
+            response.cookie('session', 'abc123456');
+        } else {
+            throw new Error('Not valied user name or password');
+        }
 
         // TODO ...
         return;

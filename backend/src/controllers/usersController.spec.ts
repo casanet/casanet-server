@@ -1,17 +1,12 @@
-import * as chai from 'chai';
 import { expect } from 'chai';
-import chaiHttp = require('chai-http');
-import app from '../App';
 import { User } from '../models/interfaces';
-
-chai.use(chaiHttp);
-const agent = chai.request.agent(app);
+import { validAdminAgent } from './prepareAuthorizeSpecAgent';
 
 describe('Users routing API', () => {
 
     describe('/GET users', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/users')
+            validAdminAgent.get('/API/users')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -21,7 +16,7 @@ describe('Users routing API', () => {
 
     describe('/GET users/{userId}', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.get('/API/users/userId')
+            validAdminAgent.get('/API/users/userId')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -38,7 +33,7 @@ describe('Users routing API', () => {
                 password: '',
                 sessionTimeOutMS: 334343232,
             };
-            agent.post('/API/users')
+            validAdminAgent.post('/API/users')
                 .send(user)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
@@ -56,7 +51,7 @@ describe('Users routing API', () => {
                 password: '',
                 sessionTimeOutMS: 334343232,
             };
-            agent.put('/API/users/userId')
+            validAdminAgent.put('/API/users/userId')
                 .send(user)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
@@ -67,7 +62,7 @@ describe('Users routing API', () => {
 
     describe('/DELETE users/{userId}', () => {
         it('it should respond 20x as status code', (done) => {
-            agent.del('/API/users/userId')
+            validAdminAgent.del('/API/users/userId')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();

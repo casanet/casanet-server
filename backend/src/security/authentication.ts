@@ -1,15 +1,25 @@
 import * as express from 'express';
+import { AuthScopes } from '../models/config';
 import { ErrorResponse, User } from '../models/interfaces';
+
+/**
+ * System auth scopes, shown in swagger doc as 2 kinds of security definitions.
+ */
+export const SystemAuthScopes: AuthScopes = {
+    adminScope: 'adminAuth',
+    userScope: 'userAuth',
+};
 
 /**
  * Cert Authentication middelwhere API.
  * the auth token should be the value of 'session' cookie.
- * Admin auth is only beacuse poor swaggger support at scopes in apiKey auth.
+ * @param securityName Used as auth scope beacuse of poor scopes swaggger support in apiKey auth.
  */
 export function expressAuthentication(request: express.Request, securityName: string, scopes?: string[]): Promise<User | ErrorResponse> {
-    let token;
-    if (request.query && request.query.access_token) {
-        token = request.query.access_token;
+
+    // If the routing security sent wrong security scope.
+    if (!securityName || Object.values(SystemAuthScopes).indexOf(securityName) === -1) {
+        throw new Error('invalid security scope / name');
     }
 
     const user: User = {
@@ -20,7 +30,7 @@ export function expressAuthentication(request: express.Request, securityName: st
         sessionTimeOutMS: 54652,
     };
 
-    if (true || token === 'abc123456') {
+    if (request.cookies.session === 'abc123456') {
         return Promise.resolve(user);
     } else {
         return Promise.reject({
