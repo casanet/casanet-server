@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import * as Joi from 'joi';
 import { JoiObject, ObjectSchema, ValidationResult } from 'joi';
-import { ErrorResponse } from '../models/interfaces';
+import { ErrorResponse } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
-import { SecurityGate } from './accessGate';
+import { getIp } from './authentication';
 
 export const LoginSchema: ObjectSchema = Joi.object().keys({
     email: Joi.string().email().required(),
@@ -33,7 +33,7 @@ export const schemaValidator = (req: Request, scema: JoiObject): Promise<any | E
         }
 
         logger.warn(`wrong scema data rrrived ` +
-            `from ${SecurityGate.getIp(req)}, error: ${result.error.message}`);
+            `from ${getIp(req)}, error: ${result.error.message}`);
         const error: ErrorResponse = {
             code: 422,
             message: result.error.message,

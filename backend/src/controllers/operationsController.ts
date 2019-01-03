@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { ErrorResponse, Operation } from '../models/interfaces';
+import { ErrorResponse, Operation } from '../models/sharedInterfaces';
 
 @Tags('Operations')
 @Route('operations')

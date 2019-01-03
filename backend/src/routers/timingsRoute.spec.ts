@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { Timing } from '../models/interfaces';
-import { validUserAgent } from './prepareAuthorizeSpecAgent';
+import { Timing } from '../models/sharedInterfaces';
+import { validUserAgent } from './prepareRoutesSpecTests';
 
 describe('Timings routing API', () => {
 

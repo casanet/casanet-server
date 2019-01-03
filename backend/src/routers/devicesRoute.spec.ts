@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { DeviceName } from './devicesController';
-import { validUserAgent } from './prepareAuthorizeSpecAgent';
+import { DeviceName } from '../controllers/devicesController';
+import { validUserAgent } from './prepareRoutesSpecTests';
 
 describe('Devices routing API', () => {
 

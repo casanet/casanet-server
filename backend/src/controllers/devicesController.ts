@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { Device, DeviceKind, ErrorResponse } from '../models/interfaces';
+import { Device, DeviceKind, ErrorResponse } from '../models/sharedInterfaces';
 
 @Tags('Devices')
 @Route('devices')

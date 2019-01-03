@@ -10,7 +10,7 @@
   "main": "dist/index.js",
   "scripts": {
     "prepare": "tsoa routes && tsoa swagger",
-    "test": "npm run prepare && cross-env NODE_ENV=test mocha --require ts-node/register src/**/*.spec.ts",
+    "test": "del-cli data/test -f && npm run prepare && cross-env NODE_ENV=test mocha --require ts-node/register src/**/*.spec.ts",
     "build": "npm run prepare && tsc"
   },
   "license": "ISC",
@@ -46,6 +46,7 @@
     "chai-http": "^4.2.0",
     "copyfiles": "^2.1.0",
     "cross-env": "^5.2.0",
+    "del-cli": "^1.1.0",
     "mocha": "^5.2.0",
     "ts-node": "^7.0.1",
     "typescript": "^3.2.2"

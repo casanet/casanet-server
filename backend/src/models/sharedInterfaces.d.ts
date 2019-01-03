@@ -1,6 +1,6 @@
 /**
- * Error response.
- */
+* Error response.
+*/
 export declare interface ErrorResponse {
     /**
      * error code in system.
@@ -126,9 +126,9 @@ export declare interface User {
     firstName?: string;
 
     /**
-     * Last name
+     * User email
      */
-    lastName: string;
+    email: string;
 
     /**
      * Time duration for session in miliseconds (1/1000 from second). 

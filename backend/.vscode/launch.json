@@ -17,6 +17,7 @@
         "HTTP_PORT": "3000",
         "HTTPS_PORT": "4430",
         "USE_HTTPS": "false",
+        "NODE_ENV": "debug"
       }
     },
     {

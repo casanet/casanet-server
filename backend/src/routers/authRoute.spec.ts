@@ -2,7 +2,8 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import chaiHttp = require('chai-http');
 import app from '../App';
-import { Login, LoginTfa } from '../models/interfaces';
+import { Login, LoginTfa } from '../models/sharedInterfaces';
+import { validSystemAdmin, validSystemUser } from './prepareRoutesSpecTests';
 
 chai.use(chaiHttp);
 const agent = chai.request.agent(app);
@@ -12,23 +13,23 @@ describe('Authentication routing API', () => {
     describe('/POST auth/login', () => {
         it('it should respond 20x as status code', (done) => {
             const loginSchema: Login = {
-                email: 'aa@bb.com',
-                password: '1234',
+                email: validSystemUser.email,
+                password: validSystemUser.password,
             };
 
             agent.post('/API/auth/login')
                 .send(loginSchema)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
-                    expect(res).cookie('session', 'abc123456');
+                    expect(res).cookie('session');
                     done();
                 });
         });
 
         it('it should respond 40x as status code', (done) => {
             const loginSchema: Login = {
-                email: 'baa@bb.com',
-                password: '1234',
+                email: validSystemUser.email + 'e',
+                password: validSystemUser.password,
             };
 
             agent.post('/API/auth/login')
@@ -41,8 +42,8 @@ describe('Authentication routing API', () => {
 
         it('it should respond 20x as status code', (done) => {
             const loginSchema: Login = {
-                email: 'aa@bb.com',
-                password: '12345',
+                email: validSystemUser.email,
+                password: validSystemUser.password + 'e',
             };
 
             agent.post('/API/auth/login')
@@ -56,10 +57,11 @@ describe('Authentication routing API', () => {
 
     describe('/POST auth/login/tfa', () => {
         it('it should respond 20x as status code', (done) => {
+
             const loginSchema: LoginTfa = {
-                email: 'ggdg@fdfdf.com',
-                password: '555555',
-                tfaPassword: '123456',
+                email: validSystemUser.email,
+                password: validSystemUser.email,
+                tfaPassword: 'TODO',
             };
 
             agent.post('/API/auth/login/tfa')

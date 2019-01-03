@@ -1,4 +1,4 @@
-import { Config } from './models/config';
+import { Config, RunningMode } from './models/backendInterfaces';
 import { logger } from './utilities/logger';
 
 const rowHttpPort = process.env.HTTP_PORT;
@@ -6,14 +6,18 @@ const rowHttpsPort = process.env.HTTPS_PORT;
 const rowUserHttps = process.env.USE_HTTPS;
 const rowNodeEnv = process.env.NODE_ENV;
 
-let dataPath: string;
-if (rowNodeEnv === 'test') {
-    logger.info(`Runinig in 'test' environments`);
-    dataPath = 'test-data';
-} else {
-    logger.info(`Runinig in 'prod' environments`);
-    dataPath = 'data';
+/**
+ * Set running mode.
+ */
+let runningMode: RunningMode;
+switch (rowNodeEnv) {
+    case 'test': runningMode = 'test'; break;
+    case 'debug': runningMode = 'debug'; break;
+    case 'prod': runningMode = 'prod'; break;
+    default: runningMode = 'prod'; break;
 }
+
+logger.info(`casa-net app running in -${runningMode}- mode`);
 
 let httpPort: number;
 if (!rowHttpPort) {
@@ -50,7 +54,5 @@ export const Configuration: Config = {
         maxRequests: 500,
         windowsMs: 30 * 60 * 1000,
     },
-    data: {
-        dataDirectory: dataPath,
-    },
+    runningMode,
 };

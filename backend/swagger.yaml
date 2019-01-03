@@ -1846,9 +1846,9 @@ definitions:
                 type: string
                 description: 'First name'
                 x-nullable: true
-            lastName:
+            email:
                 type: string
-                description: 'Last name'
+                description: 'User email'
             sessionTimeOutMS:
                 type: number
                 format: double
@@ -1860,7 +1860,7 @@ definitions:
                 type: boolean
                 description: 'Ignore 2-step verification on login or not.'
         required:
-            - lastName
+            - email
             - sessionTimeOutMS
             - password
             - ignoreTfa
@@ -1880,6 +1880,14 @@ paths:
             responses:
                 '204':
                     description: 'No content'
+                '403':
+                    description: 'Auth fail'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '422':
+                    description: 'Invalid schema'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
                 '501':
                     description: 'Server error'
                     schema:
@@ -1903,6 +1911,14 @@ paths:
             responses:
                 '204':
                     description: 'No content'
+                '403':
+                    description: 'Auth fail'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '422':
+                    description: 'Invalid schema'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
                 '501':
                     description: 'Server error'
                     schema:

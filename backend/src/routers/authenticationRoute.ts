@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as express from 'express';
 import { AuthController } from '../controllers/authController';
-import { ErrorResponse, Login, LoginTfa, User } from '../models/interfaces';
+import { ErrorResponse, Login, LoginTfa, User } from '../models/sharedInterfaces';
 import { SystemAuthScopes } from '../security/authentication';
 import { LoginSchema, schemaValidator, TfaSchema } from '../security/schemaValidator';
 import { expressAuthentication } from './../security/authentication';
@@ -20,8 +20,8 @@ export class AuthenticationRouter {
                 let loginData: Login;
                 try {
                     loginData = await schemaValidator(req, LoginSchema);
-                } catch (error) {
-                    res.status(422).send(error);
+                } catch {
+                    res.status(422).send();
                     return;
                 }
 
@@ -32,9 +32,12 @@ export class AuthenticationRouter {
                     .catch(() => {
                         const err: ErrorResponse = {
                             code: 403,
-                            message: 'User name or passs not valid',
                         };
-                        res.status(403).send(err);
+                        if (res.statusCode === 200) {
+                            res.statusCode = 501;
+                            err.code = 501;
+                        }
+                        res.send(err);
                     });
             });
 
@@ -43,8 +46,8 @@ export class AuthenticationRouter {
                 let loginData: LoginTfa;
                 try {
                     loginData = await schemaValidator(req, TfaSchema);
-                } catch (error) {
-                    res.status(422).send(error);
+                } catch {
+                    res.status(422).send();
                     return;
                 }
 

@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { ErrorResponse, User } from '../models/interfaces';
+import { ErrorResponse, User } from '../models/sharedInterfaces';
 
 @Tags('Users')
 @Route('users')

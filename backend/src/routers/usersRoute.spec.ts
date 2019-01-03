@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { User } from '../models/interfaces';
-import { validAdminAgent } from './prepareAuthorizeSpecAgent';
+import { User } from '../models/sharedInterfaces';
+import { validAdminAgent } from './prepareRoutesSpecTests';
 
 describe('Users routing API', () => {
 
@@ -29,7 +29,7 @@ describe('Users routing API', () => {
             const user: User = {
                 firstName: '',
                 ignoreTfa: false,
-                lastName: '',
+                email: 'aa@bb.com',
                 password: '',
                 sessionTimeOutMS: 334343232,
             };
@@ -47,7 +47,7 @@ describe('Users routing API', () => {
             const user: User = {
                 firstName: '',
                 ignoreTfa: false,
-                lastName: '',
+                email: 'aa@bb.com',
                 password: '',
                 sessionTimeOutMS: 334343232,
             };

@@ -1,7 +1,8 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
-import { ErrorResponse, User } from '../models/interfaces';
+import { ErrorResponse, User } from '../models/sharedInterfaces';
+import { validSession, validSystemAdmin, validSystemUser } from '../routers/prepareRoutesSpecTests';
 import { expressAuthentication, SystemAuthScopes } from './authentication';
 
 describe('Security scopes validation middelwere', () => {
@@ -10,7 +11,7 @@ describe('Security scopes validation middelwere', () => {
         it('it should pass succsessfully', async () => {
             const faksRequest = {
                 cookies: {
-                    session: 'abc123456',
+                    session: validSession.userSessionKey,
                 },
             };
             const user = await expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope, [])
@@ -18,13 +19,7 @@ describe('Security scopes validation middelwere', () => {
                     throw new Error('auth fail');
                 });
 
-            expect(user).to.deep.equal({
-                firstName: 'ln',
-                ignoreTfa: false,
-                lastName: 'ln',
-                password: '4544',
-                sessionTimeOutMS: 54652,
-            });
+            expect(user).to.deep.equal(validSystemUser);
             return;
         });
 
@@ -42,13 +37,27 @@ describe('Security scopes validation middelwere', () => {
                     expect(err).to.deep.include({ code: 403 });
                 });
         });
+
+        it('it should denied', async () => {
+            const faksRequest = {
+                cookies: {
+                },
+            };
+            expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope, [])
+                .then(() => {
+                    throw new Error('Access should denied, but empty cert passed');
+                })
+                .catch((err: ErrorResponse | Error) => {
+                    expect(err).to.deep.include({ code: 403 });
+                });
+        });
     });
 
     describe('Test Auth Scopes', () => {
         it('it should pass as admin scope', async () => {
             const faksRequest = {
                 cookies: {
-                    session: 'abc123456',
+                    session: validSession.adminSessionKey,
                 },
             };
             const user = await expressAuthentication(faksRequest as express.Request, SystemAuthScopes.adminScope, [])
@@ -56,41 +65,14 @@ describe('Security scopes validation middelwere', () => {
                     throw new Error('admin scope auth fail');
                 });
 
-            expect(user).to.deep.equal({
-                firstName: 'ln',
-                ignoreTfa: false,
-                lastName: 'ln',
-                password: '4544',
-                sessionTimeOutMS: 54652,
-            });
-            return;
-        });
-
-        it('it should pass as user scope', async () => {
-            const faksRequest = {
-                cookies: {
-                    session: 'abc123456',
-                },
-            };
-            const user = await expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope, [])
-                .catch(() => {
-                    throw new Error('user scope auth fail');
-                });
-
-            expect(user).to.deep.equal({
-                firstName: 'ln',
-                ignoreTfa: false,
-                lastName: 'ln',
-                password: '4544',
-                sessionTimeOutMS: 54652,
-            });
+            expect(user).to.deep.equal(validSystemAdmin);
             return;
         });
 
         it('it should denied any access', async () => {
             const faksRequest = {
                 cookies: {
-                    session: 'abc123456',
+                    session: validSession.userSessionKey,
                 },
             };
             try {
@@ -111,7 +93,7 @@ describe('Security scopes validation middelwere', () => {
         it('it should denied any access', async () => {
             const faksRequest = {
                 cookies: {
-                    session: 'abc123456',
+                    session: validSession.userSessionKey,
                 },
             };
             try {

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { Minion } from '../models/interfaces';
-import { validUserAgent } from './prepareAuthorizeSpecAgent';
+import { Minion } from '../models/sharedInterfaces';
+import { validUserAgent } from './prepareRoutesSpecTests';
 
 describe('Minions routing API', () => {
 

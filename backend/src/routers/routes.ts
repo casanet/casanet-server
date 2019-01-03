@@ -175,7 +175,7 @@ const models: TsoaRoute.Models = {
     "User": {
         "properties": {
             "firstName": { "dataType": "string" },
-            "lastName": { "dataType": "string", "required": true },
+            "email": { "dataType": "string", "required": true },
             "sessionTimeOutMS": { "dataType": "double", "required": true },
             "password": { "dataType": "string", "required": true },
             "ignoreTfa": { "dataType": "boolean", "required": true },

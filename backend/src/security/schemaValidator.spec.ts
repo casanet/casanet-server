@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
-import { ErrorResponse, Login, LoginTfa } from '../models/interfaces';
+import { ErrorResponse, Login, LoginTfa } from '../models/sharedInterfaces';
 import { LoginSchema, schemaValidator, TfaSchema } from './schemaValidator';
 
 describe('Schema validator tests', () => {
