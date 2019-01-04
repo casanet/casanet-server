@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Configuration } from '../app.config';
+import { Configuration } from '../config';
 import { IUsersDataLayer } from '../models/backendInterfaces';
 import { User } from '../models/sharedInterfaces';
 

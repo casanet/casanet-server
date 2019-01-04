@@ -3,7 +3,7 @@ import * as http from 'http';
 import * as https from 'https';
 import * as path from 'path';
 import app from './app';
-import { Configuration } from './app.config';
+import { Configuration } from './config';
 import { logger } from './utilities/logger';
 
 logger.info('home-iot-server app starting...');

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as express from 'express';
-import { Configuration } from '../app.config';
+import { Configuration } from '../config';
 import { ISessionDataLayer, IUsersDataLayer } from '../models/backendInterfaces';
 import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';

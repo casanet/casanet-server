@@ -25,6 +25,10 @@ export declare type RunningMode  = 'prod' | 'test' | 'debug';
 
 /** Config staruct for all system */
 export declare interface Config {
+    /**
+     * Default user to allow login in first use.
+     */
+    defaultUser: User,
     /** Http  configuration */
     http: {
         httpPort: number;

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as randomstring from 'randomstring';
-import { Configuration } from '../app.config';
+import { Configuration } from '../config';
 import { ISessionDataLayer, Session } from '../models/backendInterfaces';
 import { User } from '../models/sharedInterfaces';
 

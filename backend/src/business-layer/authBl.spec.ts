@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
-import { Configuration } from '../app.config';
+import { Configuration } from '../config';
 import { ISessionDataLayer, IUsersDataLayer, Session } from '../models/backendInterfaces';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { AuthBl } from './authBl';

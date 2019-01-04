@@ -1,6 +1,6 @@
 import * as fse from 'fs-extra';
 import * as path from 'path';
-import { Configuration } from '../app.config';
+import { Configuration } from '../config';
 import { IDataIO } from '../models/backendInterfaces';
 import { logger } from '../utilities/logger';
 

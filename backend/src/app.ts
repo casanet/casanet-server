@@ -6,7 +6,7 @@ import * as RateLimit from 'express-rate-limit';
 import * as useragent from 'express-useragent';
 import * as helmet from 'helmet';
 import * as path from 'path';
-import { Configuration } from './app.config';
+import { Configuration } from './config';
 import { AuthenticationRouter } from './routers/authenticationRoute';
 import { RegisterRoutes } from './routers/routes';
 import { logger } from './utilities/logger';

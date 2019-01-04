@@ -1,16 +1,9 @@
+import { Configuration } from '../config';
 import { IDataIO, IUsersDataLayer } from '../models/backendInterfaces';
 import { User } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
 const USERS_FILE_NAME = 'users.json';
-
-const defaultUser: User = {
-    email: 'default@default.com',
-    firstName: 'temp default',
-    ignoreTfa: true,
-    password: 'casanet',
-    sessionTimeOutMS: 1000 * 60 * 60 * 30,
-};
 
 export class UsersDal implements IUsersDataLayer {
 
@@ -27,7 +20,7 @@ export class UsersDal implements IUsersDataLayer {
         this.users = dataIo.getDataSync();
 
         if (this.users.length === 0) {
-            this.users = [defaultUser];
+            this.users = [Configuration.defaultUser];
         }
     }
 

@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
-import { Configuration } from '../app.config';
+import { Configuration } from '../config';
 import { IDataIO, Session } from '../models/backendInterfaces';
 import { logger } from '../utilities/logger';
 import { SessionsDal } from './sessionsDal';
