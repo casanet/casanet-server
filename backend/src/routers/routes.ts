@@ -29,15 +29,12 @@ const models: TsoaRoute.Models = {
             "tfaPassword": { "dataType": "string", "required": true },
         },
     },
-    "Device": {
+    "LocalNetworkDevice": {
         "properties": {
             "name": { "dataType": "string" },
             "mac": { "dataType": "string", "required": true },
-            "ip": { "dataType": "string" },
             "vendor": { "dataType": "string" },
-            "brand": { "dataType": "string", "required": true },
-            "model": { "dataType": "string", "required": true },
-            "token": { "dataType": "string" },
+            "ip": { "dataType": "string" },
         },
     },
     "DeviceKind": {
@@ -46,12 +43,15 @@ const models: TsoaRoute.Models = {
             "model": { "dataType": "string", "required": true },
             "isUsedAsLogicDevice": { "dataType": "boolean", "required": true },
             "isTokenRequierd": { "dataType": "boolean", "required": true },
-            "suppotedMinionType": { "dataType": "array", "array": { "dataType": "enum", "enums": ["tuggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "] }, "required": true },
+            "suppotedMinionType": { "dataType": "enum", "enums": ["tuggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
         },
     },
-    "DeviceName": {
+    "MinionDevice": {
         "properties": {
-            "name": { "dataType": "string", "required": true },
+            "pysicalDevice": { "ref": "LocalNetworkDevice", "required": true },
+            "brand": { "dataType": "string", "required": true },
+            "model": { "dataType": "string", "required": true },
+            "token": { "dataType": "string" },
         },
     },
     "Tuggle": {
@@ -109,7 +109,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "minionId": { "dataType": "string" },
             "name": { "dataType": "string", "required": true },
-            "device": { "ref": "Device", "required": true },
+            "device": { "ref": "MinionDevice", "required": true },
             "isProperlyCommunicated": { "dataType": "boolean", "required": true },
             "minionStatus": { "ref": "MinionStatus", "required": true },
             "minionType": { "dataType": "enum", "enums": ["tuggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
@@ -287,7 +287,7 @@ export function RegisterRoutes(app: express.Express) {
         function(request: any, response: any, next: any) {
             const args = {
                 deviceMac: { "in": "path", "name": "deviceMac", "required": true, "dataType": "string" },
-                newName: { "in": "body", "name": "newName", "required": true, "ref": "DeviceName" },
+                device: { "in": "body", "name": "device", "required": true, "ref": "LocalNetworkDevice" },
             };
 
             let validatedArgs: any[] = [];

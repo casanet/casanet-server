@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Minion } from '../models/sharedInterfaces';
+import { Minion } from '../src/models/sharedInterfaces';
 import { validUserAgent } from './prepareRoutesSpecTests';
 
 describe('Minions routing API', () => {
@@ -30,7 +30,9 @@ describe('Minions routing API', () => {
                 device: {
                     brand: '',
                     model: '',
-                    mac: '',
+                    pysicalDevice: {
+                        mac: '11111111',
+                    },
                 },
                 isProperlyCommunicated: true,
                 minionId: 'vf',
@@ -55,7 +57,9 @@ describe('Minions routing API', () => {
                 device: {
                     brand: '',
                     model: '',
-                    mac: '',
+                    pysicalDevice: {
+                        mac: '11111111',
+                    },
                 },
                 isProperlyCommunicated: true,
                 minionId: 'vf',
@@ -90,7 +94,9 @@ describe('Minions routing API', () => {
                 device: {
                     brand: '',
                     model: '',
-                    mac: '',
+                    pysicalDevice: {
+                        mac: '11111111',
+                    },
                 },
                 isProperlyCommunicated: true,
                 minionId: 'vf',
@@ -115,7 +121,9 @@ describe('Minions routing API', () => {
                 device: {
                     brand: '',
                     model: '',
-                    mac: '',
+                    pysicalDevice: {
+                        mac: '11111111',
+                    },
                 },
                 isProperlyCommunicated: true,
                 minionId: 'vf',

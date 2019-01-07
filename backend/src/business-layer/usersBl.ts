@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
 import { Configuration } from '../config';
-import { IUsersDataLayer } from '../models/backendInterfaces';
+import { UsersDal, UsersDalSingleton } from '../data-layer/usersDal';
 import { User } from '../models/sharedInterfaces';
 
 export class UsersBl {
 
-    private usersDal: IUsersDataLayer;
+    private usersDal: UsersDal;
 
     /**
      * Init users bl. using dependecy injection pattern to allow units testings.
      * @param usersDal Inject the dal instalce.
      */
-    constructor(usersDal: IUsersDataLayer) {
+    constructor(usersDal: UsersDal) {
 
         this.usersDal = usersDal;
     }
@@ -48,3 +48,5 @@ export class UsersBl {
         return this.usersDal.deleteUser(user);
     }
 }
+
+export const UsersBlSingleton = new UsersBl(UsersDalSingleton);

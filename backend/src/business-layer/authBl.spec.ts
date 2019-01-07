@@ -2,11 +2,15 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
 import { Configuration } from '../config';
-import { ISessionDataLayer, IUsersDataLayer, Session } from '../models/backendInterfaces';
+import { SessionsDal } from '../data-layer/sessionsDal';
+import { UsersDal } from '../data-layer/usersDal';
+import { Session } from '../models/backendInterfaces';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { AuthBl } from './authBl';
+import { SessionsBl } from './sessionsBl';
+import { UsersBl } from './usersBl';
 
-class SessionsDalMock implements ISessionDataLayer {
+class SessionsDalMock {
 
     public mockSessions: Session[] = [
         {
@@ -54,7 +58,7 @@ class SessionsDalMock implements ISessionDataLayer {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-class UsersDalMock implements IUsersDataLayer {
+class UsersDalMock {
 
     public mockUsers: User[] = [
         {
@@ -111,7 +115,8 @@ class UsersDalMock implements IUsersDataLayer {
 
 const sessionDalMock = new SessionsDalMock();
 const usersDalMock = new UsersDalMock();
-const authBl = new AuthBl(usersDalMock, sessionDalMock);
+const authBl = new AuthBl(new SessionsBl(sessionDalMock as unknown as SessionsDal),
+    new UsersBl(usersDalMock as unknown as UsersDal));
 
 describe('Authentication BL tests', () => {
 

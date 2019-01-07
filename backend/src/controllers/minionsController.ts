@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { Device, ErrorResponse, Minion } from '../models/sharedInterfaces';
+import { ErrorResponse, Minion } from '../models/sharedInterfaces';
 
 @Tags('Minions')
 @Route('minions')

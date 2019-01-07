@@ -1,11 +1,9 @@
-import { Request, Response } from 'express';
 import * as express from 'express';
 import { Configuration } from '../config';
-import { ISessionDataLayer, IUsersDataLayer } from '../models/backendInterfaces';
 import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
-import { SessionsBl } from './sessionsBl';
-import { UsersBl } from './usersBl';
+import { SessionsBl, SessionsBlSingleton } from './sessionsBl';
+import { UsersBl, UsersBlSingleton } from './usersBl';
 
 export class AuthBl {
 
@@ -14,13 +12,13 @@ export class AuthBl {
 
     /**
      * Init auth bl. using dependecy injection pattern to allow units testings.
-     * @param usersDal Inject the user dal instalce to used userBl.
-     * @param sessionsDal Inject the sessions dal instalce to used sessionBl.
+     * @param sessionsBl Inject the sessions bl instalce to used sessionBl.
+     * @param usersBl Inject the user bl instalce to used userBl.
      */
-    constructor(usersDal: IUsersDataLayer, sessionsDal: ISessionDataLayer) {
+    constructor(sessionsBl: SessionsBl, usersBl: UsersBl) {
 
-        this.sessionsBl = new SessionsBl(sessionsDal);
-        this.usersBl = new UsersBl(usersDal);
+        this.sessionsBl = sessionsBl;
+        this.usersBl = usersBl;
     }
 
     /**
@@ -58,3 +56,5 @@ export class AuthBl {
         }
     }
 }
+
+export const AuthBlSingleton = new AuthBl(SessionsBlSingleton, UsersBlSingleton);

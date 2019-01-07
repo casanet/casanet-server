@@ -1,10 +1,10 @@
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
-import app from '../App';
-import { UsersDalSingleton } from '../data-layer/usersDal';
-import { Login, LoginTfa } from '../models/sharedInterfaces';
-import { User } from '../models/sharedInterfaces';
-import { logger } from '../utilities/logger';
+import app from '../src/App';
+import { UsersDalSingleton } from '../src/data-layer/usersDal';
+import { Login, LoginTfa } from '../src/models/sharedInterfaces';
+import { User } from '../src/models/sharedInterfaces';
+import { logger } from '../src/utilities/logger';
 
 /**
  * Perpare chai session agent.
@@ -77,6 +77,16 @@ UsersDalSingleton.createUser(signInUser)
     });
 
 /**
+ * Check if user want test the long time tests sucj as scanning real network etc.
+ */
+const testLongSpecsSelection = process.env.TEST_LONG_SPECS !== 'false';
+if (testLongSpecsSelection) {
+    logger.info(`Testing all specs, to avoid long time duration test set TEST_LONG_SPECS env var to 'false'`);
+} else {
+    logger.info(`Avoiding long time duration specs, to change it set TEST_LONG_SPECS env var to 'true'`);
+}
+
+/**
  * API
  */
 
@@ -104,3 +114,8 @@ export const validUserAgent = userAgent;
  * An express test agent with valid cookie as admin.
  */
 export const validAdminAgent = adminAgent;
+
+/**
+ * Mark if user want to test all tests, even the long time tests.
+ */
+export const testLongSpecs: boolean = testLongSpecsSelection;

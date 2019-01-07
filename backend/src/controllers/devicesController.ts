@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { Device, DeviceKind, ErrorResponse } from '../models/sharedInterfaces';
+import { DevicesBlSingleton } from '../business-layer/devicesBl';
+import { DeviceKind, ErrorResponse, LocalNetworkDevice } from '../models/sharedInterfaces';
 
 @Tags('Devices')
 @Route('devices')
@@ -12,15 +13,8 @@ export class DevicesController extends Controller {
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
-    public async getDevices(): Promise<Device[]> {
-        return [{
-            ip: '192.168.1.1',
-            mac: 'aa:bb:cc:dd',
-            name: 'device demo',
-            brand: '',
-            model: '',
-        }];
-        // TODO: await new DevicesService().get(id);
+    public async getDevices(): Promise<LocalNetworkDevice[]> {
+        return await DevicesBlSingleton.getDevices();
     }
 
     /**
@@ -31,8 +25,7 @@ export class DevicesController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Get('kinds')
     public async getDevicesKinds(): Promise<DeviceKind[]> {
-        return [];
-        // TODO: await new DevicesService().get(id);
+        return await DevicesBlSingleton.getDevicesKins();
     }
 
     /**
@@ -43,9 +36,9 @@ export class DevicesController extends Controller {
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{deviceMac}')
-    public async setDeviceName(deviceMac: string, @Body() newName: DeviceName): Promise<void> {
-        // TODO ...
-        return;
+    public async setDeviceName(deviceMac: string, @Body() device: LocalNetworkDevice): Promise<void> {
+        device.mac = deviceMac;
+        await DevicesBlSingleton.setDeviceName(device);
     }
 
     /**
@@ -57,14 +50,6 @@ export class DevicesController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post('rescan')
     public async rescanDevices(): Promise<void> {
-        // TODO ...
-        return;
+        await DevicesBlSingleton.rescanNetwork();
     }
-}
-
-/**
- * Simple struct for updating device name requests.
- */
-export declare interface DeviceName {
-    name: string;
 }

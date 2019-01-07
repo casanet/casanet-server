@@ -1,4 +1,5 @@
-import { User } from './sharedInterfaces';
+import { User, LocalNetworkDevice, DeviceKind, MinionStatus, Minion, ErrorResponse } from './sharedInterfaces';
+import { Observable, Subscriber, BehaviorSubject } from 'rxjs';
 
 /**
  * Session key and meta.
@@ -21,7 +22,7 @@ export declare interface AuthScopes {
 /**
  * Running application mode 
  */
-export declare type RunningMode  = 'prod' | 'test' | 'debug';
+export declare type RunningMode = 'prod' | 'test' | 'debug';
 
 /** Config staruct for all system */
 export declare interface Config {
@@ -40,7 +41,43 @@ export declare interface Config {
         windowsMs: number;
         maxRequests: number
     };
-    runningMode : RunningMode;
+    runningMode: RunningMode;
+}
+
+
+/**
+ * Any smart devices brand communication module needs to implement.
+ */
+export declare class IMinionsBrandModule {
+    /**
+     * Brand name, should be unique in system.
+     */
+    public readonly brandName: string;
+
+    /**
+     * All supported devices via current module metadata.
+     */
+    public readonly devices: DeviceKind[];
+
+    /**
+     * Let minions manager to know if any minion status changed by pysical interface of device.
+     */
+    public minionStatusChangedEvent: BehaviorSubject<{
+        mac: string;
+        status: MinionStatus;
+    }>;
+
+    /**
+     * Get current status of minion. (such as minion status on off etc.)
+     */
+    public getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse>;
+
+    /**
+     * Set minion new status. (such as turn minion on off etc.)
+     * @param miniom minion to set status for.
+     * @param setStatus the new status to set.
+     */
+    public setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse>;
 }
 
 /**
@@ -66,58 +103,4 @@ export declare class IDataIO {
      * @param data 
      */
     public setData(data: any[]): Promise<void>;
-}
-
-/**
- * Session data layer interface.
- */
-export declare class ISessionDataLayer {
-
-    /**
-     * Get all session as array.
-     */
-    public getSessions(): Promise<Session[]>;
-
-   /**
-     * Get session by session key.
-     * @param key Find session by key.
-     */
-    public getSession(key: string): Promise<Session>;
-
-    /**
-     * Save new session.
-     */
-    public createSession(newSession: Session): Promise<void>;
-
-    /**
-     * Delete session. 
-     */
-    public deleteSession(session: Session): Promise<void>;
-}
-
-/**
- * Users data layer interface.
- */
-export declare class IUsersDataLayer {
-
-    /**
-     * Get all users as array.
-     */
-    public getUsers(): Promise<User[]>;
-
-   /**
-     * Get users by user email.
-     * @param email Find user by key.
-     */
-    public getUser(email: string): Promise<User>;
-
-    /**
-     * Save new users.
-     */
-    public createUser(newUser: User): Promise<void>;
-
-    /**
-     * Delete users. 
-     */
-    public deleteUser(user: User): Promise<void>;
 }

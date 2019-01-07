@@ -1,16 +1,16 @@
 import { Configuration } from '../config';
-import { IDataIO, IUsersDataLayer } from '../models/backendInterfaces';
+import { IDataIO } from '../models/backendInterfaces';
 import { User } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
 const USERS_FILE_NAME = 'users.json';
 
-export class UsersDal implements IUsersDataLayer {
+export class UsersDal {
 
     private dataIo: IDataIO;
 
     /**
-     * Sessions.
+     * users.
      */
     private users: User[] = [];
 
@@ -35,10 +35,17 @@ export class UsersDal implements IUsersDataLayer {
         }
     }
 
+    /**
+     * Get all users as array.
+     */
     public async getUsers(): Promise<User[]> {
         return this.users;
     }
 
+    /**
+     * Get users by user email.
+     * @param email Find user by key.
+     */
     public async getUser(email: string): Promise<User> {
         const user = this.findUser(email);
 
@@ -48,6 +55,9 @@ export class UsersDal implements IUsersDataLayer {
         return user;
     }
 
+    /**
+     * Save new users.
+     */
     public async createUser(newUser: User): Promise<void> {
         this.users.push(newUser);
 
@@ -58,6 +68,9 @@ export class UsersDal implements IUsersDataLayer {
             });
     }
 
+     /**
+      * Delete users.
+      */
     public async deleteUser(user: User): Promise<void> {
         const originalUser = this.findUser(user.email);
 

@@ -1,11 +1,10 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
-import * as express from 'express';
-import { IUsersDataLayer, Session } from '../models/backendInterfaces';
+import { UsersDal } from '../data-layer/usersDal';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { UsersBl } from './usersBl';
 
-class UsersDalMock implements IUsersDataLayer {
+class UsersDalMock {
 
     public mockUsers: User[] = [
         {
@@ -60,7 +59,7 @@ class UsersDalMock implements IUsersDataLayer {
 }
 
 const usersDalMock = new UsersDalMock();
-const usersBl = new UsersBl(usersDalMock);
+const usersBl = new UsersBl(usersDalMock as unknown as UsersDal);
 
 describe('Users BL tests', () => {
 

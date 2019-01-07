@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import chaiHttp = require('chai-http');
-import app from '../App';
-import { Login, LoginTfa } from '../models/sharedInterfaces';
+import app from '../src/App';
+import { Login, LoginTfa } from '../src/models/sharedInterfaces';
 import { validSystemAdmin, validSystemUser } from './prepareRoutesSpecTests';
 
 chai.use(chaiHttp);

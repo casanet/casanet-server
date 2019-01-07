@@ -10,15 +10,14 @@
   "main": "dist/index.js",
   "scripts": {
     "prepare": "tsoa routes && tsoa swagger",
-    "test": "del-cli data/test -f && npm run prepare && cross-env NODE_ENV=test mocha --require ts-node/register src/**/*.spec.ts",
+    "test": "del-cli data/test -f && npm run prepare && cross-env NODE_ENV=test mocha --require ts-node/register src/**/*.spec.ts e2e/**/*.spec.ts",
     "build": "npm run prepare && tsc"
   },
   "license": "ISC",
   "dependencies": {
-    "cookie-parser": "^1.4.3",
     "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
-    "tsoa": "^2.3.8",
     "express-force-ssl": "^0.3.2",
     "express-rate-limit": "^3.3.2",
     "express-useragent": "^1.0.12",
@@ -29,8 +28,12 @@
     "https": "^1.0.0",
     "joi": "^14.3.0",
     "log4js": "^3.0.6",
+    "moment": "^2.23.0",
+    "network-list2": "^1.0.1",
     "path": "^0.12.7",
-    "randomstring": "^1.1.5"
+    "randomstring": "^1.1.5",
+    "rxjs": "^6.3.3",
+    "tsoa": "^2.3.8"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
@@ -40,6 +43,7 @@
     "@types/fs-extra": "^5.0.4",
     "@types/joi": "^14.0.0",
     "@types/mocha": "^5.2.5",
+    "@types/moment": "^2.13.0",
     "@types/node": "^10.12.10",
     "@types/randomstring": "^1.1.6",
     "chai": "^4.2.0",

@@ -41,38 +41,26 @@ definitions:
             - password
             - tfaPassword
         type: object
-    Device:
-        description: 'Represents a pysical device in local home.'
+    LocalNetworkDevice:
+        description: 'Reposnts any pysical device in local network.'
         properties:
             name:
                 type: string
-                description: 'Display name for device.'
+                description: 'Display name.'
                 x-nullable: true
             mac:
                 type: string
                 description: 'The MAC address of device, the value is unique to each device.'
-            ip:
-                type: string
-                description: 'The device ip address, if it set it should be unique.'
-                x-nullable: true
             vendor:
                 type: string
                 description: 'Info about device manufacturer.'
                 x-nullable: true
-            brand:
+            ip:
                 type: string
-                description: 'The brand of device.'
-            model:
-                type: string
-                description: 'The specific model of device.'
-            token:
-                type: string
-                description: 'Some of devices require a token for communication API.'
+                description: 'The device ip address, if exist it should be unique in netword.'
                 x-nullable: true
         required:
             - mac
-            - brand
-            - model
         type: object
     DeviceKind:
         description: 'For each suppoeted device there is limitations and abilities of it.'
@@ -90,17 +78,15 @@ definitions:
                 type: boolean
                 description: 'Is device require token for communication API.'
             suppotedMinionType:
-                type: array
-                items:
-                    type: string
-                    enum:
-                        - tuggle
-                        - switch
-                        - airConditioning
-                        - light
-                        - temperatureLight
-                        - 'colorLight '
-                description: 'Supported minion types for current device.'
+                type: string
+                enum:
+                    - tuggle
+                    - switch
+                    - airConditioning
+                    - light
+                    - temperatureLight
+                    - 'colorLight '
+                description: 'Supported minion type for current device.'
         required:
             - brand
             - model
@@ -108,13 +94,26 @@ definitions:
             - isTokenRequierd
             - suppotedMinionType
         type: object
-    DeviceName:
-        description: 'Simple struct for updating device name requests.'
+    MinionDevice:
+        description: 'Represents a pysical device kind with netword info.'
         properties:
-            name:
+            pysicalDevice:
+                $ref: '#/definitions/LocalNetworkDevice'
+                description: 'The pysical network device.'
+            brand:
                 type: string
+                description: 'The brand of device.'
+            model:
+                type: string
+                description: 'The specific model of device.'
+            token:
+                type: string
+                description: 'Some of devices require a token for communication API.'
+                x-nullable: true
         required:
-            - name
+            - pysicalDevice
+            - brand
+            - model
         type: object
     Tuggle:
         description: "A tuggel value, the tuggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone change the light status using pysical switche."
@@ -1558,7 +1557,7 @@ definitions:
                 type: string
                 description: 'Display name of minion.'
             device:
-                $ref: '#/definitions/Device'
+                $ref: '#/definitions/MinionDevice'
                 description: 'Pysical device of minion.'
             isProperlyCommunicated:
                 type: boolean
@@ -1964,7 +1963,7 @@ paths:
                     schema:
                         type: array
                         items:
-                            $ref: '#/definitions/Device'
+                            $ref: '#/definitions/LocalNetworkDevice'
                 '501':
                     description: 'Server error'
                     schema:
@@ -2025,12 +2024,11 @@ paths:
                     required: true
                     type: string
                 -
-                    description: 'New name to set.'
                     in: body
-                    name: newName
+                    name: device
                     required: true
                     schema:
-                        $ref: '#/definitions/DeviceName'
+                        $ref: '#/definitions/LocalNetworkDevice'
     /devices/rescan:
         post:
             operationId: RescanDevices

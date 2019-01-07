@@ -28,7 +28,8 @@
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "env": {
         "USE_HTTPS": "false",
-        "NODE_ENV": "test"
+        "NODE_ENV": "test",
+        "TEST_LONG_SPECS" : "true"
       },
       "args": [
         "--require",
@@ -39,7 +40,8 @@
         "999999",
         "--colors",
         "--recursive",
-        "${workspaceFolder}/src/**/*.spec.ts"
+        "${workspaceFolder}/src/**/*.spec.ts",
+        "${workspaceFolder}/e2e/**/*.spec.ts"
       ],
       "internalConsoleOptions": "openOnSessionStart"
     },

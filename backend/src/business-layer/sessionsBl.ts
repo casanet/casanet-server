@@ -1,18 +1,19 @@
 import { Request, Response } from 'express';
 import * as randomstring from 'randomstring';
 import { Configuration } from '../config';
-import { ISessionDataLayer, Session } from '../models/backendInterfaces';
+import { SessionsDal, SessionsDalSingelton } from '../data-layer/sessionsDal';
+import { Session } from '../models/backendInterfaces';
 import { User } from '../models/sharedInterfaces';
 
 export class SessionsBl {
 
-    private sessionDal: ISessionDataLayer;
+    private sessionDal: SessionsDal;
 
     /**
      * Init session bl. using dependecy injection pattern to allow units testings.
      * @param sessionDal Inject the dal instalce.
      */
-    constructor(sessionDal: ISessionDataLayer) {
+    constructor(sessionDal: SessionsDal) {
 
         this.sessionDal = sessionDal;
     }
@@ -70,3 +71,5 @@ export class SessionsBl {
         return this.sessionDal.deleteSession(session);
     }
 }
+
+export const SessionsBlSingleton = new SessionsBl(SessionsDalSingelton);

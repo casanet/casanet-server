@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { DeviceName } from '../controllers/devicesController';
-import { validUserAgent } from './prepareRoutesSpecTests';
+import * as moment from 'moment';
+import { LocalNetworkDevice } from '../src/models/sharedInterfaces';
+import { testLongSpecs, validUserAgent } from './prepareRoutesSpecTests';
 
 describe('Devices routing API', () => {
 
@@ -26,11 +27,12 @@ describe('Devices routing API', () => {
 
     describe('/PUT devices/{deviceMac}', () => {
         it('it should respond 20x as status code', (done) => {
-            const deviceName: DeviceName = {
+            const device: LocalNetworkDevice = {
+                mac: '1111111111',
                 name: 'dfdff',
             };
-            validUserAgent.put('/API/devices/deviceMac')
-                .send(deviceName)
+            validUserAgent.put(`/API/devices/${device.mac}`)
+                .send(device)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -39,12 +41,17 @@ describe('Devices routing API', () => {
     });
 
     describe('/POST devices/rescan', () => {
+
+        if (!testLongSpecs) {
+            return;
+        }
+
         it('it should respond 20x as status code', (done) => {
             validUserAgent.post('/API/devices/rescan')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
                 });
-        });
+        }).timeout(moment.duration(5, 'minutes').asMilliseconds());
     });
 });

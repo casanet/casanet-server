@@ -44,28 +44,40 @@ export declare interface StringMap {
 }
 
 /**
- * Represents a pysical device in local home. 
+ * Reposnts any pysical device in local network.
  */
-export declare interface Device {
-    /**
-     * Display name for device.
-     */
-    name?: string;
+export declare interface LocalNetworkDevice {
 
+    /**
+     * Display name.
+     */
+    name? : string;
+    
     /**
      * The MAC address of device, the value is unique to each device.
      */
-    mac: string;
-
-    /**
-     * The device ip address, if it set it should be unique.
-     */
-    ip?: string;
+    mac : string;
 
     /**
      * Info about device manufacturer.
      */
-    vendor?: string;
+    vendor? : string;
+
+    /**
+     * The device ip address, if exist it should be unique in netword.
+     */
+    ip?: string;
+}
+
+/**
+ * Represents a pysical device kind with netword info. 
+ */
+export declare interface MinionDevice {
+    
+    /**
+     * The pysical network device.
+     */
+    pysicalDevice : LocalNetworkDevice;
 
     /**
      * The brand of device.
@@ -110,9 +122,9 @@ export declare interface DeviceKind {
     isTokenRequierd: boolean;
 
     /**
-     * Supported minion types for current device.
+     * Supported minion type for current device.
      */
-    suppotedMinionType: MinionTypes[];
+    suppotedMinionType: MinionTypes;
 }
 
 /**
@@ -388,7 +400,7 @@ export declare interface Minion {
     /**
      * Pysical device of minion. 
      */
-    device: Device;
+    device: MinionDevice;
 
     /**
      * Is communication with device status ok.

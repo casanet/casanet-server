@@ -1,8 +1,6 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { AuthBl } from '../business-layer/authBl';
-import { SessionsDalSingelton } from '../data-layer/sessionsDal';
-import { UsersDalSingleton } from '../data-layer/usersDal';
+import { AuthBlSingleton } from '../business-layer/authBl';
 import { ErrorResponse, Login, LoginTfa, User } from '../models/sharedInterfaces';
 
 /**
@@ -14,19 +12,11 @@ import { ErrorResponse, Login, LoginTfa, User } from '../models/sharedInterfaces
 @Route('auth')
 export class AuthController extends Controller {
 
-    private authBl: AuthBl;
-
-    constructor() {
-        super();
-
-        this.authBl = new AuthBl(UsersDalSingleton, SessionsDalSingelton);
-    }
-
     /**
      * Login to system.
      */
     public async login(request: express.Request, response: express.Response, login: Login): Promise<void> {
-        await this.authBl.login(response, login);
+        await AuthBlSingleton.login(response, login);
     }
 
     /**

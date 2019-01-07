@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { User } from '../models/sharedInterfaces';
+import { User } from '../src/models/sharedInterfaces';
 import { validAdminAgent } from './prepareRoutesSpecTests';
 
 describe('Users routing API', () => {

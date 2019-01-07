@@ -1,11 +1,11 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
-import * as express from 'express';
-import { ISessionDataLayer, Session } from '../models/backendInterfaces';
+import { SessionsDal } from '../data-layer/sessionsDal';
+import { Session } from '../models/backendInterfaces';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { SessionsBl } from './sessionsBl';
 
-class SessionsDalMock implements ISessionDataLayer {
+class SessionsDalMock {
 
     public mockSessions: Session[] = [
         {
@@ -53,7 +53,7 @@ class SessionsDalMock implements ISessionDataLayer {
 }
 
 const sessionDalMock = new SessionsDalMock();
-const sessionBl = new SessionsBl(sessionDalMock);
+const sessionBl = new SessionsBl(sessionDalMock as unknown as SessionsDal);
 
 describe('Sesssion BL tests', () => {
 

@@ -1,9 +1,9 @@
-import { IDataIO, ISessionDataLayer, Session } from '../models/backendInterfaces';
+import { IDataIO, Session } from '../models/backendInterfaces';
 import { DataIO } from './dataIO';
 
 const SESSION_FILE_NAME = 'sessions.json';
 
-export class SessionsDal implements ISessionDataLayer {
+export class SessionsDal {
 
     private dataIo: IDataIO;
 
@@ -29,10 +29,17 @@ export class SessionsDal implements ISessionDataLayer {
         }
     }
 
+    /**
+     * Get all session as array.
+     */
     public async getSessions(): Promise<Session[]> {
         return this.sessions;
     }
 
+    /**
+     * Get session by session key.
+     * @param key Find session by key.
+     */
     public async getSession(key: string): Promise<Session> {
         const session = this.findSession(key);
 
@@ -42,6 +49,9 @@ export class SessionsDal implements ISessionDataLayer {
         return session;
     }
 
+    /**
+     * Save new session.
+     */
     public async createSession(newSession: Session): Promise<void> {
         this.sessions.push(newSession);
 
@@ -52,6 +62,9 @@ export class SessionsDal implements ISessionDataLayer {
             });
     }
 
+    /**
+     * Delete session.
+     */
     public async deleteSession(session: Session): Promise<void> {
         const originalSession = this.findSession(session.key);
 
