@@ -16,28 +16,38 @@ export const TfaSchema: ObjectSchema = Joi.object().keys({
     tfaPassword: Joi.string().not('').required(),
 }).required();
 
+export const ErrorResponseSchema: ObjectSchema = Joi.object().keys({
+    responseCode: Joi.number().min(4000).max(5999).required(),
+    message: Joi.string().not(''),
+}).required();
+
 /**
  * Validate the req.body json by given scema
  * If fail, reject with code 422.
  * Else return the object after clean.
  * @param {Request} req The express req object
- * @param {JoiObject} scema The Joi schema object
+ * @param {JoiObject} schema The Joi schema object
  * @returns {Promise<any|ErrorResponse>} Promise when seccess with cleaned data.
  */
-export const schemaValidator = (req: Request, scema: JoiObject): Promise<any | ErrorResponse> => {
-    return new Promise((resolve, reject) => {
-        const result: ValidationResult<any> = Joi.validate(req.body, scema);
-        if (!result.error) {
-            resolve(result.value);
-            return;
-        }
+export const RequestSchemaValidator = async (req: Request, schema: JoiObject): Promise<any | ErrorResponse> => {
+    return await SchemaValidator(req.body, schema)
+        .catch((result: ValidationResult<any>) => {
+            logger.warn(`wrong scema data rrrived ` +
+                `from ${getIp(req)}, error: ${result.error.message}`);
+            const error: ErrorResponse = {
+                responseCode: 422,
+                message: result.error.message,
+            };
 
-        logger.warn(`wrong scema data rrrived ` +
-            `from ${getIp(req)}, error: ${result.error.message}`);
-        const error: ErrorResponse = {
-            code: 422,
-            message: result.error.message,
-        };
-        reject(error);
-    });
+            throw error;
+        });
+};
+
+export const SchemaValidator = async (data: any, scema: JoiObject): Promise<any | ErrorResponse> => {
+    const result: ValidationResult<any> = Joi.validate(data, scema);
+    if (!result.error) {
+        return result.value;
+    }
+
+    throw result;
 };

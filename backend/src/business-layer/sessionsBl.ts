@@ -11,7 +11,7 @@ export class SessionsBl {
 
     /**
      * Init session bl. using dependecy injection pattern to allow units testings.
-     * @param sessionDal Inject the dal instalce.
+     * @param sessionDal Inject the dal instance.
      */
     constructor(sessionDal: SessionsDal) {
 

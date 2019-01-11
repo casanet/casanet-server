@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
-import { testLongSpecs } from '../../e2e/prepareRoutesSpecTests';
-import { Minion, MinionStatus } from '../models/sharedInterfaces';
+import { testLongSpecs } from '../../e2e/prepareRoutesSpecTests.spec';
+import { ErrorResponse, Minion, MinionStatus } from '../models/sharedInterfaces';
 import { ModulesManager } from './modulesManager';
 
 const modulesManager = new ModulesManager();
@@ -132,9 +132,9 @@ describe('Modules Manager tests', () => {
                 });
             } catch (error) {
                 expect(error).to.be.deep.equal({
-                    code: 4005,
+                    responseCode: 4005,
                     message: 'unknown model',
-                });
+                } as ErrorResponse);
                 return;
             }
             throw new Error('Tring to turn off unkknown light not fail.');
@@ -171,9 +171,9 @@ describe('Modules Manager tests', () => {
                 await modulesManager.getStatus(lightMinionMock);
             } catch (error) {
                 expect(error).to.be.deep.equal({
-                    code: 4005,
+                    responseCode: 4005,
                     message: 'unknown model',
-                });
+                } as ErrorResponse);
                 return;
             }
             throw new Error('Tring get status of unkknown light not fail.');

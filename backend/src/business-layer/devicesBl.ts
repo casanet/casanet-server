@@ -1,3 +1,4 @@
+import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { DevicesDal, DevicesDalSingleton } from '../data-layer/devicesDal';
 import { DeviceKind, LocalNetworkDevice } from '../models/sharedInterfaces';
 import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
@@ -6,11 +7,20 @@ import { logger } from '../utilities/logger';
 
 export class DevicesBl {
 
+    // Dependecies
     private localNetworkReader: () => Promise<LocalNetworkDevice[]>;
     private devicesDal: DevicesDal;
     private modulesManager: ModulesManager;
 
+    /**
+     * local devices.
+     */
     private localDevices: LocalNetworkDevice[] = [];
+
+    /**
+     * Local devices changes feed.
+     */
+    public devicesUpdate = new BehaviorSubject<LocalNetworkDevice[]>([]);
 
     /**
      * Init DevicesBl . using dependecy injection pattern to allow units testings.
@@ -21,14 +31,6 @@ export class DevicesBl {
         this.devicesDal = devicesDal;
         this.localNetworkReader = localNetworkReader;
         this.modulesManager = modulesManager;
-
-        this.loadDevices()
-            .then(() => {
-                logger.info('Loading devices table done.');
-            })
-            .catch(() => {
-                logger.error('Loading devices table fail.');
-            });
     }
 
     /**
@@ -48,7 +50,7 @@ export class DevicesBl {
     }
 
     /**
-     * Load nlocal netword devices data.
+     * Load local network devices data.
      */
     private async loadDevices(): Promise<void> {
         this.localDevices = await this.localNetworkReader()
@@ -77,6 +79,7 @@ export class DevicesBl {
     public async setDeviceName(deviceToSet: LocalNetworkDevice): Promise<void> {
         await this.devicesDal.saveDevice(deviceToSet);
         await this.loadDevicesName();
+        this.devicesUpdate.next(this.localDevices);
     }
 
     /**
@@ -84,8 +87,12 @@ export class DevicesBl {
      */
     public async rescanNetwork(): Promise<void> {
         await this.loadDevices();
+        this.devicesUpdate.next(this.localDevices);
     }
 
+    /**
+     * Get devices models kinds array.
+     */
     public async getDevicesKins(): Promise<DeviceKind[]> {
         return this.modulesManager.devicesKind;
     }

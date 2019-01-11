@@ -83,7 +83,7 @@ export class ModulesManager {
 
         if (!minionModule) {
             const errorResponse: ErrorResponse = {
-                code: 4004,
+                responseCode: 4004,
                 message: `there is not module for -${miniom.device.brand}- brand`,
             };
             throw errorResponse;
@@ -101,7 +101,7 @@ export class ModulesManager {
 
         if (!minionModule) {
             const errorResponse: ErrorResponse = {
-                code: 4004,
+                responseCode: 4004,
                 message: `there is not module for -${miniom.device.brand}- brand`,
             };
             throw errorResponse;

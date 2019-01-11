@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { ErrorResponse, Minion } from '../models/sharedInterfaces';
+import { MinionsBlSingleton } from '../business-layer/minionsBl';
+import { ErrorResponse, LocalNetworkDevice, Minion, MinionStatus, Timing } from '../models/sharedInterfaces';
 
 @Tags('Minions')
 @Route('minions')
@@ -13,8 +14,7 @@ export class MinionsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getMinions(): Promise<Minion[]> {
-        return [];
-        // TODO: await new DevicesService().get(id);
+        return await MinionsBlSingleton.getMinions();
     }
 
     /**
@@ -24,21 +24,19 @@ export class MinionsController extends Controller {
     @Security('userAuth')
     @Get('{minionId}')
     public async getMinion(minionId: string): Promise<Minion> {
-        return;
-        // TODO: await new DevicesService().get(id);
+        return await MinionsBlSingleton.getMinionById(minionId);
     }
 
     /**
      * Update minion status.
      * @param minionId Minon id.
-     * @param minion Minion object to update to.
+     * @param setStatus Minion status to set.
      */
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{minionId}')
-    public async setMinion(minionId: string, @Body() minion: Minion): Promise<void> {
-        // TODO ...
-        return;
+    public async setMinion(minionId: string, @Body() setStatus: MinionStatus): Promise<void> {
+        return await MinionsBlSingleton.setMinionStatus(minionId, setStatus);
     }
 
     /**
@@ -50,8 +48,7 @@ export class MinionsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Put('timeout/{minionId}')
     public async setMinionTimeout(minionId: string, @Body() minion: Minion): Promise<void> {
-        // TODO ...
-        return;
+        return await MinionsBlSingleton.setMinionTimeout(minionId, minion);
     }
 
     /**
@@ -69,7 +66,17 @@ export class MinionsController extends Controller {
     }
 
     /**
-     * Scan LAN to know to current status of the minion.
+     * Recheck minion device status (update server status cache).
+     */
+    @Security('userAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Post('rescan/{minionId}')
+    public async rescanMinionStatus(minionId: string): Promise<void> {
+        return await MinionsBlSingleton.scanMinionStatus(minionId);
+    }
+
+    /**
+     * Recheck every minion device status (update server status cache).
      * Note that this is not the devices scan!
      * This scen only checks every minion API to know the current status.
      */
@@ -77,8 +84,7 @@ export class MinionsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post('rescan')
     public async rescanMinionsStatus(): Promise<void> {
-        // TODO ...
-        return;
+        return await MinionsBlSingleton.scanMinionsStatus();
     }
 
     /**
@@ -89,8 +95,7 @@ export class MinionsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{minionId}')
     public async deleteMinion(minionId: string): Promise<void> {
-        // TODO ...
-        return;
+        return await MinionsBlSingleton.deleteMinion(minionId);
     }
 
     /**
@@ -101,7 +106,6 @@ export class MinionsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
     public async createMinion(@Body() minion: Minion): Promise<void> {
-        // TODO ...
-        return;
+        return await MinionsBlSingleton.createMinion(minion);
     }
 }

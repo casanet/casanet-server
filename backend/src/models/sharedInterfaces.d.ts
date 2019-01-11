@@ -5,7 +5,7 @@ export declare interface ErrorResponse {
     /**
      * error code in system.
      */
-    code: number;
+    responseCode: number;
 
     /**
      * Readble message.
@@ -161,7 +161,7 @@ export declare interface User {
 /**
  * Supported minions types.
  */
-export declare type MinionTypes = 'tuggle' | 'switch' | 'airConditioning' | 'light' | 'temperatureLight' | 'colorLight ';
+export declare type MinionTypes = 'toggle' | 'switch' | 'airConditioning' | 'light' | 'temperatureLight' | 'colorLight ';
 
 /**
  * Supported timings types.
@@ -235,11 +235,11 @@ export declare type ACFanStrengthOptions = 'low' | 'med' | 'high' | 'auto';
 export declare type SwitchOptions = 'on' | 'off';
 
 /**
- * A tuggel value, the tuggle is on way communicated device,
+ * A tuggel value, the toggle is on way communicated device,
  * For example wall light switches with 433 RF that can turn on or off 
  * but there is no way to know the real light status if someone change the light status using pysical switche.   
  */
-export declare interface Tuggle {
+export declare interface Toggle {
     setTo: SwitchOptions
 }
 
@@ -372,7 +372,7 @@ export declare interface DailyTimeTrigger extends DailyTiming {
  * Minion status, the avalible values is depend on minion type.
  */
 export declare interface MinionStatus {
-    tuggle?: Tuggle;
+    toggle?: Toggle;
     switch?: Switch;
     airConditioning?: AirConditioning;
     light?: Light;
@@ -405,7 +405,7 @@ export declare interface Minion {
     /**
      * Is communication with device status ok.
      */
-    isProperlyCommunicated: boolean;
+    isProperlyCommunicated?: boolean;
 
     /**
      * Status of minion (based on minion type).
@@ -421,7 +421,7 @@ export declare interface Minion {
      * Auto turn off duration, *if* set member value then the minion will turn off in X ms after turning it on, 
      * Used for example in boiler minion etc.
      */
-    minionAutoTrunOffMS?: number;
+    minionAutoTurnOffMS?: number;
 }
 
 /**

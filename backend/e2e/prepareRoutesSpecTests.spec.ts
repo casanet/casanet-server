@@ -1,10 +1,10 @@
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import app from '../src/App';
+import { MinionsDalSingleton } from '../src/data-layer/minionsDal';
 import { UsersDalSingleton } from '../src/data-layer/usersDal';
-import { Login, LoginTfa } from '../src/models/sharedInterfaces';
+import { Login, LoginTfa, Minion } from '../src/models/sharedInterfaces';
 import { User } from '../src/models/sharedInterfaces';
-import { logger } from '../src/utilities/logger';
 
 /**
  * Perpare chai session agent.
@@ -76,14 +76,38 @@ UsersDalSingleton.createUser(signInUser)
 
     });
 
+const minioinDataMock: Minion = {
+    device: {
+        brand: 'mock',
+        model: 'switch demo',
+        pysicalDevice: {
+            mac: '45543544',
+        },
+    },
+    isProperlyCommunicated: true,
+    minionId: 'm1',
+    minionType: 'switch',
+    minionStatus: {
+
+    },
+    name: 'bla bla 1',
+};
+MinionsDalSingleton.createMinion(minioinDataMock)
+    .then(() => {
+        console.log('Generate mock minion in data successfuly');
+    })
+    .catch(() => {
+        console.warn('Fail to generate mock minion in data');
+    });
+
 /**
  * Check if user want test the long time tests sucj as scanning real network etc.
  */
 const testLongSpecsSelection = process.env.TEST_LONG_SPECS !== 'false';
 if (testLongSpecsSelection) {
-    logger.info(`Testing all specs, to avoid long time duration test set TEST_LONG_SPECS env var to 'false'`);
+    console.log(`Testing all specs, to avoid long time duration test set TEST_LONG_SPECS env var to 'false'`);
 } else {
-    logger.info(`Avoiding long time duration specs, to change it set TEST_LONG_SPECS env var to 'true'`);
+    console.log(`Avoiding long time duration specs, to change it set TEST_LONG_SPECS env var to 'true'`);
 }
 
 /**

@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
-import { validSession, validSystemAdmin, validSystemUser } from '../../e2e/prepareRoutesSpecTests';
+import { validSession, validSystemAdmin, validSystemUser } from '../../e2e/prepareRoutesSpecTests.spec';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { expressAuthentication, SystemAuthScopes } from './authentication';
 

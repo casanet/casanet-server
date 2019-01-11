@@ -91,7 +91,7 @@ export class MockHandler implements IMinionsBrandModule {
             };
         }
         throw {
-            code: 4005,
+            responseCode: 4005,
             message: 'unknown model',
         } as ErrorResponse;
     }
@@ -104,7 +104,7 @@ export class MockHandler implements IMinionsBrandModule {
         }
 
         throw {
-            code: 4005,
+            responseCode: 4005,
             message: 'unknown model',
         } as ErrorResponse;
     }

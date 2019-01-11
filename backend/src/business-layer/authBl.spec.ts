@@ -155,7 +155,7 @@ describe('Authentication BL tests', () => {
             })
                 .catch((err) => {
                     const errorResponse: ErrorResponse = {
-                        code: 403,
+                        responseCode: 403,
                         message: 'user name or password incorrent',
                     };
                     expect(err).to.deep.equal(errorResponse);
@@ -175,7 +175,7 @@ describe('Authentication BL tests', () => {
             })
                 .catch((err) => {
                     const errorResponse: ErrorResponse = {
-                        code: 403,
+                        responseCode: 403,
                         message: 'user name or password incorrent',
                     };
                     expect(err).to.deep.equal(errorResponse);

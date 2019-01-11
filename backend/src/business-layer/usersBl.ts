@@ -9,7 +9,7 @@ export class UsersBl {
 
     /**
      * Init users bl. using dependecy injection pattern to allow units testings.
-     * @param usersDal Inject the dal instalce.
+     * @param usersDal Inject the dal instance.
      */
     constructor(usersDal: UsersDal) {
 

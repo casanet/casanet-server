@@ -23,6 +23,35 @@ const localNetworkDevicesMock: LocalNetworkDevice[] = [
         mac: '33333333333',
         ip: '192.168.1.3',
     },
+    {
+        mac: 'ac12345432',
+        ip: '192.168.1.90',
+    },
+    {
+        mac: '0987123ac',
+        ip: '192.168.1.5',
+    },
+    {
+        mac: '777777bb',
+        ip: '192.168.1.55',
+    },
+    {
+        mac: '777777cc',
+        ip: '192.168.1.56',
+    },
+    {
+        mac: '777777dd',
+        ip: '192.168.1.57',
+    },
+    {
+        mac: '777777ee',
+        ip: '192.168.1.58',
+        vendor : 'factory name',
+    },
+    {
+        mac: '111111aa',
+        ip: '192.168.1.59',
+    },
 ];
 
 const localNetworkReaderMock = async (): Promise<LocalNetworkDevice[]> => {
@@ -82,7 +111,7 @@ class ModulesManagerMock {
             };
         }
         throw {
-            code: 4005,
+            responseCode: 4005,
             message: 'unknown model',
         } as ErrorResponse;
     }
@@ -108,6 +137,10 @@ class DevicesDalMock {
         {
             name: 'third',
             mac: '33333333333',
+        },
+        {
+            name: 'IR transmitter',
+            mac: 'ac12345432',
         },
     ];
 
@@ -146,7 +179,7 @@ class DevicesDalMock {
 
 const devicesDalMock = new DevicesDalMock();
 const modulesManagerMock = new ModulesManagerMock();
-const devicesBl = new DevicesBl(devicesDalMock as unknown as DevicesDal,
+export const DevicesBlMock = new DevicesBl(devicesDalMock as unknown as DevicesDal,
     localNetworkReaderMock,
     modulesManagerMock as unknown as ModulesManager);
 
@@ -156,11 +189,11 @@ describe('Devices BL tests', () => {
         it('it should get devices succsessfully', async () => {
 
             /**
-             * Allow logic to finish devices scan.
+             * Befor getting any device, needs to scan network.
              */
-            await Delay(moment.duration(2, 'seconds'));
+            await DevicesBlMock.rescanNetwork();
 
-            const devices = await devicesBl.getDevices();
+            const devices = await DevicesBlMock.getDevices();
 
             expect(devices).length(localNetworkDevicesMock.length);
 
@@ -169,7 +202,7 @@ describe('Devices BL tests', () => {
 
         it('it should load names succsessfully', async () => {
 
-            const devices = await devicesBl.getDevices();
+            const devices = await DevicesBlMock.getDevices();
 
             const localDevices: LocalNetworkDevice = {
                 mac: '22222222222',
@@ -192,7 +225,23 @@ describe('Devices BL tests', () => {
                 name: 'new second name',
             };
 
-            await devicesBl.setDeviceName(localDevices);
+            await DevicesBlMock.setDeviceName(localDevices);
+
+            expect(devicesDalMock.mockDevicesNamesMap).to.deep.include(localDevices);
+        });
+
+        it('it should set name only succsessfully', async () => {
+
+            const localDevices: LocalNetworkDevice = {
+                mac: '22222222222',
+                ip: '192.168.1.22',
+                vendor: 'bla bla brand name',
+                name: 'some other name',
+            };
+
+            await DevicesBlMock.setDeviceName(localDevices);
+
+            localDevices.ip = '192.168.1.2';
 
             expect(devicesDalMock.mockDevicesNamesMap).to.deep.include(localDevices);
             return;
@@ -209,9 +258,9 @@ describe('Devices BL tests', () => {
             };
             localNetworkDevicesMock.push(newNetworkDevice);
 
-            await devicesBl.rescanNetwork();
+            await DevicesBlMock.rescanNetwork();
 
-            const devices = await devicesBl.getDevices();
+            const devices = await DevicesBlMock.getDevices();
 
             expect(devices).length(localNetworkDevicesMock.length);
             expect(devices).to.include(newNetworkDevice);
@@ -221,9 +270,74 @@ describe('Devices BL tests', () => {
     describe('Get system devices kinds', () => {
         it('it should get devices succsessfully', async () => {
 
-            const devicesKinds = await devicesBl.getDevicesKins();
+            const devicesKinds = await DevicesBlMock.getDevicesKins();
 
             expect(devicesKinds).to.be.deep.equal(modulesManagerMock.devicesKind);
+        });
+    });
+
+    describe('Feed devices update', () => {
+        it('it should update name changes', (done) => {
+            const localDevices: LocalNetworkDevice = {
+                mac: '22222222222',
+                ip: '192.168.1.2',
+                vendor: 'bla bla brand name',
+                name: 'update to a new other name',
+            };
+            const subscription = DevicesBlMock.devicesUpdate.subscribe((devices) => {
+                if (!devices || devices.length < 1) {
+                    return;
+                }
+
+                for (const device of devices) {
+                    if (device.mac === localDevices.mac &&
+                        device.name === localDevices.name) {
+                        subscription.unsubscribe();
+                        done();
+                        return;
+
+                    }
+                }
+            });
+
+            Delay(moment.duration(1, 'seconds'))
+                .then(() => {
+                    DevicesBlMock.setDeviceName(localDevices);
+                });
+        }).timeout(moment.duration(10, 'seconds').asMilliseconds());
+
+        it('it should update devices network data changed', (done) => {
+
+            const networkDevicesExpected = localNetworkDevicesMock[1];
+            networkDevicesExpected.ip = '192.168.1.77';
+
+            let specDone = false;
+            const subscription = DevicesBlMock.devicesUpdate.subscribe((devices) => {
+                if (!devices || devices.length < 1) {
+                    return;
+                }
+
+                if (specDone) {
+                    if (subscription) {
+                        subscription.unsubscribe();
+                    }
+                    return;
+                }
+                for (const device of devices) {
+                    if (networkDevicesExpected.mac === device.mac &&
+                        networkDevicesExpected.ip === device.ip) {
+                        specDone = true;
+                        done();
+                        return;
+
+                    }
+                }
+            });
+
+            Delay(moment.duration(1, 'seconds'))
+                .then(() => {
+                    DevicesBlMock.rescanNetwork();
+                });
         });
     });
 });

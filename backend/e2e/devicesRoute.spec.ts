@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as moment from 'moment';
 import { LocalNetworkDevice } from '../src/models/sharedInterfaces';
-import { testLongSpecs, validUserAgent } from './prepareRoutesSpecTests';
+import { testLongSpecs, validUserAgent } from './prepareRoutesSpecTests.spec';
 
 describe('Devices routing API', () => {
 

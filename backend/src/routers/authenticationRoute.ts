@@ -3,7 +3,7 @@ import * as express from 'express';
 import { AuthController } from '../controllers/authController';
 import { ErrorResponse, Login, LoginTfa, User } from '../models/sharedInterfaces';
 import { SystemAuthScopes } from '../security/authentication';
-import { LoginSchema, schemaValidator, TfaSchema } from '../security/schemaValidator';
+import { LoginSchema, RequestSchemaValidator, TfaSchema } from '../security/schemaValidator';
 import { expressAuthentication } from './../security/authentication';
 
 export class AuthenticationRouter {
@@ -19,7 +19,7 @@ export class AuthenticationRouter {
             .post(async (req: Request, res: Response) => {
                 let loginData: Login;
                 try {
-                    loginData = await schemaValidator(req, LoginSchema);
+                    loginData = await RequestSchemaValidator(req, LoginSchema);
                 } catch {
                     res.status(422).send();
                     return;
@@ -31,11 +31,11 @@ export class AuthenticationRouter {
                     })
                     .catch(() => {
                         const err: ErrorResponse = {
-                            code: 403,
+                            responseCode: 403,
                         };
                         if (res.statusCode === 200) {
                             res.statusCode = 501;
-                            err.code = 501;
+                            err.responseCode = 501;
                         }
                         res.send(err);
                     });
@@ -45,7 +45,7 @@ export class AuthenticationRouter {
             .post(async (req: Request, res: Response) => {
                 let loginData: LoginTfa;
                 try {
-                    loginData = await schemaValidator(req, TfaSchema);
+                    loginData = await RequestSchemaValidator(req, TfaSchema);
                 } catch {
                     res.status(422).send();
                     return;

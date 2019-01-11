@@ -5,7 +5,7 @@ definitions:
     ErrorResponse:
         description: 'Error response.'
         properties:
-            code:
+            responseCode:
                 type: number
                 format: double
                 description: 'error code in system.'
@@ -14,7 +14,7 @@ definitions:
                 description: 'Readble message.'
                 x-nullable: true
         required:
-            - code
+            - responseCode
         type: object
     Login:
         description: 'Login schema model.'
@@ -80,7 +80,7 @@ definitions:
             suppotedMinionType:
                 type: string
                 enum:
-                    - tuggle
+                    - toggle
                     - switch
                     - airConditioning
                     - light
@@ -115,8 +115,8 @@ definitions:
             - brand
             - model
         type: object
-    Tuggle:
-        description: "A tuggel value, the tuggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone change the light status using pysical switche."
+    Toggle:
+        description: "A tuggel value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone change the light status using pysical switche."
         properties:
             setTo:
                 type: string
@@ -1527,8 +1527,8 @@ definitions:
     MinionStatus:
         description: 'Minion status, the avalible values is depend on minion type.'
         properties:
-            tuggle:
-                $ref: '#/definitions/Tuggle'
+            toggle:
+                $ref: '#/definitions/Toggle'
                 x-nullable: true
             switch:
                 $ref: '#/definitions/Switch'
@@ -1562,20 +1562,21 @@ definitions:
             isProperlyCommunicated:
                 type: boolean
                 description: 'Is communication with device status ok.'
+                x-nullable: true
             minionStatus:
                 $ref: '#/definitions/MinionStatus'
                 description: 'Status of minion (based on minion type).'
             minionType:
                 type: string
                 enum:
-                    - tuggle
+                    - toggle
                     - switch
                     - airConditioning
                     - light
                     - temperatureLight
                     - 'colorLight '
                 description: 'minion type.'
-            minionAutoTrunOffMS:
+            minionAutoTurnOffMS:
                 type: number
                 format: double
                 description: "Auto turn off duration, *if* set member value then the minion will turn off in X ms after turning it on, \r\nUsed for example in boiler minion etc."
@@ -1583,7 +1584,6 @@ definitions:
         required:
             - name
             - device
-            - isProperlyCommunicated
             - minionStatus
             - minionType
         type: object
@@ -2143,12 +2143,12 @@ paths:
                     required: true
                     type: string
                 -
-                    description: 'Minion object to update to.'
+                    description: 'Minion status to set.'
                     in: body
-                    name: minion
+                    name: setStatus
                     required: true
                     schema:
-                        $ref: '#/definitions/Minion'
+                        $ref: '#/definitions/MinionStatus'
         delete:
             operationId: DeleteMinion
             produces:
@@ -2237,6 +2237,30 @@ paths:
                     required: true
                     schema:
                         $ref: '#/definitions/Minion'
+    '/minions/rescan/{minionId}':
+        post:
+            operationId: RescanMinionStatus
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Recheck minion device status (update server status cache).'
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+            parameters:
+                -
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
     /minions/rescan:
         post:
             operationId: RescanMinionsStatus
@@ -2249,7 +2273,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Scan LAN to know to current status of the minion.\r\nNote that this is not the devices scan!\r\nThis scen only checks every minion API to know the current status."
+            description: "Recheck every minion device status (update server status cache).\r\nNote that this is not the devices scan!\r\nThis scen only checks every minion API to know the current status."
             tags:
                 - Minions
             security:

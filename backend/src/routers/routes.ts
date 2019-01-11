@@ -12,7 +12,7 @@ import * as express from 'express';
 const models: TsoaRoute.Models = {
     "ErrorResponse": {
         "properties": {
-            "code": { "dataType": "double", "required": true },
+            "responseCode": { "dataType": "double", "required": true },
             "message": { "dataType": "string" },
         },
     },
@@ -43,7 +43,7 @@ const models: TsoaRoute.Models = {
             "model": { "dataType": "string", "required": true },
             "isUsedAsLogicDevice": { "dataType": "boolean", "required": true },
             "isTokenRequierd": { "dataType": "boolean", "required": true },
-            "suppotedMinionType": { "dataType": "enum", "enums": ["tuggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
+            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
         },
     },
     "MinionDevice": {
@@ -54,7 +54,7 @@ const models: TsoaRoute.Models = {
             "token": { "dataType": "string" },
         },
     },
-    "Tuggle": {
+    "Toggle": {
         "properties": {
             "setTo": { "dataType": "enum", "enums": ["on", "off"], "required": true },
         },
@@ -97,7 +97,7 @@ const models: TsoaRoute.Models = {
     },
     "MinionStatus": {
         "properties": {
-            "tuggle": { "ref": "Tuggle" },
+            "toggle": { "ref": "Toggle" },
             "switch": { "ref": "Switch" },
             "airConditioning": { "ref": "AirConditioning" },
             "light": { "ref": "Light" },
@@ -110,10 +110,10 @@ const models: TsoaRoute.Models = {
             "minionId": { "dataType": "string" },
             "name": { "dataType": "string", "required": true },
             "device": { "ref": "MinionDevice", "required": true },
-            "isProperlyCommunicated": { "dataType": "boolean", "required": true },
+            "isProperlyCommunicated": { "dataType": "boolean" },
             "minionStatus": { "ref": "MinionStatus", "required": true },
-            "minionType": { "dataType": "enum", "enums": ["tuggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
-            "minionAutoTrunOffMS": { "dataType": "double" },
+            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
+            "minionAutoTurnOffMS": { "dataType": "double" },
         },
     },
     "OperationActivity": {
@@ -366,7 +366,7 @@ export function RegisterRoutes(app: express.Express) {
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                minion: { "in": "body", "name": "minion", "required": true, "ref": "Minion" },
+                setStatus: { "in": "body", "name": "setStatus", "required": true, "ref": "MinionStatus" },
             };
 
             let validatedArgs: any[] = [];
@@ -422,6 +422,26 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.recordMinionCommand.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/minions/rescan/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.rescanMinionStatus.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions/rescan',

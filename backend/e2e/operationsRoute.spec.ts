@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { Operation } from '../src/models/sharedInterfaces';
-import { validUserAgent } from './prepareRoutesSpecTests';
+import { validUserAgent } from './prepareRoutesSpecTests.spec';
 
 describe('Operations routing API', () => {
 

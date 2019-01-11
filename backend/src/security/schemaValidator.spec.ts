@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
 import { ErrorResponse, Login, LoginTfa } from '../models/sharedInterfaces';
-import { LoginSchema, schemaValidator, TfaSchema } from './schemaValidator';
+import { ErrorResponseSchema, LoginSchema, RequestSchemaValidator, SchemaValidator, TfaSchema } from './schemaValidator';
 
 describe('Schema validator tests', () => {
 
@@ -15,7 +15,7 @@ describe('Schema validator tests', () => {
             const fakeRequest = {
                 body: login,
             };
-            const filterdLogin = await schemaValidator(fakeRequest as express.Request, LoginSchema)
+            const filterdLogin = await RequestSchemaValidator(fakeRequest as express.Request, LoginSchema)
                 .catch(() => {
                     throw new Error('auth fail');
                 });
@@ -37,7 +37,7 @@ describe('Schema validator tests', () => {
                 body: login,
             };
             let validationFail = true;
-            await schemaValidator(fakeRequest as express.Request, LoginSchema)
+            await RequestSchemaValidator(fakeRequest as express.Request, LoginSchema)
                 .then(() => {
                     validationFail = false;
                 })
@@ -63,7 +63,7 @@ describe('Schema validator tests', () => {
             const fakeRequest = {
                 body: login,
             };
-            const filterdLogin = await schemaValidator(fakeRequest as express.Request, TfaSchema)
+            const filterdLogin = await RequestSchemaValidator(fakeRequest as express.Request, TfaSchema)
                 .catch(() => {
                     throw new Error('auth fail');
                 });
@@ -87,7 +87,7 @@ describe('Schema validator tests', () => {
                 body: login,
             };
             let validationFail = true;
-            await schemaValidator(fakeRequest as express.Request, TfaSchema)
+            await RequestSchemaValidator(fakeRequest as express.Request, TfaSchema)
                 .then(() => {
                     validationFail = false;
                 })
@@ -100,6 +100,35 @@ describe('Schema validator tests', () => {
             }
 
             return;
+        });
+    });
+
+    describe('Test error response schema', () => {
+        it('it should pass succsessfully', async () => {
+            const error: ErrorResponse = {
+                responseCode: 5043,
+            };
+            const filterdError = await SchemaValidator(error, ErrorResponseSchema)
+                .catch(() => {
+                    throw new Error('valid error response schema fail');
+                });
+
+            expect(filterdError).to.deep.equal(error);
+            return;
+        });
+
+        it('it should fail', async () => {
+            const error = {
+                message: '5043',
+            };
+
+            try {
+                await SchemaValidator(error, ErrorResponseSchema);
+            } catch (error) {
+                return;
+            }
+
+            throw new Error('invalid schema passed validator');
         });
     });
 });

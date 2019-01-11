@@ -12,8 +12,8 @@ export class AuthBl {
 
     /**
      * Init auth bl. using dependecy injection pattern to allow units testings.
-     * @param sessionsBl Inject the sessions bl instalce to used sessionBl.
-     * @param usersBl Inject the user bl instalce to used userBl.
+     * @param sessionsBl Inject the sessions bl instance to used sessionBl.
+     * @param usersBl Inject the user bl instance to used userBl.
      */
     constructor(sessionsBl: SessionsBl, usersBl: UsersBl) {
 
@@ -27,7 +27,7 @@ export class AuthBl {
     public async login(response: express.Response, login: Login): Promise<void> {
 
         const errorResponse: ErrorResponse = {
-            code: 403,
+            responseCode: 403,
             message: 'user name or password incorrent',
         };
 

@@ -9,6 +9,7 @@ import * as path from 'path';
 import { Configuration } from './config';
 import { AuthenticationRouter } from './routers/authenticationRoute';
 import { RegisterRoutes } from './routers/routes';
+import { ErrorResponseSchema, RequestSchemaValidator, SchemaValidator } from './security/schemaValidator';
 import { logger } from './utilities/logger';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
@@ -110,14 +111,33 @@ class App {
             res.send();
         });
 
-        // Production error handler
-        // no stacktraces leaked to user
+        /**
+         * Handle error that invoked by TSOA router. (regular API errors thrown as unhandeld error by TSOA)
+         */
+        this.express.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            /**
+             * If error is from TSOA sent it back to client (it's part of API)
+             * Else throw it back.
+             */
+            try {
+                SchemaValidator(err, ErrorResponseSchema);
+                res.status(501).send(err);
+                return;
+            } catch (error) {
+                throw err;
+            }
+        });
+
+        /**
+         * Production error handler, no stacktraces leaked to user.
+         */
         this.express.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
             try {
                 logger.warn(`express route crash,  req: ${req.method} ${req.path} error: ${err.message} body: ${JSON.stringify(req.body)}`);
             } catch (error) {
                 logger.warn(`Ok... even the crash route catcher crashd...`);
-             }
+            }
             res.status(500).send();
         });
     }

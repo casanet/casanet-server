@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import chaiHttp = require('chai-http');
 import app from '../src/App';
 import { Login, LoginTfa } from '../src/models/sharedInterfaces';
-import { validSystemAdmin, validSystemUser } from './prepareRoutesSpecTests';
+import { validSystemAdmin, validSystemUser } from './prepareRoutesSpecTests.spec';
 
 chai.use(chaiHttp);
 const agent = chai.request.agent(app);

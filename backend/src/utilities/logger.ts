@@ -18,7 +18,7 @@ log4js.configure({
   categories: {
     default: {
       appenders: ['file_log', 'console_log'],
-      level: 'debug',
+      level: process.env.NODE_ENV !== 'test' ? 'debug' : 'warn',
     },
   },
 });
