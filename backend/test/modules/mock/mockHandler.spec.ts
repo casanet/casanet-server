@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subscriber, Subscription } from 'rxjs';
-import { MockHandler } from './mockHandler';
+import { MockHandler } from '../../../src/modules/mock/mockHandler';
 
 const mockHandler = new MockHandler();
 

@@ -1,9 +1,9 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
-import { IDataIO, Session } from '../models/backendInterfaces';
-import { LocalNetworkDevice, User } from '../models/sharedInterfaces';
-import { logger } from '../utilities/logger';
-import { DevicesDal } from './devicesDal';
+import { DevicesDal } from '../../src/data-layer/devicesDal';
+import { IDataIO, Session } from '../../src/models/backendInterfaces';
+import { LocalNetworkDevice, User } from '../../src/models/sharedInterfaces';
+import { logger } from '../../src/utilities/logger';
 
 class DataIOMock implements IDataIO {
 

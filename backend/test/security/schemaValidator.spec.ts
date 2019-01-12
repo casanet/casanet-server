@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
-import { ErrorResponse, Login, LoginTfa } from '../models/sharedInterfaces';
-import { ErrorResponseSchema, LoginSchema, RequestSchemaValidator, SchemaValidator, TfaSchema } from './schemaValidator';
+import { ErrorResponse, Login, LoginTfa } from '../../src/models/sharedInterfaces';
+import { ErrorResponseSchema, LoginSchema, RequestSchemaValidator, SchemaValidator, TfaSchema } from '../../src/security/schemaValidator';
 
 describe('Schema validator tests', () => {
 

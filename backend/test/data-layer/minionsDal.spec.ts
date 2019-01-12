@@ -1,9 +1,9 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
-import { IDataIO, Session } from '../models/backendInterfaces';
-import { Minion } from '../models/sharedInterfaces';
-import { logger } from '../utilities/logger';
-import { MinionsDal } from './minionsDal';
+import { MinionsDal } from '../../src/data-layer/minionsDal';
+import { IDataIO, Session } from '../../src/models/backendInterfaces';
+import { Minion } from '../../src/models/sharedInterfaces';
+import { logger } from '../../src/utilities/logger';
 
 class DataIOMock implements IDataIO {
 

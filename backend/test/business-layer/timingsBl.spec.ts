@@ -2,12 +2,12 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
-import { TimingsDal } from '../data-layer/timingsDal';
-import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, Timing } from '../models/sharedInterfaces';
-import { Delay } from '../utilities/sleep';
+import { OperationsBl } from '../../src/business-layer/operationsBl';
+import { TimingsBl } from '../../src/business-layer/timingssBl';
+import { TimingsDal } from '../../src/data-layer/timingsDal';
+import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, Timing } from '../../src/models/sharedInterfaces';
+import { Delay } from '../../src/utilities/sleep';
 import { DevicesBlMock } from './devicesBl.spec';
-import { OperationsBl } from './operationsBl';
-import { TimingsBl } from './timingssBl';
 
 // tslint:disable-next-line:max-classes-per-file
 class TimingsDalMock {

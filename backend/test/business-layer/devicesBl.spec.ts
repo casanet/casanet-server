@@ -2,11 +2,11 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
-import { DevicesDal } from '../data-layer/devicesDal';
-import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionStatus, User } from '../models/sharedInterfaces';
-import { ModulesManager } from '../modules/modulesManager';
-import { Delay } from '../utilities/sleep';
-import { DevicesBl } from './devicesBl';
+import { DevicesBl } from '../../src/business-layer/devicesBl';
+import { DevicesDal } from '../../src/data-layer/devicesDal';
+import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionStatus, User } from '../../src/models/sharedInterfaces';
+import { ModulesManager } from '../../src/modules/modulesManager';
+import { Delay } from '../../src/utilities/sleep';
 
 const localNetworkDevicesMock: LocalNetworkDevice[] = [
     {

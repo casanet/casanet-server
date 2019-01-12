@@ -1,14 +1,14 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
-import { Configuration } from '../config';
-import { SessionsDal } from '../data-layer/sessionsDal';
-import { UsersDal } from '../data-layer/usersDal';
-import { Session } from '../models/backendInterfaces';
-import { ErrorResponse, User } from '../models/sharedInterfaces';
-import { AuthBl } from './authBl';
-import { SessionsBl } from './sessionsBl';
-import { UsersBl } from './usersBl';
+import { AuthBl } from '../../src/business-layer/authBl';
+import { SessionsBl } from '../../src/business-layer/sessionsBl';
+import { UsersBl } from '../../src/business-layer/usersBl';
+import { Configuration } from '../../src/config';
+import { SessionsDal } from '../../src/data-layer/sessionsDal';
+import { UsersDal } from '../../src/data-layer/usersDal';
+import { Session } from '../../src/models/backendInterfaces';
+import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
 
 class SessionsDalMock {
 

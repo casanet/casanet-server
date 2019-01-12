@@ -40,7 +40,7 @@
         "999999",
         "--colors",
         "--recursive",
-        "${workspaceFolder}/src/**/*.spec.ts",
+        "${workspaceFolder}/test/**/*.spec.ts",
         "${workspaceFolder}/e2e/**/*.spec.ts"
       ],
       "internalConsoleOptions": "openOnSessionStart"

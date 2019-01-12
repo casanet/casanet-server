@@ -1,9 +1,9 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
-import { SessionsDal } from '../data-layer/sessionsDal';
-import { Session } from '../models/backendInterfaces';
-import { ErrorResponse, User } from '../models/sharedInterfaces';
-import { SessionsBl } from './sessionsBl';
+import { SessionsBl } from '../../src/business-layer/sessionsBl';
+import { SessionsDal } from '../../src/data-layer/sessionsDal';
+import { Session } from '../../src/models/backendInterfaces';
+import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
 
 class SessionsDalMock {
 

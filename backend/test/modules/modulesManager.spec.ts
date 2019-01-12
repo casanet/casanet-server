@@ -2,8 +2,8 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
 import { testLongSpecs } from '../../e2e/prepareRoutesSpecTests.spec';
-import { ErrorResponse, Minion, MinionStatus } from '../models/sharedInterfaces';
-import { ModulesManager } from './modulesManager';
+import { ErrorResponse, Minion, MinionStatus } from '../../src/models/sharedInterfaces';
+import { ModulesManager } from '../../src/modules/modulesManager';
 
 const modulesManager = new ModulesManager();
 

@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
 import { testLongSpecs } from '../../e2e/prepareRoutesSpecTests.spec';
-import { LocalNetworkReader } from './lanManager';
+import { LocalNetworkReader } from '../../src/utilities/lanManager';
 
 describe('Local network devices util.', () => {
 

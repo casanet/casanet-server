@@ -10,7 +10,7 @@
   "main": "dist/index.js",
   "scripts": {
     "prepare": "tsoa routes && tsoa swagger",
-    "test": "del-cli data/test -f && npm run prepare && cross-env NODE_ENV=test mocha --require ts-node/register src/**/*.spec.ts e2e/**/*.spec.ts",
+    "test": "del-cli data/test -f && npm run prepare && cross-env NODE_ENV=test mocha --require ts-node/register test/**/*.spec.ts e2e/**/*.spec.ts",
     "build": "npm run prepare && tsc"
   },
   "license": "ISC",

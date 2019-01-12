@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
-import { UsersDal } from '../data-layer/usersDal';
-import { ErrorResponse, User } from '../models/sharedInterfaces';
-import { UsersBl } from './usersBl';
+import { UsersBl } from '../../src/business-layer/usersBl';
+import { UsersDal } from '../../src/data-layer/usersDal';
+import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
 
 class UsersDalMock {
 

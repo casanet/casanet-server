@@ -2,8 +2,8 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
 import { validSession, validSystemAdmin, validSystemUser } from '../../e2e/prepareRoutesSpecTests.spec';
-import { ErrorResponse, User } from '../models/sharedInterfaces';
-import { expressAuthentication, SystemAuthScopes } from './authentication';
+import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
+import { expressAuthentication, SystemAuthScopes } from '../../src/security/authentication';
 
 describe('Security scopes validation middelwere', () => {
 

@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
 import { testLongSpecs } from '../../e2e/prepareRoutesSpecTests.spec';
-import { Delay } from './sleep';
+import { Delay } from '../../src/utilities/sleep';
 
 describe('Sleep utility tests', () => {
 
