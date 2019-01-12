@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
+import { OperationsBlSingleton } from '../business-layer/operationsBl';
 import { ErrorResponse, Operation } from '../models/sharedInterfaces';
 
 @Tags('Operations')
@@ -13,8 +14,7 @@ export class OperationsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getOperations(): Promise<Operation[]> {
-        return [];
-        // TODO: await new DevicesService().get(id);
+        return await OperationsBlSingleton.getOperations();
     }
 
     /**
@@ -25,8 +25,7 @@ export class OperationsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Get('{operationId}')
     public async getOperation(operationId: string): Promise<Operation> {
-        return;
-        // TODO: await new DevicesService().get(id);
+        return await OperationsBlSingleton.getOperationById(operationId);
     }
 
     /**
@@ -38,8 +37,7 @@ export class OperationsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{operationId}')
     public async setOperation(operationId: string, @Body() operation: Operation): Promise<void> {
-        // TODO ...
-        return;
+        return await OperationsBlSingleton.SetOperation(operationId, operation);
     }
 
     /**
@@ -50,8 +48,7 @@ export class OperationsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{operationId}')
     public async deleteOperation(operationId: string): Promise<void> {
-        // TODO ...
-        return;
+        return await OperationsBlSingleton.DeleteOperation(operationId);
     }
 
     /**
@@ -62,18 +59,17 @@ export class OperationsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
     public async createOperation(@Body() operation: Operation): Promise<void> {
-        // TODO ...
-        return;
+        return await OperationsBlSingleton.CreateOperation(operation);
     }
 
     /**
      *  Trigger operation by id.
+     * @returns Set minions status errors (if any).
      */
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('trigger/{operationId}')
-    public async triggerOperation(operationId: string): Promise<void> {
-        // TODO ...
-        return;
+    public async triggerOperation(operationId: string): Promise<ErrorResponse[]> {
+        return await OperationsBlSingleton.triggerOperation(operationId);
     }
 }

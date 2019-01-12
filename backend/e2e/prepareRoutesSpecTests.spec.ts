@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import app from '../src/App';
-import { MinionsDalSingleton } from '../src/data-layer/minionsDal';
 import { UsersDalSingleton } from '../src/data-layer/usersDal';
 import { Login, LoginTfa, Minion } from '../src/models/sharedInterfaces';
 import { User } from '../src/models/sharedInterfaces';
@@ -74,30 +73,6 @@ UsersDalSingleton.createUser(signInUser)
                 }
             });
 
-    });
-
-const minioinDataMock: Minion = {
-    device: {
-        brand: 'mock',
-        model: 'switch demo',
-        pysicalDevice: {
-            mac: '45543544',
-        },
-    },
-    isProperlyCommunicated: true,
-    minionId: 'm1',
-    minionType: 'switch',
-    minionStatus: {
-
-    },
-    name: 'bla bla 1',
-};
-MinionsDalSingleton.createMinion(minioinDataMock)
-    .then(() => {
-        console.log('Generate mock minion in data successfuly');
-    })
-    .catch(() => {
-        console.warn('Fail to generate mock minion in data');
     });
 
 /**
