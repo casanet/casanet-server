@@ -14,5 +14,9 @@
     "requestsLimit": {
         "windowsMs": 1.2e+6,
         "maxRequests": 250
+    },
+    "homePosition": {
+        "latitude": 32.816, 
+        "longitude": 34.983
     }
 }

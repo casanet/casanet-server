@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
+import { TimingsBlSingleton } from '../business-layer/timingssBl';
 import { ErrorResponse, Timing } from '../models/sharedInterfaces';
 
 @Tags('Timings')
@@ -13,8 +14,7 @@ export class TimingsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getTimings(): Promise<Timing[]> {
-        return [];
-        // TODO: await new DevicesService().get(id);
+        return await TimingsBlSingleton.getTimings();
     }
 
     /**
@@ -25,8 +25,7 @@ export class TimingsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Get('{timingId}')
     public async getTiming(timingId: string): Promise<Timing> {
-        return;
-        // TODO: await new DevicesService().get(id);
+        return await TimingsBlSingleton.getTimingById(timingId);
     }
 
     /**
@@ -38,8 +37,7 @@ export class TimingsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{timingId}')
     public async setTiming(timingId: string, @Body() timing: Timing): Promise<void> {
-        // TODO ...
-        return;
+        return await TimingsBlSingleton.SetTiming(timingId, timing);
     }
 
     /**
@@ -50,8 +48,7 @@ export class TimingsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{timingId}')
     public async deleteTiming(timingId: string): Promise<void> {
-        // TODO ...
-        return;
+        return await TimingsBlSingleton.DeleteTiming(timingId);
     }
 
     /**
@@ -62,8 +59,7 @@ export class TimingsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
     public async createTiming(@Body() timing: Timing): Promise<void> {
-        // TODO ...
-        return;
+        return await TimingsBlSingleton.CreateTiming(timing);
     }
 
 }

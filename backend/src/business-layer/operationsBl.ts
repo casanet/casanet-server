@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { OperationsDal, OperationsDalSingleton } from '../data-layer/operationsDal';
-import { ErrorResponse, MinionStatus, Operation, OperationActivity } from '../models/sharedInterfaces';
+import { ErrorResponse, MinionStatus, Operation, OperationActivity, OperationResult } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
 import { MinionsBl, MinionsBlSingleton } from './minionsBl';
@@ -45,12 +45,15 @@ export class OperationsBl {
      * Invoke each activity.
      * @param operationActiviries activities to invoke.
      */
-    private async invokeOperationActivities(operationActiviries: OperationActivity[]): Promise<ErrorResponse[]> {
-        const errors: ErrorResponse[] = [];
+    private async invokeOperationActivities(operationActiviries: OperationActivity[]): Promise<OperationResult[]> {
+        const errors: OperationResult[] = [];
         for (const activity of operationActiviries) {
             await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus)
                 .catch((error: ErrorResponse) => {
-                    errors.push(error);
+                    errors.push({
+                        minionId: activity.minionId,
+                        error,
+                    });
                 });
 
             /**
@@ -113,7 +116,7 @@ export class OperationsBl {
      * @param operationId operation to trigger.
      * @returns Set status erros if will be any.
      */
-    public async triggerOperation(operationId: string): Promise<ErrorResponse[]> {
+    public async triggerOperation(operationId: string): Promise<OperationResult[]> {
         const operation = await this.operationsDal.getOperationById(operationId);
         logger.info(`Invokeing operation ${operation.operationName}, id: ${operationId} ...`);
         const errors = await this.invokeOperationActivities(operation.activities);

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { OperationsBlSingleton } from '../business-layer/operationsBl';
-import { ErrorResponse, Operation } from '../models/sharedInterfaces';
+import { ErrorResponse, Operation, OperationResult } from '../models/sharedInterfaces';
 
 @Tags('Operations')
 @Route('operations')
@@ -69,7 +69,7 @@ export class OperationsController extends Controller {
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('trigger/{operationId}')
-    public async triggerOperation(operationId: string): Promise<ErrorResponse[]> {
+    public async triggerOperation(operationId: string): Promise<OperationResult[]> {
         return await OperationsBlSingleton.triggerOperation(operationId);
     }
 }

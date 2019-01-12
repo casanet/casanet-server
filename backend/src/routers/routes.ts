@@ -129,10 +129,16 @@ const models: TsoaRoute.Models = {
             "activities": { "dataType": "array", "array": { "ref": "OperationActivity" }, "required": true },
         },
     },
+    "OperationResult": {
+        "properties": {
+            "minionId": { "dataType": "string", "required": true },
+            "error": { "ref": "ErrorResponse" },
+        },
+    },
     "DailySunTrigger": {
         "properties": {
             "days": { "dataType": "array", "array": { "dataType": "enum", "enums": ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] }, "required": true },
-            "durationInMS": { "dataType": "double", "required": true },
+            "durationMinutes": { "dataType": "double", "required": true },
             "sunTrigger": { "dataType": "enum", "enums": ["sunrise", "sunset"], "required": true },
         },
     },
@@ -151,7 +157,7 @@ const models: TsoaRoute.Models = {
     "TimeoutTiming": {
         "properties": {
             "startDate": { "dataType": "double", "required": true },
-            "durationInMs": { "dataType": "double", "required": true },
+            "durationInMimutes": { "dataType": "double", "required": true },
         },
     },
     "TimingProperties": {

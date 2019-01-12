@@ -42,6 +42,13 @@ export declare interface Config {
         maxRequests: number
     };
     runningMode: RunningMode;
+    /**
+     * Use for sun trigger timing when the sunset/sunrise depends on world location.
+     */
+    homePosition: {
+        latitude: number;
+        longitude: number;
+    }
 }
 
 

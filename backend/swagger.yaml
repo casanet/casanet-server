@@ -1619,6 +1619,19 @@ definitions:
             - operationName
             - activities
         type: object
+    OperationResult:
+        description: 'Operation result to hole set minion status result per minion.'
+        properties:
+            minionId:
+                type: string
+                description: 'Minion Id.'
+            error:
+                $ref: '#/definitions/ErrorResponse'
+                description: 'Set minion status result. (undefined if sets successfully)'
+                x-nullable: true
+        required:
+            - minionId
+        type: object
     DailySunTrigger:
         description: 'Daily timing based on sun triggers.'
         properties:
@@ -1635,10 +1648,10 @@ definitions:
                         - friday
                         - saturday
                 description: 'Selected days in week.'
-            durationInMS:
+            durationMinutes:
                 type: number
                 format: double
-                description: "MS from sun trigger.\r\ncan be befor or after the sun trigger.\r\nFor example to invoke 4000 ms befor sunset set -4000 and to invoke 4000 ms after suset set 4000."
+                description: "Minutes from sun trigger.\r\ncan be befor or after the sun trigger.\r\nFor example to invoke 40 minutes befor sunset set -40 and to invoke 40 minutes after sunset set 40."
             sunTrigger:
                 type: string
                 enum:
@@ -1647,7 +1660,7 @@ definitions:
                 description: 'Sun trigger.'
         required:
             - days
-            - durationInMS
+            - durationMinutes
             - sunTrigger
         type: object
     DailyTimeTrigger:
@@ -1780,13 +1793,13 @@ definitions:
                 type: number
                 format: double
                 description: 'UTC time.'
-            durationInMs:
+            durationInMimutes:
                 type: number
                 format: double
-                description: 'Duration in miliseconds.'
+                description: 'Duration in from start date in minutes.'
         required:
             - startDate
-            - durationInMs
+            - durationInMimutes
         type: object
     TimingProperties:
         description: 'Timing properties, values depend on timing type.'
@@ -2420,7 +2433,7 @@ paths:
                     schema:
                         type: array
                         items:
-                            $ref: '#/definitions/ErrorResponse'
+                            $ref: '#/definitions/OperationResult'
                 '501':
                     description: 'Server error'
                     schema:

@@ -14,6 +14,21 @@ export declare interface ErrorResponse {
 }
 
 /**
+ * Operation result to hole set minion status result per minion.
+ */
+export declare interface OperationResult {
+    /**
+     * Minion Id.
+     */
+    minionId: string;
+    
+    /**
+     * Set minion status result. (undefined if sets successfully)
+     */
+    error?: ErrorResponse;
+}
+
+/**
  * Login schema model.
  */
 export declare interface Login {
@@ -51,17 +66,17 @@ export declare interface LocalNetworkDevice {
     /**
      * Display name.
      */
-    name? : string;
-    
+    name?: string;
+
     /**
      * The MAC address of device, the value is unique to each device.
      */
-    mac : string;
+    mac: string;
 
     /**
      * Info about device manufacturer.
      */
-    vendor? : string;
+    vendor?: string;
 
     /**
      * The device ip address, if exist it should be unique in netword.
@@ -73,11 +88,11 @@ export declare interface LocalNetworkDevice {
  * Represents a pysical device kind with netword info. 
  */
 export declare interface MinionDevice {
-    
+
     /**
      * The pysical network device.
      */
-    pysicalDevice : LocalNetworkDevice;
+    pysicalDevice: LocalNetworkDevice;
 
     /**
      * The brand of device.
@@ -321,9 +336,9 @@ export declare interface TimeoutTiming {
     startDate: number;
 
     /**
-     * Duration in miliseconds.
+     * Duration in from start date in minutes.
      */
-    durationInMs: number;
+    durationInMimutes: number;
 }
 
 /**
@@ -341,11 +356,11 @@ export declare interface DailyTiming {
  */
 export declare interface DailySunTrigger extends DailyTiming {
     /**
-     * MS from sun trigger.
+     * Minutes from sun trigger.
      * can be befor or after the sun trigger.
-     * For example to invoke 4000 ms befor sunset set -4000 and to invoke 4000 ms after suset set 4000. 
+     * For example to invoke 40 minutes befor sunset set -40 and to invoke 40 minutes after sunset set 40. 
      */
-    durationInMS: number;
+    durationMinutes: number;
 
     /**
      * Sun trigger.
