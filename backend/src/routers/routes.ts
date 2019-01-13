@@ -1,3 +1,4 @@
+// @ts-ignore
 /* tslint:disable */
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
 import { AuthController } from './../controllers/authController';
@@ -8,6 +9,8 @@ import { TimingsController } from './../controllers/timingsController';
 import { UsersController } from './../controllers/usersController';
 import { expressAuthentication } from './../security/authentication';
 import * as express from 'express';
+import { ErrorResponseSchema, SchemaValidator } from '../security/schemaValidator';
+import { ErrorResponse } from '../models/sharedInterfaces';
 
 const models: TsoaRoute.Models = {
     "ErrorResponse": {
@@ -897,7 +900,21 @@ export function RegisterRoutes(app: express.Express) {
                     response.status(statusCode || 204).end();
                 }
             })
-            .catch((error: any) => next(error));
+            .catch(async (error: any) => {
+                /**
+                 * If error is from TSOA sent it back to client (it's part of API)
+                 * Else throw it back.
+                 */
+                try {
+                    const cleanError = await SchemaValidator(error, ErrorResponseSchema);
+                    response.status(501).send(cleanError);
+                } catch (error) {
+                    response.status(500).send({
+                        responseCode: 5000,
+                        message: 'unknown error',
+                    } as ErrorResponse);
+                }
+            });
     }
 
     function getValidatedArgs(args: any, request: any): any[] {
