@@ -16,11 +16,21 @@ const adminAgent = chai.request.agent(app);
  * Reset data, for testing all system flow.
  */
 const signInUser: User = {
-    email: 'aa@bb.com',
-    firstName: 'firstName1',
+    email: 'user@bb.com',
+    displayName: 'firstName1',
     ignoreTfa: true,
     password: '1234',
     sessionTimeOutMS: 123454321100000,
+    scope: 'userAuth'
+};
+
+const signInAdmin: User = {
+    email: 'admin@bb.com',
+    displayName: 'firstName1',
+    ignoreTfa: true,
+    password: '1234',
+    sessionTimeOutMS: 123454321100000,
+    scope: 'adminAuth'
 };
 
 /**
@@ -57,6 +67,21 @@ UsersDalSingleton.createUser(signInUser)
                     sessionKey.userSessionKey = cookie.split(';')[0].split('=')[1];
                 }
             });
+    });
+
+/**
+ * Create admin user.
+ */
+UsersDalSingleton.createUser(signInAdmin)
+    .then(() => {
+
+        /**
+         * The valied login schema model.
+         */
+        const loginSchema: Login = {
+            email: signInAdmin.email,
+            password: signInAdmin.password,
+        };
 
         /**
          * Same as user agent just in admin certs.
@@ -66,7 +91,7 @@ UsersDalSingleton.createUser(signInUser)
             .end((err, res) => {
 
                 if (err || res.statusType !== 2) {
-                    console.error('Perpare agent fail, all API tests specs that need admin certs will fail too.');
+                    console.error('Perpare admin agent fail, all API tests specs that need admin certs will fail too.');
                 } else {
                     const cookie: string = res['headers']['set-cookie'][0] as string;
                     sessionKey.adminSessionKey = cookie.split(';')[0].split('=')[1];
@@ -97,7 +122,7 @@ export const validSystemUser = signInUser;
 /**
  * A valid user (with admin premission) object.
  */
-export const validSystemAdmin = signInUser;
+export const validSystemAdmin = signInAdmin;
 
 /**
  * A valid sessions cookie session key.

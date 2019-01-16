@@ -21,7 +21,7 @@ export declare interface OperationResult {
      * Minion Id.
      */
     minionId: string;
-    
+
     /**
      * Set minion status result. (undefined if sets successfully)
      */
@@ -143,14 +143,20 @@ export declare interface DeviceKind {
 }
 
 /**
+ * Scopes of authentication, right know in our system there is only 2 scopes.
+ * admin and user. any API route protect by one of them.
+ */
+export declare type AuthScopes  = 'adminAuth' | 'userAuth';
+
+/**
  * Represents a user in system. 
  */
 export declare interface User {
 
     /**
-     * First name
+     *  Name
      */
-    firstName?: string;
+    displayName?: string;
 
     /**
      * User email
@@ -171,6 +177,11 @@ export declare interface User {
      * Ignore 2-step verification on login or not.
      */
     ignoreTfa: boolean;
+
+    /**
+     * User scopes.
+     */
+    scope: AuthScopes;
 }
 
 /**

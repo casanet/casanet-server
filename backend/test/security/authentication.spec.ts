@@ -14,7 +14,7 @@ describe('Security scopes validation middelwere', () => {
                     session: validSession.userSessionKey,
                 },
             };
-            const user = await expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope, [])
+            const user = await expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.userScope])
                 .catch(() => {
                     throw new Error('auth fail');
                 });
@@ -29,12 +29,15 @@ describe('Security scopes validation middelwere', () => {
                     session: 'abc1234567',
                 },
             };
-            expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope, [])
+            expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.userScope])
                 .then(() => {
                     throw new Error('Access should denied, but bad cert passed');
                 })
                 .catch((err: ErrorResponse | Error) => {
-                    expect(err).to.deep.include({ code: 403 });
+                    const expectedError: ErrorResponse = {
+                        responseCode: 4003,
+                    };
+                    expect(err).to.deep.equal(expectedError);
                 });
         });
 
@@ -43,12 +46,15 @@ describe('Security scopes validation middelwere', () => {
                 cookies: {
                 },
             };
-            expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope, [])
+            expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.userScope])
                 .then(() => {
                     throw new Error('Access should denied, but empty cert passed');
                 })
-                .catch((err: ErrorResponse | Error) => {
-                    expect(err).to.deep.include({ code: 403 });
+                .catch((err: ErrorResponse) => {
+                    const expectedError: ErrorResponse = {
+                        responseCode: 4003,
+                    };
+                    expect(err).to.deep.equal(expectedError);
                 });
         });
     });
@@ -60,7 +66,7 @@ describe('Security scopes validation middelwere', () => {
                     session: validSession.adminSessionKey,
                 },
             };
-            const user = await expressAuthentication(faksRequest as express.Request, SystemAuthScopes.adminScope, [])
+            const user = await expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.adminScope])
                 .catch(() => {
                     throw new Error('admin scope auth fail');
                 });
@@ -76,15 +82,13 @@ describe('Security scopes validation middelwere', () => {
                 },
             };
             try {
-                expressAuthentication(faksRequest as express.Request, 'testScop', [])
-                    .then(() => {
-
-                    })
-                    .catch(() => {
-
-                    });
+                await expressAuthentication(faksRequest as express.Request, ['testScop']);
 
             } catch (err) {
+                const expectedError: ErrorResponse = {
+                    responseCode: 4003,
+                };
+                expect(err).to.deep.equal(expectedError);
                 return;
             }
             throw new Error('Access should throw unknow scope exception, but bad scope passed');
@@ -97,15 +101,12 @@ describe('Security scopes validation middelwere', () => {
                 },
             };
             try {
-                expressAuthentication(faksRequest as express.Request, '', [])
-                    .then(() => {
-
-                    })
-                    .catch(() => {
-
-                    });
-
+                await expressAuthentication(faksRequest as express.Request, ['']);
             } catch (err) {
+                const expectedError: ErrorResponse = {
+                    responseCode: 4003,
+                };
+                expect(err).to.deep.equal(expectedError);
                 return;
             }
             throw new Error('Access should throw unknow scope exception, but empty scope passed');

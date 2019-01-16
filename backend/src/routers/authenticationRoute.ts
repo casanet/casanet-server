@@ -66,13 +66,14 @@ export class AuthenticationRouter {
                 /**
                  * Because there is not use in TSOA security, needs to call middelwhere manualy.
                  */
-                req.user = await expressAuthentication(req, SystemAuthScopes.userScope)
+                req.user = await expressAuthentication(req, [SystemAuthScopes.userScope])
                     .catch((error: ErrorResponse) => {
                         res.status(403).send(error);
                     }) as User;
 
                 // If auth fail abort the request
                 if (!req.user) {
+                    res.status(403).send();
                     return;
                 }
 

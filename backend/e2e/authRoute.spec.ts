@@ -81,5 +81,14 @@ describe('Authentication routing API', () => {
                     done();
                 });
         });
+
+        it('it should respond 40x as status code', (done) => {
+            const unauthAgent = chai.request.agent(app);
+            unauthAgent.post('/API/auth/logout')
+                .end((err, res) => {
+                    expect(res.statusType).eql(4);
+                    done();
+                });
+        });
     });
 });

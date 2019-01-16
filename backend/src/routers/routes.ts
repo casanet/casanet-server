@@ -11,7 +11,7 @@ import { expressAuthentication } from './../security/authentication';
 import * as express from 'express';
 import { ErrorResponseSchema, SchemaValidator } from '../security/schemaValidator';
 import { ErrorResponse } from '../models/sharedInterfaces';
-
+import { User } from '../models/sharedInterfaces';
 const models: TsoaRoute.Models = {
     "ErrorResponse": {
         "properties": {
@@ -183,11 +183,12 @@ const models: TsoaRoute.Models = {
     },
     "User": {
         "properties": {
-            "firstName": { "dataType": "string" },
+            "displayName": { "dataType": "string" },
             "email": { "dataType": "string", "required": true },
             "sessionTimeOutMS": { "dataType": "double", "required": true },
             "password": { "dataType": "string", "required": true },
             "ignoreTfa": { "dataType": "boolean", "required": true },
+            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth"], "required": true },
         },
     },
 };
@@ -835,45 +836,39 @@ export function RegisterRoutes(app: express.Express) {
 
     function authenticateMiddleware(security: TsoaRoute.Security[] = []) {
         return (request: any, _response: any, next: any) => {
-            let responded = 0;
-            let success = false;
 
             const succeed = function(user: any) {
-                if (!success) {
-                    success = true;
-                    responded++;
-                    request['user'] = user;
-                    next();
+                request['user'] = user;
+                next();
+            }
+
+            const fail = async function(error: any) {
+                /**
+                 * If error is from TSOA auth middelwehere sent it back to client (it's part of API)
+                 * Else throw it back.
+                 */
+                try {
+                    const cleanError = await SchemaValidator(error, ErrorResponseSchema);
+                    _response.status(403).send(cleanError);
+                } catch (error) {
+                    _response.status(500).send({
+                        responseCode: 5000,
+                        message: 'unknown error',
+                    } as ErrorResponse);
                 }
             }
 
-            const fail = function(error: any) {
-                responded++;
-                if (responded == security.length && !success) {
-                    error.status = 401;
-                    next(error)
+            const scopes: string[] = [];
+            try {
+                for (const scop of security) {
+                    scopes.push(Object.keys(scop)[0]);
                 }
+            } catch (error) {
             }
 
-            for (const secMethod of security) {
-                if (Object.keys(secMethod).length > 1) {
-                    let promises: Promise<any>[] = [];
-
-                    for (const name in secMethod) {
-                        promises.push(expressAuthentication(request, name, secMethod[name]));
-                    }
-
-                    Promise.all(promises)
-                        .then((users) => { succeed(users[0]); })
-                        .catch(fail);
-                } else {
-                    for (const name in secMethod) {
-                        expressAuthentication(request, name, secMethod[name])
-                            .then(succeed)
-                            .catch(fail);
-                    }
-                }
-            }
+            expressAuthentication(request, scopes)
+                .then(succeed)
+                .catch(fail)
         }
     }
 

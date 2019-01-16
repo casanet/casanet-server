@@ -1854,9 +1854,9 @@ definitions:
     User:
         description: 'Represents a user in system.'
         properties:
-            firstName:
+            displayName:
                 type: string
-                description: 'First name'
+                description: name
                 x-nullable: true
             email:
                 type: string
@@ -1871,11 +1871,18 @@ definitions:
             ignoreTfa:
                 type: boolean
                 description: 'Ignore 2-step verification on login or not.'
+            scope:
+                type: string
+                enum:
+                    - adminAuth
+                    - userAuth
+                description: 'User scopes.'
         required:
             - email
             - sessionTimeOutMS
             - password
             - ignoreTfa
+            - scope
         type: object
 info:
     title: 'CASAnet - API'

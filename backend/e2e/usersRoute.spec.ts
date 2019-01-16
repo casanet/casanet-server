@@ -27,11 +27,12 @@ describe('Users routing API', () => {
     describe('/POST users', () => {
         it('it should respond 20x as status code', (done) => {
             const user: User = {
-                firstName: '',
+                displayName : '',
                 ignoreTfa: false,
                 email: 'aa@bb.com',
                 password: '',
                 sessionTimeOutMS: 334343232,
+                scope : 'adminAuth',
             };
             validAdminAgent.post('/API/users')
                 .send(user)
@@ -45,11 +46,12 @@ describe('Users routing API', () => {
     describe('/PUT users/{userId}', () => {
         it('it should respond 20x as status code', (done) => {
             const user: User = {
-                firstName: '',
+                displayName : '',
                 ignoreTfa: false,
                 email: 'aa@bb.com',
                 password: '',
                 sessionTimeOutMS: 334343232,
+                scope : 'adminAuth',
             };
             validAdminAgent.put('/API/users/userId')
                 .send(user)

@@ -39,12 +39,12 @@ export class AuthBl {
             });
 
         if (login.password === user.password) {
-            const session = await this.sessionsBl.generateSession(user);
+            const sessionKey = await this.sessionsBl.generateSession(user);
 
             /**
              * Finally load session on cookies response.
              */
-            response.cookie('session', session.key, {
+            response.cookie('session', sessionKey, {
                 sameSite: true,
                 httpOnly: true, // minimize risk of XSS attacks by restricting the client from reading the cookie
                 secure: Configuration.http.useHttps, // only send cookie over https

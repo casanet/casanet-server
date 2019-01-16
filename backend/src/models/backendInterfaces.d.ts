@@ -5,18 +5,9 @@ import { Observable, Subscriber, BehaviorSubject } from 'rxjs';
  * Session key and meta.
  */
 declare interface Session {
-    key: string;
+    keyHash: string;
     timeStump: number;
     email: string;
-}
-
-/**
- * Scopes of authentication, right know in our system there is only 2 scopes.
- * admin and user. any API route shuold protect by one of them.
- */
-export declare interface AuthScopes {
-    adminScope: string;
-    userScope: string;
 }
 
 /**

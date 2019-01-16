@@ -4,6 +4,7 @@ import { Configuration } from '../config';
 import { SessionsDal, SessionsDalSingelton } from '../data-layer/sessionsDal';
 import { Session } from '../models/backendInterfaces';
 import { User } from '../models/sharedInterfaces';
+import * as cryptoJs from 'crypto-js';
 
 export class SessionsBl {
 
@@ -19,12 +20,13 @@ export class SessionsBl {
     }
 
     /**
-     * Gets session by session ky, or reject if not exist.
+     * Gets session by session key, or reject if not exist.
      * @param sessionKey session key
      * @returns session, or inject if not exist.
      */
     public async getSession(sessionKey: string): Promise<Session> {
-        return this.sessionDal.getSession(sessionKey);
+        const hashedSession = cryptoJs.SHA256(sessionKey).toString();
+        return this.sessionDal.getSession(hashedSession);
     }
 
     /**
@@ -51,16 +53,18 @@ export class SessionsBl {
      * @param userToCreateFor User to create session for.
      * @returns The new generated session.
      */
-    public async generateSession(userToCreateFor: User): Promise<Session> {
+    public async generateSession(userToCreateFor: User): Promise<string> {
+
+        const generatedSession = randomstring.generate(64);
         const newSession: Session = {
-            key: randomstring.generate(64),
+            keyHash: cryptoJs.SHA256(generatedSession).toString(),
             timeStump: new Date().getTime(),
             email: userToCreateFor.email,
         };
 
         await this.sessionDal.createSession(newSession);
 
-        return newSession;
+        return generatedSession;
     }
 
     /**

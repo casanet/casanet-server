@@ -4,27 +4,28 @@ import { SessionsBl } from '../../src/business-layer/sessionsBl';
 import { SessionsDal } from '../../src/data-layer/sessionsDal';
 import { Session } from '../../src/models/backendInterfaces';
 import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
+import * as cryptoJs from 'crypto-js';
 
 class SessionsDalMock {
 
     public mockSessions: Session[] = [
         {
-            key: '1234',
+            keyHash: '1234',
             timeStump: new Date().getTime(),
             email: 'aa@bb.com',
         },
         {
-            key: '12345',
+            keyHash: '12345',
             timeStump: 300,
             email: 'aa@bb.com',
         },
         {
-            key: '1234',
+            keyHash: '1234',
             timeStump: new Date().getTime(),
             email: 'aaa@bb.com',
         },
         {
-            key: '123456',
+            keyHash: '123456',
             timeStump: new Date().getTime() - 1000,
             email: 'aa@bb.com',
         },
@@ -34,9 +35,9 @@ class SessionsDalMock {
         return this.mockSessions;
     }
 
-    public async getSession(email: string): Promise<Session> {
+    public async getSession(key: string): Promise<Session> {
         for (const session of this.mockSessions) {
-            if (session.email === email) {
+            if (session.keyHash === key) {
                 return session;
             }
         }
@@ -60,7 +61,9 @@ describe('Sesssion BL tests', () => {
     describe('Get Session', () => {
         it('it should get session succsessfully', async () => {
 
-            const session = await sessionBl.getSession(sessionDalMock.mockSessions[2].email);
+            const key = '543583bfngfnds45453535256524';
+            sessionDalMock.mockSessions[2].keyHash = cryptoJs.SHA256(key).toString();
+            const session = await sessionBl.getSession(key);
 
             expect(session).to.deep.equal(sessionDalMock.mockSessions[2]);
             return;
@@ -94,10 +97,11 @@ describe('Sesssion BL tests', () => {
 
             const userToGetFor: User = {
                 email: sessionDalMock.mockSessions[0].email,
-                firstName: '',
+                displayName: '',
                 ignoreTfa: true,
                 password: 'ffd',
                 sessionTimeOutMS: 1000000,
+                scope: 'userAuth',
             };
             const sessions = await sessionBl.getUserSessions(userToGetFor);
 
@@ -112,16 +116,14 @@ describe('Sesssion BL tests', () => {
 
             const session = await sessionBl.generateSession({
                 email: sessionDalMock.mockSessions[2].email,
-                firstName: '',
+                displayName: '',
                 ignoreTfa: true,
                 password: 'ffd',
                 sessionTimeOutMS: 1000000,
+                scope: 'userAuth',
             });
 
-            expect(session).to.be.a('object');
-            expect(session).to.have.property('email', sessionDalMock.mockSessions[2].email);
-            expect(session).to.have.property('timeStump');
-            expect(session).to.have.property('key').to.be.a('string').length.above(60);
+            expect(session).to.be.a('string').length.above(60);
             expect(sessionDalMock.mockSessions).length(5);
             return;
         });

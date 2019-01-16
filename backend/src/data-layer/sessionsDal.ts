@@ -23,7 +23,7 @@ export class SessionsDal {
      */
     private findSession(key: string): Session {
         for (const session of this.sessions) {
-            if (session.key === key) {
+            if (session.keyHash === key) {
                 return session;
             }
         }
@@ -66,7 +66,7 @@ export class SessionsDal {
      * Delete session.
      */
     public async deleteSession(session: Session): Promise<void> {
-        const originalSession = this.findSession(session.key);
+        const originalSession = this.findSession(session.keyHash);
 
         if (!originalSession) {
             throw new Error('sessin not exist');

@@ -10,12 +10,12 @@ class DataIOMock implements IDataIO {
     public mockData: Session[] = [
         {
             email: 'aa.bb@cc.com',
-            key: '42343243938389343984843546574682746784346327843687324',
+            keyHash: '42343243938389343984843546574682746784346327843687324',
             timeStump: 34555435354354,
         },
         {
             email: 'aa@bb.com',
-            key: '9875415248941652413541321',
+            keyHash: '9875415248941652413541321',
             timeStump: 7777888888,
         },
     ];
@@ -50,7 +50,7 @@ describe('Sesssion DAL tests', () => {
     describe('Get Session by key', () => {
         it('it should get session succsessfully', async () => {
 
-            const session = await sessionsDal.getSession(dataMock.mockData[1].key);
+            const session = await sessionsDal.getSession(dataMock.mockData[1].keyHash);
 
             expect(session).to.deep.equal(dataMock.mockData[1]);
             return;
@@ -59,7 +59,7 @@ describe('Sesssion DAL tests', () => {
 
     const additionalSession: Session = {
         email: 'aa.bb@cc.com',
-        key: '0987123',
+        keyHash: '0987123',
         timeStump: new Date().getTime(),
     };
 
@@ -68,7 +68,7 @@ describe('Sesssion DAL tests', () => {
 
             await sessionsDal.createSession(additionalSession);
 
-            const session = await sessionsDal.getSession(additionalSession.key);
+            const session = await sessionsDal.getSession(additionalSession.keyHash);
 
             expect(session).to.deep.equal(additionalSession);
             return;
