@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import * as randomstring from 'randomstring';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { MinionsDal, MinionsDalSingleton } from '../data-layer/minionsDal';
-import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionDevice, MinionStatus } from '../models/sharedInterfaces';
+import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionDevice, MinionStatus, MinionFeed } from '../models/sharedInterfaces';
 import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
@@ -23,7 +23,7 @@ export class MinionsBl {
     /**
      * Minions status update feed.
      */
-    public minionUpdates = new BehaviorSubject<Minion>(undefined);
+    public minionUpdates = new BehaviorSubject<MinionFeed>(undefined);
 
     /**
      * Init minions bl. using dependecy injection pattern to allow units testings.
@@ -75,7 +75,7 @@ export class MinionsBl {
         await this.readMinionsStatus();
 
         /**
-         * After all registar to pysical devices status updates.
+         * After all registar to devices status updates.
          */
         this.modulesManager.minionStatusChangedEvent.subscribe((pysicalDeviceUpdate) => {
             const minion = this.getMinionsByMac(pysicalDeviceUpdate.mac);
@@ -86,7 +86,10 @@ export class MinionsBl {
 
             minion.isProperlyCommunicated = true;
             minion.minionStatus = pysicalDeviceUpdate.status;
-            this.minionUpdates.next(minion);
+            this.minionUpdates.next({
+                event: 'update',
+                minion,
+            });
         });
 
         /**
@@ -321,10 +324,13 @@ export class MinionsBl {
          */
         minion.minionStatus = minionStatus;
 
-        /***
+        /**
          * Send minions feed update.
          */
-        this.minionUpdates.next(minion);
+        this.minionUpdates.next({
+            event: 'update',
+            minion,
+        });
     }
 
     /**
@@ -344,7 +350,10 @@ export class MinionsBl {
         /**
          * Send minion feed update
          */
-        this.minionUpdates.next(originalMinion);
+        this.minionUpdates.next({
+            event: 'update',
+            minion: originalMinion,
+        });
     }
 
     /**
@@ -392,6 +401,14 @@ export class MinionsBl {
         await this.minionsDal.createMinion(minion);
 
         /**
+         * Send create new minion feed update (*befor* try to get the status!!!)
+         */
+        this.minionUpdates.next({
+            event: 'created',
+            minion,
+        });
+
+        /**
          * Try to get current status.
          */
         await this.modulesManager.getStatus(minion)
@@ -401,11 +418,6 @@ export class MinionsBl {
             .catch(() => {
 
             });
-
-        /**
-         * Send feed update
-         */
-        this.minionUpdates.next(minion);
     }
 
     /**
@@ -429,6 +441,11 @@ export class MinionsBl {
         if (this.minions.indexOf(originalMinion) !== -1) {
             this.minions.splice(this.minions.indexOf(originalMinion), 1);
         }
+
+        this.minionUpdates.next({
+            event: 'removed',
+            minion: originalMinion,
+        })
     }
 }
 

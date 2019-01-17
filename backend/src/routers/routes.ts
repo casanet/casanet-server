@@ -59,7 +59,7 @@ const models: TsoaRoute.Models = {
     },
     "Toggle": {
         "properties": {
-            "setTo": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
         },
     },
     "Switch": {

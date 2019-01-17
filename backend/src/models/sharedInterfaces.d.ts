@@ -146,7 +146,7 @@ export declare interface DeviceKind {
  * Scopes of authentication, right know in our system there is only 2 scopes.
  * admin and user. any API route protect by one of them.
  */
-export declare type AuthScopes  = 'adminAuth' | 'userAuth';
+export declare type AuthScopes = 'adminAuth' | 'userAuth';
 
 /**
  * Represents a user in system. 
@@ -261,20 +261,21 @@ export declare type ACFanStrengthOptions = 'low' | 'med' | 'high' | 'auto';
 export declare type SwitchOptions = 'on' | 'off';
 
 /**
- * A tuggel value, the toggle is on way communicated device,
+ * A toggele value, the toggle is on way communicated device,
  * For example wall light switches with 433 RF that can turn on or off 
  * but there is no way to know the real light status if someone change the light status using pysical switche.   
  */
 export declare interface Toggle {
-    setTo: SwitchOptions
+    status: SwitchOptions
 }
 
 /**
  * A switch status.
- * Used for a simple devices that can be turn on or off.
+ * Used for a simple devices that can be turn on or off. *and minion status is readble*
+ * The properties same as toggele, and the difference is logic only (if status is readble or not).
  */
-export declare interface Switch {
-    status: SwitchOptions;
+export declare interface Switch extends Toggle {
+
 }
 
 /**
@@ -404,6 +405,19 @@ export declare interface MinionStatus {
     light?: Light;
     temperatureLight?: TemperatureLight;
     colorLight?: ColorLight;
+}
+
+/**
+ * Feed update type enum
+ */
+export declare type FeedEvent = 'created' | 'update' | 'removed';
+
+/**
+ * Minion feed object.
+ */
+export declare interface MinionFeed {
+    event: FeedEvent;
+    minion: Minion;
 }
 
 /**

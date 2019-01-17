@@ -118,16 +118,16 @@ definitions:
     Toggle:
         description: "A tuggel value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone change the light status using pysical switche."
         properties:
-            setTo:
+            status:
                 type: string
                 enum:
                     - on
                     - off
         required:
-            - setTo
+            - status
         type: object
     Switch:
-        description: "A switch status.\r\nUsed for a simple devices that can be turn on or off."
+        description: "A switch status.\r\nUsed for a simple devices that can be turn on or off. *and minion status is readble*\r\nThe properties same as toggel, and the difference is logic only (if status is readble or not)."
         properties:
             status:
                 type: string

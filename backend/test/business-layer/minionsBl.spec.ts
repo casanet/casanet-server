@@ -368,8 +368,8 @@ describe('Minions BL tests', () => {
     describe('Feed minion updates', () => {
         it('it should get minion succsessfully', (done) => {
 
-            const subscription = minionsBl.minionUpdates.subscribe((minion) => {
-                if (!minion || minion.minionId !== 'ac1') {
+            const subscription = minionsBl.minionUpdates.subscribe((minionFeed) => {
+                if (!minionFeed || minionFeed.minion.minionId !== 'ac1') {
                     return;
                 }
 
@@ -384,7 +384,7 @@ describe('Minions BL tests', () => {
                     },
                 };
 
-                expect(minion.minionStatus).to.be.deep.equal(expectedStatus);
+                expect(minionFeed.minion.minionStatus).to.be.deep.equal(expectedStatus);
 
                 done();
             });
