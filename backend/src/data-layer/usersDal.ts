@@ -1,6 +1,6 @@
 import { Configuration } from '../config';
 import { IDataIO } from '../models/backendInterfaces';
-import { User } from '../models/sharedInterfaces';
+import { User, ErrorResponse } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
 const USERS_FILE_NAME = 'users.json';
@@ -71,8 +71,8 @@ export class UsersDal {
      /**
       * Delete users.
       */
-    public async deleteUser(user: User): Promise<void> {
-        const originalUser = this.findUser(user.email);
+    public async deleteUser(userEmail: string): Promise<void> {
+        const originalUser = this.findUser(userEmail);
 
         if (!originalUser) {
             throw new Error('user not exist');
@@ -83,6 +83,30 @@ export class UsersDal {
             .catch(() => {
                 this.users.push(originalUser);
                 throw new Error('fail to save user delete request');
+            });
+    }
+
+    /**
+     * Update User.
+     * @param userToUpdate User to update to.
+     */
+    public async updateUser(userToUpdate: User): Promise<void> {
+        const originalUser = this.findUser(userToUpdate.email);
+
+        if (!originalUser) {
+            throw {
+                responseCode : 4004,
+                message: 'timing not exist',
+            } as ErrorResponse;
+        }
+
+        this.users.splice(this.users.indexOf(originalUser), 1);
+        this.users.push(userToUpdate);
+        await this.dataIo.setData(this.users)
+            .catch(() => {
+                this.users.splice(this.users.indexOf(userToUpdate), 1);
+                this.users.push(originalUser);
+                throw new Error('fail to save user update request');
             });
     }
 }

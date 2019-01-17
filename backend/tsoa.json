@@ -54,7 +54,7 @@
         "basePath": "/API",
         "entryFile": "./src/index.ts",
         "routesDir": "./src/routers",
-        "middlewareTemplate": "./src/routers/expressRoutesTemplate.ts",
+        "middlewareTemplate": "./src/routers/expressRoutesTemplate.ts.tsoa",
         "authenticationModule": "./src/security/authentication.ts"
     }
 }

@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import chaiHttp = require('chai-http');
 import app from '../src/App';
 import { Login, LoginTfa } from '../src/models/sharedInterfaces';
-import { validSystemAdmin, validSystemUser } from './prepareRoutesSpecTests.spec';
+import { validSystemAdmin, validSystemUser , validUserPlainPassword , validAdminPlainPassword } from './prepareRoutesSpecTests.spec';
 
 chai.use(chaiHttp);
 const agent = chai.request.agent(app);
@@ -14,7 +14,7 @@ describe('Authentication routing API', () => {
         it('it should respond 20x as status code', (done) => {
             const loginSchema: Login = {
                 email: validSystemUser.email,
-                password: validSystemUser.password,
+                password: validUserPlainPassword,
             };
 
             agent.post('/API/auth/login')
@@ -29,7 +29,7 @@ describe('Authentication routing API', () => {
         it('it should respond 40x as status code', (done) => {
             const loginSchema: Login = {
                 email: validSystemUser.email + 'e',
-                password: validSystemUser.password,
+                password: validUserPlainPassword,
             };
 
             agent.post('/API/auth/login')
@@ -43,7 +43,7 @@ describe('Authentication routing API', () => {
         it('it should respond 20x as status code', (done) => {
             const loginSchema: Login = {
                 email: validSystemUser.email,
-                password: validSystemUser.password + 'e',
+                password: validUserPlainPassword + 'e',
             };
 
             agent.post('/API/auth/login')
@@ -60,7 +60,7 @@ describe('Authentication routing API', () => {
 
             const loginSchema: LoginTfa = {
                 email: validSystemUser.email,
-                password: validSystemUser.email,
+                password: validUserPlainPassword,
                 tfaPassword: 'TODO',
             };
 

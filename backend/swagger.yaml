@@ -1856,7 +1856,7 @@ definitions:
         properties:
             displayName:
                 type: string
-                description: name
+                description: Name
                 x-nullable: true
             email:
                 type: string
@@ -2653,6 +2653,8 @@ paths:
             security:
                 -
                     adminAuth: []
+                -
+                    userAuth: []
             parameters:
                 -
                     in: path
@@ -2676,6 +2678,8 @@ paths:
             security:
                 -
                     adminAuth: []
+                -
+                    userAuth: []
             parameters:
                 -
                     description: 'User id.'
@@ -2706,6 +2710,8 @@ paths:
             security:
                 -
                     adminAuth: []
+                -
+                    userAuth: []
             parameters:
                 -
                     in: path

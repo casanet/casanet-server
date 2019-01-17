@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import { Configuration } from '../config';
 import { UsersDal, UsersDalSingleton } from '../data-layer/usersDal';
-import { User } from '../models/sharedInterfaces';
+import { ErrorResponse, User } from '../models/sharedInterfaces';
+import { SchemaValidator, UserSchema, UserUpdateSchema } from '../security/schemaValidator';
+import * as cryptoJs from 'crypto-js';
+import { ValidationResult } from 'joi';
 
 export class UsersBl {
 
@@ -17,10 +20,42 @@ export class UsersBl {
     }
 
     /**
+     * Validatete and senitize user from client.
+     * @param user user to validate.
+     * @param isNewUser is user sent to create new one (it's little difference schemas update/create user)
+     * @returns A sanitizeUser object.
+     */
+    private async validateUser(user: User, isNewUser: boolean): Promise<User | ErrorResponse> {
+        /**
+         * Valid data by validator.
+         */
+        const sanitizeUser: User = await SchemaValidator(user, isNewUser ? UserSchema : UserUpdateSchema)
+            .catch((validationError: ValidationResult<any>) => {
+                throw {
+                    responseCode: 4022,
+                    message: validationError.error.message,
+                } as ErrorResponse;
+            })
+
+        /**
+         * If there is password to hash, hash it, else load the original password hash.
+         */
+        if (sanitizeUser.password) {
+            sanitizeUser.password = cryptoJs.SHA256(sanitizeUser.password).toString();
+        } else {
+            const originalUser = await this.usersDal.getUser(sanitizeUser.email);
+            sanitizeUser.password = originalUser.password;
+        }
+        return sanitizeUser;
+    }
+
+
+
+    /**
      * Get all users.
      */
     public async getUsers(): Promise<User[]> {
-        return this.usersDal.getUsers();
+        return await this.usersDal.getUsers();
     }
 
     /**
@@ -29,7 +64,7 @@ export class UsersBl {
      * @returns user, or inject if not exist.
      */
     public async getUser(email: string): Promise<User> {
-        return this.usersDal.getUser(email);
+        return await this.usersDal.getUser(email);
     }
 
     /**
@@ -37,15 +72,42 @@ export class UsersBl {
      * @param user User to create.
      */
     public async createUser(user: User): Promise<void> {
-        await this.usersDal.createUser(user);
+        const sanitizeUser = await this.validateUser(user, true) as User;
+
+
+        /**
+         * make sure there is no other user with same email in system.
+         */
+        try {
+            await this.usersDal.getUser(sanitizeUser.email);
+        } catch (error) {
+            await this.usersDal.createUser(sanitizeUser);
+            return;
+        }
+
+        throw {
+            responseCode: 3000,
+            message: 'the user already exist',
+        } as ErrorResponse;
+    }
+
+    /**
+     * Update any properties of user.
+     * @param userToUpdate User object to update.
+     */
+    public async updateUser(userToUpdate: User): Promise<void> {
+
+        const sanitizeUser = await this.validateUser(userToUpdate, false) as User;
+
+        await this.usersDal.updateUser(sanitizeUser);
     }
 
     /**
      * Delete user.
-     * @param user user to delete.
+     * @param userSession Current sessiohn user.
      */
-    public async deleteUser(user: User): Promise<void> {
-        return this.usersDal.deleteUser(user);
+    public async deleteUser(userEmail: string): Promise<void> {
+        return await this.usersDal.deleteUser(userEmail);
     }
 }
 

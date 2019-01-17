@@ -1,10 +1,46 @@
 import * as express from 'express';
-import { Body, Controller, Delete, Get, Header, Path, Post, Put, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
+import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
+import { UsersBlSingleton } from '../business-layer/usersBl';
 
 @Tags('Users')
 @Route('users')
 export class UsersController extends Controller {
+
+    /**
+     * NEVER let anyone get hashed password.
+     * @param user user to remove password from.
+     */
+    private cleanUpUserBeforRelease(user: User): User {
+        delete user.password;
+        return user;
+    }
+
+    /**
+     * NEVER let anyone get hashed password.
+     * @param users users to remove password from.
+     */
+    private cleanUpUsersBeforRelease(users: User[]): User[] {
+        for (const user of users) {
+            this.cleanUpUserBeforRelease(user);
+        }
+        return users;
+    }
+
+    /**
+     * Only admin can watch/update/delete other users.
+     */
+    private isUserAllowd(userSession: User, userIdInReq): void {
+        /**
+            * Only admin can update other user.
+                 */
+        if (userSession.scope !== 'adminAuth' && userSession.email !== userIdInReq) {
+            throw {
+                responseCode: 4003,
+                message: 'user not allowd to watch other account',
+            } as ErrorResponse;
+        }
+    }
 
     /**
      * Get all users in system.
@@ -14,8 +50,7 @@ export class UsersController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getUsers(): Promise<User[]> {
-        return [];
-        // TODO: await new DevicesService().get(id);
+        return this.cleanUpUsersBeforRelease(await UsersBlSingleton.getUsers());
     }
 
     /**
@@ -23,11 +58,12 @@ export class UsersController extends Controller {
      * @returns User.
      */
     @Security('adminAuth')
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('{userId}')
-    public async getUser(userId: string): Promise<User> {
-        return;
-        // TODO: await new DevicesService().get(id);
+    public async getUser(userId: string, @Request() request: express.Request): Promise<User> {
+        this.isUserAllowd(request.user, userId);
+        return this.cleanUpUserBeforRelease(await UsersBlSingleton.getUser(userId));
     }
 
     /**
@@ -36,11 +72,13 @@ export class UsersController extends Controller {
      * @param timing User object to update to.
      */
     @Security('adminAuth')
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{userId}')
-    public async setUser(userId: string, @Body() user: User): Promise<void> {
-        // TODO ...
-        return;
+    public async setUser(userId: string, @Request() request: express.Request, @Body() user: User): Promise<void> {
+        this.isUserAllowd(request.user, userId);
+        user.email = userId;
+        return await UsersBlSingleton.updateUser(user);
     }
 
     /**
@@ -48,11 +86,12 @@ export class UsersController extends Controller {
      * @param timingId User id.
      */
     @Security('adminAuth')
+    @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{userId}')
-    public async deleteUser(userId: string): Promise<void> {
-        // TODO ...
-        return;
+    public async deleteUser(userId: string, @Request() request: express.Request): Promise<void> {
+        this.isUserAllowd(request.user, userId);
+        return await UsersBlSingleton.deleteUser(userId);
     }
 
     /**
@@ -63,7 +102,6 @@ export class UsersController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
     public async createUser(@Body() user: User): Promise<void> {
-        // TODO ...
-        return;
+        return await UsersBlSingleton.createUser(user);
     }
 }

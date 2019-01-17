@@ -10,31 +10,35 @@ class DataIOMock implements IDataIO {
     public mockData: User[] = [
         {
             email: 'aa@bb.com',
-            firstName: 'firstName1',
+            displayName: 'firstName1',
             ignoreTfa: true,
             password: '1234',
             sessionTimeOutMS: 123454321,
+            scope : 'userAuth',
         },
         {
             email: 'aa@bbb.com',
-            firstName: 'firstName2',
+            displayName: 'firstName2',
             ignoreTfa: true,
             password: 'password',
             sessionTimeOutMS: 765432,
+            scope : 'userAuth',
         },
         {
             email: 'aaa@bb.com',
-            firstName: 'firstName3',
+            displayName: 'firstName3',
             ignoreTfa: false,
             password: 'password',
             sessionTimeOutMS: 845646,
+            scope : 'userAuth',
         },
         {
             email: 'aaa@bbb.com',
-            firstName: 'firstName4',
+            displayName: 'firstName4',
             ignoreTfa: true,
             password: '1234321',
             sessionTimeOutMS: 123454321,
+            scope : 'userAuth',
         },
     ];
 
@@ -78,9 +82,11 @@ describe('Users DAL tests', () => {
 
     const additionalUser: User = {
         email: 'abc@dd.com',
+        displayName: '',
         ignoreTfa: false,
         password: '876',
         sessionTimeOutMS: 456544355,
+        scope : 'userAuth',
     };
 
     describe('Create new user', () => {
@@ -98,12 +104,19 @@ describe('Users DAL tests', () => {
     describe('Delete user', () => {
         it('it should delete user succsessfully', async () => {
 
-            await usersDal.deleteUser(additionalUser);
+            await usersDal.deleteUser(additionalUser.email);
 
             const users = await usersDal.getUsers();
 
             expect(users).to.have.length(dataMock.mockData.length);
             return;
+        });
+    });
+
+    describe('Update user', () => {
+        it('it should update user succsessfully', async () => {
+
+            // TODO
         });
     });
 });

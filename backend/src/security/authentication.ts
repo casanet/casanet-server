@@ -23,20 +23,6 @@ export const SystemAuthScopes: {
 };
 
 /**
- * Get request client IP.
- */
-export function getIp(req: Request): string {
-    let ip = req.headers['x-forwarded-for'] as string;
-    if (ip) {
-        const ipParts = ip.split(',');
-        ip = ipParts[ipParts.length - 1];
-    } else {
-        ip = req.connection.remoteAddress;
-    }
-    return ip;
-}
-
-/**
  * Cert Authentication middelwhere API.
  * the auth token should be the value of 'session' cookie.
  * @param securityName Used as auth scope beacuse of poor scopes swaggger support in apiKey auth.

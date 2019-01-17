@@ -9,27 +9,28 @@ import { SessionsDal } from '../../src/data-layer/sessionsDal';
 import { UsersDal } from '../../src/data-layer/usersDal';
 import { Session } from '../../src/models/backendInterfaces';
 import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
+import * as cryptoJs from 'crypto-js';
 
 class SessionsDalMock {
 
     public mockSessions: Session[] = [
         {
-            key: '1234',
+            keyHash: '1234',
             timeStump: new Date().getTime(),
             email: 'aa@bb.com',
         },
         {
-            key: '12345',
+            keyHash: '12345',
             timeStump: 300,
             email: 'aa@bb.com',
         },
         {
-            key: '1234',
+            keyHash: '1234',
             timeStump: new Date().getTime(),
             email: 'aaa@bb.com',
         },
         {
-            key: '123456',
+            keyHash: '123456',
             timeStump: new Date().getTime() - 1000,
             email: 'aa@bb.com',
         },
@@ -63,31 +64,35 @@ class UsersDalMock {
     public mockUsers: User[] = [
         {
             email: 'aa@bb.com',
-            firstName: 'firstName1',
+            displayName: 'firstName1',
             ignoreTfa: true,
             password: '1234',
             sessionTimeOutMS: 123454321,
+            scope : 'userAuth',
         },
         {
             email: 'aa@bbb.com',
-            firstName: 'firstName2',
+            displayName: 'firstName2',
             ignoreTfa: true,
             password: 'password',
             sessionTimeOutMS: 765432,
+            scope : 'userAuth',
         },
         {
             email: 'aaa@bb.com',
-            firstName: 'firstName3',
+            displayName: 'firstName3',
             ignoreTfa: false,
             password: 'password',
             sessionTimeOutMS: 845646,
+            scope : 'userAuth',
         },
         {
             email: 'aaa@bbb.com',
-            firstName: 'firstName4',
+            displayName: 'firstName4',
             ignoreTfa: true,
             password: '1234321',
             sessionTimeOutMS: 123454321,
+            scope : 'userAuth',
         },
     ];
 
@@ -135,9 +140,12 @@ describe('Authentication BL tests', () => {
                     });
                 },
             };
+            const pass = usersDalMock.mockUsers[0].password;
+            const passHash = cryptoJs.SHA256(pass).toString();
+            usersDalMock.mockUsers[0].password = passHash;
             await authBl.login(expressResponseMock as express.Response, {
                 email: usersDalMock.mockUsers[0].email,
-                password: usersDalMock.mockUsers[0].password,
+                password: pass,
             });
 
         });

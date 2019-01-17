@@ -4,6 +4,7 @@ import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 import { SessionsBl, SessionsBlSingleton } from './sessionsBl';
 import { UsersBl, UsersBlSingleton } from './usersBl';
+import * as cryptoJs from 'crypto-js';
 
 export class AuthBl {
 
@@ -38,7 +39,7 @@ export class AuthBl {
                 throw errorResponse;
             });
 
-        if (login.password === user.password) {
+        if (cryptoJs.SHA256(login.password).toString() === user.password) {
             const sessionKey = await this.sessionsBl.generateSession(user);
 
             /**

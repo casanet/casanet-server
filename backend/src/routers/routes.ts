@@ -753,10 +753,11 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/users/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
+        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
             };
 
             let validatedArgs: any[] = [];
@@ -773,10 +774,11 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/users/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
+        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
                 user: { "in": "body", "name": "user", "required": true, "ref": "User" },
             };
 
@@ -794,10 +796,11 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.delete('/API/users/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
+        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
             };
 
             let validatedArgs: any[] = [];

@@ -4,6 +4,7 @@ import app from '../src/App';
 import { UsersDalSingleton } from '../src/data-layer/usersDal';
 import { Login, LoginTfa, Minion } from '../src/models/sharedInterfaces';
 import { User } from '../src/models/sharedInterfaces';
+import * as cryptoJs from 'crypto-js';
 
 /**
  * Perpare chai session agent.
@@ -15,20 +16,22 @@ const adminAgent = chai.request.agent(app);
 /**
  * Reset data, for testing all system flow.
  */
+const unHashedUserPassword = '2574653478565761341114';
 const signInUser: User = {
     email: 'user@bb.com',
     displayName: 'firstName1',
     ignoreTfa: true,
-    password: '1234',
+    password: cryptoJs.SHA256(unHashedUserPassword).toString(),
     sessionTimeOutMS: 123454321100000,
     scope: 'userAuth'
 };
 
+const unHashedAdminPassword = 'fdsfdjhhg743278956djkb';
 const signInAdmin: User = {
     email: 'admin@bb.com',
     displayName: 'firstName1',
     ignoreTfa: true,
-    password: '1234',
+    password: cryptoJs.SHA256(unHashedAdminPassword).toString(),
     sessionTimeOutMS: 123454321100000,
     scope: 'adminAuth'
 };
@@ -49,7 +52,7 @@ UsersDalSingleton.createUser(signInUser)
          */
         const loginSchema: Login = {
             email: signInUser.email,
-            password: signInUser.password,
+            password: unHashedUserPassword,
         };
 
         /**
@@ -80,7 +83,7 @@ UsersDalSingleton.createUser(signInAdmin)
          */
         const loginSchema: Login = {
             email: signInAdmin.email,
-            password: signInAdmin.password,
+            password: unHashedAdminPassword,
         };
 
         /**
@@ -113,6 +116,16 @@ if (testLongSpecsSelection) {
 /**
  * API
  */
+
+/**
+* A valid user password.
+*/
+export const validUserPlainPassword = unHashedUserPassword;
+
+/**
+ * A valid user password.
+ */
+export const validAdminPlainPassword = unHashedAdminPassword;
 
 /**
  * A valid user object.
