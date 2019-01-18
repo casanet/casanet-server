@@ -511,6 +511,14 @@ export declare interface TimingProperties {
 }
 
 /**
+ * Timing feed object.
+ */
+export declare interface TimingFeed {
+    timing: Timing;
+    results: OperationResult[];
+}
+
+/**
  * Represents a timing in system.
  */
 export declare interface Timing {

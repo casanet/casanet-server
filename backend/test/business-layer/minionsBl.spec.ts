@@ -368,7 +368,7 @@ describe('Minions BL tests', () => {
     describe('Feed minion updates', () => {
         it('it should get minion succsessfully', (done) => {
 
-            const subscription = minionsBl.minionUpdates.subscribe((minionFeed) => {
+            const subscription = minionsBl.minionFeed.subscribe((minionFeed) => {
                 if (!minionFeed || minionFeed.minion.minionId !== 'ac1') {
                     return;
                 }

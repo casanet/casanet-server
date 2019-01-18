@@ -2,6 +2,7 @@
 /* tslint:disable */
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
 import { AuthController } from './../controllers/authController';
+import { FeedController } from './../controllers/feedController';
 import { DevicesController } from './../controllers/devicesController';
 import { MinionsController } from './../controllers/minionsController';
 import { OperationsController } from './../controllers/operationsController';
@@ -38,15 +39,6 @@ const models: TsoaRoute.Models = {
             "mac": { "dataType": "string", "required": true },
             "vendor": { "dataType": "string" },
             "ip": { "dataType": "string" },
-        },
-    },
-    "DeviceKind": {
-        "properties": {
-            "brand": { "dataType": "string", "required": true },
-            "model": { "dataType": "string", "required": true },
-            "isUsedAsLogicDevice": { "dataType": "boolean", "required": true },
-            "isTokenRequierd": { "dataType": "boolean", "required": true },
-            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
         },
     },
     "MinionDevice": {
@@ -119,23 +111,10 @@ const models: TsoaRoute.Models = {
             "minionAutoTurnOffMS": { "dataType": "double" },
         },
     },
-    "OperationActivity": {
+    "MinionFeed": {
         "properties": {
-            "minionId": { "dataType": "string", "required": true },
-            "minionStatus": { "ref": "MinionStatus", "required": true },
-        },
-    },
-    "Operation": {
-        "properties": {
-            "operationId": { "dataType": "string", "required": true },
-            "operationName": { "dataType": "string", "required": true },
-            "activities": { "dataType": "array", "array": { "ref": "OperationActivity" }, "required": true },
-        },
-    },
-    "OperationResult": {
-        "properties": {
-            "minionId": { "dataType": "string", "required": true },
-            "error": { "ref": "ErrorResponse" },
+            "event": { "dataType": "enum", "enums": ["created", "update", "removed"], "required": true },
+            "minion": { "ref": "Minion", "required": true },
         },
     },
     "DailySunTrigger": {
@@ -179,6 +158,40 @@ const models: TsoaRoute.Models = {
             "isActive": { "dataType": "boolean", "required": true },
             "timingType": { "dataType": "enum", "enums": ["dailySunTrigger", "dailyTimeTrigger", "once", "timeout"], "required": true },
             "timingProperties": { "ref": "TimingProperties", "required": true },
+        },
+    },
+    "OperationResult": {
+        "properties": {
+            "minionId": { "dataType": "string", "required": true },
+            "error": { "ref": "ErrorResponse" },
+        },
+    },
+    "TimingFeed": {
+        "properties": {
+            "timing": { "ref": "Timing", "required": true },
+            "results": { "dataType": "array", "array": { "ref": "OperationResult" }, "required": true },
+        },
+    },
+    "DeviceKind": {
+        "properties": {
+            "brand": { "dataType": "string", "required": true },
+            "model": { "dataType": "string", "required": true },
+            "isUsedAsLogicDevice": { "dataType": "boolean", "required": true },
+            "isTokenRequierd": { "dataType": "boolean", "required": true },
+            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
+        },
+    },
+    "OperationActivity": {
+        "properties": {
+            "minionId": { "dataType": "string", "required": true },
+            "minionStatus": { "ref": "MinionStatus", "required": true },
+        },
+    },
+    "Operation": {
+        "properties": {
+            "operationId": { "dataType": "string", "required": true },
+            "operationName": { "dataType": "string", "required": true },
+            "activities": { "dataType": "array", "array": { "ref": "OperationActivity" }, "required": true },
         },
     },
     "User": {
@@ -252,6 +265,44 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.logoutDocumentation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/feed/minions',
+        authenticateMiddleware([{ "userAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new FeedController();
+
+
+            const promise = controller.getMinionsFeed.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/feed/timings',
+        authenticateMiddleware([{ "userAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new FeedController();
+
+
+            const promise = controller.getTimingFeed.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/devices',

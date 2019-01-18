@@ -8,10 +8,12 @@ import * as helmet from 'helmet';
 import * as path from 'path';
 import { Configuration } from './config';
 import { AuthenticationRouter } from './routers/authenticationRoute';
+import { FeedRouter } from './routers/feedRoute';
 import { RegisterRoutes } from './routers/routes';
 import { logger } from './utilities/logger';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
+import './controllers/feedController';
 import './controllers/authController';
 import './controllers/devicesController';
 import './controllers/minionsController';
@@ -25,6 +27,7 @@ import './business-layer/timeoutBl';
 class App {
     public express: express.Express;
     private authenticationRouter: AuthenticationRouter = new AuthenticationRouter();
+    private feedRouter: FeedRouter = new FeedRouter();
 
     constructor() {
         /** Creat the express app */
@@ -64,6 +67,9 @@ class App {
 
         /** Route authentication API */
         this.authenticationRouter.routes(this.express);
+
+        /** Route system feed */
+        this.feedRouter.routes(this.express);
 
         /** Use generated routers (by TSOA) */
         RegisterRoutes(this.express);

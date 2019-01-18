@@ -21,6 +21,7 @@
     "express": "^4.16.4",
     "express-force-ssl": "^0.3.2",
     "express-rate-limit": "^3.3.2",
+    "express-sse": "^0.5.0",
     "express-useragent": "^1.0.12",
     "fs": "0.0.1-security",
     "fs-extra": "^7.0.1",

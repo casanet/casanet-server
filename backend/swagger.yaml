@@ -62,38 +62,6 @@ definitions:
         required:
             - mac
         type: object
-    DeviceKind:
-        description: 'For each suppoeted device there is limitations and abilities of it.'
-        properties:
-            brand:
-                type: string
-                description: 'The brand of current minion type. (see device model).'
-            model:
-                type: string
-                description: 'The specific model of minion type. (see device model).'
-            isUsedAsLogicDevice:
-                type: boolean
-                description: "Is current device type can be minion per physical device only. \r\nFor example smart socket can be one minion only but IR sender device can be for many AC minions in room."
-            isTokenRequierd:
-                type: boolean
-                description: 'Is device require token for communication API.'
-            suppotedMinionType:
-                type: string
-                enum:
-                    - toggle
-                    - switch
-                    - airConditioning
-                    - light
-                    - temperatureLight
-                    - 'colorLight '
-                description: 'Supported minion type for current device.'
-        required:
-            - brand
-            - model
-            - isUsedAsLogicDevice
-            - isTokenRequierd
-            - suppotedMinionType
-        type: object
     MinionDevice:
         description: 'Represents a pysical device kind with netword info.'
         properties:
@@ -116,7 +84,7 @@ definitions:
             - model
         type: object
     Toggle:
-        description: "A tuggel value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone change the light status using pysical switche."
+        description: "A toggele value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone change the light status using pysical switche."
         properties:
             status:
                 type: string
@@ -127,7 +95,7 @@ definitions:
             - status
         type: object
     Switch:
-        description: "A switch status.\r\nUsed for a simple devices that can be turn on or off. *and minion status is readble*\r\nThe properties same as toggel, and the difference is logic only (if status is readble or not)."
+        description: "A switch status.\r\nUsed for a simple devices that can be turn on or off. *and minion status is readble*\r\nThe properties same as toggele, and the difference is logic only (if status is readble or not)."
         properties:
             status:
                 type: string
@@ -1587,50 +1555,20 @@ definitions:
             - minionStatus
             - minionType
         type: object
-    OperationActivity:
-        description: 'Represents acivity.'
+    MinionFeed:
+        description: 'Minion feed object.'
         properties:
-            minionId:
+            event:
                 type: string
-                description: 'Minion id to set'
-            minionStatus:
-                $ref: '#/definitions/MinionStatus'
-                description: 'Status to set to minion.'
+                enum:
+                    - created
+                    - update
+                    - removed
+            minion:
+                $ref: '#/definitions/Minion'
         required:
-            - minionId
-            - minionStatus
-        type: object
-    Operation:
-        description: "Represents a operation in system.\r\nOperation is set of action to do.\r\nFor example to turn on all home light operation \r\nset a array of activitie for each light in home to set light status 'on'."
-        properties:
-            operationId:
-                type: string
-                description: 'Operation unique id.'
-            operationName:
-                type: string
-                description: 'Operation display name.'
-            activities:
-                type: array
-                items:
-                    $ref: '#/definitions/OperationActivity'
-                description: 'Activities array.'
-        required:
-            - operationId
-            - operationName
-            - activities
-        type: object
-    OperationResult:
-        description: 'Operation result to hole set minion status result per minion.'
-        properties:
-            minionId:
-                type: string
-                description: 'Minion Id.'
-            error:
-                $ref: '#/definitions/ErrorResponse'
-                description: 'Set minion status result. (undefined if sets successfully)'
-                x-nullable: true
-        required:
-            - minionId
+            - event
+            - minion
         type: object
     DailySunTrigger:
         description: 'Daily timing based on sun triggers.'
@@ -1851,6 +1789,96 @@ definitions:
             - timingType
             - timingProperties
         type: object
+    OperationResult:
+        description: 'Operation result to hole set minion status result per minion.'
+        properties:
+            minionId:
+                type: string
+                description: 'Minion Id.'
+            error:
+                $ref: '#/definitions/ErrorResponse'
+                description: 'Set minion status result. (undefined if sets successfully)'
+                x-nullable: true
+        required:
+            - minionId
+        type: object
+    TimingFeed:
+        description: 'Timing feed object.'
+        properties:
+            timing:
+                $ref: '#/definitions/Timing'
+            results:
+                type: array
+                items:
+                    $ref: '#/definitions/OperationResult'
+        required:
+            - timing
+            - results
+        type: object
+    DeviceKind:
+        description: 'For each suppoeted device there is limitations and abilities of it.'
+        properties:
+            brand:
+                type: string
+                description: 'The brand of current minion type. (see device model).'
+            model:
+                type: string
+                description: 'The specific model of minion type. (see device model).'
+            isUsedAsLogicDevice:
+                type: boolean
+                description: "Is current device type can be minion per physical device only. \r\nFor example smart socket can be one minion only but IR sender device can be for many AC minions in room."
+            isTokenRequierd:
+                type: boolean
+                description: 'Is device require token for communication API.'
+            suppotedMinionType:
+                type: string
+                enum:
+                    - toggle
+                    - switch
+                    - airConditioning
+                    - light
+                    - temperatureLight
+                    - 'colorLight '
+                description: 'Supported minion type for current device.'
+        required:
+            - brand
+            - model
+            - isUsedAsLogicDevice
+            - isTokenRequierd
+            - suppotedMinionType
+        type: object
+    OperationActivity:
+        description: 'Represents acivity.'
+        properties:
+            minionId:
+                type: string
+                description: 'Minion id to set'
+            minionStatus:
+                $ref: '#/definitions/MinionStatus'
+                description: 'Status to set to minion.'
+        required:
+            - minionId
+            - minionStatus
+        type: object
+    Operation:
+        description: "Represents a operation in system.\r\nOperation is set of action to do.\r\nFor example to turn on all home light operation \r\nset a array of activitie for each light in home to set light status 'on'."
+        properties:
+            operationId:
+                type: string
+                description: 'Operation unique id.'
+            operationName:
+                type: string
+                description: 'Operation display name.'
+            activities:
+                type: array
+                items:
+                    $ref: '#/definitions/OperationActivity'
+                description: 'Activities array.'
+        required:
+            - operationId
+            - operationName
+            - activities
+        type: object
     User:
         description: 'Represents a user in system.'
         properties:
@@ -1968,6 +1996,48 @@ paths:
             description: 'Logout manualy from system.'
             tags:
                 - Authentication
+            security:
+                -
+                    userAuth: []
+            parameters: []
+    /feed/minions:
+        get:
+            operationId: GetMinionsFeed
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/MinionFeed'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Minions feed.\r\nwhen minion status changed minion created etc."
+            tags:
+                - Feed
+            security:
+                -
+                    userAuth: []
+            parameters: []
+    /feed/timings:
+        get:
+            operationId: GetTimingFeed
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/TimingFeed'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Timing feed.\r\nwhen timing activated."
+            tags:
+                - Feed
             security:
                 -
                     userAuth: []
@@ -2750,6 +2820,9 @@ tags:
     -
         name: Timings
         description: 'Manage timings in system, such as invoke turn off lights operation today 12 AM etc.'
+    -
+        name: Feed
+        description: 'Feed of updates from system, such as minion turned on/off etc. all using SSE protocol'
 schemes:
     - http
     - https

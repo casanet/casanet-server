@@ -23,7 +23,7 @@ export class MinionsBl {
     /**
      * Minions status update feed.
      */
-    public minionUpdates = new BehaviorSubject<MinionFeed>(undefined);
+    public minionFeed = new BehaviorSubject<MinionFeed>(undefined);
 
     /**
      * Init minions bl. using dependecy injection pattern to allow units testings.
@@ -80,13 +80,13 @@ export class MinionsBl {
         this.modulesManager.minionStatusChangedEvent.subscribe((pysicalDeviceUpdate) => {
             const minion = this.getMinionsByMac(pysicalDeviceUpdate.mac);
             if (!minion) {
-                logger.info(`Avoiding pysical device update, there is no minion with mac: ${pysicalDeviceUpdate.mac}`);
+                logger.info(`Avoiding device update, there is no minion with mac: ${pysicalDeviceUpdate.mac}`);
                 return;
             }
 
             minion.isProperlyCommunicated = true;
             minion.minionStatus = pysicalDeviceUpdate.status;
-            this.minionUpdates.next({
+            this.minionFeed.next({
                 event: 'update',
                 minion,
             });
@@ -327,7 +327,7 @@ export class MinionsBl {
         /**
          * Send minions feed update.
          */
-        this.minionUpdates.next({
+        this.minionFeed.next({
             event: 'update',
             minion,
         });
@@ -350,7 +350,7 @@ export class MinionsBl {
         /**
          * Send minion feed update
          */
-        this.minionUpdates.next({
+        this.minionFeed.next({
             event: 'update',
             minion: originalMinion,
         });
@@ -403,7 +403,7 @@ export class MinionsBl {
         /**
          * Send create new minion feed update (*befor* try to get the status!!!)
          */
-        this.minionUpdates.next({
+        this.minionFeed.next({
             event: 'created',
             minion,
         });
@@ -442,7 +442,7 @@ export class MinionsBl {
             this.minions.splice(this.minions.indexOf(originalMinion), 1);
         }
 
-        this.minionUpdates.next({
+        this.minionFeed.next({
             event: 'removed',
             minion: originalMinion,
         })

@@ -28,6 +28,10 @@
             {
                 "name": "Timings",
                 "description": "Manage timings in system, such as invoke turn off lights operation today 12 AM etc."
+            },
+            {
+                "name": "Feeds",
+                "description": "Feed of updates from system, such as minion turned on/off etc. all using SSE protocol"
             }
         ],
         "name": "CASAnet - API",

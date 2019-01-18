@@ -14,6 +14,7 @@ import {
     OperationResult,
     TimeoutTiming,
     Timing,
+    TimingFeed,
 } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 import { OperationsBl, OperationsBlSingleton } from './operationsBl';
@@ -35,10 +36,7 @@ export class TimingsBl {
     /**
      * Timing trigger feed.
      */
-    public timingFeed = new BehaviorSubject<{
-        timing: Timing,
-        results: OperationResult[],
-    }>(undefined);
+    public timingFeed = new BehaviorSubject<TimingFeed>(undefined);
 
     /**
      * Init TimingsBl . using dependecy injection pattern to allow units testings.
@@ -59,11 +57,11 @@ export class TimingsBl {
      * @param timing timing to active.
      */
     private async activeTiming(timing: Timing): Promise<void> {
-        logger.info(`Invok timing ${timing.timingName} id: ${timing.timingId} starting...`);
+        logger.info(`Invoke ${timing.timingName} id: ${timing.timingId} timing starting...`);
 
         try {
             const results = await this.operationBl.triggerOperation(timing.triggerOperationId);
-            logger.info(`Invok timing ${timing.timingName} id: ${timing.timingId} done`);
+            logger.info(`Invok ${timing.timingName} id: ${timing.timingId} timing done`);
 
             this.timingFeed.next({
                 timing,

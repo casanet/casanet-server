@@ -190,7 +190,7 @@ export class TimeoutBl {
         /**
          * Then registar to changes feed.
          */
-        this.minionsBl.minionUpdates.subscribe((minionFeed) => {
+        this.minionsBl.minionFeed.subscribe((minionFeed) => {
             if (!minionFeed) {
                 return;
             }
