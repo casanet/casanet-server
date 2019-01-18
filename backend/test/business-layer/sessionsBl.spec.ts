@@ -1,32 +1,32 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
+import * as cryptoJs from 'crypto-js';
 import { SessionsBl } from '../../src/business-layer/sessionsBl';
 import { SessionsDal } from '../../src/data-layer/sessionsDal';
 import { Session } from '../../src/models/backendInterfaces';
 import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
-import * as cryptoJs from 'crypto-js';
 
 class SessionsDalMock {
 
     public mockSessions: Session[] = [
         {
             keyHash: '1234',
-            timeStump: new Date().getTime(),
+            timeStamp: new Date().getTime(),
             email: 'aa@bb.com',
         },
         {
             keyHash: '12345',
-            timeStump: 300,
+            timeStamp: 300,
             email: 'aa@bb.com',
         },
         {
             keyHash: '1234',
-            timeStump: new Date().getTime(),
+            timeStamp: new Date().getTime(),
             email: 'aaa@bb.com',
         },
         {
             keyHash: '123456',
-            timeStump: new Date().getTime() - 1000,
+            timeStamp: new Date().getTime() - 1000,
             email: 'aa@bb.com',
         },
     ];

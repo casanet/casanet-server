@@ -6,7 +6,7 @@ import { Observable, Subscriber, BehaviorSubject } from 'rxjs';
  */
 declare interface Session {
     keyHash: string;
-    timeStump: number;
+    timeStamp: number;
     email: string;
 }
 
@@ -33,6 +33,19 @@ export declare interface Config {
         maxRequests: number
     };
     runningMode: RunningMode;
+    /**
+     * 2-step verification config. access to mail using SMTP protocol.
+     * *for keys use environment variables only!!!*
+     */
+    twoStepsVerification: {
+        TwoStepEnabled: boolean;
+        /**The mail server url, for example 'smtp.gmail.com' */
+        smtpServer: string;
+        /** The username to send from, for example 'myUser@gmail.com' */
+        userName: string;
+        /** The password / application key to access user account */
+        userKey: string;
+    }
     /**
      * Use for sun trigger timing when the sunset/sunrise depends on world location.
      */

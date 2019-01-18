@@ -2,8 +2,8 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import chaiHttp = require('chai-http');
 import app from '../src/App';
-import { Login, LoginTfa } from '../src/models/sharedInterfaces';
-import { validSystemAdmin, validSystemUser , validUserPlainPassword , validAdminPlainPassword } from './prepareRoutesSpecTests.spec';
+import { Login } from '../src/models/sharedInterfaces';
+import { validAdminPlainPassword, validSystemAdmin , validSystemUser , validUserPlainPassword } from './prepareRoutesSpecTests.spec';
 
 chai.use(chaiHttp);
 const agent = chai.request.agent(app);
@@ -58,16 +58,15 @@ describe('Authentication routing API', () => {
     describe('/POST auth/login/tfa', () => {
         it('it should respond 20x as status code', (done) => {
 
-            const loginSchema: LoginTfa = {
+            const loginSchema: Login = {
                 email: validSystemUser.email,
                 password: validUserPlainPassword,
-                tfaPassword: 'TODO',
             };
 
             agent.post('/API/auth/login/tfa')
                 .send(loginSchema)
                 .end((err, res) => {
-                    expect(res.statusType).eql(2);
+                    expect(res.statusType).eql(4);
                     done();
                 });
         });

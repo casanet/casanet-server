@@ -13,9 +13,9 @@ import { RegisterRoutes } from './routers/routes';
 import { logger } from './utilities/logger';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
-import './controllers/feedController';
 import './controllers/authController';
 import './controllers/devicesController';
+import './controllers/feedController';
 import './controllers/minionsController';
 import './controllers/operationsController';
 import './controllers/timingsController';

@@ -27,12 +27,6 @@ export const LoginSchema: ObjectSchema = Joi.object().keys({
     password: Joi.string().not('').required(),
 }).required();
 
-export const TfaSchema: ObjectSchema = Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().not('').required(),
-    tfaPassword: Joi.string().not('').required(),
-}).required();
-
 export const ErrorResponseSchema: ObjectSchema = Joi.object().keys({
     responseCode: Joi.number().min(4000).max(5999).required(),
     message: Joi.string().not(''),
@@ -50,7 +44,7 @@ export const GetIp = (req: Request): string => {
         ip = req.connection.remoteAddress;
     }
     return ip;
-}
+};
 
 /**
  * Validate the req.body json by given scema

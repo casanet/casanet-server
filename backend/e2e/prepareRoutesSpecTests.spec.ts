@@ -1,10 +1,10 @@
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
+import * as cryptoJs from 'crypto-js';
 import app from '../src/App';
 import { UsersDalSingleton } from '../src/data-layer/usersDal';
-import { Login, LoginTfa, Minion } from '../src/models/sharedInterfaces';
+import { Login, Minion } from '../src/models/sharedInterfaces';
 import { User } from '../src/models/sharedInterfaces';
-import * as cryptoJs from 'crypto-js';
 
 /**
  * Perpare chai session agent.
@@ -23,7 +23,7 @@ const signInUser: User = {
     ignoreTfa: true,
     password: cryptoJs.SHA256(unHashedUserPassword).toString(),
     sessionTimeOutMS: 123454321100000,
-    scope: 'userAuth'
+    scope: 'userAuth',
 };
 
 const unHashedAdminPassword = 'fdsfdjhhg743278956djkb';
@@ -33,7 +33,7 @@ const signInAdmin: User = {
     ignoreTfa: true,
     password: cryptoJs.SHA256(unHashedAdminPassword).toString(),
     sessionTimeOutMS: 123454321100000,
-    scope: 'adminAuth'
+    scope: 'adminAuth',
 };
 
 /**
@@ -118,8 +118,8 @@ if (testLongSpecsSelection) {
  */
 
 /**
-* A valid user password.
-*/
+ * A valid user password.
+ */
 export const validUserPlainPassword = unHashedUserPassword;
 
 /**

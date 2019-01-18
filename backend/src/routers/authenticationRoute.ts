@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import * as express from 'express';
 import { AuthController } from '../controllers/authController';
-import { ErrorResponse, Login, LoginTfa, User } from '../models/sharedInterfaces';
+import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
 import { SystemAuthScopes } from '../security/authentication';
-import { LoginSchema, RequestSchemaValidator, TfaSchema } from '../security/schemaValidator';
+import { LoginSchema, RequestSchemaValidator } from '../security/schemaValidator';
 import { expressAuthentication } from './../security/authentication';
 
 export class AuthenticationRouter {
@@ -43,9 +43,9 @@ export class AuthenticationRouter {
 
         app.route('/API/auth/login/tfa')
             .post(async (req: Request, res: Response) => {
-                let loginData: LoginTfa;
+                let loginData: Login;
                 try {
-                    loginData = await RequestSchemaValidator(req, TfaSchema);
+                    loginData = await RequestSchemaValidator(req, LoginSchema);
                 } catch {
                     res.status(422).send();
                     return;

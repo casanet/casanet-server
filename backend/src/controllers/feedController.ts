@@ -2,7 +2,7 @@ import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
 import { TimingsBlSingleton } from '../business-layer/timingssBl';
-import { ErrorResponse, Login, LoginTfa, User, MinionFeed, Timing, TimingFeed } from '../models/sharedInterfaces';
+import { ErrorResponse, Login, MinionFeed, Timing, TimingFeed } from '../models/sharedInterfaces';
 
 /**
  * Because that swagger not fully support SSE.
@@ -40,10 +40,10 @@ export class FeedController extends Controller {
      */
     public initTimingsFeed(timingsSse: any): void {
         this.timingsSse = timingsSse;
-        
+
         TimingsBlSingleton.timingFeed.subscribe((timingFeed) => {
             this.timingsSse.send(timingFeed);
-        })
+        });
     }
 
     //////////////////////////////////////////////////
@@ -52,7 +52,7 @@ export class FeedController extends Controller {
 
     /**
      * Minions feed.
-     * when minion status changed minion created etc. 
+     * when minion status changed minion created etc.
      */
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')

@@ -1,10 +1,10 @@
+import * as cryptoJs from 'crypto-js';
 import { Request, Response } from 'express';
+import { ValidationResult } from 'joi';
 import { Configuration } from '../config';
 import { UsersDal, UsersDalSingleton } from '../data-layer/usersDal';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { SchemaValidator, UserSchema, UserUpdateSchema } from '../security/schemaValidator';
-import * as cryptoJs from 'crypto-js';
-import { ValidationResult } from 'joi';
 
 export class UsersBl {
 
@@ -35,7 +35,7 @@ export class UsersBl {
                     responseCode: 4022,
                     message: validationError.error.message,
                 } as ErrorResponse;
-            })
+            });
 
         /**
          * If there is password to hash, hash it, else load the original password hash.
@@ -48,8 +48,6 @@ export class UsersBl {
         }
         return sanitizeUser;
     }
-
-
 
     /**
      * Get all users.
@@ -73,7 +71,6 @@ export class UsersBl {
      */
     public async createUser(user: User): Promise<void> {
         const sanitizeUser = await this.validateUser(user, true) as User;
-
 
         /**
          * make sure there is no other user with same email in system.

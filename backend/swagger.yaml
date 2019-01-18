@@ -27,20 +27,6 @@ definitions:
             - email
             - password
         type: object
-    LoginTfa:
-        description: '2-step verification login model.'
-        properties:
-            email:
-                type: string
-            password:
-                type: string
-            tfaPassword:
-                type: string
-        required:
-            - email
-            - password
-            - tfaPassword
-        type: object
     LocalNetworkDevice:
         description: 'Reposnts any pysical device in local network.'
         properties:
@@ -1925,6 +1911,10 @@ paths:
             produces:
                 - application/json
             responses:
+                '201':
+                    description: '2-fatore code sent'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
                 '204':
                     description: 'No content'
                 '403':
@@ -1980,7 +1970,7 @@ paths:
                     name: login
                     required: true
                     schema:
-                        $ref: '#/definitions/LoginTfa'
+                        $ref: '#/definitions/Login'
     /auth/logout:
         post:
             operationId: LogoutDocumentation
@@ -2016,7 +2006,7 @@ paths:
                         $ref: '#/definitions/ErrorResponse'
             description: "Minions feed.\r\nwhen minion status changed minion created etc."
             tags:
-                - Feed
+                - Feeds
             security:
                 -
                     userAuth: []
@@ -2037,7 +2027,7 @@ paths:
                         $ref: '#/definitions/ErrorResponse'
             description: "Timing feed.\r\nwhen timing activated."
             tags:
-                - Feed
+                - Feeds
             security:
                 -
                     userAuth: []
@@ -2821,7 +2811,7 @@ tags:
         name: Timings
         description: 'Manage timings in system, such as invoke turn off lights operation today 12 AM etc.'
     -
-        name: Feed
+        name: Feeds
         description: 'Feed of updates from system, such as minion turned on/off etc. all using SSE protocol'
 schemes:
     - http

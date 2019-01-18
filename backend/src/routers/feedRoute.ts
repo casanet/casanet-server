@@ -1,16 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as express from 'express';
-import { ErrorResponse, Login, LoginTfa, User } from '../models/sharedInterfaces';
-import { SystemAuthScopes } from '../security/authentication';
-import { expressAuthentication } from './../security/authentication';
-import * as SseStream from 'express-sse'
-import { logger } from '../utilities/logger';
+import * as SseStream from 'express-sse';
 import { FeedController } from '../controllers/feedController';
+import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
+import { SystemAuthScopes } from '../security/authentication';
+import { logger } from '../utilities/logger';
+import { expressAuthentication } from './../security/authentication';
 
 export class FeedRouter {
 
     private feedController: FeedController = new FeedController();
-
 
     public routes(app: express.Express): void {
 
@@ -34,8 +33,8 @@ export class FeedRouter {
         /**
          * Init the sse objects.
          */
-        var minionsSseFeed = new SseStream(['init'], { isSerialized: true });
-        var timingsSseFeed = new SseStream(['init'], { isSerialized: true });
+        const minionsSseFeed = new SseStream(['init'], { isSerialized: true });
+        const timingsSseFeed = new SseStream(['init'], { isSerialized: true });
 
         /**
          * SSE minions feed.

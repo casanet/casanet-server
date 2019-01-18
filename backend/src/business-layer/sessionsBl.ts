@@ -1,10 +1,10 @@
+import * as cryptoJs from 'crypto-js';
 import { Request, Response } from 'express';
 import * as randomstring from 'randomstring';
 import { Configuration } from '../config';
 import { SessionsDal, SessionsDalSingelton } from '../data-layer/sessionsDal';
 import { Session } from '../models/backendInterfaces';
 import { User } from '../models/sharedInterfaces';
-import * as cryptoJs from 'crypto-js';
 
 export class SessionsBl {
 
@@ -40,7 +40,7 @@ export class SessionsBl {
 
         const userSessions: Session[] = [];
         for (const session of sessions) {
-            if (session.email === user.email && (new Date().getTime() - session.timeStump) < user.sessionTimeOutMS) {
+            if (session.email === user.email && (new Date().getTime() - session.timeStamp) < user.sessionTimeOutMS) {
                 userSessions.push(session);
             }
         }
@@ -58,7 +58,7 @@ export class SessionsBl {
         const generatedSession = randomstring.generate(64);
         const newSession: Session = {
             keyHash: cryptoJs.SHA256(generatedSession).toString(),
-            timeStump: new Date().getTime(),
+            timeStamp: new Date().getTime(),
             email: userToCreateFor.email,
         };
 

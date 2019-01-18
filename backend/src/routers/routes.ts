@@ -26,13 +26,6 @@ const models: TsoaRoute.Models = {
             "password": { "dataType": "string", "required": true },
         },
     },
-    "LoginTfa": {
-        "properties": {
-            "email": { "dataType": "string", "required": true },
-            "password": { "dataType": "string", "required": true },
-            "tfaPassword": { "dataType": "string", "required": true },
-        },
-    },
     "LocalNetworkDevice": {
         "properties": {
             "name": { "dataType": "string" },
@@ -232,7 +225,7 @@ export function RegisterRoutes(app: express.Express) {
         function(request: any, response: any, next: any) {
             const args = {
                 request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-                login: { "in": "body", "name": "login", "required": true, "ref": "LoginTfa" },
+                login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
             };
 
             let validatedArgs: any[] = [];

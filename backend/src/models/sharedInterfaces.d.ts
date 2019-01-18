@@ -37,13 +37,6 @@ export declare interface Login {
 }
 
 /**
- * 2-step verification login model.
- */
-export declare interface LoginTfa extends Login {
-    tfaPassword: string;
-}
-
-/**
  * Use to support multi languages in UI.
  */
 export declare interface StringMap {

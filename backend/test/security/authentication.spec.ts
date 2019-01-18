@@ -57,6 +57,10 @@ describe('Security scopes validation middelwere', () => {
                     expect(err).to.deep.equal(expectedError);
                 });
         });
+
+        it('it should denied', async () => {
+            // TODO : session expierd
+        });
     });
 
     describe('Test Auth Scopes', () => {

@@ -45,19 +45,29 @@ export const expressAuthentication = async (request: express.Request, scopes: st
     }
 
     try {
-        
+
         const session = await sessionsBl.getSession(request.cookies.session);
         const user = await usersBl.getUser(session.email);
 
         /**
-         * Pass only in user scope in requierd scopes and the scope is valid. 
+         * Make sure that session not expired.
+         */
+        if ((new Date().getTime() - session.timeStamp) > user.sessionTimeOutMS) {
+            await sessionsBl.deleteSession(session);
+            throw {
+                responseCode: 4003,
+            } as ErrorResponse;
+        }
+
+        /**
+         * Pass only in user scope in requierd scopes and the scope is valid.
          */
         if (scopes.indexOf(user.scope) !== -1 &&
             Object.values(SystemAuthScopes).indexOf(user.scope) !== -1) {
             return user;
         }
 
-        logger.info(`user ${user.email} try to access ${request.method} ${request.path} above his scope ${user.scope}`)
+        logger.info(`user ${user.email} try to access ${request.method} ${request.path} above his scope ${user.scope}`);
         throw {
             responseCode: 4003,
         } as ErrorResponse;
@@ -66,4 +76,4 @@ export const expressAuthentication = async (request: express.Request, scopes: st
             responseCode: 4003,
         } as ErrorResponse;
     }
-}
+};

@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { AuthBlSingleton } from '../business-layer/authBl';
-import { ErrorResponse, Login, LoginTfa, User } from '../models/sharedInterfaces';
+import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
 
 /**
  * Because that express response object needs in auth logic (to write cookies)
@@ -22,19 +22,15 @@ export class AuthController extends Controller {
     /**
      * 2-step verification login.
      */
-    public async loginTfa(request: express.Request, response: express.Response, login: LoginTfa): Promise<void> {
-
-        // TODO ...
-        return;
+    public async loginTfa(request: express.Request, response: express.Response, login: Login): Promise<void> {
+        await AuthBlSingleton.loginTfa(response, login);
     }
 
     /**
      * Logout manualy from system.
      */
     public async logout(request: express.Request, response: express.Response): Promise<void> {
-
-        // TODO ...
-        return;
+        await AuthBlSingleton.logout(request.cookies.session, response);
     }
 
     //////////////////////////////////////////////////
@@ -44,6 +40,7 @@ export class AuthController extends Controller {
     /**
      * Login.
      */
+    @Response<ErrorResponse>(201, '2-fatore code sent')
     @Response<ErrorResponse>(501, 'Server error')
     @Response<ErrorResponse>(403, 'Auth fail')
     @Response<ErrorResponse>(422, 'Invalid schema')
@@ -59,7 +56,7 @@ export class AuthController extends Controller {
     @Response<ErrorResponse>(403, 'Auth fail')
     @Response<ErrorResponse>(422, 'Invalid schema')
     @Post('login/tfa')
-    public async loginTfaDocumentation(@Request() request: express.Request, @Body() login: LoginTfa): Promise<void> {
+    public async loginTfaDocumentation(@Request() request: express.Request, @Body() login: Login): Promise<void> {
         throw new Error('Request never should be here. it is a documentation only route.');
     }
 
