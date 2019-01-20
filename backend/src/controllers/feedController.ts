@@ -30,6 +30,10 @@ export class FeedController extends Controller {
         this.miniosSse = miniosSse;
 
         MinionsBlSingleton.minionFeed.subscribe((minionFeed) => {
+            if (!minionFeed) {
+                return;
+            }
+
             this.miniosSse.send(minionFeed);
         });
     }
@@ -42,6 +46,10 @@ export class FeedController extends Controller {
         this.timingsSse = timingsSse;
 
         TimingsBlSingleton.timingFeed.subscribe((timingFeed) => {
+            if (!timingFeed) {
+                return;
+            }
+
             this.timingsSse.send(timingFeed);
         });
     }

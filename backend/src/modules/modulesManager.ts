@@ -64,16 +64,16 @@ export class ModulesManager {
          * Set pull proxy method to get all last minions array.
          */
         brandModule.retrieveMinions.setPullMethod(async (): Promise<Minion[]> => {
-            try {
-                return await this.retrieveMinions.pull();
-            } catch (error) {
+            if (!this.retrieveMinions.isPullingAvailble) {
                 return [];
             }
+            return await this.retrieveMinions.pull();
         });
 
         brandModule.minionStatusChangedEvent.subscribe((changedMinionStatus) => {
             this.minionStatusChangedEvent.next(changedMinionStatus);
         });
+
         this.modulesHandlers.push(brandModule);
     }
 

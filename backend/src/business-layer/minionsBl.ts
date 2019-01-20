@@ -79,7 +79,7 @@ export class MinionsBl {
          * Let`s modules retrieve updated minions array.
          */
         ModulesManagerSingltone.retrieveMinions.setPullMethod(async (): Promise<Minion[]> => {
-            return this.minions;
+            return await this.getMinions();
         });
 
         /**
