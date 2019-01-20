@@ -48,8 +48,8 @@ export class MockHandler extends MinionsBrandModuleBase {
             const minions = await this.retrieveMinions.pull();
 
             if (minions.length === 0
-                || minions[0].minionStatus
-                || minions[0].minionStatus[minions[0].minionType]) {
+                || !minions[0].minionStatus
+                || !minions[0].minionStatus[minions[0].minionType]) {
                 return;
             }
 
