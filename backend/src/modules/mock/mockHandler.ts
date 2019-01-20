@@ -1,16 +1,16 @@
 import * as moment from 'moment';
 import { Duration } from 'moment';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
-import { IMinionsBrandModule } from '../../models/backendInterfaces';
-import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../../models/sharedInterfaces';
+import { BehaviorSubject } from 'rxjs';
+import { DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { Delay } from '../../utilities/sleep';
+import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
 
-export class MockHandler implements IMinionsBrandModule {
+export class MockHandler extends MinionsBrandModuleBase {
 
     /**
      * Time duratin to mock pysical device status update for switch minion.
      */
-    private readonly SWITCH_CHANGED_INTERVAL: Duration = moment.duration(2, 'seconds');
+    private readonly SWITCH_CHANGED_INTERVAL: Duration = moment.duration(4, 'seconds');
 
     /**
      * Time duratin to mock pysical device status update for ac minion.
@@ -23,43 +23,49 @@ export class MockHandler implements IMinionsBrandModule {
         {
             brand: this.brandName,
             isTokenRequierd: false,
-            isUsedAsLogicDevice: false,
+            isIdRequierd: false,
+            minionsPerDevice: 1,
             model: 'switch demo',
             suppotedMinionType: 'switch',
         },
         {
             brand: this.brandName,
             isTokenRequierd: false,
-            isUsedAsLogicDevice: true,
+            isIdRequierd: false,
+            minionsPerDevice: -1,
             model: 'ac demo',
             suppotedMinionType: 'airConditioning',
         },
     ];
 
-    public minionStatusChangedEvent = new BehaviorSubject<{
-        mac: string;
-        status: MinionStatus;
-    }>({
-        mac: '',
-        status: undefined,
-    });
-
     constructor() {
 
-        setInterval(() => {
+        super();
+
+        setInterval(async () => {
+
+            const minions = await this.retrieveMinions.pull();
+
+            if (minions.length === 0
+                || minions[0].minionStatus
+                || minions[0].minionStatus[minions[0].minionType]) {
+                return;
+            }
+
+            const statusCopy = JSON.parse((JSON.stringify(minions[0].minionStatus))) as MinionStatus;
+
+            const statusObject = statusCopy[minions[0].minionType] as Toggle;
+            statusObject.status = statusObject.status === 'off' ? 'on' : 'off';
+
             this.minionStatusChangedEvent.next({
-                mac: '4343434343',
-                status: {
-                    switch: {
-                        status: 'on',
-                    },
-                },
+                minionId: minions[0].minionId,
+                status: statusCopy,
             });
         }, this.SWITCH_CHANGED_INTERVAL.asMilliseconds());
 
         setInterval(() => {
             this.minionStatusChangedEvent.next({
-                mac: '656565656',
+                minionId: '656565656',
                 status: {
                     airConditioning: {
                         status: 'off',
@@ -107,5 +113,9 @@ export class MockHandler implements IMinionsBrandModule {
             responseCode: 4005,
             message: 'unknown model',
         } as ErrorResponse;
+    }
+
+    public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+        await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
     }
 }

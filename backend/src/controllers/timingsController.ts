@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { TimingsBlSingleton } from '../business-layer/timingssBl';
+import { TimingsBlSingleton } from '../business-layer/timingsBl';
 import { ErrorResponse, Timing } from '../models/sharedInterfaces';
 
 @Tags('Timings')

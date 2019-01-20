@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { User } from '../src/models/sharedInterfaces';
-import { validAdminAgent , validUserAgent } from './prepareRoutesSpecTests.spec';
+import { validAdminAgent, validUserAgent } from './prepareRoutesSpecTests.spec';
 
 describe('Users routing API', () => {
 
@@ -49,17 +49,17 @@ describe('Users routing API', () => {
     });
 
     const newUser: User = {
-        displayName : 'create by users API e2e',
+        displayName: 'create by users API e2e',
         ignoreTfa: false,
         email: 'aa@bb.com',
         password: '1234567890',
         sessionTimeOutMS: 334343232,
-        scope : 'userAuth',
+        scope: 'userAuth',
     };
 
     describe('/POST users', () => {
         it('it should respond 40x as status code', (done) => {
-            
+
             validUserAgent.post('/API/users')
                 .send(newUser)
                 .end((err, res) => {
@@ -69,7 +69,7 @@ describe('Users routing API', () => {
         });
 
         it('it should respond 20x as status code', (done) => {
-            
+
             validAdminAgent.post('/API/users')
                 .send(newUser)
                 .end((err, res) => {
@@ -79,7 +79,7 @@ describe('Users routing API', () => {
         });
 
         it('it should respond 50x as status code', (done) => {
-            
+
             validAdminAgent.post('/API/users')
                 .send(newUser)
                 .end((err, res) => {
@@ -92,7 +92,7 @@ describe('Users routing API', () => {
 
     describe('/PUT users/{userId}', () => {
         it('it should respond 20x as status code', (done) => {
-            
+
             newUser.displayName = 'update by admin';
             validAdminAgent.put(`/API/users/${newUser.email}`)
                 .send(newUser)
@@ -100,6 +100,10 @@ describe('Users routing API', () => {
                     expect(res.statusType).eql(2);
                     done();
                 });
+        });
+
+        it('it should refused change user scope', (done) => {
+            done();
         });
     });
 

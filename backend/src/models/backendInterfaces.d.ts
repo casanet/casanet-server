@@ -55,42 +55,6 @@ export declare interface Config {
     }
 }
 
-
-/**
- * Any smart devices brand communication module needs to implement.
- */
-export declare class IMinionsBrandModule {
-    /**
-     * Brand name, should be unique in system.
-     */
-    public readonly brandName: string;
-
-    /**
-     * All supported devices via current module metadata.
-     */
-    public readonly devices: DeviceKind[];
-
-    /**
-     * Let minions manager to know if any minion status changed by pysical interface of device.
-     */
-    public minionStatusChangedEvent: BehaviorSubject<{
-        mac: string;
-        status: MinionStatus;
-    }>;
-
-    /**
-     * Get current status of minion. (such as minion status on off etc.)
-     */
-    public getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse>;
-
-    /**
-     * Set minion new status. (such as turn minion on off etc.)
-     * @param miniom minion to set status for.
-     * @param setStatus the new status to set.
-     */
-    public setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse>;
-}
-
 /**
  * Data r/w file interface.
  * Use to allow r/w mock mode.

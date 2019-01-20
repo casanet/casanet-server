@@ -64,43 +64,43 @@ UsersDalSingleton.createUser(signInUser)
             .end((err, res) => {
 
                 if (err || res.statusType !== 2) {
-                    console.error('Perpare  user agent fail, all API tests specs that need user certs will fail too.');
+                    console.error('Perpare user agent fail, all API tests specs that need user certs will fail too.');
                 } else {
                     const cookie: string = res['headers']['set-cookie'][0] as string;
                     sessionKey.userSessionKey = cookie.split(';')[0].split('=')[1];
                 }
             });
-    });
-
-/**
- * Create admin user.
- */
-UsersDalSingleton.createUser(signInAdmin)
-    .then(() => {
 
         /**
-         * The valied login schema model.
+         * Create admin user.
          */
-        const loginSchema: Login = {
-            email: signInAdmin.email,
-            password: unHashedAdminPassword,
-        };
+        UsersDalSingleton.createUser(signInAdmin)
+            .then(() => {
 
-        /**
-         * Same as user agent just in admin certs.
-         */
-        adminAgent.post('/API/auth/login')
-            .send(loginSchema)
-            .end((err, res) => {
+                /**
+                 * The valied login schema model.
+                 */
+                const loginAdminSchema: Login = {
+                    email: signInAdmin.email,
+                    password: unHashedAdminPassword,
+                };
 
-                if (err || res.statusType !== 2) {
-                    console.error('Perpare admin agent fail, all API tests specs that need admin certs will fail too.');
-                } else {
-                    const cookie: string = res['headers']['set-cookie'][0] as string;
-                    sessionKey.adminSessionKey = cookie.split(';')[0].split('=')[1];
-                }
+                /**
+                 * Same as user agent just in admin certs.
+                 */
+                adminAgent.post('/API/auth/login')
+                    .send(loginAdminSchema)
+                    .end((err, res) => {
+
+                        if (err || res.statusType !== 2) {
+                            console.error('Perpare admin agent fail, all API tests specs that need admin certs will fail too.');
+                        } else {
+                            const cookie: string = res['headers']['set-cookie'][0] as string;
+                            sessionKey.adminSessionKey = cookie.split(';')[0].split('=')[1];
+                        }
+                    });
+
             });
-
     });
 
 /**

@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import * as randomstring from 'randomstring';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { MinionsDal, MinionsDalSingleton } from '../data-layer/minionsDal';
-import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionDevice, MinionStatus, MinionFeed } from '../models/sharedInterfaces';
+import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionDevice, MinionFeed, MinionStatus } from '../models/sharedInterfaces';
 import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
@@ -49,6 +49,7 @@ export class MinionsBl {
      * Init minions.
      */
     private async initData(): Promise<void> {
+
         /**
          * Gets all minions
          */
@@ -75,21 +76,32 @@ export class MinionsBl {
         await this.readMinionsStatus();
 
         /**
+         * Let`s modules retrieve updated minions array.
+         */
+        ModulesManagerSingltone.retrieveMinions.setPullMethod(async (): Promise<Minion[]> => {
+            return this.minions;
+        });
+
+        /**
          * After all registar to devices status updates.
          */
-        this.modulesManager.minionStatusChangedEvent.subscribe((pysicalDeviceUpdate) => {
-            const minion = this.getMinionsByMac(pysicalDeviceUpdate.mac);
-            if (!minion) {
-                logger.info(`Avoiding device update, there is no minion with mac: ${pysicalDeviceUpdate.mac}`);
+        this.modulesManager.minionStatusChangedEvent.subscribe(async (pysicalDeviceUpdate) => {
+            if (!pysicalDeviceUpdate) {
                 return;
             }
 
-            minion.isProperlyCommunicated = true;
-            minion.minionStatus = pysicalDeviceUpdate.status;
-            this.minionFeed.next({
-                event: 'update',
-                minion,
-            });
+            try {
+                const minion = await this.getMinionById(pysicalDeviceUpdate.minionId);
+                minion.isProperlyCommunicated = true;
+                minion.minionStatus = pysicalDeviceUpdate.status;
+                this.minionFeed.next({
+                    event: 'update',
+                    minion,
+                });
+            } catch (error) {
+                logger.info(`Avoiding device update, there is no minion with id: ${pysicalDeviceUpdate.minionId}`);
+                return;
+            }
         });
 
         /**
@@ -207,16 +219,34 @@ export class MinionsBl {
         }
 
         /**
-         * If cant be as logic minion, make sure that device not already.
+         * Check if id reqired and not exist.
          */
-        if (!deviceKind.isUsedAsLogicDevice) {
+        if (deviceKind.isIdRequierd && !minionToCheck.device.deviceId) {
+            return {
+                responseCode: 4322,
+                message: 'token is requird',
+            };
+        }
+
+        /**
+         * If the modele is not for unlimited minoins count the used minions.
+         */
+        if (deviceKind.minionsPerDevice !== -1) {
+            let minionsCount = 0;
             for (const minion of this.minions) {
                 if (minion.device.pysicalDevice.mac === minionToCheck.device.pysicalDevice.mac) {
-                    return {
-                        responseCode: 4422,
-                        message: 'device already in use at other minion',
-                    };
+                    minionsCount++;
                 }
+            }
+
+            /**
+             * If the new minion is above max minions per device.
+             */
+            if (minionsCount >= deviceKind.minionsPerDevice) {
+                return {
+                    responseCode: 4422,
+                    message: 'device already in max uses with other minion',
+                };
             }
         }
 
@@ -445,7 +475,7 @@ export class MinionsBl {
         this.minionFeed.next({
             event: 'removed',
             minion: originalMinion,
-        })
+        });
     }
 }
 

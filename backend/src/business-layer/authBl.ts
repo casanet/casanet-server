@@ -75,7 +75,7 @@ export class AuthBl {
         }
 
         if (!Configuration.twoStepsVerification.TwoStepEnabled) {
-            logger.warn(`User ${user.email} try to a\login but there is not support in tfa right now`);
+            logger.warn(`User ${user.email} try to login but there is no support in tfa right now`);
             throw new Error('two factor configuration not set correctly');
         }
 

@@ -40,6 +40,7 @@ const models: TsoaRoute.Models = {
             "brand": { "dataType": "string", "required": true },
             "model": { "dataType": "string", "required": true },
             "token": { "dataType": "string" },
+            "deviceId": { "dataType": "string" },
         },
     },
     "Toggle": {
@@ -169,8 +170,9 @@ const models: TsoaRoute.Models = {
         "properties": {
             "brand": { "dataType": "string", "required": true },
             "model": { "dataType": "string", "required": true },
-            "isUsedAsLogicDevice": { "dataType": "boolean", "required": true },
+            "minionsPerDevice": { "dataType": "double", "required": true },
             "isTokenRequierd": { "dataType": "boolean", "required": true },
+            "isIdRequierd": { "dataType": "boolean", "required": true },
             "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
         },
     },

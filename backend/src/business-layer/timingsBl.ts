@@ -61,7 +61,7 @@ export class TimingsBl {
 
         try {
             const results = await this.operationBl.triggerOperation(timing.triggerOperationId);
-            logger.info(`Invok ${timing.timingName} id: ${timing.timingId} timing done`);
+            logger.info(`Invoke ${timing.timingName} id: ${timing.timingId} timing done`);
 
             this.timingFeed.next({
                 timing,
@@ -69,7 +69,7 @@ export class TimingsBl {
             });
 
         } catch (error) {
-            logger.warn(`Invok timing ${timing.timingName}` +
+            logger.warn(`Invoke timing ${timing.timingName}` +
                 ` id: ${timing.timingId}` +
                 ` operationId: ${timing.triggerOperationId} fail, ${error.message}`);
         }

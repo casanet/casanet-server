@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
-import { TimingsBlSingleton } from '../business-layer/timingssBl';
+import { TimingsBlSingleton } from '../business-layer/timingsBl';
 import { ErrorResponse, Login, MinionFeed, Timing, TimingFeed } from '../models/sharedInterfaces';
 
 /**

@@ -1,6 +1,6 @@
 import { Configuration } from '../config';
 import { IDataIO } from '../models/backendInterfaces';
-import { User, ErrorResponse } from '../models/sharedInterfaces';
+import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
 const USERS_FILE_NAME = 'users.json';

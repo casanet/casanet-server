@@ -32,8 +32,8 @@ export class UsersController extends Controller {
      */
     private isUserAllowd(userSession: User, userIdInReq): void {
         /**
-            * Only admin can update other user.
-                 */
+         * Only admin can update other user.
+         */
         if (userSession.scope !== 'adminAuth' && userSession.email !== userIdInReq) {
             throw {
                 responseCode: 4003,
@@ -76,8 +76,17 @@ export class UsersController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{userId}')
     public async setUser(userId: string, @Request() request: express.Request, @Body() user: User): Promise<void> {
-        this.isUserAllowd(request.user, userId);
+        const userSession = request.user as User;
+        this.isUserAllowd(userSession, userId);
         user.email = userId;
+
+        /**
+         * Never allow user to change own scope.
+         */
+        if (userSession.scope !== 'adminAuth') {
+            user.scope = userSession.scope;
+        }
+
         return await UsersBlSingleton.updateUser(user);
     }
 

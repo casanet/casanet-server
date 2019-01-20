@@ -101,6 +101,11 @@ export declare interface MinionDevice {
      * Some of devices require a token for communication API.
      */
     token?: string;
+
+    /**
+     * Some of devices require a id for communication API.
+     */
+    deviceId?: string;
 }
 
 
@@ -119,15 +124,22 @@ export declare interface DeviceKind {
     model: string;
 
     /**
-     * Is current device type can be minion per physical device only. 
-     * For example smart socket can be one minion only but IR sender device can be for many AC minions in room.
+     * The max minions that can be in one device, or -1 if unlimited.
+     * For example simple smart socket can be 1 minion per device, 
+     * Wall switch with 3 switches can be 3 minions per device,
+     * And IR transmitter can be unlimited minions per device.
      */
-    isUsedAsLogicDevice: boolean;
+    minionsPerDevice: number;
 
     /**
      * Is device require token for communication API.
      */
     isTokenRequierd: boolean;
+
+    /**
+     * Is device require id for communication API.
+     */
+    isIdRequierd: boolean;
 
     /**
      * Supported minion type for current device.

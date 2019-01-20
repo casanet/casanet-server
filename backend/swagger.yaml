@@ -64,6 +64,10 @@ definitions:
                 type: string
                 description: 'Some of devices require a token for communication API.'
                 x-nullable: true
+            deviceId:
+                type: string
+                description: 'Some of devices require a id for communication API.'
+                x-nullable: true
         required:
             - pysicalDevice
             - brand
@@ -1810,12 +1814,16 @@ definitions:
             model:
                 type: string
                 description: 'The specific model of minion type. (see device model).'
-            isUsedAsLogicDevice:
-                type: boolean
-                description: "Is current device type can be minion per physical device only. \r\nFor example smart socket can be one minion only but IR sender device can be for many AC minions in room."
+            minionsPerDevice:
+                type: number
+                format: double
+                description: "The max minions that can be in one device, or -1 if unlimited.\r\nFor example simple smart socket can 1 minion per device, \r\nWall switch with 3 switches can be 3 minions per device,\r\nAnd IR transmitter can be unlimited minions per device."
             isTokenRequierd:
                 type: boolean
                 description: 'Is device require token for communication API.'
+            isIdRequierd:
+                type: boolean
+                description: 'Is device require id for communication API.'
             suppotedMinionType:
                 type: string
                 enum:
@@ -1829,8 +1837,9 @@ definitions:
         required:
             - brand
             - model
-            - isUsedAsLogicDevice
+            - minionsPerDevice
             - isTokenRequierd
+            - isIdRequierd
             - suppotedMinionType
         type: object
     OperationActivity:
