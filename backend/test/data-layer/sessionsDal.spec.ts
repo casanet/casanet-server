@@ -11,12 +11,12 @@ class DataIOMock implements IDataIO {
         {
             email: 'aa.bb@cc.com',
             keyHash: '42343243938389343984843546574682746784346327843687324',
-            timeStump: 34555435354354,
+            timeStamp: 34555435354354,
         },
         {
             email: 'aa@bb.com',
             keyHash: '9875415248941652413541321',
-            timeStump: 7777888888,
+            timeStamp: 7777888888,
         },
     ];
 
@@ -60,7 +60,7 @@ describe('Sesssion DAL tests', () => {
     const additionalSession: Session = {
         email: 'aa.bb@cc.com',
         keyHash: '0987123',
-        timeStump: new Date().getTime(),
+        timeStamp: new Date().getTime(),
     };
 
     describe('Create new session', () => {

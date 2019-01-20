@@ -5,56 +5,10 @@ import { SessionsBl } from '../../src/business-layer/sessionsBl';
 import { SessionsDal } from '../../src/data-layer/sessionsDal';
 import { Session } from '../../src/models/backendInterfaces';
 import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
-
-class SessionsDalMock {
-
-    public mockSessions: Session[] = [
-        {
-            keyHash: '1234',
-            timeStamp: new Date().getTime(),
-            email: 'aa@bb.com',
-        },
-        {
-            keyHash: '12345',
-            timeStamp: 300,
-            email: 'aa@bb.com',
-        },
-        {
-            keyHash: '1234',
-            timeStamp: new Date().getTime(),
-            email: 'aaa@bb.com',
-        },
-        {
-            keyHash: '123456',
-            timeStamp: new Date().getTime() - 1000,
-            email: 'aa@bb.com',
-        },
-    ];
-
-    public async getSessions(): Promise<Session[]> {
-        return this.mockSessions;
-    }
-
-    public async getSession(key: string): Promise<Session> {
-        for (const session of this.mockSessions) {
-            if (session.keyHash === key) {
-                return session;
-            }
-        }
-        throw new Error('not exsit');
-    }
-
-    public async createSession(newSession: Session): Promise<void> {
-        this.mockSessions.push(newSession);
-    }
-
-    public async deleteSession(session: Session): Promise<void> {
-        this.mockSessions.splice(this.mockSessions.indexOf(session), 1);
-    }
-}
+import { SessionsDalMock } from '../data-layer/sessionsDal.mock.spec';
 
 const sessionDalMock = new SessionsDalMock();
-const sessionBl = new SessionsBl(sessionDalMock as unknown as SessionsDal);
+const SessionBlMock = new SessionsBl(sessionDalMock as unknown as SessionsDal);
 
 describe('Sesssion BL tests', () => {
 
@@ -63,7 +17,7 @@ describe('Sesssion BL tests', () => {
 
             const key = '543583bfngfnds45453535256524';
             sessionDalMock.mockSessions[2].keyHash = cryptoJs.SHA256(key).toString();
-            const session = await sessionBl.getSession(key);
+            const session = await SessionBlMock.getSession(key);
 
             expect(session).to.deep.equal(sessionDalMock.mockSessions[2]);
             return;
@@ -72,7 +26,7 @@ describe('Sesssion BL tests', () => {
         it('it should get nothing for empty session', async () => {
 
             try {
-                await sessionBl.getSession('');
+                await SessionBlMock.getSession('');
             } catch (error) {
                 return;
             }
@@ -83,7 +37,7 @@ describe('Sesssion BL tests', () => {
         it('it should get nothing for undefined session', async () => {
 
             try {
-                await sessionBl.getSession(undefined);
+                await SessionBlMock.getSession(undefined);
             } catch (error) {
                 return;
             }
@@ -103,7 +57,7 @@ describe('Sesssion BL tests', () => {
                 sessionTimeOutMS: 1000000,
                 scope: 'userAuth',
             };
-            const sessions = await sessionBl.getUserSessions(userToGetFor);
+            const sessions = await SessionBlMock.getUserSessions(userToGetFor);
 
             expect(sessions).to.be.a('array');
             expect(sessions).to.be.an('array').that.is.length(2);
@@ -114,7 +68,7 @@ describe('Sesssion BL tests', () => {
     describe('Generate Session', () => {
         it('it should create session succsessfully', async () => {
 
-            const session = await sessionBl.generateSession({
+            const session = await SessionBlMock.generateSession({
                 email: sessionDalMock.mockSessions[2].email,
                 displayName: '',
                 ignoreTfa: true,
@@ -132,7 +86,7 @@ describe('Sesssion BL tests', () => {
     describe('Delete Session', () => {
         it('it should delete session succsessfully', async () => {
 
-            await sessionBl.deleteSession(sessionDalMock.mockSessions[2]);
+            await SessionBlMock.deleteSession(sessionDalMock.mockSessions[2]);
 
             expect(sessionDalMock.mockSessions).length(4);
             return;

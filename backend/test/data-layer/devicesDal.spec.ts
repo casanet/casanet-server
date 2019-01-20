@@ -3,7 +3,7 @@ import { assert, expect } from 'chai';
 import { DevicesDal } from '../../src/data-layer/devicesDal';
 import { IDataIO, Session } from '../../src/models/backendInterfaces';
 import { LocalNetworkDevice, User } from '../../src/models/sharedInterfaces';
-import { logger } from '../../src/utilities/logger';
+import { DeepCopy } from '../../src/utilities/deepCopy';
 
 class DataIOMock implements IDataIO {
 
@@ -53,7 +53,7 @@ describe('Devices DAL tests', () => {
     describe('Set new name to exist device', () => {
         it('it should set name succsessfully', async () => {
 
-            const device: LocalNetworkDevice = JSON.parse(JSON.stringify(dataMock.mockData[1]));
+            const device: LocalNetworkDevice = DeepCopy<LocalNetworkDevice>(dataMock.mockData[1]);
             device.name = 'new name';
             await devicesDal.saveDevice(device);
 

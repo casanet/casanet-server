@@ -3,7 +3,7 @@ import { assert, expect } from 'chai';
 import { OperationsDal } from '../../src/data-layer/operationsDal';
 import { IDataIO } from '../../src/models/backendInterfaces';
 import { Operation } from '../../src/models/sharedInterfaces';
-import { logger } from '../../src/utilities/logger';
+import { DeepCopy } from '../../src/utilities/deepCopy';
 
 class DataIOMock implements IDataIO {
 
@@ -113,7 +113,7 @@ describe('Operations DAL tests', () => {
     describe('Update operation', () => {
         it('it should update operation succsessfully', async () => {
 
-            const operation: Operation = JSON.parse(JSON.stringify(dataMock.mockData[1]));
+            const operation: Operation = DeepCopy<Operation>(dataMock.mockData[1]);
 
             operation.activities.push({
                 minionId: 'ac2',

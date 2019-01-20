@@ -8,259 +8,22 @@ import { MinionsDal } from '../../src/data-layer/minionsDal';
 import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionDevice, MinionStatus, User } from '../../src/models/sharedInterfaces';
 import { ModulesManager } from '../../src/modules/modulesManager';
 import { Delay } from '../../src/utilities/sleep';
-import { DevicesBlMock } from './devicesBl.spec';
+import { localNetworkReaderMock } from '../utilities/lanManager.mock.spec';
+import { ModulesManagerMock } from '../modules/modulesManager.mock.spec';
+import { DevicesDalMock } from '../data-layer/devicesDal.mock.spec';
+import { MinionsDalMock } from '../data-layer/minionsDal.mock.spec';
+import { DevicesBl } from '../../src/business-layer/devicesBl' 
 
-class ModulesManagerMock {
-
-    /**
-     * Let subscribe to any status minion changed. from any brand module.
-     */
-    public minionStatusChangedEvent = new BehaviorSubject<{
-        minionId: string;
-        status: MinionStatus;
-    }>({
-        minionId: '',
-        status: undefined,
-    });
-
-    constructor() {
-        setInterval(() => {
-            this.minionStatusChangedEvent.next({
-                minionId: 'ac12345432',
-                status: {
-                    airConditioning: {
-                        status: 'off',
-                        fanStrength: 'high',
-                        mode: 'dry',
-                        temperature: 23,
-                    },
-                },
-            });
-        }, moment.duration('2', 'seconds').asMilliseconds());
-    }
-    public get devicesKind(): DeviceKind[] {
-        return [
-            {
-                brand: 'test mock',
-                isTokenRequierd: false,
-                isIdRequierd : false,
-                minionsPerDevice: 1,
-                model: 'switch demo',
-                suppotedMinionType: 'switch',
-            },
-            {
-                brand: 'test mock',
-                isTokenRequierd: true,
-                isIdRequierd : false,
-                minionsPerDevice: -1,
-                model: 'switch demo with token',
-                suppotedMinionType: 'switch',
-            },
-            {
-                brand: 'test mock',
-                isTokenRequierd: false,
-                isIdRequierd : false,
-                minionsPerDevice: -1,
-                model: 'ac demo',
-                suppotedMinionType: 'airConditioning',
-            },
-            {
-                brand: 'test mock',
-                isTokenRequierd: false,
-                isIdRequierd : false,
-                minionsPerDevice: -1,
-                model: 'ac 2 demo',
-                suppotedMinionType: 'airConditioning',
-            },
-            {
-                brand: 'second test mock brand',
-                isTokenRequierd: false,
-                isIdRequierd : false,
-                minionsPerDevice: -1,
-                model: 'ac demo',
-                suppotedMinionType: 'airConditioning',
-            },
-        ];
-    }
-
-    public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
-        await Delay(moment.duration(1, 'seconds'));
-        if (miniom.device.model === 'switch demo') {
-            return {
-                switch: {
-                    status: 'on',
-                },
-            };
-        } else if (miniom.device.model === 'ac demo') {
-            return {
-                airConditioning: {
-                    fanStrength: 'med',
-                    mode: 'cold',
-                    status: 'on',
-                    temperature: 21,
-                },
-            };
-        } else if (miniom.device.model === 'ac 2 demo') {
-            throw {
-                responseCode: 5000,
-                message: 'unknown device communication error',
-            } as ErrorResponse;
-        }
-
-        throw {
-            responseCode: 4005,
-            message: 'unknown model',
-        } as ErrorResponse;
-    }
-
-    public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
-        await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
-        return;
-    }
-}
-
-// tslint:disable-next-line:max-classes-per-file
-class MinionsDalMock {
-
-    public mockMinions: Minion[] = [
-        {
-            device: {
-                brand: 'mock',
-                model: 'light demo',
-                pysicalDevice: {
-                    mac: '4341110986',
-                },
-            },
-            isProperlyCommunicated: true,
-            minionId: 'm3',
-            minionType: 'light',
-            minionStatus: {
-
-            },
-            name: 'bla bla 3',
-        },
-        {
-            device: {
-                brand: 'mock',
-                model: 'switch demo',
-                pysicalDevice: {
-                    mac: '1111111111',
-                },
-            },
-            isProperlyCommunicated: true,
-            minionId: 'm1',
-            minionType: 'switch',
-            minionStatus: {
-
-            },
-            name: 'bla bla 1',
-        },
-        {
-            device: {
-                brand: 'mock',
-                model: 'switch demo',
-                pysicalDevice: {
-                    mac: '33333333333',
-                },
-            },
-            isProperlyCommunicated: true,
-            minionId: 'm2',
-            minionType: 'switch',
-            minionStatus: {
-
-            },
-            name: 'bla bla 2',
-        },
-        {
-            device: {
-                brand: 'mock',
-                model: 'ac demo',
-                pysicalDevice: {
-                    mac: 'ac12345432',
-                },
-            },
-            isProperlyCommunicated: true,
-            minionId: 'ac1',
-            minionType: 'airConditioning',
-            minionStatus: {
-
-            },
-            name: 'airConditioning a',
-        },
-        {
-            device: {
-                brand: 'mock',
-                model: 'ac demo',
-                pysicalDevice: {
-                    mac: 'ac12345432',
-                },
-            },
-            isProperlyCommunicated: true,
-            minionId: 'ac2',
-            minionType: 'airConditioning',
-            minionStatus: {
-
-            },
-            name: 'airConditioning b',
-        },
-        {
-            device: {
-                brand: 'mock',
-                model: 'ac demo',
-                pysicalDevice: {
-                    mac: '0987123ac',
-                },
-            },
-            isProperlyCommunicated: true,
-            minionId: 'n1',
-            minionType: 'airConditioning',
-            minionStatus: {
-
-            },
-            name: 'airConditioning b',
-        },
-    ];
-
-    private findMinion(minionId: string): Minion {
-        for (const minion of this.mockMinions) {
-            if (minion.minionId === minionId) {
-                return minion;
-            }
-        }
-    }
-
-    public async getMinions(): Promise<Minion[]> {
-        return this.mockMinions;
-    }
-
-    public async getMinionsById(minionId: string): Promise<Minion> {
-        const minion = this.findMinion(minionId);
-
-        if (!minion) {
-            throw new Error('minion not exist');
-        }
-        return minion;
-    }
-
-    public async createMinion(newMinion: Minion): Promise<void> {
-        this.mockMinions.push(newMinion);
-    }
-
-    public async deleteMinion(minion: Minion): Promise<void> {
-        const originalMinion = this.findMinion(minion.minionId);
-
-        if (!originalMinion) {
-            throw new Error('minion not exist');
-        }
-
-        this.mockMinions.splice(this.mockMinions.indexOf(originalMinion), 1);
-    }
-}
-
-const minionsDalMock = new MinionsDalMock();
+const devicesDalMock = new DevicesDalMock();
 const modulesManagerMock = new ModulesManagerMock();
+const minionsDalMock = new MinionsDalMock();
+
+const devicesBlMock = new DevicesBl(devicesDalMock as unknown as DevicesDal,
+    localNetworkReaderMock,
+    modulesManagerMock as unknown as ModulesManager);
+
 const minionsBl = new MinionsBl(minionsDalMock as unknown as MinionsDal,
-    DevicesBlMock,
+    devicesBlMock,
     modulesManagerMock as unknown as ModulesManager);
 
 describe('Minions BL tests', () => {
@@ -396,7 +159,7 @@ describe('Minions BL tests', () => {
 
             // const minions = await minionsBl.getMinions();
 
-            await DevicesBlMock.setDeviceName(newNamedLocalDevice);
+            await devicesBlMock.setDeviceName(newNamedLocalDevice);
 
             await Delay(moment.duration(1, 'seconds'));
 
