@@ -11,6 +11,7 @@ import {
 import { logger } from '../utilities/logger';
 import { MinionsBl, MinionsBlSingleton } from './minionsBl';
 import { Delay } from '../utilities/sleep';
+import { DeepCopy } from '../utilities/deepCopy';
 
 const TIMEOUT_INTERVAL_ACTIVATION = moment.duration(5, 'seconds');
 
@@ -88,7 +89,7 @@ export class TimeoutBl {
                 /**
                  * Get minion current status, then copy status *by val*
                  */
-                const minionStatus = JSON.parse(JSON.stringify(minion.minionStatus)) as MinionStatus;
+                const minionStatus = DeepCopy<MinionStatus>(minion.minionStatus);
 
                 /**
                  * Set status off.

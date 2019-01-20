@@ -18,8 +18,8 @@ const adminAgent = chai.request.agent(app);
  */
 const unHashedUserPassword = '2574653478565761341114';
 const signInUser: User = {
-    email: 'user@bb.com',
-    displayName: 'firstName1',
+    email: 'user@casa.net',
+    displayName: 'user account',
     ignoreTfa: true,
     password: cryptoJs.SHA256(unHashedUserPassword).toString(),
     sessionTimeOutMS: 123454321100000,
@@ -28,8 +28,8 @@ const signInUser: User = {
 
 const unHashedAdminPassword = 'fdsfdjhhg743278956djkb';
 const signInAdmin: User = {
-    email: 'admin@bb.com',
-    displayName: 'firstName1',
+    email: 'admin@casa.net',
+    displayName: 'admin account',
     ignoreTfa: true,
     password: cryptoJs.SHA256(unHashedAdminPassword).toString(),
     sessionTimeOutMS: 123454321100000,

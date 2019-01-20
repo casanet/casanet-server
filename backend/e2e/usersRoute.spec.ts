@@ -24,7 +24,7 @@ describe('Users routing API', () => {
 
     describe('/GET users/{userId}', () => {
         it('it should respond 20x as status code', (done) => {
-            validAdminAgent.get('/API/users/user@bb.com')
+            validAdminAgent.get('/API/users/user@casa.net')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -32,7 +32,7 @@ describe('Users routing API', () => {
         });
 
         it('it should respond 20x as status code', (done) => {
-            validUserAgent.get('/API/users/user@bb.com')
+            validUserAgent.get('/API/users/user@casa.net')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();

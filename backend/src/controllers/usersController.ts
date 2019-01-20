@@ -2,6 +2,7 @@ import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { UsersBlSingleton } from '../business-layer/usersBl';
+import { DeepCopy } from '../utilities/deepCopy';
 
 @Tags('Users')
 @Route('users')
@@ -12,8 +13,9 @@ export class UsersController extends Controller {
      * @param user user to remove password from.
      */
     private cleanUpUserBeforRelease(user: User): User {
-        delete user.password;
-        return user;
+        const userCopy = DeepCopy<User>(user);
+        delete userCopy.password;
+        return userCopy;
     }
 
     /**
@@ -21,7 +23,8 @@ export class UsersController extends Controller {
      * @param users users to remove password from.
      */
     private cleanUpUsersBeforRelease(users: User[]): User[] {
-        for (const user of users) {
+        const usersCopy: User[] = [...users];
+        for (const user of usersCopy) {
             this.cleanUpUserBeforRelease(user);
         }
         return users;

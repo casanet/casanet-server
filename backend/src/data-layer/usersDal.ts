@@ -2,6 +2,7 @@ import { Configuration } from '../config';
 import { IDataIO } from '../models/backendInterfaces';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
+import * as cryptoJs from 'crypto-js';
 
 const USERS_FILE_NAME = 'users.json';
 
@@ -20,6 +21,8 @@ export class UsersDal {
         this.users = dataIo.getDataSync();
 
         if (this.users.length === 0) {
+            Configuration.defaultUser.password
+                = cryptoJs.SHA256(Configuration.defaultUser.password).toString();
             this.users = [Configuration.defaultUser];
         }
     }
@@ -68,9 +71,9 @@ export class UsersDal {
             });
     }
 
-     /**
-      * Delete users.
-      */
+    /**
+     * Delete users.
+     */
     public async deleteUser(userEmail: string): Promise<void> {
         const originalUser = this.findUser(userEmail);
 
@@ -95,7 +98,7 @@ export class UsersDal {
 
         if (!originalUser) {
             throw {
-                responseCode : 4004,
+                responseCode: 4004,
                 message: 'timing not exist',
             } as ErrorResponse;
         }

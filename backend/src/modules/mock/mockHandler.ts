@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { Delay } from '../../utilities/sleep';
 import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
+import { DeepCopy } from '../../utilities/deepCopy';
 
 export class MockHandler extends MinionsBrandModuleBase {
 
@@ -52,7 +53,7 @@ export class MockHandler extends MinionsBrandModuleBase {
                 return;
             }
 
-            const statusCopy = JSON.parse((JSON.stringify(minions[0].minionStatus))) as MinionStatus;
+            const statusCopy = DeepCopy<MinionStatus>(minions[0].minionStatus);
 
             const statusObject = statusCopy[minions[0].minionType] as Toggle;
             statusObject.status = statusObject.status === 'off' ? 'on' : 'off';
