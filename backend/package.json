@@ -37,7 +37,8 @@
     "randomstring": "^1.1.5",
     "rxjs": "^6.3.3",
     "suncalc": "^1.8.0",
-    "tsoa": "^2.3.8"
+    "tsoa": "^2.3.8",
+    "tuyapi": "^3.2.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",

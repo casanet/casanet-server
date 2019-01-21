@@ -7,6 +7,7 @@ import { MinionsBrandModuleBase } from './MinionsBrandModuleBase';
 //////////////// TO EXTEND: Place here handler reference //////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 import { MockHandler } from './mock/mockHandler';
+import { TuyaHandler } from './tuya/tuyaHandler';
 
 export class ModulesManager {
 
@@ -52,6 +53,7 @@ export class ModulesManager {
         //////////////// TO EXTEND: Init here new handler //////////////////////
         ////////////////////////////////////////////////////////////////////////
         this.initHandler(new MockHandler());
+        this.initHandler(new TuyaHandler());
     }
 
     /**
