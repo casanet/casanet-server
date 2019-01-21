@@ -120,6 +120,13 @@ export class TimeoutBl {
      */
     private extractMinionOnOffStatus(minion: Minion): SwitchOptions {
         const switchObject = (minion.minionStatus[minion.minionType] as Toggle)
+
+        /**
+         * New minion some time arrived without any status.
+         */
+        if (!switchObject) {
+            return;
+        }
         return switchObject.status;
     }
 
