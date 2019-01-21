@@ -1817,7 +1817,7 @@ definitions:
             minionsPerDevice:
                 type: number
                 format: double
-                description: "The max minions that can be in one device, or -1 if unlimited.\r\nFor example simple smart socket can 1 minion per device, \r\nWall switch with 3 switches can be 3 minions per device,\r\nAnd IR transmitter can be unlimited minions per device."
+                description: "The max minions that can be in one device, or -1 if unlimited.\r\nFor example simple smart socket can be 1 minion per device, \r\nWall switch with 3 switches can be 3 minions per device,\r\nAnd IR transmitter can be unlimited minions per device."
             isTokenRequierd:
                 type: boolean
                 description: 'Is device require token for communication API.'
@@ -1998,6 +1998,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
     /feed/minions:
         get:
@@ -2019,6 +2021,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
     /feed/timings:
         get:
@@ -2040,6 +2044,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
     /devices:
         get:
@@ -2063,6 +2069,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
     /devices/kinds:
         get:
@@ -2086,6 +2094,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
     '/devices/{deviceMac}':
         put:
@@ -2105,6 +2115,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'Device mac address.'
@@ -2136,6 +2148,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
     /minions:
         get:
@@ -2159,6 +2173,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
         post:
             operationId: CreateMinion
@@ -2177,6 +2193,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'new minion to create.'
@@ -2201,6 +2219,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     in: path
@@ -2224,6 +2244,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'Minon id.'
@@ -2255,6 +2277,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'Minon id.'
@@ -2280,6 +2304,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'Minon id.'
@@ -2312,6 +2338,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'Minon id.'
@@ -2344,6 +2372,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     in: path
@@ -2368,6 +2398,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
     /operations:
         get:
@@ -2391,6 +2423,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
         post:
             operationId: CreateOperation
@@ -2409,6 +2443,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'new operation to create.'
@@ -2437,6 +2473,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     in: path
@@ -2460,6 +2498,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'OperationId id.'
@@ -2491,6 +2531,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'Operation id.'
@@ -2520,6 +2562,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     in: path
@@ -2548,6 +2592,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters: []
         post:
             operationId: CreateTiming
@@ -2566,6 +2612,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'new timing to create.'
@@ -2594,6 +2642,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     in: path
@@ -2617,6 +2667,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'Timing id.'
@@ -2648,6 +2700,8 @@ paths:
             security:
                 -
                     userAuth: []
+                -
+                    adminAuth: []
             parameters:
                 -
                     description: 'Timing id.'

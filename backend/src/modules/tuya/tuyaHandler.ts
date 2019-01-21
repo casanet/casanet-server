@@ -1,7 +1,7 @@
 import * as Tuyapi from 'tuyapi';
-import { DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle, MinionDevice } from '../../models/sharedInterfaces';
-import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
+import { DeviceKind, ErrorResponse, Minion, MinionDevice, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { logger } from '../../utilities/logger';
+import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
 
 export class TuyaHandler extends MinionsBrandModuleBase {
 
@@ -45,7 +45,7 @@ export class TuyaHandler extends MinionsBrandModuleBase {
 
     /**
      * Create new tuya communication device api.
-     * and also listen to data arrived from device. 
+     * and also listen to data arrived from device.
      * @param minionDevice minion device property to create for.
      */
     private createTuyaDevice(minionDevice: MinionDevice): void {
@@ -57,7 +57,7 @@ export class TuyaHandler extends MinionsBrandModuleBase {
             id: minionDevice.deviceId,
             key: minionDevice.token,
             ip: minionDevice.pysicalDevice.ip,
-            persistentConnection: true
+            persistentConnection: true,
         });
 
         /**
@@ -76,13 +76,13 @@ export class TuyaHandler extends MinionsBrandModuleBase {
         /**
          * Registar to status changed event.
          */
-        tuyaDevice.on('data', data => {
+        tuyaDevice.on('data', (data) => {
             logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} data arrived`);
 
             /**
              * Get the current status (the 'data' paramerer is invalid)
              */
-            tuyaDevice.get({ schema: true }).then(status => {
+            tuyaDevice.get({ schema: true }).then((status) => {
                 /**
                  * Pull the current minions array in system.
                  */
@@ -97,7 +97,7 @@ export class TuyaHandler extends MinionsBrandModuleBase {
                             }
 
                             /**
-                             * Then read the current status for specific model and 
+                             * Then read the current status for specific model and
                              * send new status update to all subsribers.
                              */
                             if (minion.device.model === 'wall switch, 3 gangs, first one') {
@@ -106,9 +106,9 @@ export class TuyaHandler extends MinionsBrandModuleBase {
                                     status: {
                                         switch: {
                                             status: status.dps['1'] ? 'on' : 'off',
-                                        }
-                                    }
-                                })
+                                        },
+                                    },
+                                });
                             }
 
                             if (minion.device.model === 'wall switch, 3 gangs, second one') {
@@ -117,9 +117,9 @@ export class TuyaHandler extends MinionsBrandModuleBase {
                                     status: {
                                         switch: {
                                             status: status.dps['2'] ? 'on' : 'off',
-                                        }
-                                    }
-                                })
+                                        },
+                                    },
+                                });
                             }
 
                             if (minion.device.model === 'wall switch, 3 gangs, third one') {
@@ -128,9 +128,9 @@ export class TuyaHandler extends MinionsBrandModuleBase {
                                     status: {
                                         switch: {
                                             status: status.dps['3'] ? 'on' : 'off',
-                                        }
-                                    }
-                                })
+                                        },
+                                    },
+                                });
                             }
                         }
                     });
@@ -201,8 +201,8 @@ export class TuyaHandler extends MinionsBrandModuleBase {
         return {
             switch: {
                 status: currentGangStatus ? 'on' : 'off',
-            }
-        }
+            },
+        };
     }
 
     public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
@@ -220,7 +220,7 @@ export class TuyaHandler extends MinionsBrandModuleBase {
                 gangIndex = 1;
                 break;
             case 'wall switch, 3 gangs, second one':
-                gangIndex = 2
+                gangIndex = 2;
                 break;
             case 'wall switch, 3 gangs, third one':
                 gangIndex = 3;
