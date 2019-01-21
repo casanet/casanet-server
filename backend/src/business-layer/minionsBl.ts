@@ -347,7 +347,13 @@ export class MinionsBl {
         /**
          * set the status.
          */
-        await this.modulesManager.setStatus(minion, minionStatus);
+        await this.modulesManager.setStatus(minion, minionStatus)
+            .catch((err) => {
+                minion.isProperlyCommunicated = false;
+                throw err;
+            })
+
+        minion.isProperlyCommunicated = true;
 
         /**
          * If success, update minion to new status.
@@ -376,6 +382,11 @@ export class MinionsBl {
         }
 
         originalMinion.minionAutoTurnOffMS = minion.minionAutoTurnOffMS;
+
+        /**
+         * TODO: save updates, not all is status, some is timeout....
+         */
+        // this.minionsDal.saveUpdate();
 
         /**
          * Send minion feed update
