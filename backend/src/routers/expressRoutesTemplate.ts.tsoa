@@ -57,7 +57,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                        responseCode: 4022,
+                    } as ErrorResponse);
+                return;
             }
 
             {{#if ../../iocModule}}
@@ -146,7 +149,7 @@ export function RegisterRoutes(app: express.Express) {
                  */
                 try {
                     const cleanError = await SchemaValidator(error, ErrorResponseSchema);
-                    response.status(501).send(cleanError);
+                    response.status(422).send(cleanError);
                 } catch (error) {
                     response.status(500).send({
                         responseCode: 5000,

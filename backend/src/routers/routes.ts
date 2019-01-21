@@ -214,7 +214,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new AuthController();
@@ -234,7 +237,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new AuthController();
@@ -244,7 +250,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/auth/logout',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -253,7 +259,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new AuthController();
@@ -263,7 +272,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/feed/minions',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -272,7 +281,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new FeedController();
@@ -282,7 +294,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/feed/timings',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -291,7 +303,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new FeedController();
@@ -301,7 +316,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/devices',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -310,7 +325,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new DevicesController();
@@ -320,7 +338,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/devices/kinds',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -329,7 +347,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new DevicesController();
@@ -339,7 +360,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/devices/:deviceMac',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 deviceMac: { "in": "path", "name": "deviceMac", "required": true, "dataType": "string" },
@@ -350,7 +371,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new DevicesController();
@@ -360,7 +384,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/devices/rescan',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -369,7 +393,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new DevicesController();
@@ -379,7 +406,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/minions',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -388,7 +415,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new MinionsController();
@@ -398,7 +428,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/minions/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -408,7 +438,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new MinionsController();
@@ -418,7 +451,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/minions/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -429,7 +462,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new MinionsController();
@@ -439,7 +475,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/minions/timeout/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -450,7 +486,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new MinionsController();
@@ -460,7 +499,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions/command/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -471,7 +510,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new MinionsController();
@@ -481,7 +523,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions/rescan/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -491,7 +533,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new MinionsController();
@@ -501,7 +546,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions/rescan',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -510,7 +555,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new MinionsController();
@@ -520,7 +568,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.delete('/API/minions/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -530,7 +578,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new MinionsController();
@@ -540,7 +591,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minion: { "in": "body", "name": "minion", "required": true, "ref": "Minion" },
@@ -550,7 +601,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new MinionsController();
@@ -560,7 +614,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/operations',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -569,7 +623,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new OperationsController();
@@ -579,7 +636,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/operations/:operationId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
@@ -589,7 +646,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new OperationsController();
@@ -599,7 +659,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/operations/:operationId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
@@ -610,7 +670,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new OperationsController();
@@ -620,7 +683,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.delete('/API/operations/:operationId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
@@ -630,7 +693,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new OperationsController();
@@ -640,7 +706,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/operations',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operation: { "in": "body", "name": "operation", "required": true, "ref": "Operation" },
@@ -650,7 +716,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new OperationsController();
@@ -660,7 +729,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/operations/trigger/:operationId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
@@ -670,7 +739,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new OperationsController();
@@ -680,7 +752,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/timings',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -689,7 +761,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new TimingsController();
@@ -699,7 +774,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/timings/:timingId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 timingId: { "in": "path", "name": "timingId", "required": true, "dataType": "string" },
@@ -709,7 +784,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new TimingsController();
@@ -719,7 +797,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/timings/:timingId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 timingId: { "in": "path", "name": "timingId", "required": true, "dataType": "string" },
@@ -730,7 +808,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new TimingsController();
@@ -740,7 +821,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.delete('/API/timings/:timingId',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 timingId: { "in": "path", "name": "timingId", "required": true, "dataType": "string" },
@@ -750,7 +831,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new TimingsController();
@@ -760,7 +844,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/timings',
-        authenticateMiddleware([{ "userAuth": [] }]),
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 timing: { "in": "body", "name": "timing", "required": true, "ref": "Timing" },
@@ -770,7 +854,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new TimingsController();
@@ -789,7 +876,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new UsersController();
@@ -810,7 +900,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new UsersController();
@@ -832,7 +925,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new UsersController();
@@ -853,7 +949,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new UsersController();
@@ -873,7 +972,10 @@ export function RegisterRoutes(app: express.Express) {
             try {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
-                return next(err);
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
             }
 
             const controller = new UsersController();
@@ -951,7 +1053,7 @@ export function RegisterRoutes(app: express.Express) {
                  */
                 try {
                     const cleanError = await SchemaValidator(error, ErrorResponseSchema);
-                    response.status(501).send(cleanError);
+                    response.status(422).send(cleanError);
                 } catch (error) {
                     response.status(500).send({
                         responseCode: 5000,
