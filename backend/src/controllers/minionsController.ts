@@ -11,6 +11,7 @@ export class MinionsController extends Controller {
      * @returns Minions array.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getMinions(): Promise<Minion[]> {
@@ -22,6 +23,7 @@ export class MinionsController extends Controller {
      * @returns Minion.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Get('{minionId}')
     public async getMinion(minionId: string): Promise<Minion> {
         return await MinionsBlSingleton.getMinionById(minionId);
@@ -33,6 +35,7 @@ export class MinionsController extends Controller {
      * @param setStatus Minion status to set.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{minionId}')
     public async setMinion(minionId: string, @Body() setStatus: MinionStatus): Promise<void> {
@@ -45,6 +48,7 @@ export class MinionsController extends Controller {
      * @param minion Minion object to update to.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('timeout/{minionId}')
     public async setMinionTimeout(minionId: string, @Body() minion: Minion): Promise<void> {
@@ -58,6 +62,7 @@ export class MinionsController extends Controller {
      * @param minion Minion object status to get command for.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('command/{minionId}')
     public async recordMinionCommand(minionId: string, @Body() minion: Minion): Promise<void> {
@@ -69,6 +74,7 @@ export class MinionsController extends Controller {
      * Recheck minion device status (update server status cache).
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('rescan/{minionId}')
     public async rescanMinionStatus(minionId: string): Promise<void> {
@@ -81,6 +87,7 @@ export class MinionsController extends Controller {
      * This scen only checks every minion API to know the current status.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('rescan')
     public async rescanMinionsStatus(): Promise<void> {
@@ -92,6 +99,7 @@ export class MinionsController extends Controller {
      * @param minionId Minon id.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{minionId}')
     public async deleteMinion(minionId: string): Promise<void> {
@@ -103,6 +111,7 @@ export class MinionsController extends Controller {
      * @param minion new minion to create.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
     public async createMinion(@Body() minion: Minion): Promise<void> {

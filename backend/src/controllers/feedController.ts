@@ -63,6 +63,7 @@ export class FeedController extends Controller {
      * when minion status changed minion created etc.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('minions')
     public async getMinionsFeed(): Promise<MinionFeed> {
@@ -74,6 +75,7 @@ export class FeedController extends Controller {
      * when timing activated.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('timings')
     public async getTimingFeed(): Promise<TimingFeed> {

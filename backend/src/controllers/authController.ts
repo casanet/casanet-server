@@ -64,6 +64,7 @@ export class AuthController extends Controller {
      * Logout manualy from system.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('logout')
     public async logoutDocumentation(): Promise<void> {

@@ -11,6 +11,7 @@ export class TimingsController extends Controller {
      * @returns Timings array.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getTimings(): Promise<Timing[]> {
@@ -22,6 +23,7 @@ export class TimingsController extends Controller {
      * @returns Operation.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('{timingId}')
     public async getTiming(timingId: string): Promise<Timing> {
@@ -34,6 +36,7 @@ export class TimingsController extends Controller {
      * @param timing Timing object to update to.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{timingId}')
     public async setTiming(timingId: string, @Body() timing: Timing): Promise<void> {
@@ -45,6 +48,7 @@ export class TimingsController extends Controller {
      * @param timingId Timing id.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{timingId}')
     public async deleteTiming(timingId: string): Promise<void> {
@@ -56,6 +60,7 @@ export class TimingsController extends Controller {
      * @param timing new timing to create.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
     public async createTiming(@Body() timing: Timing): Promise<void> {

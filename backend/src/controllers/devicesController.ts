@@ -11,6 +11,7 @@ export class DevicesController extends Controller {
      * @returns Local network devices array.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getDevices(): Promise<LocalNetworkDevice[]> {
@@ -22,6 +23,7 @@ export class DevicesController extends Controller {
      * @returns Local network devices array.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('kinds')
     public async getDevicesKinds(): Promise<DeviceKind[]> {
@@ -34,6 +36,7 @@ export class DevicesController extends Controller {
      * @param newName New name to set.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{deviceMac}')
     public async setDeviceName(deviceMac: string, @Body() device: LocalNetworkDevice): Promise<void> {
@@ -47,6 +50,7 @@ export class DevicesController extends Controller {
      * For example if the router (DHCP server) change IP's of devices , or new device in network etc.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('rescan')
     public async rescanDevices(): Promise<void> {

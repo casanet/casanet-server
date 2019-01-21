@@ -11,6 +11,7 @@ export class OperationsController extends Controller {
      * @returns Operations array.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getOperations(): Promise<Operation[]> {
@@ -22,6 +23,7 @@ export class OperationsController extends Controller {
      * @returns Operation.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('{operationId}')
     public async getOperation(operationId: string): Promise<Operation> {
@@ -34,6 +36,7 @@ export class OperationsController extends Controller {
      * @param operation Operation object to update to.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('{operationId}')
     public async setOperation(operationId: string, @Body() operation: Operation): Promise<void> {
@@ -45,6 +48,7 @@ export class OperationsController extends Controller {
      * @param operationId Operation id.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{operationId}')
     public async deleteOperation(operationId: string): Promise<void> {
@@ -56,6 +60,7 @@ export class OperationsController extends Controller {
      * @param operation new operation to create.
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
     public async createOperation(@Body() operation: Operation): Promise<void> {
@@ -67,6 +72,7 @@ export class OperationsController extends Controller {
      * @returns Set minions status errors (if any).
      */
     @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('trigger/{operationId}')
     public async triggerOperation(operationId: string): Promise<OperationResult[]> {
