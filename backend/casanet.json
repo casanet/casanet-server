@@ -1,10 +1,11 @@
 {
     "defaultUser": {
-        "firstName": "default user",
+        "displayName": "default user",
         "email": "admin@admin.com",
         "sessionTimeOutMS": 8.64e+7,
         "password": "casanet",
-        "ignoreTfa": false
+        "ignoreTfa": true,
+        "scope" : "adminAuth"
     },
     "http": {
         "httpPort": 3000,
