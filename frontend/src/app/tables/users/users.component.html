@@ -1,0 +1,353 @@
+<div fxLayout="column" fxLayoutAlign="space-between stretch" fxFlexFil fxFill class="components-container-gt-xs ">
+
+  <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="space-between stretch" fxFlexFil fxFill
+    fxLayoutGap="20px">
+
+    <div fxFlex="80" fxFlex.xs="100" fxFlex.sm="100" fxLayout="column" class="mat-elevation-z2 contact-list-container">
+
+      <div fxFlex="10" fxLayoutAlign="start center" fxLayout="row">
+
+        <h3 class="mat-headline" style="margin-right: 20px; margin-left: 5px"> <span> ניהול משתמשים </span></h3>
+        <h3 class="mat-headline"><span>|</span> </h3>
+        <h6 class="mat-title"><span style="font-size: 15px; margin-right: 5px">{{users.length}} משתמשים</span> </h6>
+
+      </div>
+
+      <div fxFlex="10" class="contact-list-header" fxLayout="row" fxLayoutAlign="space-around stretch">
+
+        <div fxflex="70" class="full">
+          <mat-form-field class="full">
+            <input matInput placeholder="חיפוש משתמש" [(ngModel)]="filterBy">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="30" fxLayout="row" fxLayoutAlign="end center">
+          <button mat-raised-button color="primary" (click)="newUser = { email : '', ignoreTfa : false}; selectedUser = undefined">הוספת משתמש</button>
+        </div>
+        <!-- <div fxFlex="10">
+					<mat-checkbox  class="checkbox"></mat-checkbox>
+				</div>
+				<div fxFlex="10">
+					<button mat-icon-button> <mat-icon>sort</mat-icon> </button>
+				</div>
+				<div fxFlex="10">
+					<button mat-icon-button> <mat-icon>delete</mat-icon> </button>
+				</div>
+				
+				<div fxFlex="80" fxLayoutAlign="end center" >
+					
+					<button mat-raised-button >ADD TAGS</button>
+
+				</div> -->
+
+      </div>
+
+      <div fxFlex="80" fxLayout="column" fxLayoutAlign="space-between stretch" class="contact-list-container">
+
+        <div class="contact-list">
+          <div fxLayout="row" fxLayoutAlign="space-around center" class="mat-ripple" style="margin: 20px">
+            <div fxFlex="20">
+              <h3><span>פרטי משתמש </span></h3>
+            </div>
+            <div fxFlex="10">
+              <h3><span>תפקיד והרשאה</span></h3>
+            </div>
+            <div fxFlex="10">
+              <h3><span>אורך סשן</span></h3>
+            </div>
+            <div fxFlex="5">
+              <h3><span>סשנים</span></h3>
+            </div>
+            <div fxFlex="50">
+              <h3><span>הרשאות למוסדות</span></h3>
+            </div>
+            <div fxFlex="4">
+              <!-- <h3><span>פרטי משתמש </span></h3> -->
+            </div>
+            <div fxFlex="4">
+              <!-- <h3><span>פרטי משתמש </span></h3> -->
+            </div>
+          </div>
+          <div fxLayout="row" *ngFor="let user of getFilterdUsers(filterBy)" layout-wrap fxLayoutAlign="space-around center"
+            class="mat-ripple" style="margin: 10px; border-bottom: 0.5px solid #ccc!important;">
+
+            <div fxFlex="20">
+              <h3 class="mat-subheading-1"> <span> {{user.friendlyName}} </span> </h3>
+              <p class="mat-body-1" style="color: darkgray">
+                <span>{{user.email}} </span>
+              </p>
+            </div>
+            <div fxFlex="10">
+              <h3 class="mat-subheading-1"> <span> {{user.job}} </span> </h3>
+              <p class="mat-body-1" style="color: darkgray">
+                <span>{{user.accessView}} </span>
+              </p>
+            </div>
+            <div fxFlex="10">
+              <h3 class="mat-subheading-1"> <span>{{ user.sessionDays }} ימים</span>
+              </h3>
+              <p class="mat-body-1" style="color: darkgray">
+                <span>{{ user.sessionHours }} שעות</span>
+              </p>
+            </div>
+            <div fxFlex="5">
+              <span>{{user.maxSessions}}</span>
+            </div>
+            <div fxFlex="50">
+              <mat-chip-list>
+                <mat-chip *ngFor="let linkedSchool of user.linkedSchools"> {{linkedSchool}} </mat-chip>
+              </mat-chip-list>
+            </div>
+            <div fxFlex="4">
+              <button matTooltip="עריכת משתמש" matTooltipPosition="above" mat-icon-button (click)="selectedUser = deepCopyUser(user); newUser = undefined"> <mat-icon>edit</mat-icon> </button>
+            </div>
+            <div fxFlex="4">
+              <button *ngIf="user.access !== 'manager'" matTooltip="מחיקת משתמש" matTooltipPosition="above" mat-icon-button (click)="deleteUser(user)"> <mat-icon>delete</mat-icon> </button>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+
+    </div>
+
+    <div fxFlex="20" fxFlex.xs="100" fxFlex.sm="100" fxLayout="column" class="mat-elevation-z2 contact-add" *ngIf="selectedUser">
+
+      <div fxFlex="10" fxLayout="row" fxLayoutAlign="center center">
+
+        <h3 fxFlex="100" class="mat-headline"><span style="align-items: left; text-align: left"> עריכת משתמש </span></h3>
+        <!-- <div fxLayout="row" fxLayoutAlign="end center" fxFlex="10">
+          <button mat-icon-button> <mat-icon>close</mat-icon> </button>
+
+        </div> -->
+
+      </div>
+      <mat-divider></mat-divider>
+
+      <div fxFlex="70" fxLayout="column" fxLayoutAlign="center">
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>שם משתמש</mat-label>
+            <input  matInput disabled [(ngModel)]="selectedUser.email">
+            <mat-icon matSuffix>alternate_email</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>שם תצוגה</mat-label>
+            <input  matInput required [(ngModel)]="selectedUser.friendlyName">
+            <mat-icon matSuffix>account_circle</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>תפקיד</mat-label>
+            <input  matInput  [(ngModel)]="selectedUser.job">
+            <mat-icon matSuffix>perm_identity</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>הרשאות מערכת</mat-label>
+            <mat-select required placeholder="בחר הרשאה" [(ngModel)]="selectedUser.access">
+              <mat-option *ngFor="let access of accessList" [value]="access">
+                {{accessMap[access]}}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>lock</mat-icon>
+            <!-- <mat-icon matSuffix>pan_tool</mat-icon> -->
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:45%">
+            <input matInput required type="number" min="0" placeholder="ימי סשן"  [(ngModel)]="selectedUser.sessionDays">
+                </mat-form-field>
+            <mat-form-field style="width:45%">
+              <input matInput required placeholder="שעות סשן" type="number" min="1" max="24" [(ngModel)]="selectedUser.sessionHours">
+              <mat-icon matSuffix>hourglass_empty</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>מקסימום סשנים</mat-label>
+            <input  matInput required [(ngModel)]="selectedUser.maxSessions" type="number" min="1">
+            <mat-icon matSuffix>pan_tool</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+
+          <mat-form-field style="width:90%">
+            <mat-label>בתי ספר</mat-label>
+
+            <mat-select *ngIf="selectedUser.access !== 'manager'" placeholder="בחר בתי ספר" multiple [(ngModel)]="selectedUser.linkedSchools">
+              <mat-select-trigger>
+                {{selectedUser.linkedSchools ? selectedUser.linkedSchools[0] : ''}}
+                <span *ngIf="selectedUser.linkedSchools?.length > 1" class="example-additional-selection">
+                      (ועוד {{selectedUser.linkedSchools.length - 1}})
+                    </span>
+              </mat-select-trigger>
+              <mat-option *ngFor="let topping of toppingList" [value]="topping.value">{{topping.view}}</mat-option>
+            </mat-select>
+
+            <input *ngIf="selectedUser.access === 'manager'" matInput disabled value="כלל המוסדות">
+            <mat-icon matSuffix>domain</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>סיסמה (אורך 6 תווים)</mat-label>
+            <input  matInput required [(ngModel)]="selectedUser.password" minlength="6">
+            <mat-icon matSuffix>settings_ethernet</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label></mat-label>
+            <mat-checkbox color="primary" [(ngModel)]="selectedUser.ignoreTfa">בטל אימות דו שלבי</mat-checkbox>
+            <input style="display: none" matInput >
+            <mat-icon matSuffix>done_all</mat-icon>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div fxFlex fxLayout="column" fxLayoutAlign="end stretch">
+        <div fxLayout="row" fxLayoutAlign="space-between stretch">
+          <button mat-raised-button (click)="selectedUser = undefined">ביטול</button>
+          <button mat-raised-button color="primary" (click)="updateUser(selectedUser)">שמור</button>
+        </div>
+      </div>
+    </div>
+
+    <div fxFlex="20" fxFlex.xs="100" fxFlex.sm="100" fxLayout="column"  class="mat-elevation-z2 contact-add" *ngIf="newUser">
+
+      <div fxFlex="10" fxLayout="row" fxLayoutAlign="center center">
+
+        <h3 fxFlex="100" class="mat-headline"><span style="align-items: left; text-align: left"> יצירת משתמש </span></h3>
+        <!-- <div fxLayout="row" fxLayoutAlign="end center" fxFlex="10">
+            <button mat-icon-button> <mat-icon>close</mat-icon> </button>
+  
+          </div> -->
+
+      </div>
+      <mat-divider></mat-divider>
+
+      <div fxFlex="70" fxLayout="column" fxLayoutAlign="center">
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>שם משתמש</mat-label>
+            <input  matInput type="email" required [(ngModel)]="newUser.email">
+            <mat-icon matSuffix>alternate_email</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>שם תצוגה</mat-label>
+            <input  matInput required [(ngModel)]="newUser.friendlyName">
+            <mat-icon matSuffix>account_circle</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>תפקיד</mat-label>
+            <input  matInput  [(ngModel)]="newUser.job">
+            <mat-icon matSuffix>perm_identity</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>הרשאות מערכת</mat-label>
+            <mat-select required placeholder="בחר הרשאה" [(ngModel)]="newUser.access">
+              <mat-option *ngFor="let access of accessList" [value]="access">
+                {{accessMap[access]}}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>lock</mat-icon>
+            <!-- <mat-icon matSuffix>pan_tool</mat-icon> -->
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:45%">
+            <input matInput type="number" required min="0" placeholder="ימי סשן"  [(ngModel)]="newUser.sessionDays">
+                  </mat-form-field>
+            <mat-form-field style="width:45%">
+              <input matInput placeholder="שעות סשן" required type="number" min="1" max="24" [(ngModel)]="newUser.sessionHours">
+              <mat-icon matSuffix>hourglass_empty</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>מקסימום סשנים</mat-label>
+            <input  matInput required [(ngModel)]="newUser.maxSessions" type="number" min="1">
+            <mat-icon matSuffix>pan_tool</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+
+          <mat-form-field style="width:90%">
+            <mat-label>בתי ספר</mat-label>
+
+            <mat-select *ngIf="newUser.access !== 'manager'" placeholder="בחר בתי ספר" multiple [(ngModel)]="newUser.linkedSchools">
+              <mat-select-trigger>
+                {{newUser.linkedSchools ? newUser.linkedSchools[0] : ''}}
+                <span *ngIf="newUser.linkedSchools?.length > 1" class="example-additional-selection">
+                        (ועוד {{newUser.linkedSchools.length - 1}})
+                      </span>
+              </mat-select-trigger>
+              <mat-option *ngFor="let topping of toppingList" [value]="topping.value">{{topping.view}}</mat-option>
+            </mat-select>
+
+            <input *ngIf="newUser.access === 'manager'" matInput disabled value="כלל המוסדות">
+            <mat-icon matSuffix>domain</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label>סיסמה (אורך 6 תווים)</mat-label>
+            <input  matInput required [(ngModel)]="newUser.password" minlength="6">
+            <mat-icon matSuffix>settings_ethernet</mat-icon>
+          </mat-form-field>
+        </div>
+
+        
+        <div fxFlex="10">
+          <mat-form-field style="width:90%">
+            <mat-label></mat-label>
+            <mat-checkbox color="primary" [(ngModel)]="newUser.ignoreTfa">בטל אימות דו שלבי</mat-checkbox>
+            <input style="display: none" matInput >
+            <mat-icon matSuffix>done_all</mat-icon>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div fxFlex fxLayout="column" fxLayoutAlign="end stretch">
+        <div fxLayout="row" fxLayoutAlign="space-between stretch">
+          <button mat-raised-button (click)="newUser = undefined">ביטול</button>
+          <button mat-raised-button color="primary" (click)="createUser(newUser)">שמור</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

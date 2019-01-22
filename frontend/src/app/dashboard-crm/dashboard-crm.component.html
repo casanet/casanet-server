@@ -1,0 +1,51 @@
+<div fxLayout="row" fxLayout="row wrap">
+    <div *ngFor="let dash of dashCard" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
+        <!-- <cdk-dashcard [dashData]="dash"></cdk-dashcard> -->
+        <mat-card>
+            <mat-card-header>
+                <div mat-card-avatar *ngIf="dash.communicationError">
+                    <mat-icon>perm_scan_wifi</mat-icon>
+                </div>
+                <mat-card-title>שם המכשיר</mat-card-title>
+                <mat-card-subtitle>סוג המכשיר</mat-card-subtitle>
+            </mat-card-header>
+            <mat-accordion>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            תכונות
+                        </mat-panel-title>
+                        <!-- <mat-panel-description>
+                           עריכה
+                        </mat-panel-description> -->
+                    </mat-expansion-panel-header>
+                    <p>וןעוטעוטרגוטעטועןוטאוןט ןוטןוע</p>
+                  
+                </mat-expansion-panel>
+                <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                פרטי מכשיר
+                            </mat-panel-title>
+                            <!-- <mat-panel-description>
+                               ממשק טכנאי
+                            </mat-panel-description> -->
+                        </mat-expansion-panel-header>
+                        <p>תכונות מזגן</p>
+                      
+                    </mat-expansion-panel>
+                <!-- <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Self aware panel
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Currently I am {{panelOpenState ? 'open' : 'closed'}}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                </mat-expansion-panel> -->
+            </mat-accordion>
+        </mat-card>
+    </div>
+</div>

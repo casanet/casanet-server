@@ -1,0 +1,50 @@
+<div fxLayout="column" fxFlexFill fxLayoutAlign="center center" id="picture-background">
+
+    <div id="pretty-border">
+
+    </div>
+
+    <div fxLayout="column">
+
+
+
+        <div class="mat-elevation-z4" style="z-index: 100">
+            <mat-card>
+                <mat-card-title>התחברות
+                </mat-card-title>
+                <mat-card-content>
+                    <form fxLayout="column" fxLayoutAlign="start stretch" [formGroup]="userForm" (ngSubmit)="login()">
+                        <mat-form-field class="full-width" *ngIf="!waitingForTfa">
+                            <input type="email" id="email" class="input" placeholder="דואר אלקטרוני"
+                                 formControlName="email" required matInput>
+                        </mat-form-field>
+
+                            <mat-form-field class="full-width">
+                                <input type="password" id="password" class="input" placeholder="{{waitingForTfa ? 'סיסמה חד פעמית' : 'סיסמה'}}"
+                            formControlName="password" matInput>
+                        </mat-form-field>
+
+                                <mat-grid-list cols="4" *ngIf="formErrors.email || formErrors.password">
+                                    <mat-grid-tile>
+                                        <mat-icon style="-webkit-text-fill-color:coral">priority_high</mat-icon>
+                                    </mat-grid-tile>
+                                    <mat-grid-tile [colspan]="3">
+                                        <div *ngIf="formErrors.email" class="warninig-text">
+                                            {{ formErrors.email }}
+                                        </div>
+                                        <div style="margin: 10px" *ngIf="formErrors.email && formErrors.password"></div>
+                                        <div *ngIf="formErrors.password" class="warninig-text">
+                                            {{ formErrors.password }}
+                                        </div>
+                                    </mat-grid-tile>
+
+                                </mat-grid-list>
+
+                                <div style="margin: 10px"></div>
+                                <button mat-raised-button color="primary" type="submit" [disabled]="!userForm.valid">התחבר</button>
+                    </form>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>
