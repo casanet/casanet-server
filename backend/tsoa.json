@@ -3,11 +3,62 @@
         "outputDirectory": "./",
         "entryFile": "./src/index.ts",
         "host": "localhost:3000",
-        "basePath": "/API"
+        "basePath": "/API",
+        "tags": [
+            {
+                "name": "Authentication",
+                "description": "Manage system authentication, such as login logout etc."
+            },
+            {
+                "name": "Devices",
+                "description": "Pysical device in local home managing."
+            },
+            {
+                "name": "Users",
+                "description": "Manage users in system."
+            },
+            {
+                "name": "Minions",
+                "description": "Manage the minions (logic devices in system) in home, such as turn on off etc."
+            },
+            {
+                "name": "Operations",
+                "description": "Manage operation in system, such as create operation to turn on all home lights etc."
+            },
+            {
+                "name": "Timings",
+                "description": "Manage timings in system, such as invoke turn off lights operation today 12 AM etc."
+            },
+            {
+                "name": "Feeds",
+                "description": "Feed of updates from system, such as minion turned on/off etc. all using SSE protocol"
+            }
+        ],
+        "name": "CASAnet - API",
+        "description": "IoT server for local home network. hosted in [GitHub repo](https://github.com/haimkastner/Home-IoT-Server).",
+        "securityDefinitions": {
+            "userAuth": {
+                "type": "apiKey",
+                "name": "Cookie",
+                "in": "header"
+            },
+            "adminAuth": {
+                "type": "apiKey",
+                "name": "Cookie",
+                "in": "header"
+            }
+        },
+        "schemes": [
+            "http",
+            "https"
+        ],
+        "yaml" : true
     },
     "routes": {
         "basePath": "/API",
         "entryFile": "./src/index.ts",
-        "routesDir": "./src/"
+        "routesDir": "./src/routers",
+        "middlewareTemplate": "./src/routers/expressRoutesTemplate.ts.tsoa",
+        "authenticationModule": "./src/security/authentication.ts"
     }
 }

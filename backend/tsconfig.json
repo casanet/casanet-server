@@ -9,16 +9,13 @@
   "files": [
     "./node_modules/@types/mocha/index.d.ts",
     "./node_modules/@types/node/index.d.ts",
-    "./src/models/interfaces.d.ts",
-    "./src/models/config.d.ts"
+    "./src/models/backendInterfaces.d.ts"
   ],
   "include": [
-    "src/**/*",
-    "src/models/interfaces.d.ts",
-    "src/models/config.d.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "src/**/*.spec.ts",
+    "src/routers/expressRoutesTemplate.ts.tsoa",
   ]
 }

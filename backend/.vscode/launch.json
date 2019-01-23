@@ -17,6 +17,7 @@
         "HTTP_PORT": "3000",
         "HTTPS_PORT": "4430",
         "USE_HTTPS": "false",
+        "NODE_ENV": "debug"
       }
     },
     {
@@ -27,7 +28,8 @@
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "env": {
         "USE_HTTPS": "false",
-        "NODE_ENV": "test"
+        "NODE_ENV": "test",
+        "TEST_LONG_SPECS" : "true"
       },
       "args": [
         "--require",
@@ -38,7 +40,8 @@
         "999999",
         "--colors",
         "--recursive",
-        "${workspaceFolder}/src/**/*.spec.ts"
+        "${workspaceFolder}/test/**/*.spec.ts",
+        "${workspaceFolder}/e2e/**/*.spec.ts"
       ],
       "internalConsoleOptions": "openOnSessionStart"
     },
