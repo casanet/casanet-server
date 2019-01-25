@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { UsersBlSingleton } from '../business-layer/usersBl';
+import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
 
 @Tags('Users')
@@ -43,6 +43,19 @@ export class UsersController extends Controller {
                 message: 'user not allowd to watch other account',
             } as ErrorResponse;
         }
+    }
+
+    /**
+     * Get user profile.
+     * @returns User.
+     */
+    @Security('adminAuth')
+    @Security('userAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Get('profile')
+    public async getProfile(@Request() request: express.Request): Promise<User> {
+        const userSession: User = request.user;
+        return this.cleanUpUserBeforRelease(await UsersBlSingleton.getUser(userSession.email));
     }
 
     /**

@@ -4,6 +4,16 @@ import { validAdminAgent, validUserAgent } from './prepareRoutesSpecTests.spec';
 
 describe('Users routing API', () => {
 
+    describe('/GET users/profile', () => {
+        it('it should respond 20x as status code', (done) => {
+            validAdminAgent.get('/API/users/profile')
+                .end((err, res) => {
+                    expect(res.statusType).eql(2);
+                    done();
+                });
+        });
+    });
+
     describe('/GET users', () => {
         it('it should respond 20x as status code', (done) => {
             validAdminAgent.get('/API/users')

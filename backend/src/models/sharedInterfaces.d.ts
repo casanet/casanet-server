@@ -192,7 +192,7 @@ export declare interface User {
 /**
  * Supported minions types.
  */
-export declare type MinionTypes = 'toggle' | 'switch' | 'airConditioning' | 'light' | 'temperatureLight' | 'colorLight ';
+export declare type MinionTypes = 'toggle' | 'switch' | 'airConditioning' | 'light' | 'temperatureLight' | 'colorLight';
 
 /**
  * Supported timings types.
