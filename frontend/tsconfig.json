@@ -21,5 +21,6 @@
   ],
   "files": [
     "./src/models/interfaces.d.ts",
+    "../backend/src/models/sharedInterfaces.d.ts",
   ]
 }

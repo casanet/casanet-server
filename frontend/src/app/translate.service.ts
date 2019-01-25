@@ -52,7 +52,7 @@ export class TranslateService {
   /**
    * Set leng and keep it to next client uses.
    */
-  private async setLeng(lang: string) {
+  public async setLeng(lang: string) {
     await this.retriveLeng(lang);
     localStorage.setItem(this.LENG_STORAGE_KEY, lang);
   }

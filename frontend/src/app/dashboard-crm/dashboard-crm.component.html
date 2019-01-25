@@ -1,51 +1,92 @@
 <div fxLayout="row" fxLayout="row wrap">
-    <div *ngFor="let dash of dashCard" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
+    <div *ngFor="let minion of minions" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
         <!-- <cdk-dashcard [dashData]="dash"></cdk-dashcard> -->
-        <mat-card>
+        <mat-card class="minion-text" style="max-width: 500px !important" [style.background]="getMinionColor(minion).dark">
             <mat-card-header>
-                <div mat-card-avatar *ngIf="dash.communicationError">
-                    <mat-icon>perm_scan_wifi</mat-icon>
+                <div mat-card-avatar *ngIf="!minion.isProperlyCommunicated">
+                    <button mat-icon-button
+                    (click)="reScanMinion(minion)"
+                    matTooltipPosition="above" matTooltip="{{'COMMUNICATION_ERROR_PRESS_TO_RESCAN' | translate}}">
+                        <mat-icon aria-label="Rescan minion" >perm_scan_wifi</mat-icon>
+                    </button>
                 </div>
-                <mat-card-title>שם המכשיר</mat-card-title>
-                <mat-card-subtitle>סוג המכשיר</mat-card-subtitle>
+
+                <mat-card-title class="minion-text">{{minion.name}}</mat-card-title>
+                <mat-card-subtitle class="minion-text">{{ minion.minionType | translate}}</mat-card-subtitle>
+
+                <mat-slide-toggle *ngIf="minion.minionType !== 'toggle'" [ngClass]="minion.minionType" style="margin: auto"
+                    [checked]="getMinionOnOffStatus(minion) === 'on'" (change)="setStatus(minion, $event.checked ? 'on' : 'off')"></mat-slide-toggle>
+
+                <button mat-icon-button style="margin: auto" *ngIf="minion.minionType === 'toggle'"
+                    (click)="setStatus(minion, 'on')" matTooltipPosition="above" matTooltip="{{'PRESS_TO_TURN_ON' | translate}}">
+                    <mat-icon aria-label="Turn on toggle" >power</mat-icon>
+                  </button>
+                <button mat-icon-button style="margin: auto" *ngIf="minion.minionType === 'toggle'"
+                    (click)="setStatus(minion, 'off')" matTooltipPosition="above" matTooltip="{{'PRESS_TO_TURN_OFF' | translate}}">
+                    <mat-icon aria-label="Turn off toggle" >power_off</mat-icon>
+                  </button>
+
+                <button mat-icon-button [matMenuTriggerFor]="minioinMenu" [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
+                  [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                <!-- <mat-icon [matMenuTriggerFor]="minioinMenu" >more_vert</mat-icon> -->
+                <!-- </button> -->
+                <mat-menu #minioinMenu="matMenu">
+                    <button mat-menu-item>
+                      <mat-icon>dialpad</mat-icon>
+                      <span>Redial</span>
+                    </button>
+                    <button mat-menu-item disabled>
+                      <mat-icon>voicemail</mat-icon>
+                      <span>Check voicemail</span>
+                    </button>
+                    <button mat-menu-item>
+                      <mat-icon>notifications_off</mat-icon>
+                      <span>Disable alerts</span>
+                    </button>
+                </mat-menu>
             </mat-card-header>
-            <mat-accordion>
-                <mat-expansion-panel>
+            <mat-accordion *ngIf="minion.minionType !== 'toggle' && minion.minionType !== 'switch'">
+                <mat-expansion-panel [style.background]="getMinionColor(minion).dark">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            תכונות
+                        <mat-panel-title class="minion-text">
+                            {{'PROPERTIES' | translate}}
                         </mat-panel-title>
                         <!-- <mat-panel-description>
                            עריכה
                         </mat-panel-description> -->
                     </mat-expansion-panel-header>
-                    <p>וןעוטעוטרגוטעטועןוטאוןט ןוטןוע</p>
-                  
+
+                    <div *ngIf="minion.minionType === 'airConditioning'" [style.background]="getMinionColor(minion).dark">
+                        <mat-form-field>
+                            <mat-select class="minion-text" placeholder="{{'MODE' | translate}}" [(value)]="minion.minionStatus.airConditioning.mode">
+                                <mat-option value="hot"> {{ 'HOT' | translate}} </mat-option>
+                                <mat-option value="cold"> {{ 'COLD' | translate}} </mat-option>
+                                <mat-option value="dry"> {{ 'DRY' | translate}} </mat-option>
+                                <mat-option value="auto"> {{ 'AUTO' | translate}} </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-select class="minion-text" placeholder="{{'FUN_STRENGTH' | translate}}" [(value)]="minion.minionStatus.airConditioning.fanStrength">
+                                <mat-option value="med"> {{ 'MED' | translate}} </mat-option>
+                                <mat-option value="high"> {{ 'HIGH' | translate}} </mat-option>
+                                <mat-option value="dry"> {{ 'LOW' | translate}} </mat-option>
+                                <mat-option value="auto"> {{ 'AUTO' | translate}} </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <p><b>{{'TEMERATURE' | translate}}:</b> {{minion.minionStatus.airConditioning.temperature}} </p>
+                        <mat-slider [color]="primary" [max]="30" [min]="16" [step]="1" [thumbLabel]="true"
+                            [tickInterval]="true" [(ngModel)]="minion.minionStatus.airConditioning.temperature">
+                        </mat-slider>
+
+                    </div>
+                    <button mat-raised-button style="margin: 5px">{{ 'CANCEL' | translate}}</button>
+                    <button sty mat-raised-button style="margin: 5px">{{ 'SUBMIT' | translate}}</button>
                 </mat-expansion-panel>
-                <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                פרטי מכשיר
-                            </mat-panel-title>
-                            <!-- <mat-panel-description>
-                               ממשק טכנאי
-                            </mat-panel-description> -->
-                        </mat-expansion-panel-header>
-                        <p>תכונות מזגן</p>
-                      
-                    </mat-expansion-panel>
-                <!-- <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Self aware panel
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            Currently I am {{panelOpenState ? 'open' : 'closed'}}
-                        </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <p>I'm visible because I am open</p>
-                </mat-expansion-panel> -->
             </mat-accordion>
+            <div style="margin: 5px"></div>
+            <mat-progress-bar mode="buffer"></mat-progress-bar>
         </mat-card>
     </div>
 </div>

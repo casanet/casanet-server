@@ -30,7 +30,7 @@ import {
 } from '@angular/material';
 import { AboutDialogComponent } from './about-dialog/about-dialog.component';
 import { HelpDialogComponent } from './help-dialog/help-dialog.component';
-import { TranslatePipe } from '../translate.pipe';
+import { SharedModule } from '../shared.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -40,7 +40,7 @@ import { AuthService } from '../services/auth/auth.service';
 @NgModule({
 
     declarations: [
-        TranslatePipe,
+
         SidemenuComponent,
         SidemenuItemComponent,
         ToolbarNotificationComponent,
@@ -54,6 +54,7 @@ import { AuthService } from '../services/auth/auth.service';
     ],
 
     imports: [
+        SharedModule,
         CommonModule,
         MatListModule,
         MatButtonModule,
@@ -72,8 +73,6 @@ import { AuthService } from '../services/auth/auth.service';
         MatProgressBarModule,
         MatDialogModule,
     ],
-
-
     exports: [
         SidemenuComponent,
         SidemenuItemComponent,

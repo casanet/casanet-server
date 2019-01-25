@@ -23,7 +23,6 @@ import { DashboardCrmModule } from '../dashboard-crm/dashboard-crm.module';
 
 import { CoreModule } from '../core/core.module';
 
-
 @NgModule({
     imports: [
         CommonModule,
@@ -36,6 +35,9 @@ import { CoreModule } from '../core/core.module';
         CoreModule,
         MatSidenavModule,
         PerfectScrollbarModule,
+    ],
+    exports: [
+
     ],
     declarations: [AuthComponent],
     providers: [
