@@ -101,7 +101,7 @@ const models: TsoaRoute.Models = {
             "device": { "ref": "MinionDevice", "required": true },
             "isProperlyCommunicated": { "dataType": "boolean" },
             "minionStatus": { "ref": "MinionStatus", "required": true },
-            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
+            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
         },
     },
@@ -173,7 +173,7 @@ const models: TsoaRoute.Models = {
             "minionsPerDevice": { "dataType": "double", "required": true },
             "isTokenRequierd": { "dataType": "boolean", "required": true },
             "isIdRequierd": { "dataType": "boolean", "required": true },
-            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight "], "required": true },
+            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
         },
     },
     "OperationActivity": {
@@ -864,6 +864,29 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.createTiming.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/users/profile',
+        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.getProfile.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/users',

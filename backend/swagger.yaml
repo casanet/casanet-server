@@ -1532,7 +1532,7 @@ definitions:
                     - airConditioning
                     - light
                     - temperatureLight
-                    - 'colorLight '
+                    - colorLight
                 description: 'minion type.'
             minionAutoTurnOffMS:
                 type: number
@@ -1832,7 +1832,7 @@ definitions:
                     - airConditioning
                     - light
                     - temperatureLight
-                    - 'colorLight '
+                    - colorLight
                 description: 'Supported minion type for current device.'
         required:
             - brand
@@ -2709,6 +2709,29 @@ paths:
                     name: timingId
                     required: true
                     type: string
+    /users/profile:
+        get:
+            operationId: GetProfile
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/User'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get user profile.'
+            tags:
+                - Users
+            security:
+                -
+                    adminAuth: []
+                -
+                    userAuth: []
+            parameters: []
     /users:
         get:
             operationId: GetUsers
