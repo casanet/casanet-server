@@ -57,7 +57,7 @@ class App {
         this.express.get('/', (req: express.Request, res: express.Response) =>
             res.sendFile(path.join(__dirname, '/public/index.html')));
         /** Get any file in public directory */
-        this.express.use('/v1', express.static(path.join(__dirname, '/public/')));
+        this.express.use('/static', express.static(path.join(__dirname, '/public/')));
     }
 
     /**

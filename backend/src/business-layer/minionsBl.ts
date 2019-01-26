@@ -351,7 +351,7 @@ export class MinionsBl {
             .catch((err) => {
                 minion.isProperlyCommunicated = false;
                 throw err;
-            })
+            });
 
         minion.isProperlyCommunicated = true;
 

@@ -1076,7 +1076,7 @@ export function RegisterRoutes(app: express.Express) {
                  */
                 try {
                     const cleanError = await SchemaValidator(error, ErrorResponseSchema);
-                    response.status(422).send(cleanError);
+                    response.status(500).send(cleanError);
                 } catch (error) {
                     response.status(500).send({
                         responseCode: 5000,
