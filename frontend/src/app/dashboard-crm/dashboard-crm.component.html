@@ -14,14 +14,14 @@
                 <mat-card-title class="minion-text">{{minion.name}}</mat-card-title>
                 <mat-card-subtitle class="minion-text">{{ minion.minionType | translate}}</mat-card-subtitle>
 
-                <mat-slide-toggle *ngIf="minion.minionType !== 'toggle'" [ngClass]="minion.minionType" style="margin: auto"
+                <mat-slide-toggle [disabled]="minion.sync" *ngIf="minion.minionType !== 'toggle'" [ngClass]="minion.minionType" style="margin: auto"
                     [checked]="getMinionOnOffStatus(minion) === 'on'" (change)="setStatus(minion, $event.checked ? 'on' : 'off')"></mat-slide-toggle>
 
-                <button mat-icon-button style="margin: auto" *ngIf="minion.minionType === 'toggle'"
+                <button [disabled]="minion.sync" mat-icon-button style="margin: auto" *ngIf="minion.minionType === 'toggle'"
                     (click)="setStatus(minion, 'on')" matTooltipPosition="above" matTooltip="{{'PRESS_TO_TURN_ON' | translate}}">
                     <mat-icon aria-label="Turn on toggle" >power</mat-icon>
                   </button>
-                <button mat-icon-button style="margin: auto" *ngIf="minion.minionType === 'toggle'"
+                <button [disabled]="minion.sync" mat-icon-button style="margin: auto" *ngIf="minion.minionType === 'toggle'"
                     (click)="setStatus(minion, 'off')" matTooltipPosition="above" matTooltip="{{'PRESS_TO_TURN_OFF' | translate}}">
                     <mat-icon aria-label="Turn off toggle" >power_off</mat-icon>
                   </button>
@@ -30,8 +30,7 @@
                   [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'">
                     <mat-icon>more_vert</mat-icon>
                   </button>
-                <!-- <mat-icon [matMenuTriggerFor]="minioinMenu" >more_vert</mat-icon> -->
-                <!-- </button> -->
+               
                 <mat-menu #minioinMenu="matMenu">
                     <button mat-menu-item>
                       <mat-icon>dialpad</mat-icon>
@@ -86,7 +85,7 @@
                 </mat-expansion-panel>
             </mat-accordion>
             <div style="margin: 5px"></div>
-            <mat-progress-bar mode="buffer"></mat-progress-bar>
+            <mat-progress-bar *ngIf="minion.sync" mode="buffer"></mat-progress-bar>
         </mat-card>
     </div>
 </div>

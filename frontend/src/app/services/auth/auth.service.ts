@@ -1,39 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, Subscriber, Observer } from 'rxjs';
+import { Observable, Subscriber, Observer, BehaviorSubject } from 'rxjs';
+import { User } from '../../../../../backend/src/models/sharedInterfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private readonly USER_INFO_NAME: string = 'user';
-  private userInfoObservers: Subscriber<{}>[] = [];
-  // public defaultUser: User = {
-  //   email: 'unknown@unknown.com',
-  //   friendlyName: 'לא מחובר',
-  //   access: 'non',
-  //   maxSessions: 0,
-  //   sessionTimeOutMs: 0
-  // };
-  // public userInfo: User = this.defaultUser;
+  private readonly USER_PROFILE_KEY_NAME: string = 'profile';
+
+  private DEFAULT_USER: User = {
+    email: 'unknown@unknown.com',
+    displayName: 'unknown',
+    scope: 'userAuth',
+    ignoreTfa: false,
+    sessionTimeOutMS: 10,
+    password: '',
+  };
+
+  public userProfile: BehaviorSubject<User> = new BehaviorSubject<User>(this.DEFAULT_USER);
 
   constructor(private httpClient: HttpClient, private router: Router) {
-    this.loadUserInfo();
+    this.loadProfileCached();
   }
 
-  public userInfoObserveable = new Observable(((o: Subscriber<{}>) => {
-    this.loadUserInfo();
-    this.userInfoObservers.push(o);
-    // o.next(this.userInfo);
-  }).bind(this));
+  private loadProfileCached(): void {
+    const userdata: User = this.getDataStorage(this.USER_PROFILE_KEY_NAME) as User;
 
-  private loadUserInfo(): void {
-    const userdata = this.getDataStorage(this.USER_INFO_NAME);
-
-    if (userdata && userdata.access !== 'non') {
-      // this.userInfo = userdata;
+    if (userdata) {
+      this.userProfile.next(userdata);
     } else {
       this.router.navigate(['/login']);
     }
@@ -48,20 +45,21 @@ export class AuthService {
     if (localStorage.getItem(key) != null) {
       return JSON.parse(localStorage.getItem(key));
     } else {
-      return false;
+      return;
     }
   }
 
-  private activeLogin(user): void { // User): void {
+  private setProfile(user: User): void {
 
-    this.setDataStorage(this.USER_INFO_NAME, user);
+    this.setDataStorage(this.USER_PROFILE_KEY_NAME, user);
 
-    // this.userInfo = user;
-    // for (const userObserver of this.userInfoObservers) {
-    //   userObserver.next(this.userInfo);
-    // }
+    this.userProfile.next(user);
   }
 
+  private async retriveProfile(): Promise<void> {
+    const profile: User = await this.httpClient.get<User>('/API/users/profile').toPromise();
+    this.setProfile(profile);
+  }
   /**
    * Try login.
    * @param email email to login with
@@ -70,47 +68,25 @@ export class AuthService {
    * when need to use 2FA api.
    * so true if need to continue with login progress.
    */
-  public login(email: string, password: string): Promise<boolean> {
+  public async login(email: string, password: string): Promise<boolean> {
+    const respone =
+      await this.httpClient.post('/API/auth/login', { email: email, password: password }, { observe: 'response' }).toPromise();
 
-    return new Promise((resolve, reject) => {
+    if (respone.status === 200) {
+      await this.retriveProfile();
+      return false;
+    }
 
-      // this.httpClient.post<User>('/login', { email: email, password: password }, { observe: 'response' }).toPromise()
-      //   .then(((httpRes: HttpResponse<User>) => {
-
-      //     if (httpRes.status === 200) {
-      //       this.activeLogin(httpRes.body);
-      //       resolve(false);
-      //     } else {
-      //       resolve(true);
-      //     }
-
-      //   }).bind(this))
-      //   .catch(reject);
-    });
+    return true;
   }
 
   public async loginTfa(email: string, password: string): Promise<void> {
-
-    // await this.httpClient.post<User>('/login/tfa', { email: email, password: password }).toPromise()
-    //   .then(((user: User) => {
-    //     this.activeLogin(user);
-    //   }).bind(this))
-    //   .catch((httpRes) => {
-    //     throw httpRes;
-    //   });
+    await this.httpClient.post('/API/auth/login/tfa', { email: email, password: password }).toPromise();
+    await this.retriveProfile();
   }
 
-  public logout(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.httpClient.post('/logout', {}).toPromise()
-        .then((() => {
-
-          // this.setDataStorage(this.USER_INFO_NAME, this.defaultUser);
-          // this.userInfo = this.defaultUser;
-          this.router.navigate(['/login']);
-          resolve();
-        }).bind(this))
-        .catch(reject);
-    });
+  public async logout(): Promise<void> {
+    await this.httpClient.post('/API/auth/logout', {}).toPromise();
+    this.router.navigate(['/login']);
   }
 }

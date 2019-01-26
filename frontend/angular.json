@@ -17,8 +17,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "baseHref" : "/v1/",
-            "outputPath": "../server/dist/public",
+            "baseHref" : "/static/",
+            "outputPath": "../backend/dist/public",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",

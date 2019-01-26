@@ -2,7 +2,17 @@
     "DIR": "ltr",
     "RIGHT_DIR" : "right",
     "LEFT_DIR" : "left",
+    "--messages" : {
+        "0" : "offline"
+    },
+    "REQUEST_FAIL" : "Request fail",
+    "ERROR" : "error",
     "TITLE": "CASA net (en)",
+    "EMAIL" : "email",
+    "PASSWORD" : "password",
+    "ONE_TIME_PASSWORD" : "one-time password",
+    "LOGIN" : "login",
+    "AUTHENTICATION" : "authentication",
     "ABOUT": "About",
     "HELP": "Help",
     "LOGOUT": "Logout",

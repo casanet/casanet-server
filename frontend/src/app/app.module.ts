@@ -8,13 +8,13 @@ import { CoreModule } from './core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateService } from './translate.service';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
-
+import { ToasterAndErrorsService } from './services/toastrs/toaster-and-errors.service';
 
 export function setupTranslateFactory(
   service: TranslateService): Function {
   return async() => {
     await service.load();
-    await service.setLeng('en');
+    // await service.setLeng('en');
   };
 }
 
@@ -40,6 +40,7 @@ export function setupTranslateFactory(
     })
   ],
   providers: [
+    ToasterAndErrorsService,
     TranslateService,
     {
       provide: APP_INITIALIZER,

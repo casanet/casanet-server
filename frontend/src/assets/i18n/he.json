@@ -2,7 +2,17 @@
     "DIR" : "rtl",
     "RIGHT_DIR" : "left",
     "LEFT_DIR" : "right",
+    "--messages" : {
+        "0" : "לא מקוון"
+    },
+    "REQUEST_FAIL" : "הבקשה נכשלה",
+    "ERROR" : "שגיאה",
     "TITLE": "CASA net (he)",
+    "EMAIL" : "דואר אלקטרוני",
+    "PASSWORD" : "סיסמה",
+    "ONE_TIME_PASSWORD" : "סיסמה חד-פעמית",
+    "LOGIN" : "התחברות",
+    "AUTHENTICATION" : "אימות",
     "ABOUT" : "אודות",
     "HELP" : "עזרה",
     "LOGOUT" : "התנתקות",

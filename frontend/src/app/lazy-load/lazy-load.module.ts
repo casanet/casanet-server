@@ -10,7 +10,7 @@ const routes: Routes = [
     { path: 'login', loadChildren: '../pages/login/login.module#LoginModule' },
     // {path: 'editor', loadChildren: '../editor/editor.module#EditorModule'},
 
-    { path: '**', redirectTo: 'auth/dashboard' },
+    { path: '**', redirectTo: 'auth/minions' },
 ];
 
 @NgModule({

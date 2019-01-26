@@ -1,19 +1,29 @@
-<mat-nav-list [style.maxHeight]="'1200px'"  [ngClass]="{'secondaryMenu': secondaryMenu, 'primary': !secondaryMenu}">
-    <mat-list-item *ngIf = "menu.link==false" (click)="menu.open = !menu.open" >
-        <mat-icon matListIcon iconsmall  >{{menu.icon}} </mat-icon>
+<mat-nav-list [style.maxHeight]="'1200px'" [ngClass]="{'secondaryMenu': secondaryMenu, 'primary': !secondaryMenu}">
+    <mat-list-item *ngIf="menu.link==false" (click)="menu.open = !menu.open">
+        <mat-icon matListIcon iconsmall>{{menu.icon}} </mat-icon>
         <h3 matLine *ngIf="!iconOnly">{{ menu.name }} </h3>
         <mat-chip-list *ngIf="menu?.chip && !iconOnly">
-            <mat-chip >{{menu?.chip?.value}} </mat-chip>
-        </mat-chip-list>        
-        <mat-icon *ngIf="chechForChildMenu()" class="sidenav-dropdown-indicator rotate " [ngClass]="{'indicateOpen':true}"> expand_more</mat-icon>
+            <mat-chip>{{menu?.chip?.value}} </mat-chip>
+        </mat-chip-list>
+        <mat-icon *ngIf="chechForChildMenu()" class="sidenav-dropdown-indicator rotate " [ngClass]="{'indicateOpen':true}">
+            expand_more</mat-icon>
     </mat-list-item>
 
-    <mat-list-item *ngIf = "menu.link!=false && (!menu.access || menu.access(userInfo))" (click)="menu.open = true" [routerLink]="[menu.link]"
-         [ngStyle]="{'background-color':  currentUrl.indexOf(menu.link) !== -1 ? 'rgba(255, 255, 255, 0.3)' : '', 'border-radius' :currentUrl.indexOf(menu.link) !== -1 ? '25px 0px 0px 25px' : ''}">
-    	<mat-icon matListIcon iconsmall  >{{menu.icon}} </mat-icon>
+    <!-- RTL -->
+    <mat-list-item *ngIf="('DIR' | translate) === 'rtl' && menu.link!=false && (!menu.access || menu.access(userInfo))" (click)="menu.open = true"
+        [routerLink]="[menu.link]" [ngStyle]="{'background-color':  currentUrl.indexOf(menu.link) !== -1 ? 'rgba(255, 255, 255, 0.3)' : '', 'border-radius' :currentUrl.indexOf(menu.link) !== -1 ? '25px 0px 0px 25px' : ''}">
+        <mat-icon matListIcon iconsmall>{{menu.icon}} </mat-icon>
         <h3 matLine *ngIf="!iconOnly">{{ menu.name | translate }} </h3>
     </mat-list-item>
 
-    <cdk-sidemenu-item *ngFor="let submenu of menu?.sub" [menu]="submenu" [iconOnly]="iconOnly" [secondaryMenu]="true"> </cdk-sidemenu-item>
+    <!-- LTR -->
+    <mat-list-item *ngIf="('DIR' | translate) === 'ltr' && menu.link!=false && (!menu.access || menu.access(userInfo))" (click)="menu.open = true"
+        [routerLink]="[menu.link]" [ngStyle]="{'background-color':  currentUrl.indexOf(menu.link) !== -1 ? 'rgba(255, 255, 255, 0.3)' : '', 'border-radius' :currentUrl.indexOf(menu.link) !== -1 ? '0px 25px 25px 0px' : ''}">
+        <mat-icon matListIcon iconsmall>{{menu.icon}} </mat-icon>
+        <h3 matLine *ngIf="!iconOnly">{{ menu.name | translate }} </h3>
+    </mat-list-item>
+
+    <cdk-sidemenu-item *ngFor="let submenu of menu?.sub" [menu]="submenu" [iconOnly]="iconOnly" [secondaryMenu]="true">
+    </cdk-sidemenu-item>
 
 </mat-nav-list>

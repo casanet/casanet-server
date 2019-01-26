@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Minion, SwitchOptions, Toggle, MinionStatus } from '../../../../backend/src/models/sharedInterfaces';
+import { MinionsService } from '../services/data/minions.service';
 
 @Component({
     selector: 'app-dashboard-crm',
@@ -9,660 +10,677 @@ import { Minion, SwitchOptions, Toggle, MinionStatus } from '../../../../backend
 
 export class DashboardCrmComponent implements OnInit {
 
-    public minionA: Minion[] = [
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
-                switch: {
-                    status: 'on',
-                }
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        }
-    ];
+    // public minions: Minion[] = [
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-    public minions: Minion[] = [
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'besteverof efgfeg gfegfe e ert er r',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'besteverof efgfeg gfegfe e ert er r',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
+    //             switch: {
+    //                 status: 'on',
+    //             }
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
-                switch: {
-                    status: 'on',
-                }
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
+    //             airConditioning: {
+    //                 fanStrength: 'auto',
+    //                 mode: 'auto',
+    //                 status: 'on',
+    //                 temperature: 21,
+    //             }
+    //         },
+    //         minionType: 'airConditioning',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: false,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
-                airConditioning: {
-                    fanStrength: 'auto',
-                    mode: 'auto',
-                    status: 'on',
-                    temperature: 21,
-                }
-            },
-            minionType: 'airConditioning',
-            name: 'minion name',
-            isProperlyCommunicated: false,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'toggle',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
+    //             toggle: {
+    //                 status: 'on',
+    //             }
+    //         },
+    //         minionType: 'toggle',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
+    //             light: {
+    //                 status: 'on',
+    //                 brightness: 16,
+    //             }
+    //         },
+    //         minionType: 'light',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'toggle',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
-                toggle: {
-                    status: 'on',
-                }
-            },
-            minionType: 'toggle',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
-                light: {
-                    status: 'on',
-                    brightness: 16,
-                }
-            },
-            minionType: 'light',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
+    //             colorLight: {
+    //                 status: 'on',
+    //                 blue: 100,
+    //                 red: 101,
+    //                 brightness: 15,
+    //                 green: 128,
+    //                 temperature: 12,
+    //             }
+    //         },
+    //         minionType: 'colorLight',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
-                colorLight: {
-                    status: 'on',
-                    blue: 100,
-                    red: 101,
-                    brightness: 15,
-                    green: 128,
-                    temperature: 12,
-                }
-            },
-            minionType: 'colorLight',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
+    //             temperatureLight: {
+    //                 brightness: 34,
+    //                 status: 'on',
+    //                 temperature: 53,
+    //             }
+    //         },
+    //         minionType: 'temperatureLight',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
-                temperatureLight: {
-                    brightness: 34,
-                    status: 'on',
-                    temperature: 53,
-                }
-            },
-            minionType: 'temperatureLight',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
+    //     {
+    //         device: {
+    //             brand: 'b',
+    //             model: 'm',
+    //             pysicalDevice: {
+    //                 mac: 'mac',
+    //             },
+    //         },
+    //         minionId: 'mi',
+    //         minionStatus: {
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
-        {
-            device: {
-                brand: 'b',
-                model: 'm',
-                pysicalDevice: {
-                    mac: 'mac',
-                },
-            },
-            minionId: 'mi',
-            minionStatus: {
+    //         },
+    //         minionType: 'switch',
+    //         name: 'minion name',
+    //         isProperlyCommunicated: true,
+    //     },
 
-            },
-            minionType: 'switch',
-            name: 'minion name',
-            isProperlyCommunicated: true,
-        },
+    // ];
 
-    ];
+    public minions: Minion[] = [];
 
-    constructor() { }
+    constructor(private minionsService: MinionsService) {
+        minionsService.minionsFeed.subscribe((minions) => {
+            this.minions = minions;
+            this.minions.sort((m1: Minion, m2: Minion) => {
+                return m1.name < m2.name ? -1 : 1;
+            });
+        });
+        minionsService.retriveMinions();
+    }
 
     ngOnInit() {
     }
 
-    private setDefaultValue(minionStatus: MinionStatus) {
-
+    private getDefaultStatusValues(): MinionStatus {
+        return {
+            airConditioning: {
+                fanStrength: 'auto',
+                mode: 'auto',
+                status: 'off',
+                temperature: 16,
+            },
+            colorLight: {
+                blue: 1,
+                brightness: 1,
+                green: 1,
+                red: 1,
+                status: 'off',
+                temperature: 1,
+            },
+            light: {
+                brightness: 1,
+                status: 'off',
+            },
+            switch: {
+                status: 'off',
+            },
+            temperatureLight: {
+                brightness: 1,
+                status: 'off',
+                temperature: 1,
+            },
+            toggle: {
+                status: 'off',
+            }
+        };
     }
 
     public getMinionOnOffStatus(minion: Minion): SwitchOptions {
         if (!minion.minionStatus[minion.minionType]) {
-            minion.minionStatus[minion.minionType] = {
-                status: 'off',
-            };
+            minion.minionStatus = this.getDefaultStatusValues();
         }
 
         const minionSwitchStatus = minion.minionStatus[minion.minionType] as Toggle;
@@ -712,9 +730,12 @@ export class DashboardCrmComponent implements OnInit {
         }
     }
 
-    setStatus(minion: Minion, status: SwitchOptions) {
+    public async setStatus(minion: Minion, status: SwitchOptions) {
 
         minion.minionStatus[minion.minionType].status = status;
+
+        minion['sync'] = true;
+        await this.minionsService.setStatus(minion);
     }
 
     reScanMinion(minion: Minion) {

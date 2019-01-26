@@ -6,6 +6,7 @@ import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { TranslateService } from '../../translate.service';
+import { User } from '../../../../../backend/src/models/sharedInterfaces';
 
 // import { LoadingService } from '../../services/loading/loading.service';
 
@@ -18,6 +19,7 @@ import { TranslateService } from '../../translate.service';
 export class UserMenuComponent implements OnInit {
 	isOpen = false;
 
+	public profile: User;
 
 	@Input() currentUser = null;
 	@HostListener('document:click', ['$event', '$event.target'])
@@ -32,19 +34,15 @@ export class UserMenuComponent implements OnInit {
 		}
 	}
 
-	// userInfo: User;
-
-	constructor(private translate: TranslateService,
-		private elementRef: ElementRef,
+	constructor(private elementRef: ElementRef,
 		public snackBar: MatSnackBar,
 		public dialog: MatDialog,
 		private router: Router,
 		private authService: AuthService) {
-		// this.userInfo = authService.defaultUser;
 
-		// authService.userInfoObserveable.subscribe((userInfo: User) => {
-		// 	this.userInfo = userInfo;
-		// });
+		authService.userProfile.subscribe((profile) => {
+			this.profile = profile;
+		});
 	}
 
 
@@ -52,13 +50,11 @@ export class UserMenuComponent implements OnInit {
 	}
 
 	onLogout() {
-		// this.loadingService.startLoading('מתנתק...');
 		this.authService.logout().then(() => {
 			this.snackBar.open('התנתקות בוצעה בהצלחה', 'אישור', {
 				duration: 20000,
 			});
 		}).catch((() => {
-			// this.loadingService.stopLoading();
 			this.snackBar.open('ההתנתקות לא הושלמה!', 'אישור', {
 				duration: 20000,
 			});
@@ -68,7 +64,6 @@ export class UserMenuComponent implements OnInit {
 
 
 	openHelpDialog(): void {
-
 		const dialogConfig = new MatDialogConfig();
 
 		// dialogConfig.disableClose = true;
@@ -78,7 +73,6 @@ export class UserMenuComponent implements OnInit {
 	}
 
 	openAboutDialog(): void {
-
 		const dialogConfig = new MatDialogConfig();
 
 		// dialogConfig.disableClose = true;
