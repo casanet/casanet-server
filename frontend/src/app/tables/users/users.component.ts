@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { UsersService } from '../../services/data/users.service';
+import { UsersService } from '../../services/users.service';
 import { Observable, Subscriber, BehaviorSubject, Subscription } from 'rxjs';
 import { AccessMap } from './usersViewStrings';
 import swal, { SweetAlertResult } from 'sweetalert2';

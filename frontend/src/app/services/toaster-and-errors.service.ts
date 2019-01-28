@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import swal, { SweetAlertResult } from 'sweetalert2';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { TranslateService } from '../../translate.service';
-import { TranslatePipe } from '../../translate.pipe';
-import { ErrorResponse } from '../../../../../backend/src/models/sharedInterfaces';
+import { TranslateService } from '../translate.service';
+import { TranslatePipe } from '../translate.pipe';
+import { ErrorResponse } from '../../../../backend/src/models/sharedInterfaces';
 
 @Injectable({
   providedIn: 'root'

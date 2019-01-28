@@ -17,7 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 
-import { MinionsService } from '../services/data/minions.service';
+import { MinionsService } from '../services/minions.service';
 
 export const appRoutes: Routes = [
   { path: '', component: DashboardCrmComponent },

@@ -8,7 +8,7 @@ import { CoreModule } from './core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateService } from './translate.service';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
-import { ToasterAndErrorsService } from './services/toastrs/toaster-and-errors.service';
+import { ToasterAndErrorsService } from './services/toaster-and-errors.service';
 
 export function setupTranslateFactory(
   service: TranslateService): Function {

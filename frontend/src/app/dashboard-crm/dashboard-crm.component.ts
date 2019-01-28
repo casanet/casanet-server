@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Minion, SwitchOptions, Toggle, MinionStatus } from '../../../../backend/src/models/sharedInterfaces';
-import { MinionsService } from '../services/data/minions.service';
+import { MinionsService } from '../services/minions.service';
 
 @Component({
     selector: 'app-dashboard-crm',
