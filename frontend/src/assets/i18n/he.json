@@ -44,5 +44,12 @@
     "FUN_STRENGTH" : "עצמת רוח",
     "TEMERATURE" : "טמפרטורה",
     "SUBMIT" : "בצע",
-    "CANCEL" : "ביטול"
+    "CANCEL" : "ביטול",
+    "DEVICE_META" : "מידע על המכשיר",
+    "REFRESH_MINION_DATA" : "רענן מיניון",
+    "ENTER_RECORD_MODE" : "מצב הקלטה",
+    "EXIT_RECORD_MODE" : "צא ממצב הקלטה",
+    "DELETE_MINION" : "מחק מיניון",
+    "REFRESH_ALL_MINIONS" : "רענן מנינונים",
+    "RESCAN_NETWORK_AND_MINIONS" : "סרוק את כתובות הרשת ורענן מנינונים"
 }

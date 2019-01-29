@@ -23,6 +23,7 @@
     "@angular/platform-browser": "~7.0.0",
     "@angular/platform-browser-dynamic": "~7.0.0",
     "@angular/router": "~7.0.0",
+    "@ecodev/fab-speed-dial": "^3.1.0",
     "@toverux/ngx-sweetalert2": "^4.0.0",
     "@types/chance": "^1.0.1",
     "chance": "^1.0.18",

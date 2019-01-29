@@ -16,7 +16,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatDividerModule } from '@angular/material/divider';
+import { EcoFabSpeedDialModule} from '@ecodev/fab-speed-dial';
 
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserModule } from '@angular/platform-browser';
 import { MinionsService } from '../services/minions.service';
 
 export const appRoutes: Routes = [
@@ -25,6 +29,10 @@ export const appRoutes: Routes = [
 
 @NgModule({
   imports: [
+    // BrowserModule,
+    // BrowserAnimationsModule,
+    EcoFabSpeedDialModule,
+    MatDividerModule,
     MatSliderModule,
     FormsModule,
     MatSelectModule,

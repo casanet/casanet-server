@@ -1,48 +1,52 @@
 <div fxLayout="row" fxLayout="row wrap">
     <div *ngFor="let minion of minions" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
-        <!-- <cdk-dashcard [dashData]="dash"></cdk-dashcard> -->
+
         <mat-card class="minion-text" style="max-width: 500px !important" [style.background]="getMinionColor(minion).dark">
             <mat-card-header>
                 <div mat-card-avatar *ngIf="!minion.isProperlyCommunicated">
-                    <button mat-icon-button
-                    (click)="reScanMinion(minion)"
-                    matTooltipPosition="above" matTooltip="{{'COMMUNICATION_ERROR_PRESS_TO_RESCAN' | translate}}">
-                        <mat-icon aria-label="Rescan minion" >perm_scan_wifi</mat-icon>
+                    <button mat-icon-button (click)="reScanMinion(minion)" matTooltipPosition="above" matTooltip="{{'COMMUNICATION_ERROR_PRESS_TO_RESCAN' | translate}}">
+                        <mat-icon aria-label="Rescan minion">perm_scan_wifi</mat-icon>
                     </button>
                 </div>
 
                 <mat-card-title class="minion-text">{{minion.name}}</mat-card-title>
                 <mat-card-subtitle class="minion-text">{{ minion.minionType | translate}}</mat-card-subtitle>
 
-                <mat-slide-toggle [disabled]="minion.sync" *ngIf="minion.minionType !== 'toggle'" [ngClass]="minion.minionType" style="margin: auto"
-                    [checked]="getMinionOnOffStatus(minion) === 'on'" (change)="setStatus(minion, $event.checked ? 'on' : 'off')"></mat-slide-toggle>
+                <mat-slide-toggle [disabled]="minion.sync" *ngIf="minion.minionType !== 'toggle'" [ngClass]="minion.minionType"
+                    style="margin: auto" [checked]="getMinionOnOffStatus(minion) === 'on'" (change)="setStatus(minion, $event.checked ? 'on' : 'off')"></mat-slide-toggle>
 
                 <button [disabled]="minion.sync" mat-icon-button style="margin: auto" *ngIf="minion.minionType === 'toggle'"
                     (click)="setStatus(minion, 'on')" matTooltipPosition="above" matTooltip="{{'PRESS_TO_TURN_ON' | translate}}">
-                    <mat-icon aria-label="Turn on toggle" >power</mat-icon>
-                  </button>
+                    <mat-icon aria-label="Turn on toggle">power</mat-icon>
+                </button>
                 <button [disabled]="minion.sync" mat-icon-button style="margin: auto" *ngIf="minion.minionType === 'toggle'"
                     (click)="setStatus(minion, 'off')" matTooltipPosition="above" matTooltip="{{'PRESS_TO_TURN_OFF' | translate}}">
-                    <mat-icon aria-label="Turn off toggle" >power_off</mat-icon>
-                  </button>
+                    <mat-icon aria-label="Turn off toggle">power_off</mat-icon>
+                </button>
 
                 <button mat-icon-button [matMenuTriggerFor]="minioinMenu" [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
-                  [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'">
+                    [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'">
                     <mat-icon>more_vert</mat-icon>
-                  </button>
-               
+                </button>
+
                 <mat-menu #minioinMenu="matMenu">
                     <button mat-menu-item>
-                      <mat-icon>dialpad</mat-icon>
-                      <span>Redial</span>
-                    </button>
-                    <button mat-menu-item disabled>
-                      <mat-icon>voicemail</mat-icon>
-                      <span>Check voicemail</span>
+                        <mat-icon>perm_device_information</mat-icon>
+                        <span>{{ 'DEVICE_META' | translate}}</span>
                     </button>
                     <button mat-menu-item>
-                      <mat-icon>notifications_off</mat-icon>
-                      <span>Disable alerts</span>
+                        <mat-icon>refresh</mat-icon>
+                        <span>{{ 'REFRESH_MINION_DATA' | translate}}</span>
+                    </button>
+                    <button mat-menu-item disabled>
+                        <mat-icon>track_changes</mat-icon>
+                        <span *ngIf="!minion.recordMode">{{ 'ENTER_RECORD_MODE' | translate}}</span>
+                        <span *ngIf="minion.recordMode">{{ 'EXIT_RECORD_MODE' | translate}}</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item style="color: salmon;">
+                        <mat-icon style="color: salmon;">delete_forever</mat-icon>
+                        <span>{{ 'DELETE_MINION' | translate}}</span>
                     </button>
                 </mat-menu>
             </mat-card-header>
@@ -53,8 +57,8 @@
                             {{'PROPERTIES' | translate}}
                         </mat-panel-title>
                         <!-- <mat-panel-description>
-                           עריכה
-                        </mat-panel-description> -->
+                               עריכה
+                            </mat-panel-description> -->
                     </mat-expansion-panel-header>
 
                     <div *ngIf="minion.minionType === 'airConditioning'" [style.background]="getMinionColor(minion).dark">
@@ -89,3 +93,26 @@
         </mat-card>
     </div>
 </div>
+
+<div dir="ltr" style="position: absolute; bottom: 50px;" 
+    [style.right]="('DIR' | translate) === 'ltr' ? '25px' : null"
+    [style.left]="('DIR' | translate) === 'rtl' ? '25px' : null">
+        <eco-fab-speed-dial #allMinionsActionsFab (mouseenter)="allMinionsActionsFab.open = true" (mouseleave)="allMinionsActionsFab.open = false">
+            <eco-fab-speed-dial-trigger [spin]="true">
+                <button [color]="primary" mat-fab>
+                    <mat-icon class="spin180">more_vert</mat-icon>
+                </button>
+            </eco-fab-speed-dial-trigger>
+
+            <eco-fab-speed-dial-actions>
+                <button [color]="primary" mat-mini-fab (click)="doAction('action1')" matTooltipPosition="{{'RIGHT_DIR' | translate}}"
+                    matTooltip="{{'REFRESH_ALL_MINIONS' | translate}}">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+                <button [color]="primary" mat-mini-fab (click)="doAction('action1')" matTooltipPosition="{{'RIGHT_DIR' | translate}}"
+                    matTooltip="{{'RESCAN_NETWORK_AND_MINIONS' | translate}}">
+                    <mat-icon>wifi_tethering</mat-icon>
+                </button>
+            </eco-fab-speed-dial-actions>
+        </eco-fab-speed-dial>
+    </div>
