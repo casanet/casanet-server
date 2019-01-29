@@ -1,9 +1,9 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
+import * as cryptoJs from 'crypto-js';
 import { UsersBl } from '../../src/business-layer/usersBl';
 import { UsersDal } from '../../src/data-layer/usersDal';
 import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
-import * as cryptoJs from 'crypto-js';
 import { UsersDalMock } from '../data-layer/usersDal.mock.spec';
 
 const usersDalMock = new UsersDalMock();
@@ -51,7 +51,7 @@ describe('Users BL tests', () => {
                 };
                 expect(error).to.have.property('responseCode').to.deep.equal(4022);
                 return;
-            };
+            }
 
             throw new Error('new user created while password less then 10 chars');
         });
@@ -71,7 +71,6 @@ describe('Users BL tests', () => {
 
     describe('Delete User', () => {
         it('it should delete user succsessfully', async () => {
-
 
             await usersBl.deleteUser(additionalUser.email);
 

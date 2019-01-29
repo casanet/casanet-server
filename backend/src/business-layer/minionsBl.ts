@@ -142,6 +142,10 @@ export class MinionsBl {
             }) as MinionStatus;
         minion.isProperlyCommunicated = true;
         minion.minionStatus = currentStatus;
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
         return;
     }
 

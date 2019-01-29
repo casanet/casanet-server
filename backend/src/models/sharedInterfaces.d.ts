@@ -145,6 +145,11 @@ export declare interface DeviceKind {
      * Supported minion type for current device.
      */
     suppotedMinionType: MinionTypes;
+
+    /**
+     * Some of device supported recording (for example IR transmitter).
+     */
+    isRecordingSupported : boolean;
 }
 
 /**

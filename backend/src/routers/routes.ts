@@ -174,6 +174,7 @@ const models: TsoaRoute.Models = {
             "isTokenRequierd": { "dataType": "boolean", "required": true },
             "isIdRequierd": { "dataType": "boolean", "required": true },
             "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "isRecordingSupported": { "dataType": "boolean", "required": true },
         },
     },
     "OperationActivity": {

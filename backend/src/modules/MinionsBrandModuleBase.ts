@@ -1,11 +1,24 @@
+import * as fse from 'fs-extra';
+import * as path from 'path';
 import { BehaviorSubject } from 'rxjs';
+import { Configuration } from '../config';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../models/sharedInterfaces';
+import { logger } from '../utilities/logger';
 import { PullBehavior } from '../utilities/pullBehavior';
 
 /**
  * Any smart devices brand communication module needs to inherit..
  */
 export abstract class MinionsBrandModuleBase {
+
+    public static readonly CACHE_DIRACTORY = path.join('./data/', Configuration.runningMode, '/cache/');
+
+    /**
+     * Cache file pull path.
+     */
+    private get cacheFilePath(): string {
+        return `${path.join(MinionsBrandModuleBase.CACHE_DIRACTORY, this.brandName)}.json`;
+    }
 
     /**
      * Brand name, should be unique in system.
@@ -31,6 +44,42 @@ export abstract class MinionsBrandModuleBase {
      * some of is by mac some by other data.
      */
     public retrieveMinions: PullBehavior<Minion[]> = new PullBehavior<Minion[]>();
+
+    /**
+     * Get cache JSON data sync.
+     * Use it in init only. else the app will black until read finish.
+     */
+    protected getCacheDataSync(): any {
+        try {
+            return fse.readJSONSync(this.cacheFilePath);
+        } catch (error) {
+            return undefined;
+        }
+    }
+
+    /**
+     * Get cache JSON data.
+     */
+    protected async getCacheData(): Promise<any> {
+        const data = await fse.readJSON(this.cacheFilePath)
+            .catch((err) => {
+                logger.warn(`Fail to read ${this.cacheFilePath} cache file, ${err}`);
+                throw new Error('Fail to read cache data');
+            });
+        return data;
+    }
+
+    /**
+     * Save JSON to module cache.
+     * @param data Data to save in cache.
+     */
+    protected async setCacheData(data: any): Promise<void> {
+        await fse.outputFile(this.cacheFilePath, JSON.stringify(data, null, 2))
+            .catch((err) => {
+                logger.warn(`Fail to write ${this.cacheFilePath} cache file, ${err}`);
+                throw new Error('Fail to write cache data');
+            });
+    }
 
     /**
      * Get current status of minion. (such as minion status on off etc.)

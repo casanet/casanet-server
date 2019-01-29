@@ -170,4 +170,24 @@ describe('Modules Manager tests', () => {
             throw new Error('Tring get status of unkknown light not fail.');
         });
     });
+
+    describe('record commands tests', () => {
+
+        it('it should record successfuly', async () => {
+            await modulesManager.enterRecordMode(acMinionMock, {});
+        });
+
+        it('it should fail record', async () => {
+            try {
+                await modulesManager.enterRecordMode(switchMinionMock, {});
+            } catch (error) {
+                expect(error).to.be.deep.equal({
+                    responseCode: 4005,
+                    message: `the minioin not supporting command record`,
+                } as ErrorResponse);
+                return;
+            }
+            throw new Error('Tring record command on unsupported model.');
+        });
+    });
 });

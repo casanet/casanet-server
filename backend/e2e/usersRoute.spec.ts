@@ -49,10 +49,10 @@ describe('Users routing API', () => {
                 });
         });
 
-        it('it should respond 40x as status code', (done) => {
+        it('it should respond 50x as status code', (done) => {
             validUserAgent.get('/API/users/aa@bb.com')
                 .end((err, res) => {
-                    expect(res.statusType).eql(4);
+                    expect(res.statusType).eql(5);
                     done();
                 });
         });
