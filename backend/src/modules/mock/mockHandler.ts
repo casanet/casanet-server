@@ -2,9 +2,9 @@ import * as moment from 'moment';
 import { Duration } from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
+import { DeepCopy } from '../../utilities/deepCopy';
 import { Delay } from '../../utilities/sleep';
 import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
-import { DeepCopy } from '../../utilities/deepCopy';
 
 export class MockHandler extends MinionsBrandModuleBase {
 
@@ -28,6 +28,7 @@ export class MockHandler extends MinionsBrandModuleBase {
             minionsPerDevice: 1,
             model: 'switch demo',
             suppotedMinionType: 'switch',
+            isRecordingSupported : false,
         },
         {
             brand: this.brandName,
@@ -36,6 +37,7 @@ export class MockHandler extends MinionsBrandModuleBase {
             minionsPerDevice: -1,
             model: 'ac demo',
             suppotedMinionType: 'airConditioning',
+            isRecordingSupported : true,
         },
     ];
 
@@ -43,6 +45,8 @@ export class MockHandler extends MinionsBrandModuleBase {
 
         super();
 
+        // for debug updattes remove 'return'
+        return;
         setInterval(async () => {
 
             const minions = await this.retrieveMinions.pull();

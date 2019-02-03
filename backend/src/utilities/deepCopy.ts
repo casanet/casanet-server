@@ -5,4 +5,4 @@
  */
 export const DeepCopy = <T>(fromData: T): T => {
     return JSON.parse(JSON.stringify(fromData)) as T;
-}
+};

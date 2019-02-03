@@ -1834,6 +1834,9 @@ definitions:
                     - temperatureLight
                     - colorLight
                 description: 'Supported minion type for current device.'
+            isRecordingSupported:
+                type: boolean
+                description: 'Some of device supported recording (for example IR transmitter).'
         required:
             - brand
             - model
@@ -1841,6 +1844,7 @@ definitions:
             - isTokenRequierd
             - isIdRequierd
             - suppotedMinionType
+            - isRecordingSupported
         type: object
     OperationActivity:
         description: 'Represents acivity.'

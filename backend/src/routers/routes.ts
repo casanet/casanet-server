@@ -174,6 +174,7 @@ const models: TsoaRoute.Models = {
             "isTokenRequierd": { "dataType": "boolean", "required": true },
             "isIdRequierd": { "dataType": "boolean", "required": true },
             "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "isRecordingSupported": { "dataType": "boolean", "required": true },
         },
     },
     "OperationActivity": {
@@ -1076,7 +1077,7 @@ export function RegisterRoutes(app: express.Express) {
                  */
                 try {
                     const cleanError = await SchemaValidator(error, ErrorResponseSchema);
-                    response.status(422).send(cleanError);
+                    response.status(500).send(cleanError);
                 } catch (error) {
                     response.status(500).send({
                         responseCode: 5000,

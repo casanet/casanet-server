@@ -7,9 +7,9 @@ import { DevicesDal } from '../../src/data-layer/devicesDal';
 import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionStatus, User } from '../../src/models/sharedInterfaces';
 import { ModulesManager } from '../../src/modules/modulesManager';
 import { Delay } from '../../src/utilities/sleep';
-import { localNetworkReaderMock, localNetworkDevicesMock } from '../utilities/lanManager.mock.spec';
-import { ModulesManagerMock } from '../modules/modulesManager.mock.spec';
 import { DevicesDalMock } from '../data-layer/devicesDal.mock.spec';
+import { ModulesManagerMock } from '../modules/modulesManager.mock.spec';
+import { localNetworkDevicesMock, localNetworkReaderMock } from '../utilities/lanManager.mock.spec';
 
 const devicesDalMock = new DevicesDalMock();
 const modulesManagerMock = new ModulesManagerMock();

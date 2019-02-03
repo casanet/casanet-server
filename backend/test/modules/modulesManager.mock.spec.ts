@@ -1,6 +1,6 @@
 import * as moment from 'moment';
-import { ErrorResponse, Minion, MinionStatus, DeviceKind } from '../../src/models/sharedInterfaces';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../../src/models/sharedInterfaces';
 import { Delay } from '../../src/utilities/sleep';
 
 export class ModulesManagerMock {
@@ -25,6 +25,7 @@ export class ModulesManagerMock {
                 minionsPerDevice: 1,
                 model: 'switch demo',
                 suppotedMinionType: 'switch',
+                isRecordingSupported: false,
             },
             {
                 brand: 'test mock',
@@ -33,6 +34,7 @@ export class ModulesManagerMock {
                 minionsPerDevice: 1,
                 model: 'switch demo with token',
                 suppotedMinionType: 'switch',
+                isRecordingSupported: false,
             },
             {
                 brand: 'test mock',
@@ -41,6 +43,7 @@ export class ModulesManagerMock {
                 minionsPerDevice: -1,
                 model: 'ac demo',
                 suppotedMinionType: 'airConditioning',
+                isRecordingSupported: true,
             },
             {
                 brand: 'test mock',
@@ -49,6 +52,7 @@ export class ModulesManagerMock {
                 minionsPerDevice: -1,
                 model: 'ac 2 demo',
                 suppotedMinionType: 'airConditioning',
+                isRecordingSupported: true,
             },
         ];
     }

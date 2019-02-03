@@ -15,6 +15,7 @@ export class TuyaHandler extends MinionsBrandModuleBase {
             minionsPerDevice: 3,
             model: 'wall switch, 3 gangs, first one',
             suppotedMinionType: 'switch',
+            isRecordingSupported : false,
         },
         {
             brand: this.brandName,
@@ -23,6 +24,7 @@ export class TuyaHandler extends MinionsBrandModuleBase {
             minionsPerDevice: 3,
             model: 'wall switch, 3 gangs, second one',
             suppotedMinionType: 'switch',
+            isRecordingSupported : false,
         },
         {
             brand: this.brandName,
@@ -31,6 +33,7 @@ export class TuyaHandler extends MinionsBrandModuleBase {
             minionsPerDevice: 3,
             model: 'wall switch, 3 gangs, third one',
             suppotedMinionType: 'switch',
+            isRecordingSupported : false,
         },
     ];
 
