@@ -8,7 +8,9 @@ import { MinionsBrandModuleBase } from './MinionsBrandModuleBase';
 ///////////////////////////////////////////////////////////////////////////////
 import { BroadlinkHandler } from './broadlink/broadlinkHandler';
 import { MockHandler } from './mock/mockHandler';
+import { OrviboHandler } from './orvibo/orviboHandler';
 import { TuyaHandler } from './tuya/tuyaHandler';
+import { YeelightHandler } from './yeelight/yeelightHandler';
 
 export class ModulesManager {
 
@@ -56,6 +58,9 @@ export class ModulesManager {
         this.initHandler(new MockHandler());
         this.initHandler(new TuyaHandler());
         this.initHandler(new BroadlinkHandler());
+        this.initHandler(new YeelightHandler());
+        this.initHandler(new OrviboHandler());
+
     }
 
     /**

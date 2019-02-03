@@ -32,13 +32,16 @@
     "log4js": "^3.0.6",
     "moment": "^2.23.0",
     "network-list2": "^1.0.1",
+    "node-orvibo": "^1.1.0",
+    "node-yeelight-wifi": "^0.1.2",
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
     "randomstring": "^1.1.5",
     "rxjs": "^6.3.3",
     "suncalc": "^1.8.0",
     "tsoa": "^2.3.8",
-    "tuyapi": "^3.2.1"
+    "tuyapi": "^3.2.1",
+    "yeelight-awesome": "^1.0.12"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
