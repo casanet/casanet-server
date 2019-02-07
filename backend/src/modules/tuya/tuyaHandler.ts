@@ -1,9 +1,9 @@
 import * as Tuyapi from 'tuyapi';
 import { DeviceKind, ErrorResponse, Minion, MinionDevice, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { logger } from '../../utilities/logger';
-import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
+import { BrandModuleBase } from '../brandModuleBase';
 
-export class TuyaHandler extends MinionsBrandModuleBase {
+export class TuyaHandler extends BrandModuleBase {
 
     public readonly brandName: string = 'tuya';
 

@@ -18,9 +18,9 @@ import {
 import { DeepCopy } from '../../utilities/deepCopy';
 import { logger } from '../../utilities/logger';
 import { Delay } from '../../utilities/sleep';
-import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
+import { BrandModuleBase } from '../brandModuleBase';
 
-export class YeelightHandler extends MinionsBrandModuleBase {
+export class YeelightHandler extends BrandModuleBase {
 
     public readonly brandName: string = 'yeelight';
 

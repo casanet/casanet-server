@@ -177,6 +177,11 @@ const models: TsoaRoute.Models = {
             "isRecordingSupported": { "dataType": "boolean", "required": true },
         },
     },
+    "SetMinionAutoTurnOff": {
+        "properties": {
+            "setAutoTurnOffMS": { "dataType": "double", "required": true },
+        },
+    },
     "OperationActivity": {
         "properties": {
             "minionId": { "dataType": "string", "required": true },
@@ -480,7 +485,7 @@ export function RegisterRoutes(app: express.Express) {
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                minion: { "in": "body", "name": "minion", "required": true, "ref": "Minion" },
+                setTimeout: { "in": "body", "name": "setTimeout", "required": true, "ref": "SetMinionAutoTurnOff" },
             };
 
             let validatedArgs: any[] = [];
@@ -504,7 +509,7 @@ export function RegisterRoutes(app: express.Express) {
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                minion: { "in": "body", "name": "minion", "required": true, "ref": "Minion" },
+                minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
             };
 
             let validatedArgs: any[] = [];

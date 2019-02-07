@@ -1,5 +1,5 @@
 import { IDataIO } from '../models/backendInterfaces';
-import { Minion } from '../models/sharedInterfaces';
+import { ErrorResponse, Minion } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
 const MINIONS_FILE_NAME = 'minions.json';
@@ -41,7 +41,7 @@ export class MinionsDal {
      * Get minion by id.
      * @param minionId minion id.
      */
-    public async getMinionsById(minionId: string): Promise<Minion> {
+    public async getMinionById(minionId: string): Promise<Minion> {
         const minion = this.findMinion(minionId);
 
         if (!minion) {
@@ -80,6 +80,29 @@ export class MinionsDal {
             .catch(() => {
                 this.minions.push(originalMinion);
                 throw new Error('fail to save minion delete request');
+            });
+    }
+
+    /**
+     * Update minion auto turn off timeout.
+     * @param minionId minion to timeout.
+     * @param setAutoTurnOffMS ms to set (or -1/undefined to disable).
+     */
+    public async updateMinionAutoTurnOff(minionId: string, setAutoTurnOffMS: number): Promise<void> {
+        const originalMinion = this.findMinion(minionId);
+
+        if (!originalMinion) {
+            throw {
+                responseCode: 4004,
+                message: 'minion not exist',
+            } as ErrorResponse;
+        }
+
+        originalMinion.minionAutoTurnOffMS = setAutoTurnOffMS;
+
+        await this.dataIo.setData(this.minions)
+            .catch(() => {
+                throw new Error('fail to save minion timeout update request');
             });
     }
 }

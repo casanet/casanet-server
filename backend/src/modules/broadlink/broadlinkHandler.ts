@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { Duration } from 'moment';
 import { AirConditioning, DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
-import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
+import { BrandModuleBase } from '../brandModuleBase';
 // tslint:disable-next-line:no-var-requires
 const Broadlink = require('./broadlinkProtocol');
 
@@ -20,7 +20,7 @@ interface Cache {
     };
 }
 
-export class BroadlinkHandler extends MinionsBrandModuleBase {
+export class BroadlinkHandler extends BrandModuleBase {
 
     private cache: Cache[] = [];
 

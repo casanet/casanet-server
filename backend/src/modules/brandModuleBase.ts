@@ -9,7 +9,7 @@ import { PullBehavior } from '../utilities/pullBehavior';
 /**
  * Any smart devices brand communication module needs to inherit..
  */
-export abstract class MinionsBrandModuleBase {
+export abstract class BrandModuleBase {
 
     public static readonly CACHE_DIRACTORY = path.join('./data/', Configuration.runningMode, '/cache/');
 
@@ -17,7 +17,7 @@ export abstract class MinionsBrandModuleBase {
      * Cache file pull path.
      */
     private get cacheFilePath(): string {
-        return `${path.join(MinionsBrandModuleBase.CACHE_DIRACTORY, this.brandName)}.json`;
+        return `${path.join(BrandModuleBase.CACHE_DIRACTORY, this.brandName)}.json`;
     }
 
     /**

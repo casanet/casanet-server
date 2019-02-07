@@ -89,7 +89,7 @@ describe('Minions DAL tests', () => {
     describe('Get minion by minion id', () => {
         it('it should get minion succsessfully', async () => {
 
-            const minion = await minionsDal.getMinionsById(dataMock.mockData[1].minionId);
+            const minion = await minionsDal.getMinionById(dataMock.mockData[1].minionId);
 
             expect(minion).to.deep.equal(dataMock.mockData[1]);
             return;
@@ -118,10 +118,24 @@ describe('Minions DAL tests', () => {
 
             await minionsDal.createMinion(additionalMinion);
 
-            const minion = await minionsDal.getMinionsById(additionalMinion.minionId);
+            const minion = await minionsDal.getMinionById(additionalMinion.minionId);
 
             expect(minion).to.deep.equal(additionalMinion);
             expect(dataMock.mockData).to.have.length(4);
+            return;
+        });
+    });
+
+    describe('Update minion auto turn off timeout', () => {
+        it('it should update minion succsessfully', async () => {
+
+            const newTurnOffTimeout = 500000;
+
+            await minionsDal.updateMinionAutoTurnOff(additionalMinion.minionId, newTurnOffTimeout);
+
+            const minion = await minionsDal.getMinionById(additionalMinion.minionId);
+
+            expect(minion.minionAutoTurnOffMS).to.be.eql(newTurnOffTimeout);
             return;
         });
     });

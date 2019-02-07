@@ -1,4 +1,4 @@
-import { Minion } from '../../src/models/sharedInterfaces';
+import { ErrorResponse, Minion } from '../../src/models/sharedInterfaces';
 
 export class MinionsDalMock {
 
@@ -113,7 +113,7 @@ export class MinionsDalMock {
         return this.mockMinions;
     }
 
-    public async getMinionsById(minionId: string): Promise<Minion> {
+    public async getMinionById(minionId: string): Promise<Minion> {
         const minion = this.findMinion(minionId);
 
         if (!minion) {
@@ -134,5 +134,18 @@ export class MinionsDalMock {
         }
 
         this.mockMinions.splice(this.mockMinions.indexOf(originalMinion), 1);
+    }
+
+    public async updateMinionAutoTurnOff(minionId: string, setAutoTurnOffMS: number): Promise<void> {
+        const originalMinion = this.findMinion(minionId);
+
+        if (!originalMinion) {
+            throw {
+                responseCode: 4004,
+                message: 'minion not exist',
+            } as ErrorResponse;
+        }
+
+        originalMinion.minionAutoTurnOffMS = setAutoTurnOffMS;
     }
 }

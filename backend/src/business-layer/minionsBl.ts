@@ -261,20 +261,6 @@ export class MinionsBl {
     }
 
     /**
-     * Get minion by mac address.
-     * Note that in minions that sharing same device (such as IR transmitter for 2 ac in same room)
-     * it will return the first minion with given mac.
-     * @param mac minion mac address.
-     */
-    private getMinionsByMac(mac: string): Minion {
-        for (const minion of this.minions) {
-            if (minion.device.pysicalDevice.mac === mac) {
-                return minion;
-            }
-        }
-    }
-
-    /**
      * API
      */
 
@@ -376,28 +362,31 @@ export class MinionsBl {
     /**
      * Set minoin timeout property.
      */
-    public async setMinionTimeout(minionId: string, minion: Minion): Promise<void> {
-        const originalMinion = this.findMinion(minionId);
-        if (!originalMinion) {
+    public async setMinionTimeout(minionId: string, setAutoTurnOffMS: number): Promise<void> {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
             throw {
                 responseCode: 4004,
                 message: 'minion not exist',
             } as ErrorResponse;
         }
 
-        originalMinion.minionAutoTurnOffMS = minion.minionAutoTurnOffMS;
+        minion.minionAutoTurnOffMS = setAutoTurnOffMS;
 
         /**
-         * TODO: save updates, not all is status, some is timeout....
+         * Save timeout update in Dal for next app running.
          */
-        // this.minionsDal.saveUpdate();
+        this.minionsDal.updateMinionAutoTurnOff(minionId, setAutoTurnOffMS)
+            .catch((error: ErrorResponse) => {
+                logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
+            });
 
         /**
          * Send minion feed update
          */
         this.minionFeed.next({
             event: 'update',
-            minion: originalMinion,
+            minion,
         });
     }
 
@@ -456,13 +445,11 @@ export class MinionsBl {
         /**
          * Try to get current status.
          */
-        await this.modulesManager.getStatus(minion)
-            .then((status: MinionStatus) => {
-                minion.minionStatus = status;
-            })
-            .catch(() => {
+        try {
+            await this.readMinionStatus(minion);
+        } catch (error) {
 
-            });
+        }
     }
 
     /**
@@ -491,6 +478,33 @@ export class MinionsBl {
             event: 'removed',
             minion: originalMinion,
         });
+    }
+
+    /**
+     * Record command for current minion status.
+     * @param minionId minion to record for.
+     * @param statusToRecordFor The status to record command for.
+     */
+    public async recordCommand(minionId: string, statusToRecordFor: MinionStatus): Promise<void> {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 4004,
+                message: 'minion not exist',
+            } as ErrorResponse;
+        }
+
+        /**
+         * The minion status is depend on minion type.
+         */
+        if (!statusToRecordFor[minion.minionType]) {
+            throw {
+                responseCode: 4122,
+                message: 'incorrect minion status, for current minion type',
+            } as ErrorResponse;
+        }
+
+        await this.modulesManager.enterRecordMode(minion, statusToRecordFor);
     }
 }
 

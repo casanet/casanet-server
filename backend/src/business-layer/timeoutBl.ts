@@ -2,16 +2,17 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import {
-    SwitchOptions,
+    // tslint:disable-next-line:ordered-imports
     Minion,
-    Switch,
-    Toggle,
     MinionStatus,
+    Switch,
+    SwitchOptions,
+    Toggle,
 } from '../models/sharedInterfaces';
-import { logger } from '../utilities/logger';
-import { MinionsBl, MinionsBlSingleton } from './minionsBl';
-import { Delay } from '../utilities/sleep';
 import { DeepCopy } from '../utilities/deepCopy';
+import { logger } from '../utilities/logger';
+import { Delay } from '../utilities/sleep';
+import { MinionsBl, MinionsBlSingleton } from './minionsBl';
 
 const TIMEOUT_INTERVAL_ACTIVATION = moment.duration(5, 'seconds');
 
@@ -19,11 +20,11 @@ const TIMEOUT_INTERVAL_ACTIVATION = moment.duration(5, 'seconds');
  * Struct to hold info about any minion in system.
  */
 declare interface MinionTimeoutStruct {
-    isTimeoutDisabled: boolean,
-    timeout: moment.Duration,
-    status: SwitchOptions,
-    turnOnTimeStump: Date,
-    minionId: string,
+    isTimeoutDisabled: boolean;
+    timeout: moment.Duration;
+    status: SwitchOptions;
+    turnOnTimeStump: Date;
+    minionId: string;
 }
 
 /**
@@ -47,7 +48,7 @@ export class TimeoutBl {
         this.minionsBl = minionsBl;
 
         /**
-         * Init module. 
+         * Init module.
          */
         this.initData();
     }
@@ -71,7 +72,7 @@ export class TimeoutBl {
         const now = new Date();
 
         /**
-         * Cehck each minion info to know if timeout. 
+         * Cehck each minion info to know if timeout.
          */
         for (const timeoutMinion of this.minionsTimeoutInfo) {
 
@@ -119,7 +120,7 @@ export class TimeoutBl {
      * @param minion minion to get status from.
      */
     private extractMinionOnOffStatus(minion: Minion): SwitchOptions {
-        const switchObject = (minion.minionStatus[minion.minionType] as Toggle)
+        const switchObject = (minion.minionStatus[minion.minionType] as Toggle);
 
         /**
          * New minion some time arrived without any status.
@@ -141,7 +142,7 @@ export class TimeoutBl {
             timeout: moment.duration(minion.minionAutoTurnOffMS, 'milliseconds'),
             status: this.extractMinionOnOffStatus(minion),
             turnOnTimeStump: new Date(),
-        })
+        });
     }
 
     /**
@@ -190,7 +191,7 @@ export class TimeoutBl {
         for (const minion of rawMinions) {
             /**
              * Call to *update* method.
-             * in case the new minion will arrived *befor* current code line. 
+             * in case the new minion will arrived *befor* current code line.
              */
             this.UpdateMinion(minion);
         }
@@ -206,10 +207,10 @@ export class TimeoutBl {
             switch (minionFeed.event) {
                 case 'created':
                 case 'update':
-                    this.UpdateMinion(minionFeed.minion)
+                    this.UpdateMinion(minionFeed.minion);
                     break;
                 case 'removed':
-                    this.removeMinion(minionFeed.minion)
+                    this.removeMinion(minionFeed.minion);
                     break;
             }
         });
@@ -221,7 +222,7 @@ export class TimeoutBl {
             await this.timeoutActivation();
         }, TIMEOUT_INTERVAL_ACTIVATION.asMilliseconds());
 
-        logger.info('Timeout module init done.')
+        logger.info('Timeout module init done.');
     }
 }
 

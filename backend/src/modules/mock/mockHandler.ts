@@ -4,9 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { DeepCopy } from '../../utilities/deepCopy';
 import { Delay } from '../../utilities/sleep';
-import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
+import { BrandModuleBase } from '../brandModuleBase';
 
-export class MockHandler extends MinionsBrandModuleBase {
+export class MockHandler extends BrandModuleBase {
 
     /**
      * Time duratin to mock pysical device status update for switch minion.
