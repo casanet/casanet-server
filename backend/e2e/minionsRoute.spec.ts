@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as moment from 'moment';
 import { MinionsDalSingleton } from '../src/data-layer/minionsDal';
-import { ErrorResponse, Minion, MinionStatus, SetMinionAutoTurnOff } from '../src/models/sharedInterfaces';
+import { ErrorResponse, Minion, MinionStatus, SetMinionAutoTurnOff, Switch } from '../src/models/sharedInterfaces';
 import { validUserAgent } from './prepareRoutesSpecTests.spec';
 
 const minioinMock: Minion = {
@@ -26,6 +26,30 @@ MinionsDalSingleton.createMinion(minioinMock)
     })
     .catch(() => {
         console.warn('Fail to generate mock minion in data');
+    });
+
+const minioinAcMock: Minion = {
+    device: {
+        brand: 'mock',
+        model: 'ac demo',
+        pysicalDevice: {
+            mac: '45543dd544',
+        },
+    },
+    isProperlyCommunicated: true,
+    minionId: 'm2',
+    minionType: 'airConditioning',
+    minionStatus: {
+
+    },
+    name: 'bla bla ac 2',
+};
+MinionsDalSingleton.createMinion(minioinAcMock)
+    .then(() => {
+        console.log('Generate mock ac minion in data successfuly');
+    })
+    .catch(() => {
+        console.warn('Fail to generate mock ac minion in data');
     });
 
 describe('Minions routing API', () => {
@@ -127,25 +151,16 @@ describe('Minions routing API', () => {
 
     describe('/POST minions/command/{minionId}', () => {
         it('it should respond 20x as status code', (done) => {
-            const minion: Minion = {
-                device: {
-                    brand: '',
-                    model: '',
-                    pysicalDevice: {
-                        mac: '11111111',
-                    },
+            const minionStatus: MinionStatus = {
+                airConditioning : {
+                    fanStrength: 'high',
+                    mode : 'auto',
+                    status : 'on',
+                    temperature : 21,
                 },
-                isProperlyCommunicated: true,
-                minionId: 'vf',
-                minionType: 'light',
-                name: 'dfdf',
-                minionStatus: {
-
-                },
-                minionAutoTurnOffMS: 5555555,
             };
-            validUserAgent.post('/API/minions/command/m1')
-                .send(minion)
+            validUserAgent.post('/API/minions/command/m2')
+                .send(minionStatus)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -160,7 +175,7 @@ describe('Minions routing API', () => {
                     expect(res.statusType).eql(2);
                     done();
                 });
-        });
+        }).timeout(moment.duration(5, 'seconds').asMilliseconds());
     });
 
     describe('/POST minions/rescan/{minionId}', () => {

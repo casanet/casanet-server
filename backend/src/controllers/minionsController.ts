@@ -66,8 +66,7 @@ export class MinionsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post('command/{minionId}')
     public async recordMinionCommand(minionId: string, @Body() minionStatus: MinionStatus): Promise<void> {
-        // TODO ...
-        return;
+        return MinionsBlSingleton.recordCommand(minionId, minionStatus);
     }
 
     /**
