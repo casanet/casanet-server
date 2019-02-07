@@ -88,21 +88,21 @@ export class OperationsDal {
      * @param operation operation to update.
      */
     public async updateOperation(operation: Operation): Promise<void> {
-        const originalMinion = this.findOperation(operation.operationId);
+        const originalOperation = this.findOperation(operation.operationId);
 
-        if (!originalMinion) {
+        if (!originalOperation) {
             throw {
                 responseCode : 4004,
                 message: 'operation not exist',
             } as ErrorResponse;
         }
 
-        this.operations.splice(this.operations.indexOf(originalMinion), 1);
+        this.operations.splice(this.operations.indexOf(originalOperation), 1);
         this.operations.push(operation);
         await this.dataIo.setData(this.operations)
             .catch(() => {
                 this.operations.splice(this.operations.indexOf(operation), 1);
-                this.operations.push(originalMinion);
+                this.operations.push(originalOperation);
                 throw new Error('fail to save operation update request');
             });
     }
