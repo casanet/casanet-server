@@ -23,7 +23,7 @@ export class FeedRouter {
                  */
                 const user =
                     await expressAuthentication(req, [SystemAuthScopes.userScope, SystemAuthScopes.adminScope]) as User;
-                logger.info(`user ${user.email} connected to feed ${req.path}`);
+                logger.debug(`user ${user.email} connected to feed ${req.path}`);
 
                 next();
             } catch (error) {
