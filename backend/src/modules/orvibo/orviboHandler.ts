@@ -8,9 +8,9 @@ import {
 } from '../../models/sharedInterfaces';
 import { logger } from '../../utilities/logger';
 import { Delay } from '../../utilities/sleep';
-import { MinionsBrandModuleBase } from '../MinionsBrandModuleBase';
+import { BrandModuleBase } from '../brandModuleBase';
 
-export class OrviboHandler extends MinionsBrandModuleBase {
+export class OrviboHandler extends BrandModuleBase {
 
     public readonly brandName: string = 'orvibo';
 
@@ -40,9 +40,9 @@ export class OrviboHandler extends MinionsBrandModuleBase {
         }
     }
 
-    /** Init connection (UDP socket) for orvibo, 
-      * and listen to broadcasts messags in LAN
-      */
+    /** Init connection (UDP socket) for orvibo,
+     * and listen to broadcasts messags in LAN
+     */
     private initOrviboCommunication() {
         /** Create the orvibo protocol instance */
         this.orviboCommunication = new Orvibo();
@@ -101,7 +101,6 @@ export class OrviboHandler extends MinionsBrandModuleBase {
                 } as ErrorResponse;
             }
         }
-
 
         /** Reload device each time befor sending data using UDP */
         if (this.orviboCommunication.getDevice(miniom.device.pysicalDevice.mac)) {

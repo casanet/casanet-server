@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { DeviceKind, ErrorResponse, Minion, MinionDevice, MinionStatus } from '../models/sharedInterfaces';
 import { PullBehavior } from '../utilities/pullBehavior';
-import { MinionsBrandModuleBase } from './MinionsBrandModuleBase';
+import { BrandModuleBase } from './brandModuleBase';
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////// TO EXTEND: Place here handler reference //////////////////////
@@ -17,7 +17,7 @@ export class ModulesManager {
     /**
      * All modules handlers
      */
-    private modulesHandlers: MinionsBrandModuleBase[] = [];
+    private modulesHandlers: BrandModuleBase[] = [];
 
     /**
      * Let subscribe to any status minion changed. from any brand module.
@@ -67,7 +67,7 @@ export class ModulesManager {
      * Hold the hendler instance and registar to minions status changed.
      * @param brandModule the handler instance.
      */
-    private initHandler(brandModule: MinionsBrandModuleBase): void {
+    private initHandler(brandModule: BrandModuleBase): void {
 
         /**
          * Set pull proxy method to get all last minions array.
@@ -91,7 +91,7 @@ export class ModulesManager {
      * @param brandName the brand name.
      * @returns The module instance or undefined if not exist.
      */
-    private getMinionModule(brandName: string): MinionsBrandModuleBase {
+    private getMinionModule(brandName: string): BrandModuleBase {
         for (const brandHandler of this.modulesHandlers) {
             if (brandName === brandHandler.brandName) {
                 return brandHandler;
@@ -105,7 +105,7 @@ export class ModulesManager {
      * @param minionDevice the minoin device to get kind for.
      * @returns The device kind.
      */
-    private getModelKind(minionsBrandModuleBase: MinionsBrandModuleBase, minionDevice: MinionDevice): DeviceKind {
+    private getModelKind(minionsBrandModuleBase: BrandModuleBase, minionDevice: MinionDevice): DeviceKind {
         for (const deviceKind of minionsBrandModuleBase.devices) {
             if (deviceKind.brand === minionDevice.brand &&
                 deviceKind.model === minionDevice.model) {
