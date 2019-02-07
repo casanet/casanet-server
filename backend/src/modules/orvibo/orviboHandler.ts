@@ -32,6 +32,18 @@ export class OrviboHandler extends MinionsBrandModuleBase {
     constructor() {
         super();
 
+        try {
+            this.initOrviboCommunication();
+        } catch (error) {
+            this.orviboCommunication = undefined;
+            logger.error('Fail to init orvibo communication');
+        }
+    }
+
+    /** Init connection (UDP socket) for orvibo, 
+      * and listen to broadcasts messags in LAN
+      */
+    private initOrviboCommunication() {
         /** Create the orvibo protocol instance */
         this.orviboCommunication = new Orvibo();
 
@@ -77,6 +89,20 @@ export class OrviboHandler extends MinionsBrandModuleBase {
      * @param miniom The minion of device.
      */
     private async prepareOrviboSending(miniom: Minion) {
+        /** If there is no connection, try to init it */
+        if (!this.orviboCommunication) {
+            try {
+                this.initOrviboCommunication();
+            } catch (error) {
+                this.orviboCommunication = undefined;
+                throw {
+                    responseCode: 5001,
+                    message: 'there is no UDP socket to send request by',
+                } as ErrorResponse;
+            }
+        }
+
+
         /** Reload device each time befor sending data using UDP */
         if (this.orviboCommunication.getDevice(miniom.device.pysicalDevice.mac)) {
             this.orviboCommunication.devices = [];
@@ -96,7 +122,7 @@ export class OrviboHandler extends MinionsBrandModuleBase {
         /** Add it to lib collection */
         this.orviboCommunication.addDevice(orvibo);
 
-        /** Tell lib to subscribe device events */
+        /** Tell lib to subscribe device events results */
         this.orviboCommunication.subscribe(orvibo);
 
         /** Let UDP to be sent */
