@@ -4,44 +4,19 @@ mat-card {
   
 }
 
+.minion-card-focus:hover {
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.minion-card:active {
+  margin-top: 17px;
+}
+
 .minion-text {
   color: white;
 }
 
-/deep/ .switch.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
-  background-color: #1f5f59;
-}
-/deep/ .switch.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
-  background-color: #26a69a;
-}
-
-/deep/ .airConditioning.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
-  background-color: #252942;
-}
-/deep/ .airConditioning.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
-  background-color: #5c6bc0;
-}
-
-/deep/ .light.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
-  background-color: #2a4e2b;
-}
-/deep/ .light.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
-  background-color: #66bb6a;
-}
-
-/deep/ .temperatureLight.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
-  background-color: #2a4e2b;
-}
-/deep/ .temperatureLight.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
-  background-color: #66bb6a;
-}
-
-/deep/ .colorLight.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
-  background-color: #2a4e2b;
-}
-/deep/ .colorLight.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
-  background-color: #66bb6a;
-}
 
 /deep/ .mat-form-field-type-mat-select .mat-form-field-label, .mat-select-value {
   color: white;
@@ -65,4 +40,68 @@ mat-card {
 ::ng-deep .mat-fab {
   background-color: #1f5f59;
   color: white;
-} 
+}
+
+
+
+/* SLIDER */
+
+// We need to use ::ng-deep to overcome view encapsulation
+::ng-deep {
+  .custom-slider .ng5-slider .ng5-slider-bar {
+    background: #ffe4d1;
+    height: 2px;
+  }
+  .custom-slider .ng5-slider .ng5-slider-selection {
+    background: orange;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-pointer {
+    width: 8px;
+    height: 16px;
+    top: auto; /* to remove the default positioning */
+    bottom: 0;
+    background-color: white;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-pointer:after {
+    display: none;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-bubble {
+    color: white;
+    bottom: 14px;
+  }
+
+  .ng5-slider .ng5-slider-bubble.ng5-slider-limit {
+    color: white;
+    bottom: 14px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-limit {
+    font-weight: bold;
+    color: white;
+  }
+
+
+
+  .custom-slider .ng5-slider .ng5-slider-tick {
+    width: 1px;
+    height: 10px;
+    margin-left: 4px;
+    border-radius: 0;
+    background: #ffe4d1;
+    top: -1px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-tick.ng5-slider-selected {
+    background: orange;
+  }
+}
+
+.ng5-slider-ceil {
+  color: white;
+  bottom: 14px;
+}

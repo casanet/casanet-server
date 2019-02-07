@@ -18,10 +18,13 @@ import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatDividerModule } from '@angular/material/divider';
 import { EcoFabSpeedDialModule} from '@ecodev/fab-speed-dial';
+import { MccColorPickerModule } from 'material-community-components';
 
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { BrowserModule } from '@angular/platform-browser';
-import { MinionsService } from '../services/minions.service';
+
+import { LoaderComponent } from './loader/loader.component';
+import { TimesPipe } from '../pipes/times.pipe';
 
 export const appRoutes: Routes = [
   { path: '', component: DashboardCrmComponent },
@@ -31,6 +34,10 @@ export const appRoutes: Routes = [
   imports: [
     // BrowserModule,
     // BrowserAnimationsModule,
+    MccColorPickerModule.forRoot({
+      empty_color: 'transparent',
+      used_colors: ['#000000', '#FFF555']
+    }),
     EcoFabSpeedDialModule,
     MatDividerModule,
     MatSliderModule,
@@ -52,11 +59,13 @@ export const appRoutes: Routes = [
   ],
   declarations: [
     DashboardCrmComponent,
-    // TranslatePipe,
+    LoaderComponent,
+    TimesPipe,
   ],
-  exports: [],
+  exports: [
+    TimesPipe
+  ],
   providers: [
-    MinionsService
   ],
 })
 export class DashboardCrmModule { }

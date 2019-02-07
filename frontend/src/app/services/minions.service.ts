@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Minion, MinionStatus, MinionFeed } from '../../../../backend/src/models/sharedInterfaces';
+import { Minion, MinionStatus, MinionFeed, DeviceKind } from '../../../../backend/src/models/sharedInterfaces';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
@@ -10,6 +10,7 @@ import { ToasterAndErrorsService } from './toaster-and-errors.service';
 })
 export class MinionsService {
 
+  private isMinionsRetrived = false;
   private minionsServerFeed: EventSource;
   private minions: Minion[] = [];
   public minionsFeed: BehaviorSubject<Minion[]> = new BehaviorSubject<Minion[]>(this.minions);
@@ -19,12 +20,28 @@ export class MinionsService {
 
   }
 
-  public async retriveMinions() {
+  public async recordCommand(minion: Minion, minionStatus: MinionStatus) {
+    try {
+      await this.httpClient.post(`/API/minions/command/${minion.minionId}`, minionStatus).toPromise();
+
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
+  private async loadMinions() {
     try {
       const minions = await this.httpClient.get<Minion[]>('/API/minions').toPromise();
+      this.isMinionsRetrived = true;
       this.minions = minions;
-      this.minionsFeed.next(DeepCopy<Minion[]>(minions));
+
+      for (const minion of this.minions) {
+          this.loadDefaultStatusValues(minion);
+      }
+
+      this.minionsFeed.next(DeepCopy<Minion[]>(this.minions));
     } catch (error) {
+      this.isMinionsRetrived = false;
       this.toastrAndErrorsService.OnHttpError(error);
     }
 
@@ -34,7 +51,49 @@ export class MinionsService {
     }
 
     this.minionsServerFeed = new EventSource('/API/feed/minions');
-    this.minionsServerFeed.onmessage = (minionFeedEvent: MessageEvent) => { this.OnMinionFeedUpdate(minionFeedEvent); } ;
+    this.minionsServerFeed.onmessage = (minionFeedEvent: MessageEvent) => { this.OnMinionFeedUpdate(minionFeedEvent); };
+  }
+
+  private loadDefaultStatusValues(minion: Minion) {
+    if (!minion.minionStatus[minion.minionType] || JSON.stringify(minion.minionStatus[minion.minionType]) === '{}') {
+      minion.minionStatus = {
+        airConditioning: {
+          fanStrength: 'auto',
+          mode: 'auto',
+          status: 'off',
+          temperature: 16,
+        },
+        colorLight: {
+          blue: 1,
+          brightness: 1,
+          green: 1,
+          red: 1,
+          status: 'off',
+          temperature: 1,
+        },
+        light: {
+          brightness: 1,
+          status: 'off',
+        },
+        switch: {
+          status: 'off',
+        },
+        temperatureLight: {
+          brightness: 1,
+          status: 'off',
+          temperature: 1,
+        },
+        toggle: {
+          status: 'off',
+        }
+      };
+    }
+  }
+
+  public async retriveMinions() {
+    if (!this.isMinionsRetrived) {
+      this.loadMinions();
+    }
   }
 
   private OnMinionFeedUpdate(minionFeedEvent: MessageEvent) {
@@ -46,6 +105,7 @@ export class MinionsService {
 
     switch (minionFeed.event) {
       case 'update': {
+        this.loadDefaultStatusValues(minionFeed.minion);
         const minion = this.findMinion(minionFeed.minion.minionId);
         if (minion) {
           this.minions.splice(this.minions.indexOf(minion), 1);
@@ -54,6 +114,7 @@ export class MinionsService {
         break;
       }
       case 'created': {
+        this.loadDefaultStatusValues(minionFeed.minion);
         this.minions.push(minionFeed.minion);
         break;
       }
@@ -91,5 +152,6 @@ export class MinionsService {
     }
     this.minionsFeed.next(DeepCopy<Minion[]>(this.minions));
   }
+
 
 }

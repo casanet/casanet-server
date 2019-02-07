@@ -1,6 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Minion, SwitchOptions, Toggle, MinionStatus } from '../../../../backend/src/models/sharedInterfaces';
+import {
+    Minion,
+    SwitchOptions,
+    Toggle,
+    MinionStatus,
+    DeviceKind,
+    ColorLight,
+    ColorOptions
+} from '../../../../backend/src/models/sharedInterfaces';
 import { MinionsService } from '../services/minions.service';
+import { DevicesService } from '../services/devices.service';
+import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 
 @Component({
     selector: 'app-dashboard-crm',
@@ -10,633 +20,39 @@ import { MinionsService } from '../services/minions.service';
 
 export class DashboardCrmComponent implements OnInit {
 
-    // public minions: Minion[] = [
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'besteverof efgfeg gfegfe e ert er r',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-    //             switch: {
-    //                 status: 'on',
-    //             }
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-    //             airConditioning: {
-    //                 fanStrength: 'auto',
-    //                 mode: 'auto',
-    //                 status: 'on',
-    //                 temperature: 21,
-    //             }
-    //         },
-    //         minionType: 'airConditioning',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: false,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'toggle',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-    //             toggle: {
-    //                 status: 'on',
-    //             }
-    //         },
-    //         minionType: 'toggle',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-    //             light: {
-    //                 status: 'on',
-    //                 brightness: 16,
-    //             }
-    //         },
-    //         minionType: 'light',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-    //             colorLight: {
-    //                 status: 'on',
-    //                 blue: 100,
-    //                 red: 101,
-    //                 brightness: 15,
-    //                 green: 128,
-    //                 temperature: 12,
-    //             }
-    //         },
-    //         minionType: 'colorLight',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-    //             temperatureLight: {
-    //                 brightness: 34,
-    //                 status: 'on',
-    //                 temperature: 53,
-    //             }
-    //         },
-    //         minionType: 'temperatureLight',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-    //     {
-    //         device: {
-    //             brand: 'b',
-    //             model: 'm',
-    //             pysicalDevice: {
-    //                 mac: 'mac',
-    //             },
-    //         },
-    //         minionId: 'mi',
-    //         minionStatus: {
-
-    //         },
-    //         minionType: 'switch',
-    //         name: 'minion name',
-    //         isProperlyCommunicated: true,
-    //     },
-
-    // ];
+    /** Mark to show or not loading animation */
+    public dataLoading = true;
 
     public minions: Minion[] = [];
 
-    constructor(private minionsService: MinionsService) {
+    constructor(private minionsService: MinionsService,
+        private devicesService: DevicesService) {
         minionsService.minionsFeed.subscribe((minions) => {
-            this.minions = minions;
-            this.minions.sort((m1: Minion, m2: Minion) => {
-                return m1.name < m2.name ? -1 : 1;
-            });
+
+            const tempMap = {};
+            for (const minion of minions) {
+                // create update set.
+                this.createUpdateSet(minion);
+
+                // then add it to map...
+                if (!tempMap[minion.minionType]) {
+                    tempMap[minion.minionType] = [];
+                }
+                tempMap[minion.minionType].push(minion);
+            }
+
+            this.minions = []; // minions;
+
+            for (const key of Object.keys(tempMap).sort()) {
+                const arr = tempMap[key];
+                arr.sort((m1: Minion, m2: Minion) => {
+                    return m1.name < m2.name ? -1 : 1;
+                });
+                this.minions.push(...arr);
+            }
+            // this.minions
+
+            this.dataLoading = false;
         });
         minionsService.retriveMinions();
     }
@@ -644,57 +60,36 @@ export class DashboardCrmComponent implements OnInit {
     ngOnInit() {
     }
 
-    private getDefaultStatusValues(): MinionStatus {
-        return {
-            airConditioning: {
-                fanStrength: 'auto',
-                mode: 'auto',
-                status: 'off',
-                temperature: 16,
-            },
-            colorLight: {
-                blue: 1,
-                brightness: 1,
-                green: 1,
-                red: 1,
-                status: 'off',
-                temperature: 1,
-            },
-            light: {
-                brightness: 1,
-                status: 'off',
-            },
-            switch: {
-                status: 'off',
-            },
-            temperatureLight: {
-                brightness: 1,
-                status: 'off',
-                temperature: 1,
-            },
-            toggle: {
-                status: 'off',
-            }
-        };
+    public createUpdateSet(minion: Minion) {
+        minion['updateSet'] = DeepCopy<MinionStatus>(minion.minionStatus);
     }
 
     public getMinionOnOffStatus(minion: Minion): SwitchOptions {
-        if (!minion.minionStatus[minion.minionType]) {
-            minion.minionStatus = this.getDefaultStatusValues();
-        }
 
         const minionSwitchStatus = minion.minionStatus[minion.minionType] as Toggle;
         return minionSwitchStatus.status;
     }
 
+    public isMinionRecordble(minion: Minion): boolean {
+        for (const deviceKind of this.devicesService.devicesKinds) {
+            if (deviceKind.brand === minion.device.brand &&
+                deviceKind.model === minion.device.model) {
+                return deviceKind.isRecordingSupported;
+            }
+        }
+    }
+
     public getMinionColor(minion: Minion): { dark: string, light: string } {
         const switchStatus = this.getMinionOnOffStatus(minion);
+
         if (minion.minionType !== 'toggle' && (!switchStatus || switchStatus !== 'on')) {
             return {
                 light: '#494a4c',
                 dark: '#8c8f93'
             };
         }
+
+
 
         switch (minion.minionType) {
             case 'toggle':
@@ -730,15 +125,89 @@ export class DashboardCrmComponent implements OnInit {
         }
     }
 
-    public async setStatus(minion: Minion, status: SwitchOptions) {
+    public async toggleStatus(minion: Minion) {
+        if (minion['other_keyup'] || minion['sync'] || minion.minionType === 'toggle') {
+            return;
+        }
 
-        minion.minionStatus[minion.minionType].status = status;
+        const minionStatus = minion.minionStatus[minion.minionType];
+        minion.minionStatus[minion.minionType].status = minionStatus.status === 'on' ? 'off' : 'on';
+
+        /** For record mode, copy to updat set too */
+        minion['updateSet'][minion.minionType].status = minionStatus.status === 'on' ? 'off' : 'on';
+
+        await this.setStatus(minion, minion.minionStatus);
+    }
+
+    public async setOnOffStatus(minion: Minion, setStatus: SwitchOptions) {
+        minion.minionStatus[minion.minionType].status = setStatus;
+
+        await this.setStatus(minion, minion.minionStatus);
+    }
+
+    public async setStatus(minion: Minion, setStatus: MinionStatus) {
+
+        if (minion['recordMode']) {
+            return;
+        }
+
+        minion.minionStatus = setStatus;
 
         minion['sync'] = true;
         await this.minionsService.setStatus(minion);
     }
+    public async recordCommand(minion: Minion) {
+        minion['recording'] = true;
 
-    reScanMinion(minion: Minion) {
+        await this.minionsService.recordCommand(minion, minion['updateSet']);
 
+        minion['recording'] = false;
+    }
+
+    public showDeviceInfo(minion: Minion) {
+
+    }
+
+    public refreshMinion(minion: Minion) {
+        minion['sync'] = true;
+    }
+
+    public recordModePressed(minion: Minion) {
+        if (minion['recordMode']) {
+            minion['recordMode'] = undefined;
+            return;
+        }
+
+        minion['recordMode'] = true;
+    }
+
+    public deleteMinion(minion: Minion) {
+        minion['sync'] = true;
+    }
+
+    public refreshMinions() {
+        this.minions = [];
+        this.dataLoading = true;
+    }
+
+    public reScanNetwordAndRefreshMinions() {
+        this.minions = [];
+        this.dataLoading = true;
+    }
+
+    public loadChangeColor(colorLight: ColorLight, setRgbHexColor: string) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(setRgbHexColor);
+        colorLight.red = parseInt(result[1], 16) as ColorOptions;
+        colorLight.green = parseInt(result[2], 16) as ColorOptions;
+        colorLight.blue = parseInt(result[3], 16) as ColorOptions;
+    }
+
+    private componentToHex(c: number) {
+        const hex = c.toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    }
+
+    public rgbToHex(colorLight: ColorLight) {
+        return '#' + this.componentToHex(colorLight.red) + this.componentToHex(colorLight.green) + this.componentToHex(colorLight.blue);
     }
 }

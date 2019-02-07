@@ -3,7 +3,7 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { LazyLoadModule } from './lazy-load/lazy-load.module';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateService } from './translate.service';
@@ -17,6 +17,8 @@ export function setupTranslateFactory(
     // await service.setLeng('en');
   };
 }
+import { MinionsService } from './services/minions.service';
+import { DevicesService } from './services/devices.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ export function setupTranslateFactory(
     LazyLoadModule,
     CoreModule,
     BrowserAnimationsModule,
+    // NoopAnimationsModule,
     HttpClientModule,
     SweetAlert2Module.forRoot({
       buttonsStyling: true,
@@ -40,6 +43,8 @@ export function setupTranslateFactory(
     })
   ],
   providers: [
+    MinionsService,
+    DevicesService,
     ToasterAndErrorsService,
     TranslateService,
     {

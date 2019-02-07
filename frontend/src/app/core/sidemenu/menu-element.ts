@@ -1,7 +1,7 @@
 export const menus = [
     {
         'name': 'MINIONS',
-        'icon': 'settings_remote',
+        'icon': 'wb_incandescent',
         'link': 'auth/minions',
         // 'access': (user: User): boolean => user.access === 'manager' || (user.linkedSchools && user.linkedSchools.length > 1) ,
         'open': false
