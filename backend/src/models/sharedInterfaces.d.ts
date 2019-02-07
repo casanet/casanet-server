@@ -149,7 +149,7 @@ export declare interface DeviceKind {
     /**
      * Some of device supported recording (for example IR transmitter).
      */
-    isRecordingSupported : boolean;
+    isRecordingSupported: boolean;
 }
 
 /**
@@ -428,6 +428,13 @@ export declare type FeedEvent = 'created' | 'update' | 'removed';
 export declare interface MinionFeed {
     event: FeedEvent;
     minion: Minion;
+}
+
+/**
+ * Used to change minion auto turn of timeout value.
+ */
+export declare interface SetMinionAutoTurnOff {
+    setAutoTurnOffMS: number;
 }
 
 /**

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as moment from 'moment';
 import { MinionsDalSingleton } from '../src/data-layer/minionsDal';
-import { ErrorResponse, Minion, MinionStatus } from '../src/models/sharedInterfaces';
+import { ErrorResponse, Minion, MinionStatus, SetMinionAutoTurnOff } from '../src/models/sharedInterfaces';
 import { validUserAgent } from './prepareRoutesSpecTests.spec';
 
 const minioinMock: Minion = {
@@ -113,24 +113,11 @@ describe('Minions routing API', () => {
 
     describe('/PUT minions/timeout/{minionId}', () => {
         it('it should respond 20x as status code', (done) => {
-            const minion: Minion = {
-                device: {
-                    brand: '',
-                    model: '',
-                    pysicalDevice: {
-                        mac: '11111111',
-                    },
-                },
-                isProperlyCommunicated: true,
-                minionId: 'vf',
-                minionType: 'light',
-                name: 'dfdf',
-                minionStatus: {
-
-                },
+            const minionUpdate: SetMinionAutoTurnOff = {
+                setAutoTurnOffMS: 50000,
             };
             validUserAgent.put('/API/minions/timeout/m1')
-                .send(minion)
+                .send(minionUpdate)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();

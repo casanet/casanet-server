@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
-import { ErrorResponse, LocalNetworkDevice, Minion, MinionStatus, Timing } from '../models/sharedInterfaces';
+import { ErrorResponse, LocalNetworkDevice, Minion, MinionStatus, SetMinionAutoTurnOff, Timing } from '../models/sharedInterfaces';
 
 @Tags('Minions')
 @Route('minions')
@@ -51,21 +51,21 @@ export class MinionsController extends Controller {
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Put('timeout/{minionId}')
-    public async setMinionTimeout(minionId: string, @Body() minion: Minion): Promise<void> {
-        return await MinionsBlSingleton.setMinionTimeout(minionId, minion);
+    public async setMinionTimeout(minionId: string, @Body() setTimeout: SetMinionAutoTurnOff): Promise<void> {
+        return await MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS );
     }
 
     /**
      * Record a command (IR, 433-RF or any other supported RF tech)
      * for current minion status.
      * @param minionId Minon id.
-     * @param minion Minion object status to get command for.
+     * @param minionStatus Minion object status to get command for.
      */
     @Security('userAuth')
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('command/{minionId}')
-    public async recordMinionCommand(minionId: string, @Body() minion: Minion): Promise<void> {
+    public async recordMinionCommand(minionId: string, @Body() minionStatus: MinionStatus): Promise<void> {
         // TODO ...
         return;
     }

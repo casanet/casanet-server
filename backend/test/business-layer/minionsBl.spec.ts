@@ -2,17 +2,17 @@ import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import { DevicesBl } from '../../src/business-layer/devicesBl';
 import { MinionsBl } from '../../src/business-layer/minionsBl';
 import { DevicesDal } from '../../src/data-layer/devicesDal';
 import { MinionsDal } from '../../src/data-layer/minionsDal';
 import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionDevice, MinionStatus, User } from '../../src/models/sharedInterfaces';
 import { ModulesManager } from '../../src/modules/modulesManager';
 import { Delay } from '../../src/utilities/sleep';
-import { localNetworkReaderMock } from '../utilities/lanManager.mock.spec';
-import { ModulesManagerMock } from '../modules/modulesManager.mock.spec';
 import { DevicesDalMock } from '../data-layer/devicesDal.mock.spec';
 import { MinionsDalMock } from '../data-layer/minionsDal.mock.spec';
-import { DevicesBl } from '../../src/business-layer/devicesBl' 
+import { ModulesManagerMock } from '../modules/modulesManager.mock.spec';
+import { localNetworkReaderMock } from '../utilities/lanManager.mock.spec';
 
 const devicesDalMock = new DevicesDalMock();
 const modulesManagerMock = new ModulesManagerMock();
@@ -244,9 +244,23 @@ describe('Minions BL tests', () => {
                 minionAutoTurnOffMS: 342677771111,
             } as Minion;
 
-            await minionsBl.setMinionTimeout(minionBefor.minionId, minionBefor);
+            await minionsBl.setMinionTimeout(minionBefor.minionId, minionBefor.minionAutoTurnOffMS);
 
             const minionafter = await minionsBl.getMinionById('m2');
+
+            expect(minionafter.minionAutoTurnOffMS).to.be.deep.equal(minionBefor.minionAutoTurnOffMS);
+        });
+
+        it('it should set timeout successfuly', async () => {
+
+            const minionBefor = {
+                minionId: 'm2',
+                minionAutoTurnOffMS: 845642321,
+            } as Minion;
+
+            await minionsBl.setMinionTimeout(minionBefor.minionId, minionBefor.minionAutoTurnOffMS);
+
+            const minionafter = await minionsDalMock.getMinionById('m2');
 
             expect(minionafter.minionAutoTurnOffMS).to.be.deep.equal(minionBefor.minionAutoTurnOffMS);
         });
@@ -258,7 +272,7 @@ describe('Minions BL tests', () => {
             } as Minion;
 
             try {
-                await minionsBl.setMinionTimeout(minionBefor.minionId, minionBefor);
+                await minionsBl.setMinionTimeout(minionBefor.minionId, minionBefor.minionAutoTurnOffMS);
             } catch (error) {
                 const expectedError: ErrorResponse = {
                     responseCode: 4004,

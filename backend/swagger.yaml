@@ -1846,6 +1846,15 @@ definitions:
             - suppotedMinionType
             - isRecordingSupported
         type: object
+    SetMinionAutoTurnOff:
+        description: 'Used to change minion auto turn of timeout value.'
+        properties:
+            setAutoTurnOffMS:
+                type: number
+                format: double
+        required:
+            - setAutoTurnOffMS
+        type: object
     OperationActivity:
         description: 'Represents acivity.'
         properties:
@@ -2318,12 +2327,11 @@ paths:
                     required: true
                     type: string
                 -
-                    description: 'Minion object to update to.'
                     in: body
-                    name: minion
+                    name: setTimeout
                     required: true
                     schema:
-                        $ref: '#/definitions/Minion'
+                        $ref: '#/definitions/SetMinionAutoTurnOff'
     '/minions/command/{minionId}':
         post:
             operationId: RecordMinionCommand
@@ -2354,10 +2362,10 @@ paths:
                 -
                     description: 'Minion object status to get command for.'
                     in: body
-                    name: minion
+                    name: minionStatus
                     required: true
                     schema:
-                        $ref: '#/definitions/Minion'
+                        $ref: '#/definitions/MinionStatus'
     '/minions/rescan/{minionId}':
         post:
             operationId: RescanMinionStatus
