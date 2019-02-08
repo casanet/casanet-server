@@ -99,9 +99,9 @@ export class YeelightHandler extends BrandModuleBase {
 
                         if (minion.minionType === 'colorLight') {
 
-                            lightStatus.red = lightUpdate.rgb.r;
-                            lightStatus.green = lightUpdate.rgb.g;
-                            lightStatus.blue = lightUpdate.rgb.b;
+                            lightStatus.red = Math.floor(lightUpdate.rgb.r) as ColorOptions;
+                            lightStatus.green = Math.floor(lightUpdate.rgb.g) as ColorOptions;
+                            lightStatus.blue = Math.floor(lightUpdate.rgb.b) as ColorOptions;
                         }
 
                         this.minionStatusChangedEvent.next({
