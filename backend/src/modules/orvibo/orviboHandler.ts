@@ -1,5 +1,5 @@
 import * as  moment from 'moment';
-import * as Orvibo from 'node-orvibo';
+import * as Orvibo from 'node-orvibo-2';
 import {
     DeviceKind,
     ErrorResponse,
@@ -28,6 +28,7 @@ export class OrviboHandler extends BrandModuleBase {
 
     private orviboCommunication: any;
     private queryCallback: (deviceResult: any) => void;
+    private subscribeCallback: (deviceResult: any) => void;
 
     constructor() {
         super();
@@ -52,6 +53,11 @@ export class OrviboHandler extends BrandModuleBase {
 
         /** listen to any device status changes arrived */
         this.orviboCommunication.on('externalstatechanged', async (changedDevice) => {
+
+            if (!changedDevice) {
+                return;
+            }
+
             if (this.queryCallback) {
                 this.queryCallback(changedDevice);
             }
@@ -82,13 +88,21 @@ export class OrviboHandler extends BrandModuleBase {
                 this.queryCallback(queriedDevice);
             }
         });
+
+        /** Registar to subscribed data response arrived */
+        this.orviboCommunication.on('subscribed', async (subscribedDevice) => {
+            if (this.subscribeCallback) {
+                this.subscribeCallback(subscribedDevice);
+            }
+        });
     }
 
     /**
-     * Prepare the orvibo device, in first use. (once to each devices)
+     * Re-subscribe to current orivbo device, use to know the status
+     * (orvibo send it by subscribe and button pressed only) and also to alow set status.
      * @param miniom The minion of device.
      */
-    private async prepareOrviboSending(miniom: Minion) {
+    private async reSubsribeOrvibo(miniom: Minion) {
         /** If there is no connection, try to init it */
         if (!this.orviboCommunication) {
             try {
@@ -103,8 +117,9 @@ export class OrviboHandler extends BrandModuleBase {
         }
 
         /** Reload device each time befor sending data using UDP */
-        if (this.orviboCommunication.getDevice(miniom.device.pysicalDevice.mac)) {
-            this.orviboCommunication.devices = [];
+        const currentOrviboDevice = this.orviboCommunication.getDevice(miniom.device.pysicalDevice.mac);
+        if (currentOrviboDevice) {
+            this.orviboCommunication.devices.splice(this.orviboCommunication.devices.indexOf(currentOrviboDevice), 1);
         }
 
         /** Create device object */
@@ -130,26 +145,7 @@ export class OrviboHandler extends BrandModuleBase {
 
     public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
 
-        await this.prepareOrviboSending(minion);
-
         return new Promise<MinionStatus>((resolve, reject) => {
-            /** create the query message */
-            const message = this.orviboCommunication.prepareMessage({
-                commandID: '7274',
-                macAddress: minion.device.pysicalDevice.mac,
-                macPadding: '202020202020',
-                data: {
-                    blank: '00000000',
-                    // There are two tables we're interested in,
-                    // Table 04 is neat info about the device, Table 03
-                    // is timing data (e.g. turn socket on at 8pm etc.)
-                    table: '04',
-                    blank2: '000000000000',
-                },
-            });
-
-            /** send query message to device */
-            this.orviboCommunication.sendMessage(message, minion.device.pysicalDevice.ip);
 
             /** create timeout, case device not responsing */
             const timeoutTimer = setTimeout(() => {
@@ -160,8 +156,8 @@ export class OrviboHandler extends BrandModuleBase {
                 } as ErrorResponse);
             }, moment.duration(5, 'seconds').asMilliseconds());
 
-            /** set callback to query event */
-            this.queryCallback = (deviceResult) => {
+            /** Set callback to subscribe event */
+            this.subscribeCallback = (deviceResult) => {
                 if (deviceResult.macAddress !== minion.device.pysicalDevice.mac) {
                     return;
                 }
@@ -175,12 +171,18 @@ export class OrviboHandler extends BrandModuleBase {
                     },
                 });
             };
+
+            /** Then resubscribe to get the current status */
+            this.reSubsribeOrvibo(minion)
+                .catch((error) => {
+                    reject(error);
+                });
         });
     }
 
     public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
 
-        await this.prepareOrviboSending(minion);
+        await this.reSubsribeOrvibo(minion);
 
         return new Promise((resolve, reject) => {
 
