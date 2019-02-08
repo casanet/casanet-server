@@ -64,9 +64,9 @@ export class DashboardCrmComponent implements OnInit {
         minion['updateSet'] = DeepCopy<MinionStatus>(minion.minionStatus);
     }
 
-    public getMinionOnOffStatus(minion: Minion): SwitchOptions {
+    public getMinionOnOffStatus(minion: Minion, minionStatus: MinionStatus): SwitchOptions {
 
-        const minionSwitchStatus = minion.minionStatus[minion.minionType] as Toggle;
+        const minionSwitchStatus = minionStatus[minion.minionType] as Toggle;
         return minionSwitchStatus.status;
     }
 
@@ -80,7 +80,7 @@ export class DashboardCrmComponent implements OnInit {
     }
 
     public getMinionColor(minion: Minion): { dark: string, light: string } {
-        const switchStatus = this.getMinionOnOffStatus(minion);
+        const switchStatus = this.getMinionOnOffStatus(minion, minion['updateSet']);
 
         if (minion.minionType !== 'toggle' && (!switchStatus || switchStatus !== 'on')) {
             return {
@@ -130,13 +130,11 @@ export class DashboardCrmComponent implements OnInit {
             return;
         }
 
-        const minionStatus = minion.minionStatus[minion.minionType];
-        minion.minionStatus[minion.minionType].status = minionStatus.status === 'on' ? 'off' : 'on';
-
+        const minionStatus = minion['updateSet'][minion.minionType];
         /** For record mode, copy to updat set too */
         minion['updateSet'][minion.minionType].status = minionStatus.status === 'on' ? 'off' : 'on';
 
-        await this.setStatus(minion, minion.minionStatus);
+        await this.setStatus(minion, minion['updateSet']);
     }
 
     public async setOnOffStatus(minion: Minion, setStatus: SwitchOptions) {
@@ -156,6 +154,7 @@ export class DashboardCrmComponent implements OnInit {
         minion['sync'] = true;
         await this.minionsService.setStatus(minion);
     }
+
     public async recordCommand(minion: Minion) {
         minion['recording'] = true;
 
@@ -168,13 +167,19 @@ export class DashboardCrmComponent implements OnInit {
 
     }
 
-    public refreshMinion(minion: Minion) {
+    public async refreshMinion(minion: Minion) {
         minion['sync'] = true;
+
+        await this.minionsService.refreshMinion(minion);
+
+        minion['sync'] = false;
+
     }
 
     public recordModePressed(minion: Minion) {
         if (minion['recordMode']) {
             minion['recordMode'] = undefined;
+            this.createUpdateSet(minion);
             return;
         }
 
@@ -185,14 +190,19 @@ export class DashboardCrmComponent implements OnInit {
         minion['sync'] = true;
     }
 
-    public refreshMinions() {
+    public async refreshMinions() {
         this.minions = [];
         this.dataLoading = true;
+
+        await this.minionsService.refreshMinions();
     }
 
-    public reScanNetwordAndRefreshMinions() {
+    public async reScanNetwordAndRefreshMinions() {
         this.minions = [];
         this.dataLoading = true;
+
+        await this.devicesService.rescanLanDevices();
+        await this.refreshMinions();
     }
 
     public loadChangeColor(colorLight: ColorLight, setRgbHexColor: string) {

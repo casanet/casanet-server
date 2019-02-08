@@ -23,7 +23,29 @@ export class MinionsService {
   public async recordCommand(minion: Minion, minionStatus: MinionStatus) {
     try {
       await this.httpClient.post(`/API/minions/command/${minion.minionId}`, minionStatus).toPromise();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
 
+  public async refreshMinions() {
+    if (this.minionsServerFeed) {
+      this.minionsServerFeed.close();
+    }
+
+    this.minions = [];
+    try {
+      await this.httpClient.post(`/API/minions/rescan`, {}).toPromise();
+      await this.loadMinions();
+
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
+  public async refreshMinion(minion: Minion) {
+    try {
+      await this.httpClient.post(`/API/minions/rescan/${minion.minionId}`, {}).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -36,7 +58,7 @@ export class MinionsService {
       this.minions = minions;
 
       for (const minion of this.minions) {
-          this.loadDefaultStatusValues(minion);
+        this.loadDefaultStatusValues(minion);
       }
 
       this.minionsFeed.next(DeepCopy<Minion[]>(this.minions));
