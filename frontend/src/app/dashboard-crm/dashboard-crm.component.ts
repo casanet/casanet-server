@@ -207,9 +207,9 @@ export class DashboardCrmComponent implements OnInit {
 
     public loadChangeColor(colorLight: ColorLight, setRgbHexColor: string) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(setRgbHexColor);
-        colorLight.red = parseInt(result[1], 16) as ColorOptions;
-        colorLight.green = parseInt(result[2], 16) as ColorOptions;
-        colorLight.blue = parseInt(result[3], 16) as ColorOptions;
+        colorLight.red = Math.floor(parseInt(result[1], 16)) as ColorOptions;
+        colorLight.green = Math.floor(parseInt(result[2], 16)) as ColorOptions;
+        colorLight.blue = Math.floor(parseInt(result[3], 16)) as ColorOptions;
     }
 
     private componentToHex(c: number) {
