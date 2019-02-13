@@ -1,8 +1,10 @@
+import * as cryptoJs from 'crypto-js';
 import { Configuration } from '../config';
 import { IDataIO } from '../models/backendInterfaces';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
+import { logger } from '../utilities/logger';
+import { GetMachinMacAddress } from '../utilities/macAddress';
 import { DataIO } from './dataIO';
-import * as cryptoJs from 'crypto-js';
 
 const USERS_FILE_NAME = 'users.json';
 
@@ -21,10 +23,41 @@ export class UsersDal {
         this.users = dataIo.getDataSync();
 
         if (this.users.length === 0) {
-            Configuration.defaultUser.password
-                = cryptoJs.SHA256(Configuration.defaultUser.password).toString();
-            this.users = [Configuration.defaultUser];
+            this.setDefaultUser();
         }
+    }
+
+    /**
+     * Set default user.
+     * used when system in first use and there is no any user in system, yet.
+     */
+    private async setDefaultUser() {
+        /** Get password from configuration, and hash it like any other password in system */
+        const passwordHash = cryptoJs.SHA256(Configuration.defaultUser.password).toString();
+
+        /** Extract user domain from configuration */
+        const userNameDomain = Configuration.defaultUser.email.split('@')[1];
+        /**
+         * Used machine address as default user name.
+         * This is for security issues when users not replacing default user, 
+         * and attackers can access server with known default user.
+         */
+        const userName = await GetMachinMacAddress();
+        /** Build default user email address */
+        const defaultUserName = `${userName}@${userNameDomain}`;
+
+        this.users.push({
+            displayName: Configuration.defaultUser.displayName,
+            email: defaultUserName,
+            ignoreTfa: Configuration.defaultUser.ignoreTfa,
+            password: passwordHash,
+            scope: Configuration.defaultUser.scope,
+            sessionTimeOutMS: Configuration.defaultUser.sessionTimeOutMS,
+        });
+
+        logger.warn(`There is no any user in system, using default user to allow first time access,` +
+            ` user name is: ${defaultUserName} and for password see casanet.json file.` +
+            ` for system secure, please create valid user and remove the default user.`);
     }
 
     /**
