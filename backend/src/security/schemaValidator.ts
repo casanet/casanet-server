@@ -4,6 +4,11 @@ import { JoiObject, ObjectSchema, ValidationResult } from 'joi';
 import { ErrorResponse } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
+export const RemoteSettingsSchema: ObjectSchema = Joi.object().keys({
+    host: Joi.string().hostname().required(),
+    connectionKey: Joi.string().not('').required(),
+}).required();
+
 export const UserSchema: ObjectSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     displayName: Joi.string().not('').required(),

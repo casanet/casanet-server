@@ -17,6 +17,7 @@
         "HTTP_PORT": "3000",
         "HTTPS_PORT": "4430",
         "USE_HTTPS": "false",
+        "NODE_TLS_REJECT_UNAUTHORIZED" : "0",
         "NODE_ENV": "debug"
       }
     },
@@ -29,6 +30,7 @@
       "env": {
         "USE_HTTPS": "false",
         "NODE_ENV": "test",
+        "NODE_TLS_REJECT_UNAUTHORIZED" : "0",
         "TEST_LONG_SPECS" : "true"
       },
       "args": [

@@ -8,6 +8,7 @@ import { MinionsController } from './../controllers/minionsController';
 import { OperationsController } from './../controllers/operationsController';
 import { TimingsController } from './../controllers/timingsController';
 import { UsersController } from './../controllers/usersController';
+import { RemoteConnectionController } from './../controllers/remoteConnectionController';
 import { expressAuthentication } from './../security/authentication';
 import * as express from 'express';
 import { ErrorResponseSchema, SchemaValidator } from '../security/schemaValidator';
@@ -203,6 +204,12 @@ const models: TsoaRoute.Models = {
             "password": { "dataType": "string", "required": true },
             "ignoreTfa": { "dataType": "boolean", "required": true },
             "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth"], "required": true },
+        },
+    },
+    "RemoteSettings": {
+        "properties": {
+            "host": { "dataType": "string", "required": true },
+            "connectionKey": { "dataType": "string", "required": true },
         },
     },
 };
@@ -1011,6 +1018,117 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.createUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/remote/connection',
+        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.getRemoteHost.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/remote/connection/status',
+        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.getConnectionStatus.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/remote/machine-mac',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.getMachineMac.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.put('/API/remote/connection',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                remoteSettings: { "in": "body", "name": "remoteSettings", "required": true, "ref": "RemoteSettings" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.setRemoteSettings.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.delete('/API/remote/connection',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 4022,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.removeRemoteSettings.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 

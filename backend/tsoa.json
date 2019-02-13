@@ -32,6 +32,10 @@
             {
                 "name": "Feeds",
                 "description": "Feed of updates from system, such as minion turned on/off etc. all using SSE protocol"
+            },
+            {
+                "name": "Remote",
+                "description": "Manage the remote server connection, used to access local server via www"
             }
         ],
         "name": "CASAnet - API",

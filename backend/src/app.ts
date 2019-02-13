@@ -6,6 +6,7 @@ import * as RateLimit from 'express-rate-limit';
 import * as useragent from 'express-useragent';
 import * as helmet from 'helmet';
 import * as path from 'path';
+import { RemoteConnectionBlSingleton } from './business-layer/remoteConnectionBl';
 import { Configuration } from './config';
 import { AuthenticationRouter } from './routers/authenticationRoute';
 import { FeedRouter } from './routers/feedRoute';
@@ -18,6 +19,7 @@ import './controllers/devicesController';
 import './controllers/feedController';
 import './controllers/minionsController';
 import './controllers/operationsController';
+import './controllers/remoteConnectionController';
 import './controllers/timingsController';
 import './controllers/usersController';
 
@@ -41,6 +43,9 @@ class App {
 
         /** Serve static client side */
         this.serveStatic();
+
+        /** Init remote server connection */
+        this.loadRemoteServerConnection();
 
         /** Finaly route to API */
         this.routes();
@@ -96,6 +101,13 @@ class App {
         // Protect from XSS and other malicious attacks
         this.express.use(helmet());
         this.express.use(helmet.frameguard({ action: 'deny' }));
+    }
+
+    /**
+     * Init remote server, with app router.
+     */
+    private loadRemoteServerConnection() {
+        RemoteConnectionBlSingleton.loadExpressRouter(this.express);
     }
 
     /**

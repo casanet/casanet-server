@@ -17,6 +17,8 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
     "cookie-parser": "^1.4.3",
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.4",
@@ -26,7 +28,7 @@
     "express-useragent": "^1.0.12",
     "fs": "0.0.1-security",
     "fs-extra": "^7.0.1",
-	  "getmac": "^1.4.6",
+    "getmac": "^1.4.6",
     "helmet": "^3.15.0",
     "http": "0.0.0",
     "https": "^1.0.0",
@@ -39,6 +41,7 @@
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
     "randomstring": "^1.1.5",
+    "reconnecting-ws": "^1.0.4",
     "rxjs": "^6.3.3",
     "suncalc": "^1.8.0",
     "tsoa": "^2.3.8",
@@ -48,7 +51,6 @@
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.7",
-    "@types/chai-http": "^3.0.5",
     "@types/crypto-js": "^3.1.43",
     "@types/express": "^4.16.0",
     "@types/fs-extra": "^5.0.4",
@@ -59,13 +61,13 @@
     "@types/nodemailer": "^4.6.5",
     "@types/randomstring": "^1.1.6",
     "@types/suncalc": "^1.8.0",
-    "chai": "^4.2.0",
-    "chai-http": "^4.2.0",
+    "@types/ws": "^6.0.1",
     "copyfiles": "^2.1.0",
     "cross-env": "^5.2.0",
     "del-cli": "^1.1.0",
     "mocha": "^5.2.0",
     "ts-node": "^7.0.1",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "ws": "^6.1.3"
   }
 }
