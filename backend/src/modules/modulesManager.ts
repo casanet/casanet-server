@@ -1,6 +1,6 @@
+import { PullBehavior } from 'pull-behavior';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { DeviceKind, ErrorResponse, Minion, MinionDevice, MinionStatus } from '../models/sharedInterfaces';
-import { PullBehavior } from '../utilities/pullBehavior';
 import { BrandModuleBase } from './brandModuleBase';
 
 ///////////////////////////////////////////////////////////////////////////////

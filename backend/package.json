@@ -40,6 +40,7 @@
     "node-yeelight-wifi": "^0.1.2",
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
+    "pull-behavior": "^1.0.0",
     "randomstring": "^1.1.5",
     "reconnecting-ws": "^1.0.4",
     "rxjs": "^6.3.3",
