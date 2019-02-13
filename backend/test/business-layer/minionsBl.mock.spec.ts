@@ -1,8 +1,8 @@
-import { DeviceKind, ErrorResponse,  Minion, MinionStatus, MinionFeed } from '../../src/models/sharedInterfaces';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
-import { Delay } from '../../src/utilities/sleep';
 import * as  moment from 'moment';
 import * as  randomstring from 'randomstring';
+import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import { DeviceKind, ErrorResponse,  Minion, MinionFeed, MinionStatus } from '../../src/models/sharedInterfaces';
+import { Delay } from '../../src/utilities/sleep';
 
 export class MinionsBlMock {
 

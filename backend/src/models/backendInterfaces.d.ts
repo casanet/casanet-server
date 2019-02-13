@@ -45,14 +45,14 @@ export declare interface Config {
         userName: string;
         /** The password / application key to access user account */
         userKey: string;
-    }
+    };
     /**
      * Use for sun trigger timing when the sunset/sunrise depends on world location.
      */
     homePosition: {
         latitude: number;
         longitude: number;
-    }
+    };
 }
 
 /**

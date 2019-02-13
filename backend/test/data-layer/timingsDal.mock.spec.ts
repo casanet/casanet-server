@@ -1,4 +1,4 @@
-import { Timing, ErrorResponse } from '../../src/models/sharedInterfaces';
+import { ErrorResponse, Timing } from '../../src/models/sharedInterfaces';
 
 export class TimingsDalMock {
 
