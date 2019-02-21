@@ -1,15 +1,10 @@
 import * as express from 'express';
 import { Application, NextFunction, Request, Response } from 'express';
-import { SessionsBl } from '../business-layer/sessionsBl';
-import { UsersBl } from '../business-layer/usersBl';
-import { SessionsDalSingelton } from '../data-layer/sessionsDal';
-import { UsersDalSingleton } from '../data-layer/usersDal';
+import { SessionsBlSingleton } from '../business-layer/sessionsBl';
+import { UsersBlSingleton } from '../business-layer/usersBl';
 import { Session } from '../models/backendInterfaces';
 import { AuthScopes, ErrorResponse, User } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
-
-const usersBl: UsersBl = new UsersBl(UsersDalSingleton);
-const sessionsBl: SessionsBl = new SessionsBl(SessionsDalSingelton);
 
 /**
  * System auth scopes, shown in swagger doc as 2 kinds of security definitions.
@@ -46,14 +41,14 @@ export const expressAuthentication = async (request: express.Request, scopes: st
 
     try {
 
-        const session = await sessionsBl.getSession(request.cookies.session);
-        const user = await usersBl.getUser(session.email);
+        const session = await SessionsBlSingleton.getSession(request.cookies.session);
+        const user = await UsersBlSingleton.getUser(session.email);
 
         /**
          * Make sure that session not expired.
          */
         if ((new Date().getTime() - session.timeStamp) > user.sessionTimeOutMS) {
-            await sessionsBl.deleteSession(session);
+            await SessionsBlSingleton.deleteSession(session);
             throw {
                 responseCode: 4003,
             } as ErrorResponse;

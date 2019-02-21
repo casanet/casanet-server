@@ -20,6 +20,7 @@ import './controllers/feedController';
 import './controllers/minionsController';
 import './controllers/operationsController';
 import './controllers/remoteConnectionController';
+import './controllers/staticAssetsController';
 import './controllers/timingsController';
 import './controllers/usersController';
 

@@ -40,7 +40,7 @@ export class AuthController extends Controller {
     /**
      * Login.
      */
-    @Response<ErrorResponse>(201, '2-fatore code sent')
+    @Response<void>(201, '2-fatore code sent')
     @Response<ErrorResponse>(501, 'Server error')
     @Response<ErrorResponse>(403, 'Auth fail')
     @Response<ErrorResponse>(422, 'Invalid schema')

@@ -36,6 +36,10 @@
             {
                 "name": "Remote",
                 "description": "Manage the remote server connection, used to access local server via www"
+            },
+            {
+                "name": "Public",
+                "description": "Static files/assets for client side"
             }
         ],
         "name": "CASAnet - API",

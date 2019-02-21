@@ -16,7 +16,7 @@ export class RemoteConnectionController extends Controller {
     @Security('adminAuth')
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
-    @Get('connection')
+    @Get()
     public async getRemoteHost(): Promise<string> {
         return await RemoteConnectionBlSingleton.getRemoteHost();
     }
@@ -27,7 +27,7 @@ export class RemoteConnectionController extends Controller {
     @Security('adminAuth')
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
-    @Get('connection/status')
+    @Get('status')
     public async getConnectionStatus(): Promise<RemoteConnectionStatus> {
         return RemoteConnectionBlSingleton.connectionStatus;
     }
@@ -48,7 +48,7 @@ export class RemoteConnectionController extends Controller {
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
-    @Put('connection')
+    @Put()
     public async setRemoteSettings(@Body() remoteSettings: RemoteSettings): Promise<void> {
         try {
             /** Validate remote settings */
@@ -67,7 +67,7 @@ export class RemoteConnectionController extends Controller {
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
-    @Delete('connection')
+    @Delete()
     public async removeRemoteSettings(): Promise<void> {
         return await RemoteConnectionBlSingleton.removeRemoteSettings();
     }

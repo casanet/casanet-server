@@ -1,7 +1,7 @@
 
 import * as https from 'https';
 import * as WebSocket from 'ws';
-import { RemoteMessage } from '../../src/business-layer/remote2localProtcol';
+import { RemoteMessage } from '../../src/models/remote2localProtocol';
 import { logger } from '../../src/utilities/logger';
 
 class WebSocketMock {

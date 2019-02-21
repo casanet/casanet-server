@@ -4,9 +4,9 @@ import { validAdminAgent, validUserAgent } from './prepareRoutesSpecTests.spec';
 
 describe('Remote connection routing API', () => {
 
-    describe('/GET remote/connection', () => {
+    describe('/GET remote', () => {
         it('it should respond 20x as status code', (done) => {
-            validUserAgent.get('/API/remote/connection')
+            validUserAgent.get('/API/remote')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -14,9 +14,9 @@ describe('Remote connection routing API', () => {
         });
     });
 
-    describe('/GET remote/connection/status', () => {
+    describe('/GET remote/status', () => {
         it('it should respond 20x as status code', (done) => {
-            validUserAgent.get('/API/remote/connection/status')
+            validUserAgent.get('/API/remote/status')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -29,9 +29,9 @@ describe('Remote connection routing API', () => {
         connectionKey: 'abracadabra',
     };
 
-    describe('/PUT remote/connection', () => {
+    describe('/PUT remote', () => {
         it('it should respond 20x as status code', (done) => {
-            validAdminAgent.put('/API/remote/connection')
+            validAdminAgent.put('/API/remote')
                 .send(remoteSettings)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
@@ -40,7 +40,7 @@ describe('Remote connection routing API', () => {
         });
 
         it('it should respond 40x as status code', (done) => {
-            validUserAgent.put('/API/remote/connection')
+            validUserAgent.put('/API/remote')
                 .send(remoteSettings)
                 .end((err, res) => {
                     expect(res.statusType, 'user cant edit remote connection').eql(4);
@@ -50,7 +50,7 @@ describe('Remote connection routing API', () => {
 
         it('it should respond 50x as status code', (done) => {
             remoteSettings.host = 'invalied.com/wrong';
-            validAdminAgent.put('/API/remote/connection')
+            validAdminAgent.put('/API/remote')
                 .send(remoteSettings)
                 .end((err, res) => {
                     expect(res.statusType).eql(5);
@@ -59,9 +59,9 @@ describe('Remote connection routing API', () => {
         });
     });
 
-    describe('/DELETE remote/connection', () => {
+    describe('/DELETE remote', () => {
         it('it should respond 40x as status code', (done) => {
-            validUserAgent.del('/API/remote/connection')
+            validUserAgent.del('/API/remote')
                 .end((err, res) => {
                     expect(res.statusType, 'user cant edit remote connection').eql(4);
                     done();
@@ -69,7 +69,7 @@ describe('Remote connection routing API', () => {
         });
 
         it('it should respond 20x as status code', (done) => {
-            validAdminAgent.del('/API/remote/connection')
+            validAdminAgent.del('/API/remote')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
