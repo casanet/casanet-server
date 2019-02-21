@@ -28,6 +28,27 @@ export declare interface OperationResult {
     error?: ErrorResponse;
 }
 
+/** Optional status on remote connection */
+export declare type RemoteConnectionStatus =
+    /** There is no remote settings. */
+    'notConfigured' | 
+    /** From some reason the connection to remote server offline. */
+    'cantReachRemoteServer' |
+    /** Remote server thrown authorization of local server. */
+    'authorizationFail' |
+    /** Connection OK. */
+    'connectionOK';
+
+/**
+ * Remote server settings.
+ */
+export declare interface RemoteSettings {
+    /** host name / ip of remote server */
+    host: string;
+    /** access key for authorization local server in remote server */
+    connectionKey: string;
+}
+
 /**
  * Login schema model.
  */

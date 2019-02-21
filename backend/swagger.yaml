@@ -1920,6 +1920,19 @@ definitions:
             - ignoreTfa
             - scope
         type: object
+    RemoteSettings:
+        description: 'Remote server settings.'
+        properties:
+            host:
+                type: string
+                description: 'host name / ip of remote server'
+            connectionKey:
+                type: string
+                description: 'access key for authorization local server in remote server'
+        required:
+            - host
+            - connectionKey
+        type: object
 info:
     title: 'CASAnet - API'
     version: 2.0.0
@@ -1935,8 +1948,6 @@ paths:
             responses:
                 '201':
                     description: '2-fatore code sent'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
                 '204':
                     description: 'No content'
                 '403':
@@ -2786,6 +2797,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
+                    description: 'new user to create.'
                     in: body
                     name: user
                     required: true
@@ -2846,6 +2858,7 @@ paths:
                     required: true
                     type: string
                 -
+                    description: 'User object to update to.'
                     in: body
                     name: user
                     required: true
@@ -2872,10 +2885,142 @@ paths:
                     userAuth: []
             parameters:
                 -
+                    description: 'User id.'
                     in: path
                     name: userId
                     required: true
                     type: string
+    /remote:
+        get:
+            operationId: GetRemoteHost
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: string
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Get remote server host/ip.\r\nor empty if not set."
+            tags:
+                - Remote
+            security:
+                -
+                    adminAuth: []
+                -
+                    userAuth: []
+            parameters: []
+        put:
+            operationId: SetRemoteSettings
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Connect to remote server by given remote settings.'
+            tags:
+                - Remote
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    in: body
+                    name: remoteSettings
+                    required: true
+                    schema:
+                        $ref: '#/definitions/RemoteSettings'
+        delete:
+            operationId: RemoveRemoteSettings
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Remove/disconnect remote server connection.'
+            tags:
+                - Remote
+            security:
+                -
+                    adminAuth: []
+            parameters: []
+    /remote/status:
+        get:
+            operationId: GetConnectionStatus
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: string
+                        enum:
+                            - notConfigured
+                            - cantReachRemoteServer
+                            - authorizationFail
+                            - connectionOK
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get connection status to remote status.'
+            tags:
+                - Remote
+            security:
+                -
+                    adminAuth: []
+                -
+                    userAuth: []
+            parameters: []
+    /remote/machine-mac:
+        get:
+            operationId: GetMachineMac
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: string
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Get local casa-server machine mac address.\r\nUsed when remote server require local server mac address befor pairing."
+            tags:
+                - Remote
+            security:
+                -
+                    adminAuth: []
+            parameters: []
+    '/static/**/*':
+        get:
+            operationId: GetStaticsAssets
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: object
+                '404':
+                    description: 'Page not found'
+            description: 'Get public assets of casa-net client side.'
+            tags:
+                - Public
+            security: []
+            parameters: []
 produces:
     - application/json
 swagger: '2.0'
@@ -2911,6 +3056,12 @@ tags:
     -
         name: Feeds
         description: 'Feed of updates from system, such as minion turned on/off etc. all using SSE protocol'
+    -
+        name: Remote
+        description: 'Manage the remote server connection, used to access local server via www'
+    -
+        name: Public
+        description: 'Static files/assets for client side'
 schemes:
     - http
     - https

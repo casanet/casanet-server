@@ -1,10 +1,10 @@
 import * as fse from 'fs-extra';
 import * as path from 'path';
+import { PullBehavior } from 'pull-behavior';
 import { BehaviorSubject } from 'rxjs';
 import { Configuration } from '../config';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
-import { PullBehavior } from '../utilities/pullBehavior';
 
 /**
  * Any smart devices brand communication module needs to inherit..

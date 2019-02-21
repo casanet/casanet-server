@@ -23,11 +23,11 @@ export class UsersController extends Controller {
      * @param users users to remove password from.
      */
     private cleanUpUsersBeforRelease(users: User[]): User[] {
-        const usersCopy: User[] = [...users];
-        for (const user of usersCopy) {
-            this.cleanUpUserBeforRelease(user);
+        const usersCopy: User[] = [];
+        for (const user of users) {
+            usersCopy.push(this.cleanUpUserBeforRelease(user));
         }
-        return users;
+        return usersCopy;
     }
 
     /**
@@ -85,7 +85,7 @@ export class UsersController extends Controller {
     /**
      * Update user values.
      * @param userId User id.
-     * @param timing User object to update to.
+     * @param user User object to update to.
      */
     @Security('adminAuth')
     @Security('userAuth')
@@ -108,7 +108,7 @@ export class UsersController extends Controller {
 
     /**
      * Delete user from system.
-     * @param timingId User id.
+     * @param userId User id.
      */
     @Security('adminAuth')
     @Security('userAuth')
@@ -121,7 +121,7 @@ export class UsersController extends Controller {
 
     /**
      *  Creates new user.
-     * @param timing new user to create.
+     * @param user new user to create.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
