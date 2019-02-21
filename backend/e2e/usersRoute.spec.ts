@@ -23,6 +23,19 @@ describe('Users routing API', () => {
                 });
         });
 
+        it('it should never let passwords in response', (done) => {
+            validAdminAgent.get('/API/users')
+                .end((err, res) => {
+                    const users = res.body as User[];
+                    for (const user of users) {
+                        if (user.password) {
+                            throw new Error('server should never let password get out. even it was hashed.');
+                        }
+                    }
+                    done();
+                });
+        });
+
         it('it should respond 40x as status code', (done) => {
             validUserAgent.get('/API/users')
                 .end((err, res) => {
@@ -37,6 +50,17 @@ describe('Users routing API', () => {
             validAdminAgent.get('/API/users/user@casa.net')
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
+                    done();
+                });
+        });
+
+        it('it should never let password in response', (done) => {
+            validAdminAgent.get('/API/users/user@casa.net')
+                .end((err, res) => {
+                    const user = res.body as User;
+                    if (user.password) {
+                        throw new Error('server should never let password get out. even it was hashed.');
+                    }
                     done();
                 });
         });
