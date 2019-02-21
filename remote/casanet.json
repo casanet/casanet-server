@@ -1,0 +1,19 @@
+{
+    "defaultUser": {
+        "displayName": "default user",
+        "email": "[machine-mac-address]@casa-net.online",
+        "sessionTimeOutMS": 8.64e+7,
+        "password": "casanet",
+        "ignoreTfa": true,
+        "scope" : "adminAuth"
+    },
+    "http": {
+        "httpPort": 3000,
+        "httpsPort": 443,
+        "useHttps": false
+    },
+    "requestsLimit": {
+        "windowsMs": 1.2e+6,
+        "maxRequests": 250
+    }
+}
