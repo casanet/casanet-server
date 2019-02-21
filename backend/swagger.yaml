@@ -1948,8 +1948,6 @@ paths:
             responses:
                 '201':
                     description: '2-fatore code sent'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
                 '204':
                     description: 'No content'
                 '403':
@@ -2799,6 +2797,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
+                    description: 'new user to create.'
                     in: body
                     name: user
                     required: true
@@ -2859,6 +2858,7 @@ paths:
                     required: true
                     type: string
                 -
+                    description: 'User object to update to.'
                     in: body
                     name: user
                     required: true
@@ -2885,11 +2885,12 @@ paths:
                     userAuth: []
             parameters:
                 -
+                    description: 'User id.'
                     in: path
                     name: userId
                     required: true
                     type: string
-    /remote/connection:
+    /remote:
         get:
             operationId: GetRemoteHost
             produces:
@@ -2954,7 +2955,7 @@ paths:
                 -
                     adminAuth: []
             parameters: []
-    /remote/connection/status:
+    /remote/status:
         get:
             operationId: GetConnectionStatus
             produces:
@@ -3003,6 +3004,23 @@ paths:
                 -
                     adminAuth: []
             parameters: []
+    '/static/**/*':
+        get:
+            operationId: GetStaticsAssets
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: object
+                '404':
+                    description: 'Page not found'
+            description: 'Get public assets of casa-net client side.'
+            tags:
+                - Public
+            security: []
+            parameters: []
 produces:
     - application/json
 swagger: '2.0'
@@ -3041,6 +3059,9 @@ tags:
     -
         name: Remote
         description: 'Manage the remote server connection, used to access local server via www'
+    -
+        name: Public
+        description: 'Static files/assets for client side'
 schemes:
     - http
     - https

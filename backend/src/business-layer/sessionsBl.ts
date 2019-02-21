@@ -26,7 +26,7 @@ export class SessionsBl {
      */
     public async getSession(sessionKey: string): Promise<Session> {
         const hashedSession = cryptoJs.SHA256(sessionKey).toString();
-        return this.sessionDal.getSession(hashedSession);
+        return await this.sessionDal.getSession(hashedSession); // TODO unit test?
     }
 
     /**

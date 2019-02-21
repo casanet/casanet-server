@@ -15,9 +15,7 @@ import { {{name}} } from '{{modulePath}}';
 import { expressAuthentication } from '{{authenticationModule}}';
 {{/if}}
 import * as express from 'express';
-import { ErrorResponseSchema, SchemaValidator } from '../security/schemaValidator';
-import { ErrorResponse } from '../models/sharedInterfaces';
-import { User } from '../models/sharedInterfaces';
+import { ErrorResponse, User } from '../../../backend/src/models/sharedInterfaces';
 const models: TsoaRoute.Models = {
     {{#each models}}
     "{{@key}}": {
@@ -94,7 +92,14 @@ export function RegisterRoutes(app: express.Express) {
                  * Else throw it back.
                  */
                 try {
-                    const cleanError = await SchemaValidator(error, ErrorResponseSchema);
+                    const cleanError = {
+                        responseCode: error.responseCode,
+                        message: error.message
+                    } as ErrorResponse;
+
+                    if(typeof cleanError.responseCode !== 'number'){
+                        throw new Error('invalid error schema');
+                    }
                     _response.status(403).send(cleanError);
                 } catch (error) {
                     _response.status(500).send({
@@ -148,7 +153,14 @@ export function RegisterRoutes(app: express.Express) {
                  * Else throw it back.
                  */
                 try {
-                    const cleanError = await SchemaValidator(error, ErrorResponseSchema);
+                    const cleanError = {
+                        responseCode: error.responseCode,
+                        message: error.message
+                    } as ErrorResponse;
+
+                    if(typeof cleanError.responseCode !== 'number'){
+                        throw new Error('invalid error schema');
+                    }
                     response.status(500).send(cleanError);
                 } catch (error) {
                     response.status(500).send({

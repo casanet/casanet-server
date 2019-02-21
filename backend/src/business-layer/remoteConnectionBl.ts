@@ -6,12 +6,12 @@ import moment = require('moment');
 import * as ReconnectingWs from 'reconnecting-ws';
 import { RemoteConnectionDal } from '../data-layer/remoteConnectionDal';
 import { RemoteConnectionDalSingleton } from '../data-layer/remoteConnectionDal';
+import { HttpRequest, LocalMessage, RemoteMessage } from '../models/remote2localProtocol';
 import { ErrorResponse, MinionFeed, RemoteConnectionStatus, RemoteSettings, TimingFeed } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 import { GetMachinMacAddress } from '../utilities/macAddress';
 import { MinionsBl } from './minionsBl';
 import { MinionsBlSingleton } from './minionsBl';
-import { HttpRequest, LocalMessage, RemoteMessage } from '../models/remote2localProtocol';
 import { TimingsBl } from './timingsBl';
 import { TimingsBlSingleton } from './timingsBl';
 import { UsersBl } from './usersBl';
@@ -22,7 +22,7 @@ import { UsersBlSingleton } from './usersBl';
  */
 export class RemoteConnectionBl {
 
-    /** Express router, used to create http requests from 
+    /** Express router, used to create http requests from
      * remote server without actually open TCP connection.
      */
     private expressRouter: express.Express;
@@ -41,9 +41,9 @@ export class RemoteConnectionBl {
      * @param usersBl Inject the user bl instance to used userBl.
      */
     constructor(private remoteConnectionDal: RemoteConnectionDal,
-        private minionsBl: MinionsBl,
-        private timingsBl: TimingsBl,
-        private usersBl: UsersBl,
+                private minionsBl: MinionsBl,
+                private timingsBl: TimingsBl,
+                private usersBl: UsersBl,
     ) {
         /** Use chai testing lib, to mock http requests */
         chai.use(chaiHttp);
@@ -82,7 +82,7 @@ export class RemoteConnectionBl {
         /** Start sending ark message interval */
         setInterval(() => {
             /** If status is not OK or Connection problem
-             * dont send ark message. 
+             * dont send ark message.
              * (If remote server not set yet, ther is no point to try sending ark).
              */
             if (this.remoteConnectionStatus !== 'connectionOK' &&
@@ -98,7 +98,7 @@ export class RemoteConnectionBl {
 
     /**
      * Let app give the express router instance.
-     * Then each remote request will pass to app via router. 
+     * Then each remote request will pass to app via router.
      * without actually opening TCP connection with HTTP request.
      * @param expressRouter The express app/router instance
      */
@@ -120,7 +120,7 @@ export class RemoteConnectionBl {
         return remoteSettings.host;
     }
 
-    /** 
+    /**
      * Set remote server settings.
      * then close old connection if exsit, and try open new connection with new settings.
      */
@@ -169,7 +169,7 @@ export class RemoteConnectionBl {
 
         /** Allow *only wss* connections. */
         /** open connection to remote server. */
-        this.webSocket.open(`wss://${remoteSettings.host}/remote-ws-channel`);
+        this.webSocket.open(`wss://${remoteSettings.host}`);
 
         logger.info(`Opening ws channel to ${remoteSettings.host}`);
 
@@ -184,11 +184,11 @@ export class RemoteConnectionBl {
             const remoteMessage: RemoteMessage = JSON.parse(rawRemoteMessage);
             switch (remoteMessage.remoteMessagesType) {
                 case 'readyToInitialization': await this.onInitReady(); break;
-                case 'authenticationFail': await this.onAuthenticationFail(remoteMessage[remoteMessage.remoteMessagesType]); break;
+                case 'authenticationFail': await this.onAuthenticationFail(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
                 case 'authenticatedSuccessfuly': await this.onAuthenticatedSuccessfuly(); break;
-                case 'getUsers': await this.onUsersRequired(); break;
+                case 'localUsers': await this.onUsersRequired(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
                 case 'arkOk': await this.OnArkOk(); break;
-                case 'httpRequest': await this.onRemoteHttpRequest(remoteMessage[remoteMessage.remoteMessagesType]); break;
+                case 'httpRequest': await this.onRemoteHttpRequest(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
             }
         };
 
@@ -211,15 +211,18 @@ export class RemoteConnectionBl {
     }
 
     /** If remote server needs collection of users in local server, sent it */
-    private async onUsersRequired() {
+    private async onUsersRequired(usersRequest: { requestId: string; }) {
         try {
             const users = await this.usersBl.getUsers();
             const usersEmail = users.map((user) => user.email);
 
             this.sendMessage({
-                localMessagesType: 'users',
+                localMessagesType: 'localUsers',
                 message: {
-                    users: usersEmail,
+                    localUsers: {
+                        requestId: usersRequest.requestId,
+                        users: usersEmail,
+                    },
                 },
             });
 
@@ -245,7 +248,7 @@ export class RemoteConnectionBl {
     }
 
     /**
-     * On remote server ready to local authentication request. 
+     * On remote server ready to local authentication request.
      */
     private async onInitReady() {
         try {
