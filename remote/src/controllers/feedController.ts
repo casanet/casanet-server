@@ -51,7 +51,7 @@ export class FeedController extends Controller {
         if (!(localServerId in sseFeedServersMap)) {
             return;
         }
-        try { sseFeedServersMap[localServerId].send(JSON.stringify(feedData)); } catch (error) { }
+        try { sseFeedServersMap[localServerId].send(feedData); } catch (error) { }
     }
 
     /**
@@ -67,7 +67,7 @@ export class FeedController extends Controller {
         }
 
         /** Subscribe client to his local server SSE object */
-        this.minionsSseFeedServersMap[localServerId].addClient(request, response);
+        this.minionsSseFeedServersMap[localServerId].init(request, response);
     }
 
     /**
