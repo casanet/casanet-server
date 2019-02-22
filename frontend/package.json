@@ -5,9 +5,11 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "buildwatch": "ng build -- watch",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postbuild": "copyfiles -u -1 ../backend/dist/**/* ../remote/dist/public/static"
   },
   "private": true,
   "dependencies": {
@@ -43,12 +45,13 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.12.2",
     "@angular/cli": "~7.0.3",
-    "@angular/compiler-cli": "~7.0.0",
+    "@angular/compiler-cli": "^7.2.6",
     "@angular/language-service": "~7.0.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
+    "copyfiles": "^2.1.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~3.0.0",

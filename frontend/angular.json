@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "darki": {
+    "casaui": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "baseHref" : "/static/",
+            "baseHref": "/static/",
             "outputPath": "../backend/dist/public",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -109,7 +109,7 @@
         }
       }
     },
-    "darki-e2e": {
+    "casaui-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -138,5 +138,5 @@
       }
     }
   },
-  "defaultProject": "darki"
+  "defaultProject": "casaui"
 }
