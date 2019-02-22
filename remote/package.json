@@ -7,7 +7,7 @@
     "url": "https://github.com/haimkastner"
   },
   "description": "IoT server for local home network - Remote server",
-  "main": "dist/index.js",
+  "main": "dist/remote/src/index.js",
   "scripts": {
     "jscopy": "copyfiles -u 1 src/**/*.js dist",
     "prepare": "tsoa routes && tsoa swagger && tsc && npm run jscopy",
