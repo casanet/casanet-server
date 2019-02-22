@@ -1,5 +1,5 @@
 {
-  "name": "darki",
+  "name": "casa-net-ui",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -9,9 +9,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postbuild": "copyfiles -u -1 ../backend/dist/**/* ../remote/dist/public/static"
+    "postbuild": "copyfiles -u 4 ../backend/dist/public/**/* ../remote/dist/remote/src/public/static/"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
     "@angular/animations": "~7.0.0",
     "@angular/cdk": "~7.0.2",
