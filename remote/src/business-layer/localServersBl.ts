@@ -72,16 +72,17 @@ export class LocalServersBl {
      */
     public async createLocalServer(localServer: LocalServer): Promise<void> {
         /** local server mac address shuold be uniqe. */
-
+        let isLocalSereverMacIsUse = false;
         try {
-            // TODO: check how to do it in live.
-            this.getlocalServersByMac(localServer.macAddress); // TODO: it not realy do anything... vatch...
+            await this.getlocalServersByMac(localServer.macAddress);
+            isLocalSereverMacIsUse = true;
+        } catch (error) { }
+        if (isLocalSereverMacIsUse) {
             throw {
                 responseCode: 5001,
                 message: 'local server with given mac address aready exsit',
             } as ErrorResponse;
-        } catch (error) { }
-
+        }
         /** Generate id to local server */
         localServer.localServerId = randomstring.generate(5);
 
