@@ -30,6 +30,7 @@
     "express-ws": "^4.0.0",
     "fs": "0.0.1-security",
     "fs-extra": "^7.0.1",
+    "generic-json-sanitizer": "^1.0.0",
     "getmac": "^1.4.6",
     "helmet": "^3.15.0",
     "http": "0.0.0",
