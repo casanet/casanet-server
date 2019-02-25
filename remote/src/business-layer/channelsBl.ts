@@ -153,11 +153,18 @@ export class ChannelsBl {
             this.sendMessage(wsChannel, { remoteMessagesType: 'authenticatedSuccessfuly', message: {} });
         } catch (error) {
             /** send generic auth fail message */
-            this.sendMessage(wsChannel, { remoteMessagesType: 'authenticationFail', message: { connectionFail: { responseCode: 4003 } } });
+            this.sendMessage(wsChannel, {
+                remoteMessagesType: 'authenticationFail',
+                message: {
+                    authenticationFail: {
+                        responseCode: 4003,
+                    },
+                },
+            });
 
             /** wait a while until closing, to allow local server process fail message */
             setTimeout(() => {
-                try { wsChannel.close(); } catch (error) { }
+                // try { wsChannel.close(); } catch (error) { }
             }, 4000);
         }
     }
