@@ -42,7 +42,7 @@
     "path": "^0.12.7",
     "pull-behavior": "^1.1.0",
     "randomstring": "^1.1.5",
-    "reconnecting-ws": "^1.0.4",
+    "reconnecting-ws": "^2.0.1",
     "rxjs": "^6.3.3",
     "suncalc": "^1.8.0",
     "tsoa": "^2.3.8",
