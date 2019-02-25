@@ -41,7 +41,7 @@ export declare interface HttpRequest {
 export declare interface RemoteMessage {
     remoteMessagesType: RemoteMessagesType;
     message: {
-        connectionFail?: ErrorResponse;
+        authenticationFail?: ErrorResponse;
         httpRequest?: HttpRequest;
         localUsers?: {
             requestId: string;

@@ -3,7 +3,7 @@ import chaiHttp = require('chai-http');
 import * as express from 'express';
 import { Express, Router } from 'express';
 import moment = require('moment');
-import * as ReconnectingWs from 'reconnecting-ws';
+import { WebSocketClient } from 'reconnecting-ws';
 import { RemoteConnectionDal } from '../data-layer/remoteConnectionDal';
 import { RemoteConnectionDalSingleton } from '../data-layer/remoteConnectionDal';
 import { HttpRequest, LocalMessage, RemoteMessage } from '../models/remote2localProtocol';
@@ -31,7 +31,7 @@ export class RemoteConnectionBl {
     private remoteConnectionStatus: RemoteConnectionStatus = 'notConfigured';
 
     /** Web socket client object, to connect remote server  */
-    private webSocket: ReconnectingWs;
+    private webSocketClient: WebSocketClient;
 
     /**
      * Init remote connection bl. using dependecy injection pattern to allow units testings.
@@ -144,12 +144,12 @@ export class RemoteConnectionBl {
         if (this.remoteConnectionStatus !== 'connectionOK') {
             return;
         }
-        try { this.webSocket.send(JSON.stringify(localMessage)); } catch (error) { }
+        try { this.webSocketClient.sendData(JSON.stringify(localMessage)); } catch (error) { }
     }
 
     /** Close manualy web socket to remote server */
     private closeRemoteConnection() {
-        try { this.webSocket.close(); } catch (error) { }
+        try { this.webSocketClient.disconnect(); } catch (error) { }
     }
 
     /** Connect to remote server by web sockets */
@@ -165,20 +165,20 @@ export class RemoteConnectionBl {
         }
 
         /** create web socket instance */
-        this.webSocket = new ReconnectingWs(2000, false);
+        this.webSocketClient = new WebSocketClient(3000, false);
 
         /** Allow *only wss* connections. */
         /** open connection to remote server. */
-        this.webSocket.open(`wss://${remoteSettings.host}`);
+        this.webSocketClient.connect(`ws://${remoteSettings.host}`);
 
         logger.info(`Opening ws channel to ${remoteSettings.host}`);
 
-        this.webSocket.onopen = () => {
+        this.webSocketClient.on('open', () => {
             this.remoteConnectionStatus = 'connectionOK';
             logger.info(`Ws channel to ${remoteSettings.host} opend succssfuly`);
-        };
+        });
 
-        this.webSocket.onmessage = async (rawRemoteMessage: string) => {
+        this.webSocketClient.on('message', async (rawRemoteMessage: string) => {
 
             /** Parse message and send to correct method handle */
             const remoteMessage: RemoteMessage = JSON.parse(rawRemoteMessage);
@@ -190,20 +190,20 @@ export class RemoteConnectionBl {
                 case 'arkOk': await this.OnArkOk(); break;
                 case 'httpRequest': await this.onRemoteHttpRequest(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
             }
-        };
+        });
 
-        this.webSocket.onerror = (e: any) => {
-            logger.info(`Ws channel error ${e.message}`);
-        };
+        this.webSocketClient.on('error', (err: Error) => {
+            logger.info(`Ws channel error ${err.message}`);
+        });
 
-        this.webSocket.onclose = (e: any) => {
+        this.webSocketClient.on('close', (code: number, reason: string) => {
             this.remoteConnectionStatus = 'cantReachRemoteServer';
-            logger.info(`Ws channel closed ${remoteSettings.host} ${e}`);
-        };
+            logger.info(`Ws channel closed ${remoteSettings.host} code: ${code} reasone: ${reason}`);
+        });
 
-        this.webSocket.onreconnect = (e: any) => {
-            logger.debug(`Ws channel trying reconnect ${remoteSettings.host} ${e}`);
-        };
+        this.webSocketClient.on('reconnect', () => {
+            logger.debug(`Ws channel trying reconnect ${remoteSettings.host}`);
+        });
     }
 
     private async OnArkOk() {
