@@ -4,6 +4,7 @@ import * as express from 'express';
 import * as forceSsl from 'express-force-ssl';
 import * as RateLimit from 'express-rate-limit';
 import * as useragent from 'express-useragent';
+import { sanitizeExpressMiddleware } from 'generic-json-sanitizer';
 import * as helmet from 'helmet';
 import * as path from 'path';
 import { RemoteConnectionBlSingleton } from './business-layer/remoteConnectionBl';
@@ -41,6 +42,9 @@ class App {
 
         /** Parse the request */
         this.dataParsing();
+
+        /** After data parsed, sanitize it. */
+        this.sanitizeData();
 
         /** Serve static client side */
         this.serveStatic();
@@ -119,6 +123,19 @@ class App {
 
         this.express.use(bodyParser.json({ limit: '2mb' })); // for parsing application/json
         this.express.use(useragent.express()); // for parsing user agent to readble struct
+    }
+
+    /**
+     * Sanitize Json schema arrived from client.
+     * to avoid stored XSS issues.
+     */
+    private sanitizeData(): void {
+        this.express.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+            sanitizeExpressMiddleware(req, res, next, {
+                allowedAttributes: {},
+                allowedTags: [],
+            });
+        });
     }
 
     /**
