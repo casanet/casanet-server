@@ -169,7 +169,7 @@ export class RemoteConnectionBl {
 
         /** Allow *only wss* connections. */
         /** open connection to remote server. */
-        this.webSocketClient.connect(`ws://${remoteSettings.host}`);
+        this.webSocketClient.connect(`${remoteSettings.host}`);
 
         logger.info(`Opening ws channel to ${remoteSettings.host}`);
 
