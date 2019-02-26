@@ -149,7 +149,7 @@ export class ForwardAuthBl {
         });
 
         if (localResponse.httpStatus === 200) {
-            await this.activeSession(response, login.localServerId, localResponse);
+            await this.activeSession(response, connectLocalServerId, localResponse);
             return;
         }
 
