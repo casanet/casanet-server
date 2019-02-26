@@ -37,7 +37,7 @@
     "log4js": "^3.0.6",
     "moment": "^2.23.0",
     "network-list2": "^1.0.2",
-    "node-orvibo-2": "^1.1.1",
+    "node-orvibo-2": "^1.1.2",
     "node-yeelight-wifi": "^0.1.2",
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
