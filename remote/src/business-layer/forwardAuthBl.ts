@@ -35,15 +35,16 @@ export class ForwardAuthBl {
          * Save session,
          * used when user sending request to local server,so can check session *befor* sending.
          */
-        await this.forwardUsersSessionsBl.createNewSession(localServerId, httpResponse.httpSession);
+        await this.forwardUsersSessionsBl.createNewSession(localServerId, httpResponse.httpSession.key);
 
         /**
          * Finally load session on cookies response.
          */
-        response.cookie('session', httpResponse.httpSession, {
+        response.cookie('session', httpResponse.httpSession.key, {
             sameSite: true,
             httpOnly: true, // minimize risk of XSS attacks by restricting the client from reading the cookie
             secure: Configuration.http.useHttps, // only send cookie over https
+            maxAge: httpResponse.httpSession.maxAge * 1000, // max age as miliseconds
         });
     }
 
@@ -98,7 +99,7 @@ export class ForwardAuthBl {
         });
 
         /** If local server auth this user success. active login in remote too. */
-        if (localResponse.httpStatus === 200) {
+        if (localResponse.httpStatus === 200 && localResponse.httpSession) {
             await this.activeSession(response, connectLocalServerId, localResponse);
             return;
         }
@@ -148,7 +149,7 @@ export class ForwardAuthBl {
             httpSession: '',
         });
 
-        if (localResponse.httpStatus === 200) {
+        if (localResponse.httpStatus === 200 && localResponse.httpSession) {
             await this.activeSession(response, connectLocalServerId, localResponse);
             return;
         }

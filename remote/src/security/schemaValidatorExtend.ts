@@ -21,7 +21,10 @@ const httpResponseSchema = Joi.object().keys({
     requestId: Joi.string().not('').required(),
     httpStatus: Joi.number().integer().required(),
     httpBody: Joi.any(),
-    httpSession: Joi.string().allow(''),
+    httpSession: Joi.object().keys({
+        key: Joi.string().not('').required(),
+        maxAge: Joi.number().required(),
+    }),
 });
 
 const emptyMessageSchema = Joi.object().keys({});

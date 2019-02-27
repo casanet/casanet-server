@@ -257,7 +257,7 @@ export class ChannelsBl {
                         message: 'ther is no connection to local server',
                     } as ErrorResponse,
                     httpStatus: 510,
-                    httpSession: '',
+                    httpSession: undefined,
                 });
                 return;
             }
