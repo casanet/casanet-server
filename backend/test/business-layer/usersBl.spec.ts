@@ -47,9 +47,9 @@ describe('Users BL tests', () => {
                 await usersBl.createUser(additionalUser);
             } catch (error) {
                 const expectedError: ErrorResponse = {
-                    responseCode: 4022,
+                    responseCode: 2422,
                 };
-                expect(error).to.have.property('responseCode').to.deep.equal(4022);
+                expect(error).to.have.property('responseCode').to.deep.equal(2422);
                 return;
             }
 

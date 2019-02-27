@@ -25,7 +25,7 @@ describe('Remote connection routing API', () => {
     });
 
     const remoteSettings: RemoteSettings = {
-        host: 'localhost',
+        host: 'ws://127.0.0.1/',
         connectionKey: 'abracadabra',
     };
 

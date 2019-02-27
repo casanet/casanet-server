@@ -39,7 +39,7 @@ export class UsersDal {
         const userNameDomain = Configuration.defaultUser.email.split('@')[1];
         /**
          * Used machine address as default user name.
-         * This is for security issues when users not replacing default user, 
+         * This is for security issues when users not replacing default user,
          * and attackers can access server with known default user.
          */
         const userName = await GetMachinMacAddress();
@@ -86,7 +86,10 @@ export class UsersDal {
         const user = this.findUser(email);
 
         if (!user) {
-            throw new Error('user not exist');
+            throw {
+                responseCode: 5404,
+                message: 'user not exist',
+            } as ErrorResponse;
         }
         return user;
     }
@@ -111,7 +114,10 @@ export class UsersDal {
         const originalUser = this.findUser(userEmail);
 
         if (!originalUser) {
-            throw new Error('user not exist');
+            throw {
+                responseCode: 5404,
+                message: 'user not exist',
+            } as ErrorResponse;
         }
 
         this.users.splice(this.users.indexOf(originalUser), 1);
@@ -131,8 +137,8 @@ export class UsersDal {
 
         if (!originalUser) {
             throw {
-                responseCode: 4004,
-                message: 'timing not exist',
+                responseCode: 5404,
+                message: 'user not exist',
             } as ErrorResponse;
         }
 

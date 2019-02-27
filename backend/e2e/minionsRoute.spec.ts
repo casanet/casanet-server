@@ -96,7 +96,7 @@ describe('Minions routing API', () => {
                 .end((err, res) => {
 
                     const errorResponse: ErrorResponse = {
-                        responseCode: 4522,
+                        responseCode: 2404,
                         message: 'device not exist in lan network',
                     };
                     expect(res.body).to.be.deep.equal(errorResponse);
@@ -126,7 +126,7 @@ describe('Minions routing API', () => {
             validUserAgent.del('/API/minions/minionId')
                 .end((err, res) => {
                     const errorResponse: ErrorResponse = {
-                        responseCode: 4004,
+                        responseCode: 1404,
                         message: 'minion not exist',
                     };
                     expect(res.body).to.be.deep.equal(errorResponse);

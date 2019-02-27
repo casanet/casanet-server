@@ -39,7 +39,7 @@ export class UsersController extends Controller {
          */
         if (userSession.scope !== 'adminAuth' && userSession.email !== userIdInReq) {
             throw {
-                responseCode: 4003,
+                responseCode: 6405,
                 message: 'user not allowd to watch other account',
             } as ErrorResponse;
         }

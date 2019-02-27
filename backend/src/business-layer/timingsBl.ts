@@ -238,7 +238,7 @@ export class TimingsBl {
 
         if (!timing.timingProperties[timing.timingType]) {
             throw {
-                responseCode: 4022,
+                responseCode: 3405,
                 message: 'timing properties not match to timing type',
             } as ErrorResponse;
         }

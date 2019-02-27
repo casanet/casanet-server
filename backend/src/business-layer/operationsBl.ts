@@ -32,8 +32,8 @@ export class OperationsBl {
 
             if (!activity.minionStatus[activityMinion.minionType]) {
                 throw {
-                    responseCode: 4122,
-                    message: 'incorrect minion status, for activity minion type',
+                    responseCode: 2405,
+                    message: 'incorrect minion status for activity minion type',
                 } as ErrorResponse;
             }
         }

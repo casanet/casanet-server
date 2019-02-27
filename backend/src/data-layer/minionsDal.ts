@@ -45,7 +45,10 @@ export class MinionsDal {
         const minion = this.findMinion(minionId);
 
         if (!minion) {
-            throw new Error('minion not exist');
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            } as ErrorResponse;
         }
         return minion;
     }
@@ -72,7 +75,10 @@ export class MinionsDal {
         const originalMinion = this.findMinion(minion.minionId);
 
         if (!originalMinion) {
-            throw new Error('minion not exist');
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            } as ErrorResponse;
         }
 
         this.minions.splice(this.minions.indexOf(originalMinion), 1);
@@ -93,7 +99,7 @@ export class MinionsDal {
 
         if (!originalMinion) {
             throw {
-                responseCode: 4004,
+                responseCode: 1404,
                 message: 'minion not exist',
             } as ErrorResponse;
         }

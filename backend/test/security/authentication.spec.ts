@@ -35,7 +35,7 @@ describe('Security scopes validation middelwere', () => {
                 })
                 .catch((err: ErrorResponse | Error) => {
                     const expectedError: ErrorResponse = {
-                        responseCode: 4003,
+                        responseCode: 1403,
                     };
                     expect(err).to.deep.equal(expectedError);
                 });
@@ -52,7 +52,7 @@ describe('Security scopes validation middelwere', () => {
                 })
                 .catch((err: ErrorResponse) => {
                     const expectedError: ErrorResponse = {
-                        responseCode: 4003,
+                        responseCode: 1403,
                     };
                     expect(err).to.deep.equal(expectedError);
                 });
@@ -90,7 +90,7 @@ describe('Security scopes validation middelwere', () => {
 
             } catch (err) {
                 const expectedError: ErrorResponse = {
-                    responseCode: 4003,
+                    responseCode: 1403,
                 };
                 expect(err).to.deep.equal(expectedError);
                 return;
@@ -108,7 +108,7 @@ describe('Security scopes validation middelwere', () => {
                 await expressAuthentication(faksRequest as express.Request, ['']);
             } catch (err) {
                 const expectedError: ErrorResponse = {
-                    responseCode: 4003,
+                    responseCode: 1403,
                 };
                 expect(err).to.deep.equal(expectedError);
                 return;
