@@ -169,7 +169,7 @@ export class RemoteConnectionBl {
 
         /** Allow *only wss* connections. */
         /** open connection to remote server. */
-        this.webSocketClient.connect(`ws://${remoteSettings.host}`);
+        this.webSocketClient.connect(`${remoteSettings.host}`);
 
         logger.info(`Opening ws channel to ${remoteSettings.host}`);
 
@@ -315,9 +315,18 @@ export class RemoteConnectionBl {
         });
     }
 
-    /** Extract cookie from http headers response  */
-    private extractCookie(headers: {}): string {
-        try { return !headers['set-cookie'] ? '' : headers['set-cookie'][0].split(';')[0].split('=')[1]; } catch (error) { return ''; }
+    /** Extract http cookie from http headers response  */
+    private extractCookie(headers: {}): { key: string; maxAge: number; } {
+        try {
+            if (!headers['set-cookie']) {
+                return;
+            }
+            const sessionParts = headers['set-cookie'][0].split(';');
+            return {
+                key: sessionParts[0].split('=')[1],
+                maxAge: parseInt(sessionParts[1].split('=')[1], 10),
+            };
+        } catch (error) { return; }
     }
 }
 
