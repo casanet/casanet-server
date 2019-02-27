@@ -71,7 +71,12 @@ export declare interface HttpResponse {
     /** Http data result */
     httpBody: any;
     /** Http session result (used in login requests only) */
-    httpSession: string;
+    httpSession?: {
+        /** Session key */
+        key: string;
+        /** Session expires time in seconds. */
+        maxAge: number;
+    };
 }
 
 export declare interface LocalServerFeed {
