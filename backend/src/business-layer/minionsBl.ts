@@ -161,13 +161,13 @@ export class MinionsBl {
             await this.readMinionStatus(minion)
                 .catch(() => {
                     /**
-                     * Id fail, do nothing....
+                     * Fail, do nothing....
                      */
                 });
 
             /**
              * Let time between minions reading.
-             * this is because some of devices using broadcast in netword and can't communication 2 together.
+             * this is because some of devices using broadcast in network and can't communication 2 together.
              */
             await Delay(moment.duration(1, 'seconds'));
         }
@@ -207,7 +207,7 @@ export class MinionsBl {
          */
         if (!deviceKind) {
             return {
-                responseCode: 4222,
+                responseCode: 1409,
                 message: 'there is no supported model for brand + model',
             };
         }
@@ -217,7 +217,7 @@ export class MinionsBl {
          */
         if (deviceKind.isTokenRequierd && !minionToCheck.device.token) {
             return {
-                responseCode: 4322,
+                responseCode: 2409,
                 message: 'token is requird',
             };
         }
@@ -227,8 +227,8 @@ export class MinionsBl {
          */
         if (deviceKind.isIdRequierd && !minionToCheck.device.deviceId) {
             return {
-                responseCode: 4322,
-                message: 'token is requird',
+                responseCode: 3409,
+                message: 'id is requird',
             };
         }
 
@@ -248,7 +248,7 @@ export class MinionsBl {
              */
             if (minionsCount >= deviceKind.minionsPerDevice) {
                 return {
-                    responseCode: 4422,
+                    responseCode: 4409,
                     message: 'device already in max uses with other minion',
                 };
             }
@@ -280,7 +280,7 @@ export class MinionsBl {
 
         if (!minion) {
             throw {
-                responseCode: 4004,
+                responseCode: 1404,
                 message: 'minion not exist',
             } as ErrorResponse;
         }
@@ -303,7 +303,7 @@ export class MinionsBl {
         const minioin = this.findMinion(minionId);
         if (!minioin) {
             throw {
-                responseCode: 4004,
+                responseCode: 1404,
                 message: 'minion not exist',
             } as ErrorResponse;
         }
@@ -319,7 +319,7 @@ export class MinionsBl {
         const minion = this.findMinion(minionId);
         if (!minion) {
             throw {
-                responseCode: 4004,
+                responseCode: 1404,
                 message: 'minion not exist',
             } as ErrorResponse;
         }
@@ -329,8 +329,8 @@ export class MinionsBl {
          */
         if (!minionStatus[minion.minionType]) {
             throw {
-                responseCode: 4122,
-                message: 'incorrect minion status, for current minion type',
+                responseCode: 1405,
+                message: 'incorrect minion status for current minion type',
             } as ErrorResponse;
         }
 
@@ -366,7 +366,7 @@ export class MinionsBl {
         const minion = this.findMinion(minionId);
         if (!minion) {
             throw {
-                responseCode: 4004,
+                responseCode: 1404,
                 message: 'minion not exist',
             } as ErrorResponse;
         }
@@ -419,7 +419,7 @@ export class MinionsBl {
 
         if (!foundLocalDevice) {
             throw {
-                responseCode: 4522,
+                responseCode: 2404,
                 message: 'device not exist in lan network',
             } as ErrorResponse;
         }
@@ -460,7 +460,7 @@ export class MinionsBl {
         const originalMinion = this.findMinion(minionId);
         if (!originalMinion) {
             throw {
-                responseCode: 4004,
+                responseCode: 1404,
                 message: 'minion not exist',
             } as ErrorResponse;
         }
@@ -489,7 +489,7 @@ export class MinionsBl {
         const minion = this.findMinion(minionId);
         if (!minion) {
             throw {
-                responseCode: 4004,
+                responseCode: 1404,
                 message: 'minion not exist',
             } as ErrorResponse;
         }
@@ -499,8 +499,8 @@ export class MinionsBl {
          */
         if (!statusToRecordFor[minion.minionType]) {
             throw {
-                responseCode: 4122,
-                message: 'incorrect minion status, for current minion type',
+                responseCode: 1405,
+                message: 'incorrect minion status for current minion type',
             } as ErrorResponse;
         }
 

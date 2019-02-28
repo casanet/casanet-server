@@ -1,5 +1,6 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
+import * as cryptoJs from 'crypto-js';
 import * as express from 'express';
 import { AuthBl } from '../../src/business-layer/authBl';
 import { SessionsBl } from '../../src/business-layer/sessionsBl';
@@ -8,7 +9,6 @@ import { Configuration } from '../../src/config';
 import { SessionsDal } from '../../src/data-layer/sessionsDal';
 import { UsersDal } from '../../src/data-layer/usersDal';
 import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
-import * as cryptoJs from 'crypto-js';
 import { SessionsDalMock } from '../data-layer/sessionsDal.mock.spec';
 import { UsersDalMock } from '../data-layer/usersDal.mock.spec';
 
@@ -57,7 +57,7 @@ describe('Authentication BL tests', () => {
             })
                 .catch((err) => {
                     const errorResponse: ErrorResponse = {
-                        responseCode: 403,
+                        responseCode: 2403,
                         message: 'user name or password incorrent',
                     };
                     expect(err).to.deep.equal(errorResponse);
@@ -77,7 +77,7 @@ describe('Authentication BL tests', () => {
             })
                 .catch((err) => {
                     const errorResponse: ErrorResponse = {
-                        responseCode: 403,
+                        responseCode: 2403,
                         message: 'user name or password incorrent',
                     };
                     expect(err).to.deep.equal(errorResponse);

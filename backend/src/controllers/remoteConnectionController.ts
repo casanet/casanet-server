@@ -56,7 +56,7 @@ export class RemoteConnectionController extends Controller {
             return await RemoteConnectionBlSingleton.setRemoteSettings(validRemoteSettings);
         } catch (error) {
             throw {
-                responseCode: 4022,
+                responseCode: 2422,
                 message: 'remote settings data incorrent',
             } as ErrorResponse;
         }

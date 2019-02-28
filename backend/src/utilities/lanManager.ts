@@ -11,7 +11,7 @@ export const LocalNetworkReader = (): Promise<LocalNetworkDevice[]> => {
         networkList2.scan({}, (err, netTableArray: any[]) => {
             logger.info('Scanning network devices done.');
             if (err) {
-                const msg = 'Scen local netword fail';
+                const msg = 'Scen local network fail';
                 logger.warn(msg);
                 reject(msg);
                 return;
@@ -21,7 +21,7 @@ export const LocalNetworkReader = (): Promise<LocalNetworkDevice[]> => {
             for (const localDevice of netTableArray) {
                 if (localDevice.alive && localDevice.mac) {
                     devices.push({
-                        mac: localDevice.mac.replace(/:/g, '').toLowerCase(),
+                        mac: localDevice.mac.replace(/:|-|_| /g, '').toLowerCase(),
                         ip: localDevice.ip,
                         vendor: localDevice.vendor ? localDevice.vendor : undefined,
                     });
