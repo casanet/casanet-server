@@ -15,8 +15,8 @@ export declare type RemoteMessagesType =
     'localUsers' |
     /** Remote server forwarding http request to local sever */
     'httpRequest' |
-    /** When local ark message arrived to remote server */
-    'arkOk';
+    /** When local ack message arrived to remote server */
+    'ackOk';
 
 /** Http request data */
 export declare interface HttpRequest {
@@ -58,7 +58,7 @@ export declare type LocalMessagesType =
     /** Http response with result for remote server request */
     'httpResponse' |
     /** Empty message to check if connection alive */
-    'ark' |
+    'ack' |
     /** Update remote server with feed of local server, like minion status changed etc. */
     'feed';
 
