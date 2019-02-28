@@ -79,18 +79,18 @@ export class RemoteConnectionBl {
             this.sendMessage(localMessage);
         });
 
-        /** Start sending ark message interval */
+        /** Start sending ack message interval */
         setInterval(() => {
             /** If status is not OK or Connection problem
-             * dont send ark message.
-             * (If remote server not set yet, ther is no point to try sending ark).
+             * dont send ack message.
+             * (If remote server not set yet, ther is no point to try sending ack).
              */
             if (this.remoteConnectionStatus !== 'connectionOK' &&
                 this.remoteConnectionStatus !== 'cantReachRemoteServer') {
                 return;
             }
             this.sendMessage({
-                localMessagesType: 'ark',
+                localMessagesType: 'ack',
                 message: {},
             });
         }, moment.duration(20, 'seconds').asMilliseconds());
@@ -187,7 +187,7 @@ export class RemoteConnectionBl {
                 case 'authenticationFail': await this.onAuthenticationFail(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
                 case 'authenticatedSuccessfuly': await this.onAuthenticatedSuccessfuly(); break;
                 case 'localUsers': await this.onUsersRequired(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
-                case 'arkOk': await this.OnArkOk(); break;
+                case 'ackOk': await this.OnArkOk(); break;
                 case 'httpRequest': await this.onRemoteHttpRequest(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
             }
         });
