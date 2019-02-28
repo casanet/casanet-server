@@ -201,8 +201,8 @@ describe('Minions BL tests', () => {
                 await minionsBl.setMinionStatus('m2', newStatus);
             } catch (error) {
                 const expectedError: ErrorResponse = {
-                    responseCode: 4122,
-                    message: 'incorrect minion status, for current minion type',
+                    responseCode: 1405,
+                    message: 'incorrect minion status for current minion type',
                 };
                 expect(error).to.be.deep.equal(expectedError);
 
@@ -223,7 +223,7 @@ describe('Minions BL tests', () => {
                 await minionsBl.setMinionStatus('t404', newStatus);
             } catch (error) {
                 const expectedError: ErrorResponse = {
-                    responseCode: 4004,
+                    responseCode: 1404,
                     message: 'minion not exist',
                 };
                 expect(error).to.be.deep.equal(expectedError);
@@ -275,7 +275,7 @@ describe('Minions BL tests', () => {
                 await minionsBl.setMinionTimeout(minionBefor.minionId, minionBefor.minionAutoTurnOffMS);
             } catch (error) {
                 const expectedError: ErrorResponse = {
-                    responseCode: 4004,
+                    responseCode: 1404,
                     message: 'minion not exist',
                 };
                 expect(error).to.be.deep.equal(expectedError);
@@ -464,7 +464,7 @@ describe('Minions BL tests', () => {
                 await minionsBl.createMinion(minion);
             } catch (error) {
                 const errorResponse: ErrorResponse = {
-                    responseCode: 4222,
+                    responseCode: 1409,
                     message: 'there is no supported model for brand + model',
                 };
 
@@ -495,7 +495,7 @@ describe('Minions BL tests', () => {
                 await minionsBl.createMinion(minion);
             } catch (error) {
                 const errorResponse: ErrorResponse = {
-                    responseCode: 4222,
+                    responseCode: 1409,
                     message: 'there is no supported model for brand + model',
                 };
 
@@ -526,7 +526,7 @@ describe('Minions BL tests', () => {
                 await minionsBl.createMinion(minion);
             } catch (error) {
                 const errorResponse: ErrorResponse = {
-                    responseCode: 4222,
+                    responseCode: 1409,
                     message: 'there is no supported model for brand + model',
                 };
 
@@ -557,7 +557,7 @@ describe('Minions BL tests', () => {
                 await minionsBl.createMinion(minion);
             } catch (error) {
                 const errorResponse: ErrorResponse = {
-                    responseCode: 4322,
+                    responseCode: 2409,
                     message: 'token is requird',
                 };
 
@@ -588,7 +588,7 @@ describe('Minions BL tests', () => {
                 await minionsBl.createMinion(minion);
             } catch (error) {
                 const errorResponse: ErrorResponse = {
-                    responseCode: 4422,
+                    responseCode: 4409,
                     message: 'device already in max uses with other minion',
                 };
 
@@ -620,7 +620,7 @@ describe('Minions BL tests', () => {
                 await minionsBl.createMinion(minion);
             } catch (error) {
                 const errorResponse: ErrorResponse = {
-                    responseCode: 4522,
+                    responseCode: 2404,
                     message: 'device not exist in lan network',
                 };
 
@@ -660,7 +660,7 @@ describe('Minions BL tests', () => {
                 await minionsBl.deleteMinion('sdgdsgdrrr555');
             } catch (error) {
                 const errorResponse: ErrorResponse = {
-                    responseCode: 4004,
+                    responseCode: 1404,
                     message: 'minion not exist',
                 };
 

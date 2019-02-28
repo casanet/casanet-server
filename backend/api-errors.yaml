@@ -1,0 +1,32 @@
+- { 1403 : 'access forbidden'}
+- { 2403 : 'user name or password incorrent'}
+- { 3403 : 'authorization of local server in remote, fail'}
+
+- { 1404 : 'minion not exist'}
+- { 2404 : 'device not exist in lan network'}
+- { 3404 : 'operation not exist'}
+- { 4404 : 'timing not exist'}
+- { 5404 : 'user not exist'}
+- { 6404 : 'local server not exist'}
+
+- { 1405 : 'incorrect minion status for current minion type'}
+- { 2405 : 'incorrect minion status for activity minion type'}
+- { 3405 : 'timing properties not match to timing type'}
+- { 5405 : 'user already exist'}
+- { 6405 : 'user not allowd to watch other account'}
+
+- { 1409 : 'there is no supported model for brand + model'}
+- { 2409 : 'token is requird'}
+- { 3409 : 'device id is requird'}
+- { 4409 : 'device already in max uses with other minion'}
+- { 5409 : 'you have to select local server to connect to it'}
+
+- { 1422 : 'wrong schema'}
+- { 2422 : 'wrong schema, with wrong message'}
+
+- { 1500 : 'unknown error'}
+
+- { 1501 : 'internal error'}
+- { 2501 : 'MFA configuration not set correctly'}
+- { 3501 : 'Fail to send MFA mail message, inner error.'}
+- { 4501 : 'There is no connection to local server.'}

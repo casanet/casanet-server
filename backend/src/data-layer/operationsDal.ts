@@ -45,7 +45,10 @@ export class OperationsDal {
         const operation = this.findOperation(minionId);
 
         if (!operation) {
-            throw new Error('operation not exist');
+            throw {
+                responseCode: 3404,
+                message: 'operation not exist',
+            } as ErrorResponse;
         }
         return operation;
     }
@@ -72,7 +75,10 @@ export class OperationsDal {
         const originalMinion = this.findOperation(operationId);
 
         if (!originalMinion) {
-            throw new Error('operation not exist');
+            throw {
+                responseCode: 3404,
+                message: 'operation not exist',
+            } as ErrorResponse;
         }
 
         this.operations.splice(this.operations.indexOf(originalMinion), 1);
@@ -92,7 +98,7 @@ export class OperationsDal {
 
         if (!originalOperation) {
             throw {
-                responseCode : 4004,
+                responseCode: 3404,
                 message: 'operation not exist',
             } as ErrorResponse;
         }

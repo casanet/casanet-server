@@ -5,7 +5,7 @@ import { ErrorResponse } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
 export const RemoteSettingsSchema: ObjectSchema = Joi.object().keys({
-    host: Joi.string().hostname().required(),
+    host: Joi.string().uri().required(),
     connectionKey: Joi.string().not('').required(),
 }).required();
 
@@ -65,7 +65,7 @@ export const RequestSchemaValidator = async (req: Request, schema: JoiObject): P
             logger.warn(`wrong scema data rrrived ` +
                 `from ${GetIp(req)}, error: ${result.error.message}`);
             const error: ErrorResponse = {
-                responseCode: 422,
+                responseCode: 2422,
                 message: result.error.message,
             };
 

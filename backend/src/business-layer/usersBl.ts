@@ -32,7 +32,7 @@ export class UsersBl {
         const sanitizeUser: User = await SchemaValidator(user, isNewUser ? UserSchema : UserUpdateSchema)
             .catch((validationError: ValidationResult<any>) => {
                 throw {
-                    responseCode: 4022,
+                    responseCode: 2422,
                     message: validationError.error.message,
                 } as ErrorResponse;
             });
@@ -83,8 +83,8 @@ export class UsersBl {
         }
 
         throw {
-            responseCode: 3000,
-            message: 'the user already exist',
+            responseCode: 5405,
+            message: 'user already exist',
         } as ErrorResponse;
     }
 

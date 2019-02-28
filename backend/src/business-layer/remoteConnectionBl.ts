@@ -3,7 +3,7 @@ import chaiHttp = require('chai-http');
 import * as express from 'express';
 import { Express, Router } from 'express';
 import moment = require('moment');
-import * as ReconnectingWs from 'reconnecting-ws';
+import { WebSocketClient } from 'reconnecting-ws';
 import { RemoteConnectionDal } from '../data-layer/remoteConnectionDal';
 import { RemoteConnectionDalSingleton } from '../data-layer/remoteConnectionDal';
 import { HttpRequest, LocalMessage, RemoteMessage } from '../models/remote2localProtocol';
@@ -31,7 +31,7 @@ export class RemoteConnectionBl {
     private remoteConnectionStatus: RemoteConnectionStatus = 'notConfigured';
 
     /** Web socket client object, to connect remote server  */
-    private webSocket: ReconnectingWs;
+    private webSocketClient: WebSocketClient;
 
     /**
      * Init remote connection bl. using dependecy injection pattern to allow units testings.
@@ -79,18 +79,18 @@ export class RemoteConnectionBl {
             this.sendMessage(localMessage);
         });
 
-        /** Start sending ark message interval */
+        /** Start sending ack message interval */
         setInterval(() => {
             /** If status is not OK or Connection problem
-             * dont send ark message.
-             * (If remote server not set yet, ther is no point to try sending ark).
+             * dont send ack message.
+             * (If remote server not set yet, ther is no point to try sending ack).
              */
             if (this.remoteConnectionStatus !== 'connectionOK' &&
                 this.remoteConnectionStatus !== 'cantReachRemoteServer') {
                 return;
             }
             this.sendMessage({
-                localMessagesType: 'ark',
+                localMessagesType: 'ack',
                 message: {},
             });
         }, moment.duration(20, 'seconds').asMilliseconds());
@@ -144,12 +144,12 @@ export class RemoteConnectionBl {
         if (this.remoteConnectionStatus !== 'connectionOK') {
             return;
         }
-        try { this.webSocket.send(JSON.stringify(localMessage)); } catch (error) { }
+        try { this.webSocketClient.sendData(JSON.stringify(localMessage)); } catch (error) { }
     }
 
     /** Close manualy web socket to remote server */
     private closeRemoteConnection() {
-        try { this.webSocket.close(); } catch (error) { }
+        try { this.webSocketClient.disconnect(); } catch (error) { }
     }
 
     /** Connect to remote server by web sockets */
@@ -165,20 +165,20 @@ export class RemoteConnectionBl {
         }
 
         /** create web socket instance */
-        this.webSocket = new ReconnectingWs(2000, false);
+        this.webSocketClient = new WebSocketClient(3000, false);
 
         /** Allow *only wss* connections. */
         /** open connection to remote server. */
-        this.webSocket.open(`wss://${remoteSettings.host}`);
+        this.webSocketClient.connect(`${remoteSettings.host}`);
 
         logger.info(`Opening ws channel to ${remoteSettings.host}`);
 
-        this.webSocket.onopen = () => {
+        this.webSocketClient.on('open', () => {
             this.remoteConnectionStatus = 'connectionOK';
             logger.info(`Ws channel to ${remoteSettings.host} opend succssfuly`);
-        };
+        });
 
-        this.webSocket.onmessage = async (rawRemoteMessage: string) => {
+        this.webSocketClient.on('message', async (rawRemoteMessage: string) => {
 
             /** Parse message and send to correct method handle */
             const remoteMessage: RemoteMessage = JSON.parse(rawRemoteMessage);
@@ -187,23 +187,23 @@ export class RemoteConnectionBl {
                 case 'authenticationFail': await this.onAuthenticationFail(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
                 case 'authenticatedSuccessfuly': await this.onAuthenticatedSuccessfuly(); break;
                 case 'localUsers': await this.onUsersRequired(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
-                case 'arkOk': await this.OnArkOk(); break;
+                case 'ackOk': await this.OnArkOk(); break;
                 case 'httpRequest': await this.onRemoteHttpRequest(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
             }
-        };
+        });
 
-        this.webSocket.onerror = (e: any) => {
-            logger.info(`Ws channel error ${e.message}`);
-        };
+        this.webSocketClient.on('error', (err: Error) => {
+            logger.info(`Ws channel error ${err.message}`);
+        });
 
-        this.webSocket.onclose = (e: any) => {
+        this.webSocketClient.on('close', (code: number, reason: string) => {
             this.remoteConnectionStatus = 'cantReachRemoteServer';
-            logger.info(`Ws channel closed ${remoteSettings.host} ${e}`);
-        };
+            logger.info(`Ws channel closed ${remoteSettings.host} code: ${code} reasone: ${reason}`);
+        });
 
-        this.webSocket.onreconnect = (e: any) => {
-            logger.debug(`Ws channel trying reconnect ${remoteSettings.host} ${e}`);
-        };
+        this.webSocketClient.on('reconnect', () => {
+            logger.debug(`Ws channel trying reconnect ${remoteSettings.host}`);
+        });
     }
 
     private async OnArkOk() {
@@ -315,9 +315,18 @@ export class RemoteConnectionBl {
         });
     }
 
-    /** Extract cookie from http headers response  */
-    private extractCookie(headers: {}): string {
-        try { return !headers['set-cookie'] ? '' : headers['set-cookie'][0].split(';')[0].split('=')[1]; } catch (error) { return ''; }
+    /** Extract http cookie from http headers response  */
+    private extractCookie(headers: {}): { key: string; maxAge: number; } {
+        try {
+            if (!headers['set-cookie']) {
+                return;
+            }
+            const sessionParts = headers['set-cookie'][0].split(';');
+            return {
+                key: sessionParts[0].split('=')[1],
+                maxAge: parseInt(sessionParts[1].split('=')[1], 10),
+            };
+        } catch (error) { return; }
     }
 }
 

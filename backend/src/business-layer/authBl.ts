@@ -53,7 +53,7 @@ export class AuthBl {
     public async login(response: express.Response, login: Login): Promise<void> {
 
         const errorResponse: ErrorResponse = {
-            responseCode: 403,
+            responseCode: 2403,
             message: 'user name or password incorrent',
         };
 
@@ -76,7 +76,10 @@ export class AuthBl {
 
         if (!Configuration.twoStepsVerification.TwoStepEnabled) {
             logger.warn(`User ${user.email} try to login but there is no support in tfa right now`);
-            throw new Error('two factor configuration not set correctly');
+            throw {
+                responseCode: 2501,
+                message: 'MFA configuration not set correctly',
+            } as ErrorResponse;
         }
 
         const tfaKey = randomstring.generate({
@@ -88,7 +91,10 @@ export class AuthBl {
             await SendMail(user.email, tfaKey);
         } catch (error) {
             logger.error(`Mail API problem, ${error.message}`);
-            throw new Error('Problem with mail sending');
+            throw {
+                responseCode: 3501,
+                message: 'Fail to send MFA mail message, inner error.',
+            } as ErrorResponse;
         }
 
         this.tfaLogins[user.email] = {
@@ -105,7 +111,7 @@ export class AuthBl {
     public async loginTfa(response: express.Response, login: Login): Promise<void> {
 
         const errorResponse: ErrorResponse = {
-            responseCode: 403,
+            responseCode: 2403,
             message: 'user name or password incorrent',
         };
 
