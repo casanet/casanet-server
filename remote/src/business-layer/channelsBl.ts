@@ -135,7 +135,7 @@ export class ChannelsBl {
                 this.localChannelsMap[certAuth.macAddress].machineMac = null;
 
                 /** Need to test the behavior of local server when closing old connection manualy  */
-                // currentLocalChannel.close();
+                this.localChannelsMap[certAuth.macAddress].close();
 
                 delete this.localChannelsMap[certAuth.macAddress];
             }
@@ -165,7 +165,7 @@ export class ChannelsBl {
 
             /** wait a while until closing, to allow local server process fail message */
             setTimeout(() => {
-                // try { wsChannel.close(); } catch (error) { }
+                try {  this.localChannelsMap[certAuth.macAddress].close(); } catch (error) { }
             }, 4000);
         }
     }
@@ -371,7 +371,7 @@ export class ChannelsBl {
         /** Route message to correct handler. */
         switch (localMessage.localMessagesType) {
             case 'httpResponse': this.handleHttpResponse(localMessage.message.httpResponse); break;
-            case 'ark': this.sendMessage(wsChannel, { remoteMessagesType: 'arkOk', message: {} }); break;
+            case 'ack': this.sendMessage(wsChannel, { remoteMessagesType: 'ackOk', message: {} }); break;
             case 'localUsers': this.handleUsersResponse(localMessage.message.localUsers); break;
             case 'feed': await this.handleFeedUpdate(wsChannel, localMessage.message.feed); break;
         }

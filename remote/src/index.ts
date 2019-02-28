@@ -10,7 +10,7 @@ import { ChannelsRouter } from './routers/channelsRoute';
 
 logger.info('casa-net remote server app starting...');
 
-// Start HTTP application // TODO: dont allw http only!
+// Start HTTP application
 let server: any = http.createServer(app).listen(Configuration.http.httpPort, () => {
     logger.info('HTTP listen on port ' + Configuration.http.httpPort);
 });

@@ -35,7 +35,7 @@ const feedSchema = Joi.object().keys({
 });
 
 export const LocalMessageSchema: ObjectSchema = Joi.object().keys({
-    localMessagesType: Joi.valid('initialization', 'localUsers', 'httpResponse', 'ark', 'feed').required(),
+    localMessagesType: Joi.valid('initialization', 'localUsers', 'httpResponse', 'ack', 'feed').required(),
     message: Joi.alternatives()
         .when('localMessagesType', {
             is: 'initialization',
@@ -50,7 +50,7 @@ export const LocalMessageSchema: ObjectSchema = Joi.object().keys({
             then: Joi.object().keys({ httpResponse : httpResponseSchema.required()}).required(),
         })
         .when('localMessagesType', {
-            is: 'ark',
+            is: 'ack',
             then: emptyMessageSchema.required(),
         })
         .when('localMessagesType', {
