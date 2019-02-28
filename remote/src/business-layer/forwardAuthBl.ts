@@ -55,7 +55,7 @@ export class ForwardAuthBl {
 
         /** Use only generic error response */
         const errorResponse: ErrorResponse = {
-            responseCode: 403,
+            responseCode: 2403,
             message: 'user name or password incorrent',
         };
 
@@ -115,7 +115,7 @@ export class ForwardAuthBl {
     public async loginTfa(request: express.Request, response: express.Response, login: LoginLocalServer): Promise<any> {
         /** See comments in login function, its almost same. */
         const errorResponse: ErrorResponse = {
-            responseCode: 403,
+            responseCode: 2403,
             message: 'user name or password incorrent',
         };
 
@@ -135,8 +135,8 @@ export class ForwardAuthBl {
                  * from login request.
                  */
                 throw {
-                    responseCode: 5001,
-                    message: 'select local server to connect to',
+                    responseCode: 6404,
+                    message: 'local server not exist',
                 } as ErrorResponse;
             }
         }

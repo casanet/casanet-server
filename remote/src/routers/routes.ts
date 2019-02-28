@@ -215,7 +215,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -238,7 +238,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -260,7 +260,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -282,7 +282,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -304,7 +304,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -327,7 +327,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -350,7 +350,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -372,7 +372,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -394,7 +394,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -415,7 +415,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -438,7 +438,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -460,7 +460,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -483,7 +483,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -507,7 +507,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -530,7 +530,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -553,7 +553,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -575,7 +575,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -598,7 +598,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -621,7 +621,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -645,7 +645,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -668,7 +668,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -691,7 +691,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -714,7 +714,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -737,7 +737,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -760,7 +760,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -782,7 +782,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -803,7 +803,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -824,7 +824,7 @@ export function RegisterRoutes(app: express.Express) {
                 validatedArgs = getValidatedArgs(args, request);
             } catch (err) {
                 response.status(422).send({
-                    responseCode: 4022,
+                    responseCode: 1422,
                 } as ErrorResponse);
                 return;
             }
@@ -845,26 +845,7 @@ export function RegisterRoutes(app: express.Express) {
             }
 
             const fail = async function(error: any) {
-                /**
-                 * If error is from TSOA auth middelwehere sent it back to client (it's part of API)
-                 * Else throw it back.
-                 */
-                try {
-                    const cleanError = {
-                        responseCode: error.responseCode,
-                        message: error.message
-                    } as ErrorResponse;
-
-                    if (typeof cleanError.responseCode !== 'number') {
-                        throw new Error('invalid error schema');
-                    }
-                    _response.status(403).send(cleanError);
-                } catch (error) {
-                    _response.status(500).send({
-                        responseCode: 5000,
-                        message: 'unknown error',
-                    } as ErrorResponse);
-                }
+                _response.status(402).send();
             }
 
             const scopes: string[] = [];
@@ -921,7 +902,7 @@ export function RegisterRoutes(app: express.Express) {
                     response.status(500).send(cleanError);
                 } catch (error) {
                     response.status(500).send({
-                        responseCode: 5000,
+                        responseCode: 1500,
                         message: 'unknown error',
                     } as ErrorResponse);
                 }

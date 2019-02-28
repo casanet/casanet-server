@@ -157,7 +157,8 @@ export class ChannelsBl {
                 remoteMessagesType: 'authenticationFail',
                 message: {
                     authenticationFail: {
-                        responseCode: 4003,
+                        responseCode: 3403,
+                        message: 'authorization of local server in remote, fail',
                     },
                 },
             });
@@ -253,10 +254,10 @@ export class ChannelsBl {
                 resolveHttpReq({
                     requestId: httpRequest.requestId,
                     httpBody: {
-                        responseCode: 5050,
-                        message: 'ther is no connection to local server',
+                        responseCode: 4501,
+                        message: 'There is no connection to local server.',
                     } as ErrorResponse,
-                    httpStatus: 510,
+                    httpStatus: 501,
                     httpSession: undefined,
                 });
                 return;
@@ -303,8 +304,8 @@ export class ChannelsBl {
 
             if (!localServeChannel) {
                 rejectUsersReq({
-                    responseCode: 5050,
-                    message: 'ther is no connectioj to local server',
+                    responseCode: 4501,
+                    message: 'There is no connection to local server.',
                 } as ErrorResponse);
                 return;
             }

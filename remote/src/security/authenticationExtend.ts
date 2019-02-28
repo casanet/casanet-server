@@ -18,14 +18,14 @@ export const expressAuthentication = async (request: express.Request, scopes: st
     if (!scopes || scopes.length < 1) {
         logger.fatal('invalid or empty security scope');
         throw {
-            responseCode: 5001,
+            responseCode: 1501,
         } as ErrorResponse;
     }
 
     /** If the session cookie empty, ther is nothing to check. */
     if (!request.cookies.session) {
         throw {
-            responseCode: 4003,
+            responseCode: 1403,
         } as ErrorResponse;
     }
 
@@ -42,7 +42,7 @@ export const expressAuthentication = async (request: express.Request, scopes: st
         return await ForwardUsersSessionsBlSingleton.getSession(request.cookies.session);
     } catch (error) {
         throw {
-            responseCode: 4003,
+            responseCode: 1403,
         } as ErrorResponse;
     }
 };

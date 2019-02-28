@@ -31,14 +31,10 @@ export class AdministrationAuthRouter {
                         res.send();
                     })
                     .catch(() => {
-                        const err: ErrorResponse = {
-                            responseCode: 403,
-                        };
                         if (res.statusCode === 200) {
                             res.statusCode = 501;
-                            err.responseCode = 501;
                         }
-                        res.send(err);
+                        res.send();
                     });
             });
 

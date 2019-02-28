@@ -40,7 +40,10 @@ export class LocalServersDal {
         const localServer = this.findLocalServer(localServerId);
 
         if (!localServer) {
-            throw new Error('local server not exist');
+            throw {
+                responseCode: 6404,
+                message: 'local server not exist',
+            } as ErrorResponse;
         }
         return localServer;
     }
@@ -66,7 +69,10 @@ export class LocalServersDal {
         const localServer = this.findLocalServer(localServerId);
 
         if (!localServer) {
-            throw new Error('local server not exist');
+            throw {
+                responseCode: 6404,
+                message: 'local server not exist',
+            } as ErrorResponse;
         }
 
         this.localServers.splice(this.localServers.indexOf(localServer), 1);
@@ -87,8 +93,8 @@ export class LocalServersDal {
 
         if (!originalLocalServer) {
             throw {
-                responseCode : 4004,
-                message: 'localServer not exist',
+                responseCode: 6404,
+                message: 'local server not exist',
             } as ErrorResponse;
         }
 
