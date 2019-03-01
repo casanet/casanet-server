@@ -27,7 +27,7 @@ export class ToasterAndErrorsService {
   }
 
   public OnHttpError(httpErrorResponse: HttpErrorResponse) {
-    if (httpErrorResponse.status === 403) {
+    if (httpErrorResponse.status === 403 || httpErrorResponse.status === 401) {
       this.router.navigate(['/login']);
       return;
     }

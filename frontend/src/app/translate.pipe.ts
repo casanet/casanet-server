@@ -17,7 +17,7 @@ export class TranslatePipe implements PipeTransform {
    */
   transform(key: any, isMessageCode: boolean = false): any {
     if (isMessageCode) {
-      return this.translate.data['--messages'][key.toString()] ||  `${this.transform('ERROR')}: ${key}`;
+      return this.translate.data['api-messages'][key.toString()] ||  `${this.transform('ERROR')}: ${key}`;
     }
     return this.translate.data[key] || key;
   }
