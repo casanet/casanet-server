@@ -50,7 +50,7 @@ import { GeneralMessageDialogComponent } from '../dialogs/general-message-dialog
 //   hljs.registerLanguage('typescript', hljsTypescript);
 //   return hljs;
 // }
-import { UsersComponent } from './users/users.component';
+// import { UsersComponent } from './users/users.component';
 
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
@@ -101,7 +101,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   ],
   declarations: [
     GeneralMessageDialogComponent,
-    UsersComponent,
+    // UsersComponent,
   ],
   providers: [
     {

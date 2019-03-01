@@ -15,7 +15,7 @@ export class SidemenuItemComponent implements OnInit {
     @Input() secondaryMenu = false;
 
     currentUrl = '';
-    // userInfo: User;
+    userInfo: any;
 
     constructor(private router: Router,
         private authService: AuthService, ) {
