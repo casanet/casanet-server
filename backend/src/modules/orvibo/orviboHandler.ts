@@ -110,7 +110,7 @@ export class OrviboHandler extends BrandModuleBase {
             } catch (error) {
                 this.orviboCommunication = undefined;
                 throw {
-                    responseCode: 5001,
+                    responseCode: 1503,
                     message: 'there is no UDP socket to send request by',
                 } as ErrorResponse;
             }
@@ -152,7 +152,8 @@ export class OrviboHandler extends BrandModuleBase {
                 this.queryCallback = undefined;
                 logger.warn(`Fail to get orvibo device ${minion.minionId} state, timeout`);
                 reject({
-                    responseCode: 5001,
+                    responseCode: 1503,
+                    message: 'receive UDP answer from device fail',
                 } as ErrorResponse);
             }, moment.duration(5, 'seconds').asMilliseconds());
 
@@ -175,7 +176,10 @@ export class OrviboHandler extends BrandModuleBase {
             /** Then resubscribe to get the current status */
             this.reSubsribeOrvibo(minion)
                 .catch((error) => {
-                    reject(error);
+                    reject({
+                        responseCode: 7503,
+                        message: 'Getting status fail',
+                    } as ErrorResponse);
                 });
         });
     }
@@ -208,7 +212,8 @@ export class OrviboHandler extends BrandModuleBase {
                 this.queryCallback = undefined;
                 logger.warn(`Fail to set orvibo device ${minion.minionId} ${setStatus.switch.status} state, timeout`);
                 reject({
-                    responseCode: 5001,
+                    responseCode: 1503,
+                    message: 'receive UDP answer from device fail',
                 } as ErrorResponse);
             }, moment.duration(5, 'seconds').asMilliseconds());
 
@@ -227,8 +232,8 @@ export class OrviboHandler extends BrandModuleBase {
                 }
 
                 reject({
-                    responseCode: 5001,
-                    message: 'fail to set device status',
+                    responseCode: 6503,
+                    message: 'Setting status fail',
                 } as ErrorResponse);
             };
         });

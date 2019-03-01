@@ -7,7 +7,8 @@
     "experimentalDecorators": true,
   },
   "files": [
-    "./src/models/backendInterfaces.d.ts"
+    "./src/models/backendInterfaces.d.ts",
+    "./src/models/sharedInterfaces.d.ts",
   ],
   "include": [
     "src/**/*"

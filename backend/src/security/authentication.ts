@@ -35,7 +35,7 @@ export const expressAuthentication = async (request: express.Request, scopes: st
     // If the session cookie empty, ther is nothing to check.
     if (!request.cookies.session) {
         throw {
-            responseCode: 1403,
+            responseCode: 1401,
         } as ErrorResponse;
     }
 

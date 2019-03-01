@@ -256,7 +256,7 @@ export class YeelightHandler extends BrandModuleBase {
         } catch (error) {
             logger.warn(`Fail to get yeeligt ${minion.minionId} status, ${error.result.error.message}`);
             throw {
-                responseCode: 5001,
+                responseCode: 6503,
             } as ErrorResponse;
         }
     }
@@ -287,7 +287,7 @@ export class YeelightHandler extends BrandModuleBase {
         } catch (error) {
             logger.warn(`Fail to get yeeligt ${minion.minionId} status, ${error.result.error.message}`);
             throw {
-                responseCode: 5001,
+                responseCode: 7503,
             } as ErrorResponse;
         }
     }
@@ -327,7 +327,7 @@ export class YeelightHandler extends BrandModuleBase {
         } catch (error) {
             logger.warn(`Fail to set yeeligt ${minion.minionId} status, ${error.result.error.message}`);
             throw {
-                responseCode: 5001,
+                responseCode: 7503,
             } as ErrorResponse;
         }
     }
@@ -353,7 +353,7 @@ export class YeelightHandler extends BrandModuleBase {
         } catch (error) {
             logger.warn(`Fail to set yeeligt ${minion.minionId} status, ${error.result.error.message}`);
             throw {
-                responseCode: 5001,
+                responseCode: 6503,
             } as ErrorResponse;
         }
     }
@@ -383,7 +383,7 @@ export class YeelightHandler extends BrandModuleBase {
             try { error = error.result.error.message; } catch (error) { }
             logger.warn(`Fail to get yeeligt ${minion.minionId} status, ${error}`);
             throw {
-                responseCode: 5001,
+                responseCode: 7503,
             } as ErrorResponse;
         }
     }
@@ -407,16 +407,16 @@ export class YeelightHandler extends BrandModuleBase {
 
             return;
         } catch (error) {
-            logger.warn(`Fail to get yeeligt ${minion.minionId} status, ${error.result.error.message}`);
+            logger.warn(`Fail to set yeelight ${minion.minionId} status, ${error.result.error.message}`);
             throw {
-                responseCode: 5001,
+                responseCode: 6503,
             } as ErrorResponse;
         }
     }
 
     public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
         throw {
-            responseCode: 5010,
+            responseCode: 6409,
             message: 'the yeelight module not support any recording mode',
         } as ErrorResponse;
     }

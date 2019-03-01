@@ -1,3 +1,5 @@
+- { 1401 : 'unauthorized'}
+
 - { 1403 : 'access forbidden'}
 - { 2403 : 'user name or password incorrent'}
 - { 3403 : 'authorization of local server in remote, fail'}
@@ -8,6 +10,8 @@
 - { 4404 : 'timing not exist'}
 - { 5404 : 'user not exist'}
 - { 6404 : 'local server not exist'}
+- { 7404 : 'there is not module handler for minion brand'}
+- { 8404 : 'unknown minion model'}
 
 - { 1405 : 'incorrect minion status for current minion type'}
 - { 2405 : 'incorrect minion status for activity minion type'}
@@ -20,6 +24,7 @@
 - { 3409 : 'device id is requird'}
 - { 4409 : 'device already in max uses with other minion'}
 - { 5409 : 'you have to select local server to connect to it'}
+- { 6409 : 'the minioin not support command recording'}
 
 - { 1422 : 'wrong schema'}
 - { 2422 : 'wrong schema, with wrong message'}
@@ -30,3 +35,11 @@
 - { 2501 : 'MFA configuration not set correctly'}
 - { 3501 : 'Fail to send MFA mail message, inner error.'}
 - { 4501 : 'There is no connection to local server.'}
+
+- { 1503 : 'Connection to device fail.'}
+- { 2503 : 'Recording fail or timeout'}
+- { 3503 : 'There is no any command'}
+- { 4503 : 'Current opertion command not exist'}
+- { 5503 : 'Current status is unknown, no history for current one-way transmitter'}
+- { 6503 : 'Setting status fail'}
+- { 7503 : 'Getting status fail'}

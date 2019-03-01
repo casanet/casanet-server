@@ -110,13 +110,19 @@ export class BroadlinkHandler extends BrandModuleBase {
             const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
                 miniom.device.pysicalDevice.mac, (err) => {
                     if (err) {
-                        reject(err);
+                        reject({
+                            responseCode: 1503,
+                            message: 'Connection to device fail',
+                        } as ErrorResponse);
                         return;
                     }
 
                     broadlinkDevice.checkPower((err2, state) => {
                         if (err2) {
-                            reject(err2);
+                            reject({
+                                responseCode: 7503,
+                                message: 'Getting status fail',
+                            } as ErrorResponse);
                             return;
                         }
 
@@ -135,13 +141,19 @@ export class BroadlinkHandler extends BrandModuleBase {
             const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
                 miniom.device.pysicalDevice.mac, (err) => {
                     if (err) {
-                        reject(err);
+                        reject({
+                            responseCode: 1503,
+                            message: 'Connection to device fail',
+                        } as ErrorResponse);
                         return;
                     }
 
                     broadlinkDevice.setPower(setStatus.switch.status === 'on' ? true : false, (err2) => {
                         if (err2) {
-                            reject(err2);
+                            reject({
+                                responseCode: 6503,
+                                message: 'Setting status fail',
+                            } as ErrorResponse);
                             return;
                         }
 
@@ -160,15 +172,18 @@ export class BroadlinkHandler extends BrandModuleBase {
             const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
                 miniom.device.pysicalDevice.mac, (err) => {
                     if (err) {
-                        reject(err);
+                        reject({
+                            responseCode: 1503,
+                            message: 'Connection to device fail',
+                        } as ErrorResponse);
                         return;
                     }
 
                     const minionCache = this.getOrCreateMinionCache(miniom);
                     if (!minionCache.lastStatus) {
                         reject({
-                            responseCode: 5023,
-                            message: 'there is no history cache.',
+                            responseCode: 5503,
+                            message: 'Current status is unknown, no history for current one-way transmitter',
                         } as ErrorResponse);
                         return;
                     }
@@ -183,7 +198,10 @@ export class BroadlinkHandler extends BrandModuleBase {
             const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
                 miniom.device.pysicalDevice.mac, (err) => {
                     if (err) {
-                        reject(err);
+                        reject({
+                            responseCode: 1503,
+                            message: 'Connection to device fail',
+                        } as ErrorResponse);
                         return;
                     }
 
@@ -191,7 +209,7 @@ export class BroadlinkHandler extends BrandModuleBase {
 
                     if (!minionCache.toggleCommands) {
                         reject({
-                            responseCode: 5024,
+                            responseCode: 4503,
                             message: 'there is no availble command. record a on off commands set.',
                         } as ErrorResponse);
                         return;
@@ -219,7 +237,10 @@ export class BroadlinkHandler extends BrandModuleBase {
             const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
                 miniom.device.pysicalDevice.mac, (err) => {
                     if (err) {
-                        reject(err);
+                        reject({
+                            responseCode: 1503,
+                            message: 'Connection to device fail',
+                        } as ErrorResponse);
                         return;
                     }
 
@@ -227,8 +248,8 @@ export class BroadlinkHandler extends BrandModuleBase {
 
                     if (!minionCache.acCommands) {
                         reject({
-                            responseCode: 5024,
-                            message: 'there is no any availble command. record a commands.',
+                            responseCode: 3503,
+                            message: 'there is no any command',
                         } as ErrorResponse);
                         return;
                     }
@@ -253,7 +274,7 @@ export class BroadlinkHandler extends BrandModuleBase {
 
                     if (!hexCommandCode) {
                         reject({
-                            responseCode: 5025,
+                            responseCode: 4503,
                             message: 'there is no availble command for current status. record a new command.',
                         } as ErrorResponse);
                         return;
@@ -278,7 +299,10 @@ export class BroadlinkHandler extends BrandModuleBase {
             const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
                 miniom.device.pysicalDevice.mac, (err) => {
                     if (err) {
-                        reject(err);
+                        reject({
+                            responseCode: 1503,
+                            message: 'Connection to device fail',
+                        } as ErrorResponse);
                         return;
                     }
 
@@ -293,7 +317,10 @@ export class BroadlinkHandler extends BrandModuleBase {
 
                     broadlinkDevice.enterLearning(moment.duration(5, 'seconds').asMilliseconds(), (err2, hexIRCommand) => {
                         if (err2) {
-                            reject(err);
+                            reject({
+                                responseCode: 2503,
+                                message: 'Recording fail or timeout',
+                            } as ErrorResponse);
                             return;
                         }
 
@@ -337,6 +364,10 @@ export class BroadlinkHandler extends BrandModuleBase {
             case 'RM3 / RM Pro as IR AC':
                 return await this.getCachedStatus(miniom);
         }
+        throw {
+            responseCode: 8404,
+            message: 'unknown minion model',
+        } as ErrorResponse;
     }
 
     public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
@@ -348,19 +379,22 @@ export class BroadlinkHandler extends BrandModuleBase {
             case 'RM3 / RM Pro as IR AC':
                 return await this.setIRACSwitchStatus(miniom, setStatus);
         }
+        throw {
+            responseCode: 8404,
+            message: 'unknown minion model',
+        } as ErrorResponse;
     }
 
     public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
         switch (miniom.device.model) {
-            case 'SP2':
-                throw {
-                    responseCode: 5026,
-                    message: 'Device not supporting record commands',
-                } as ErrorResponse;
             case 'RM Pro as RF toggle':
                 return await this.recordRFToggleCommands(miniom, statusToRecordFor);
             case 'RM3 / RM Pro as IR AC':
                 return await this.recordIRACCommands(miniom, statusToRecordFor);
         }
+        throw {
+            responseCode: 8404,
+            message: 'unknown minion model',
+        } as ErrorResponse;
     }
 }
