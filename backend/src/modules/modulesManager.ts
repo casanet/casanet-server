@@ -122,7 +122,7 @@ export class ModulesManager {
 
         if (!minionModule) {
             const errorResponse: ErrorResponse = {
-                responseCode: 4004,
+                responseCode: 7404,
                 message: `there is not module for -${miniom.device.brand}- brand`,
             };
             throw errorResponse;
@@ -140,7 +140,7 @@ export class ModulesManager {
 
         if (!minionModule) {
             const errorResponse: ErrorResponse = {
-                responseCode: 4004,
+                responseCode: 7404,
                 message: `there is not module for -${miniom.device.brand}- brand`,
             };
             throw errorResponse;
@@ -160,7 +160,7 @@ export class ModulesManager {
 
         if (!minionModule) {
             const errorResponse: ErrorResponse = {
-                responseCode: 4004,
+                responseCode: 7404,
                 message: `there is not module for -${miniom.device.brand}- brand`,
             };
             throw errorResponse;
@@ -170,8 +170,8 @@ export class ModulesManager {
         const modelKind = this.getModelKind(minionModule, miniom.device);
         if (!modelKind || !modelKind.isRecordingSupported) {
             const errorResponse: ErrorResponse = {
-                responseCode: 4005,
-                message: `the minioin not supporting command record`,
+                responseCode: 6409,
+                message: `the minioin not support command recording`,
             };
             throw errorResponse;
         }

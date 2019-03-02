@@ -102,8 +102,8 @@ export class MockHandler extends BrandModuleBase {
             };
         }
         throw {
-            responseCode: 4005,
-            message: 'unknown model',
+            responseCode: 8404,
+            message: 'unknown minion model',
         } as ErrorResponse;
     }
 
@@ -115,8 +115,8 @@ export class MockHandler extends BrandModuleBase {
         }
 
         throw {
-            responseCode: 4005,
-            message: 'unknown model',
+            responseCode: 8404,
+            message: 'unknown minion model',
         } as ErrorResponse;
     }
 
