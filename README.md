@@ -66,7 +66,7 @@ Note that remote server not saving any data (except local servers and users sess
 * [IFTTT](https://ifttt.com/discover) API.
 
 ## Adding other devices support.
-Yes, it is possible and will be welcome, see [modules](./backend/src/modules).
+Yes, it is possible and will be welcome, see [modules](./backend/src/modules#-for-development-only-).
 
 ## Main technologies.
 * Node.js (TypeScript) - Server.
