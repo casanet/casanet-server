@@ -49,12 +49,12 @@ To confiugure it use follwing  environment variables:
 
 ## minions connection
 Each IoT should be connected to local router before can add it to casa-net.
-For each supported IoT device model connection and pairing instructions see [modules documentations](./backend/src/modules).
+For each supported IoT device model connection and pairing instructions see [modules documentations](./src/modules).
 
 ## API
 The UI should wrap API. 
 
-The full specs of API is documented in [swagger API file](./backend/swagger.yaml).
+The full specs of API is documented in [swagger API file](./swagger.yaml).
 
 
 
