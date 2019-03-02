@@ -1,4 +1,4 @@
-## CASTANET server.
+# CASTANET server.
 This is the casa-net local server the communicats and control IoT devices in home. 
 
 ### Server installation:
@@ -47,8 +47,8 @@ To confiugure it use follwing  environment variables:
 * `TFA_USER_KEY` (value example: `my-gmail-password`)
 
 
-## minions connection
-Each IoT should be connected to local router before can add it to casa-net.
+## Devices connection:
+Each IoT device should be connected to local router before can add it to casa-net.
 For each supported IoT device model connection and pairing instructions see [modules documentations](./src/modules).
 
 ## API
