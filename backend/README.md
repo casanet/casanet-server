@@ -38,7 +38,7 @@ It doesn't need to be exact location but needs to be close enough.
 To get yours home latitude and longitude you can use https://www.latlong.net/.
 
 ### Two factor authentication:
-To Allows MFA protection the server needs access to email account to send the code to user email befor login.
+To Allows MFA protection the server needs access to email account to send the code to user email before login.
 (Tested with gmail account).
 
 To confiugure it use follwing  environment variables:
