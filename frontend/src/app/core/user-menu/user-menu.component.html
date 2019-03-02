@@ -1,0 +1,44 @@
+<div class="toolbar-user-container">
+	<button mat-button (click)="isOpen = !isOpen" class="toolbar-user-btn" [class.open]="isOpen" [ngStyle.xs]="{'min-width': '70px'}">
+  		<span fxLayout="row" fxLayoutAlign="start center">
+			 <span class="name"> {{ profile.displayName }}</span>
+			 <mat-icon class="icon">keyboard_arrow_down</mat-icon>
+  		</span>
+  	</button>
+
+
+	<div class="dropdown mat-elevation-z1" [class.open]="isOpen">
+		<div class="content">
+			<mat-nav-list>
+				<mat-list-item>
+					<a matLine >{{ 'PROFILE' | translate }}</a>
+					<button mat-icon-button>
+					 <mat-icon>account_circle</mat-icon>
+				 </button>
+				</mat-list-item>
+				<mat-list-item (click)="openHelpDialog()">
+					<a matLine >{{ 'HELP' | translate }}</a>
+					<button mat-icon-button>
+				       <mat-icon>help</mat-icon>
+				    </button>
+				</mat-list-item>
+
+				<mat-list-item (click)="openAboutDialog()">
+					<a matLine >{{ 'ABOUT' | translate }}</a>
+					<button mat-icon-button>
+					 <mat-icon>priority_high</mat-icon>
+				  </button>
+				</mat-list-item>
+
+				<mat-divider></mat-divider>
+
+				<mat-list-item (click)="onLogout()">
+					<a matLine >{{ 'LOGOUT' | translate }}</a>
+					<button mat-icon-button>
+				       <mat-icon>exit_to_app</mat-icon>
+				    </button>
+				</mat-list-item>
+			</mat-nav-list>
+		</div>
+	</div>
+</div>

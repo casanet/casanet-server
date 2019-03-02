@@ -1,0 +1,107 @@
+mat-card {
+  padding: 5px;
+  margin: 7px;
+  
+}
+
+.minion-card-focus:hover {
+  cursor: pointer;
+  box-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+}
+
+.minion-card:active {
+   margin-top: 12px;
+}
+
+.minion-text {
+  color: white;
+}
+
+
+/deep/ .mat-form-field-type-mat-select .mat-form-field-label, .mat-select-value {
+  color: white;
+}
+
+::ng-deep .mat-accent .mat-slider-thumb {
+  background-color: black;
+} 
+::ng-deep .mat-accent .mat-slider-thumb-label {
+  background-color: black;
+} 
+::ng-deep .mat-accent .mat-slider-track-fill {
+  background-color: black;
+} 
+
+::ng-deep .mat-mini-fab {
+  background-color: #1f5f59;
+  color: white;
+} 
+
+::ng-deep .mat-fab {
+  background-color: #1f5f59;
+  color: white;
+}
+
+
+
+/* SLIDER */
+
+// We need to use ::ng-deep to overcome view encapsulation
+::ng-deep {
+  .custom-slider .ng5-slider .ng5-slider-bar {
+    background: #ffe4d1;
+    height: 2px;
+  }
+  .custom-slider .ng5-slider .ng5-slider-selection {
+    background: orange;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-pointer {
+    width: 8px;
+    height: 16px;
+    top: auto; /* to remove the default positioning */
+    bottom: 0;
+    background-color: white;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-pointer:after {
+    display: none;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-bubble {
+    color: white;
+    bottom: 14px;
+  }
+
+  .ng5-slider .ng5-slider-bubble.ng5-slider-limit {
+    color: white;
+    bottom: 14px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-limit {
+    font-weight: bold;
+    color: white;
+  }
+
+
+
+  .custom-slider .ng5-slider .ng5-slider-tick {
+    width: 1px;
+    height: 10px;
+    margin-left: 4px;
+    border-radius: 0;
+    background: #ffe4d1;
+    top: -1px;
+  }
+
+  .custom-slider .ng5-slider .ng5-slider-tick.ng5-slider-selected {
+    background: orange;
+  }
+}
+
+.ng5-slider-ceil {
+  color: white;
+  bottom: 14px;
+}
