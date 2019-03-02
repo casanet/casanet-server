@@ -35,6 +35,7 @@
 - { 2501 : 'MFA configuration not set correctly'}
 - { 3501 : 'Fail to send MFA mail message, inner error.'}
 - { 4501 : 'There is no connection to local server.'}
+- { 5501 : 'Not implement yet.'}
 
 - { 1503 : 'Connection to device fail.'}
 - { 2503 : 'Recording fail or timeout'}

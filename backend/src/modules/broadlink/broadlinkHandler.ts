@@ -353,6 +353,10 @@ export class BroadlinkHandler extends BrandModuleBase {
 
     private async recordRFToggleCommands(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
         // TODO: swap and then record.
+        throw {
+            responseCode : 5501,
+            message : 'Not implemented yet.',
+        } as ErrorResponse;
     }
 
     public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
