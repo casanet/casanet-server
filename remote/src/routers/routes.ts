@@ -845,7 +845,9 @@ export function RegisterRoutes(app: express.Express) {
             }
 
             const fail = async function(error: any) {
-                _response.status(402).send();
+                _response.status(401).send({
+                    responseCode: 1401,
+                } as ErrorResponse);
             }
 
             const scopes: string[] = [];
