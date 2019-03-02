@@ -180,7 +180,7 @@ export class TuyaHandler extends BrandModuleBase {
             .catch((err: Error) => {
                 logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
                 throw {
-                    responseCode: 5011,
+                    responseCode: 1503,
                     message: 'communication with tuya device fail',
                 } as ErrorResponse;
             });
@@ -234,7 +234,7 @@ export class TuyaHandler extends BrandModuleBase {
             .catch((err) => {
                 logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
                 throw {
-                    responseCode: 5011,
+                    responseCode: 1503,
                     message: 'communication with tuya device fail',
                 } as ErrorResponse;
             });
@@ -242,7 +242,7 @@ export class TuyaHandler extends BrandModuleBase {
 
     public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
         throw {
-            responseCode: 5010,
+            responseCode: 6409,
             message: 'the tuya module not support any recording mode',
         } as ErrorResponse;
     }
