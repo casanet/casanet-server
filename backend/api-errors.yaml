@@ -44,3 +44,4 @@
 - { 5503 : 'Current status is unknown, no history for current one-way transmitter'}
 - { 6503 : 'Setting status fail'}
 - { 7503 : 'Getting status fail'}
+- { 8503 : 'local server timeout'}
