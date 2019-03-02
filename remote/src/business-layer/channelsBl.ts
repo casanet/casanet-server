@@ -95,15 +95,20 @@ export class ChannelsBl {
             // Iterate all API requests.
             for (const [key, value] of Object.entries(this.sentHttpRequestsMap)) {
                 if (now.getTime() - value.timeStamped.getTime() > this.httpRequestTimeout.asMilliseconds()) {
-                    value.forwardPromise.reject({ responseCode: 5001, message: 'local server timeout' });
                     delete this.sentHttpRequestsMap[key];
+                    value.forwardPromise.resolve({
+                        requestId : key,
+                        httpBody : { responseCode: 8503, message: 'local server timeout' },
+                        httpSession : undefined,
+                        httpStatus : 501,
+                    });
                 }
             }
 
             // Iterate all get users requests.
             for (const [key, value] of Object.entries(this.sentUsersRequestsMap)) {
                 if (now.getTime() - value.timeStamped.getTime() > this.usersRequestTimeout.asMilliseconds()) {
-                    value.forwardPromise.reject({ responseCode: 5001, message: 'local server timeout' });
+                    value.forwardPromise.reject({ responseCode: 8503, message: 'local server timeout' });
                     delete this.sentUsersRequestsMap[key];
                 }
             }

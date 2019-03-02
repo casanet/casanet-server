@@ -42,7 +42,7 @@ export class ForwardingRouter {
                 res.statusCode = response.httpStatus;
                 res.send(response.httpBody);
             } catch (error) {
-                res.status(403).send();
+                res.status(501).send();
             }
         });
     }
