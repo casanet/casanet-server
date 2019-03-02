@@ -1,0 +1,111 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const moment = require("moment");
+const operationsDal_1 = require("../data-layer/operationsDal");
+const logger_1 = require("../utilities/logger");
+const sleep_1 = require("../utilities/sleep");
+const minionsBl_1 = require("./minionsBl");
+class OperationsBl {
+    /**
+     * Init OperationsBl . using dependecy injection pattern to allow units testings.
+     * @param operationsDal Inject operations dal.
+     * @param localNetworkReader Inject the reader function.
+     */
+    constructor(operationsDal, minionsBl) {
+        this.operationsDal = operationsDal;
+        this.minionsBl = minionsBl;
+    }
+    /**
+     * Validate activities. (minion and status to set).
+     * @param operationActiviries activities array to validate.
+     */
+    async validateNewOperationActivities(operationActiviries) {
+        for (const activity of operationActiviries) {
+            const activityMinion = await this.minionsBl.getMinionById(activity.minionId);
+            if (!activity.minionStatus[activityMinion.minionType]) {
+                throw {
+                    responseCode: 2405,
+                    message: 'incorrect minion status for activity minion type',
+                };
+            }
+        }
+        return;
+    }
+    /**
+     * Invoke each activity.
+     * @param operationActiviries activities to invoke.
+     */
+    async invokeOperationActivities(operationActiviries) {
+        const errors = [];
+        for (const activity of operationActiviries) {
+            await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus)
+                .catch((error) => {
+                errors.push({
+                    minionId: activity.minionId,
+                    error,
+                });
+            });
+            /**
+             * wait 1 sec between one minion to other, becuase of broadcasting mismatch in some brands communication protocol.
+             */
+            await sleep_1.Delay(moment.duration(1, 'seconds'));
+        }
+        return errors;
+    }
+    /**
+     * API
+     */
+    /**
+     * Get all operations array.
+     */
+    async getOperations() {
+        return await this.operationsDal.getOperations();
+    }
+    /**
+     * Get operation by id.
+     * @param operationId operation id.
+     */
+    async getOperationById(operationId) {
+        return await this.operationsDal.getOperationById(operationId);
+    }
+    /**
+     * Set operation properties.
+     * @param operationId operation id.
+     * @param operation operation props to set.
+     */
+    async SetOperation(operationId, operation) {
+        await this.validateNewOperationActivities(operation.activities);
+        operation.operationId = operationId;
+        return await this.operationsDal.updateOperation(operation);
+    }
+    /**
+     * Create operation.
+     * @param operation operation to create.
+     */
+    async CreateOperation(operation) {
+        await this.validateNewOperationActivities(operation.activities);
+        return await this.operationsDal.createOperation(operation);
+    }
+    /**
+     * Delete operation.
+     * @param operationId operation id to delete.
+     */
+    async DeleteOperation(operationId) {
+        return await this.operationsDal.deleteOperation(operationId);
+    }
+    /**
+     * Trigger operation activities
+     * @param operationId operation to trigger.
+     * @returns Set status erros if will be any.
+     */
+    async triggerOperation(operationId) {
+        const operation = await this.operationsDal.getOperationById(operationId);
+        logger_1.logger.info(`Invokeing operation ${operation.operationName}, id: ${operationId} ...`);
+        const errors = await this.invokeOperationActivities(operation.activities);
+        logger_1.logger.info(`Invokeing operation ${operation.operationName}, id: ${operationId} done`);
+        return errors;
+    }
+}
+exports.OperationsBl = OperationsBl;
+exports.OperationsBlSingleton = new OperationsBl(operationsDal_1.OperationsDalSingleton, minionsBl_1.MinionsBlSingleton);
+//# sourceMappingURL=operationsBl.js.map
