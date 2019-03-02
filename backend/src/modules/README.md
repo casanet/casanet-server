@@ -51,3 +51,5 @@ So to create new brand / communication protocol module:
 1) Create instance of module in [modulesManager.ts](./modulesManager.ts) file (line 58).
 1) Build by `npm run build`.
 1) Open PR ;).
+
+You can see demo of [brandModuleBase.ts](./brandModuleBase.ts) API and used by watch the [mock](./mock/mockHandler.ts) module.
