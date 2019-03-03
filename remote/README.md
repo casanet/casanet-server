@@ -44,7 +44,7 @@ See [server configure](../backend/README.md#configure-server).
 1) In local server set remote server settings with remote server uri (`ws://remote-server-domain/` or `wss://remote-server-domain/` case using HTTPS)
 and generated key (PUT /remote).
 1) In remote server get availble useres of local server (GET /servers/local-users/{localServerId}).
-1) In remote server edit local server valid users with one or more users that you want to give then access via remote server. (/servers/{localServerId}).
+1) In remote server edit local server valid users with one or more users that you want to give then access via remote server. (PUT /servers/{localServerId}).
 1) That's it, now you can access local server API via remote server.
 
 ## Remote server API
