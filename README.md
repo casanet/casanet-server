@@ -78,6 +78,6 @@ Yes, it is possible and will be welcome, see [modules](./backend/src/modules/REA
 For any suggestion or help feel free to contact me.
 
 ## Credits
-* Logo and UX help [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
+* Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
 
 Shared with  ❤️  by kastnet.
