@@ -33,8 +33,8 @@ Current Languages supported:
 Any support for other languages will be welcome.
 
 ## How to use it?
-* Run casa-net server in home network [see documentation](./backend).
-* Run casa-net remote server in cloud service [see documentation](./remote).
+* Run casa-net server in home network [see documentation](./backend/README.md).
+* Run casa-net remote server in cloud service [see documentation](./remote/README.md).
 
 ## How to access casanet from wide internet?
 The server needs to run on local home network, so how to access it via internet?
@@ -45,7 +45,7 @@ Make sure that the address in your home is public and redirect ports in home rou
 (DDNS is recommended for easy access to home address).
 
 #### Method 2: Using casa remote server.
-The casa remote server is build for it, [casanet-remote](./remote) run on cloud service and to redirect API requests to local server.
+The casa remote server is build for it, [casanet-remote](./remote/README.md) run on cloud service and to redirect API requests to local server.
 
 ## Supported Right now.
 * Orvibo wiwo - S20.
@@ -63,7 +63,7 @@ The casa remote server is build for it, [casanet-remote](./remote) run on cloud 
 * [IFTTT](https://ifttt.com/discover) API.
 
 ## Adding other devices support.
-Yes, it is possible and will be welcome, see [modules](./backend/src/modules#-for-development-only-).
+Yes, it is possible and will be welcome, see [modules](./backend/src/modules/README.md#-for-development-only-).
 
 ## Main technologies.
 * Node.js (TypeScript) - Server.
