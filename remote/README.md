@@ -24,7 +24,7 @@ If the user email exist in more then one local server valid users you will need 
 all requests send after session checking AS IS to local server. (except user session key hash).
 
 Simple diagram:
-![screenshot](https://user-images.githubusercontent.com/28386247/53689201-ef235f80-3d58-11e9-856d-64eef124e3c9.png)
+![screenshot](https://user-images.githubusercontent.com/28386247/53689809-aa062a00-3d66-11e9-9c8c-84a175f11540.png)
 
 ### Remote server installation:
 1. Download project via git or downalod files as zip.
