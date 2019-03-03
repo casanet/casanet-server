@@ -19,7 +19,7 @@ The logic and design of the server is that there are several types of devices in
 
 This structure enables the creation of a separate server and a collection of modules that enable communication by implementing preset methods for each device type (such as the OOP interface).
 
-## How its look like?
+## How does it look?
 ![screenshot](https://user-images.githubusercontent.com/28386247/53686146-2f201d80-3d2c-11e9-8d99-fb72a9255327.JPG)
 
 
