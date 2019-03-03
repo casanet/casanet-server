@@ -7,7 +7,7 @@ This is the casa-net local server the communicats and control IoT devices in hom
 1. Navigate in command line to `$/.../backend` and press `npm install --save`.
 1. Press `node dist/index.js` to run server.
 
-Then open browser in http://127.0.0.1:3000`.
+Then open browser in `http://127.0.0.1:3000`.
 
 ### Configure server:
 
@@ -37,7 +37,7 @@ It doesn't need to be exact location but needs to be close enough.
 
 To get yours home latitude and longitude you can use https://www.latlong.net/.
 
-### Two factor authentication:
+#### Two factor authentication:
 To Allows MFA protection the server needs access to email account to send the code to user email before login.
 (Tested with gmail account).
 
