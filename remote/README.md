@@ -1,4 +1,4 @@
-# CASTANET remote server.
+# CASANET remote server.
 
 ## For what?
 The casa-net server is running on the local network. 
