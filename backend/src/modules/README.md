@@ -1,4 +1,4 @@
-## CASTANET mudules / drivers.
+## CASANET mudules / drivers.
 
 ## How to connect my device to local network and how to add it to be managed by casa-net server?
 Good question... depend on device protocol.
