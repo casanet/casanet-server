@@ -1,23 +1,23 @@
 # CASANET server.
-This is the casa-net local server the communicats and control IoT devices in home. 
+This is the casa-net local server to communicats and control IoT devices in a home. 
 
 ### Server installation:
-1. Download project via git or downalod files as zip.
-1. Install Node.js on machine.
-1. Navigate in command line to `$/.../backend` and press `npm install --save`.
-1. Press `node dist/index.js` to run server.
+1. Download the project via git or download files as a zip.
+1. Install Node.js on the machine.
+1. Navigate in a command line to `$/.../backend` and press `npm install --save`.
+1. Press `node dist/index.js` to run the server.
 
-Then open browser in `http://127.0.0.1:3000`.
+Then open the browser in `http://127.0.0.1:3000`.
 
 ### Configure server:
 
-In `casanet.json` file you can edit configuration of few stuff.
+In `casanet.json` file you can edit the configuration of a few stuff.
 
 #### Default user:
-You can edit any property of default user. 
+You can edit any property of the default user. 
 
-Except user account in email. this will be always the mac address of machine.
-(The reason is for security, only owner of machine should know the default username).
+Except for the user account in the email. this will be always the mac address of the machine.
+(The reason is for security, the only owner of the machine should know the default username).
 
 #### HTTP/HTTPS server ports:
 You can edit port and HTTPS using.
@@ -29,17 +29,17 @@ Also you can set it by environment variables:
 HTTPS require `private.key` `certificate.crt` and `ca_bundle.crt` files to be in `$/.../backend/encryption/` directory.
 
 #### Requests limit:
-To block brute-force attacks there is a requests limit per IP.
+To block brute-force attacks there is a request limit per IP.
 
 #### Home position:
-To allows timings based on sun events (such as turn on light in sunset) the server needs to know location area of home.
-It doesn't need to be exact location but needs to be close enough.
+To allows timings based on sun events (such as turn on a light in the sunset) the server needs to know the location area of the home.
+It doesn't need to be the exact location but needs to be close enough.
 
-To get yours home latitude and longitude you can use https://www.latlong.net/.
+To get your home latitude and longitude you can use https://www.latlong.net/.
 
 #### Two factor authentication:
-To Allows MFA protection the server needs access to email account to send the code to user email before login.
-(Tested with gmail account).
+To Allows MFA protection the server needs access to the email account to send the code to user email before login.
+(Tested with Gmail account).
 
 To confiugure it use follwing  environment variables:
 * `TFA_SMTP_SERVER` (value example: `smtp.gmail.com`)
@@ -48,13 +48,13 @@ To confiugure it use follwing  environment variables:
 
 
 ## Devices connection:
-Each IoT device should be connected to local router before can add it to casa-net.
+Each IoT device should be connected to the local network before can add it to the casa-net server.
 For each supported IoT device model connection and pairing instructions see [modules documentations](./src/modules/README.md).
 
 ## API
 The UI should wrap API. 
 
-The full specs of API is documented in [swagger API file](./swagger.yaml).
+The full specs of API are documented in [swagger API file](./swagger.yaml).
 
 
 
