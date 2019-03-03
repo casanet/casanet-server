@@ -47,9 +47,6 @@ Make sure that the address in your home is public and redirect ports in home rou
 #### Method 2: Using casa remote server.
 The casa remote server is build for it, [casanet-remote](./remote) run on cloud service and to redirect API requests to local server.
 
-So to use it, run it on cloud and connect local server to him using auth API. and then its possible to access local server.
-Note that remote server not saving any data (except local servers and users sessions), only redirecting requests to local server.
-
 ## Supported Right now.
 * Orvibo wiwo - S20.
 * Broadlink SP3.
