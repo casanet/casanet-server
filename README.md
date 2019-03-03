@@ -65,6 +65,26 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
 ## Adding other devices support.
 Yes, it is possible and will be welcome, see [modules](./backend/src/modules/README.md#-for-development-only-).
 
+## Using scenario:
+- Buy new [supported](#Supported Right now.) smart devices.
+- [Connect it to local network](./backend/src/modules/README.md) via official app.
+- Scan the local network to find the new device. (POST /devices/rescan).
+- Get all kinds of supported devices to know with them is belong to the new device. (GET /devices/kinds).
+- Create a new minion** from the new device (POST /minions).
+- Get all minions to know the new minion id and status (GET /minions).
+- Set the new minion some other status (PUT /minions/{minionId})
+- Create a new operation that turns minion status on (POST /operations).
+- Create new timing that invoked the turn-on operation every Saturday sunset (POST /timings).
+- Enjoy, and soon the UI will be ready ;).
+
+To watch full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/haimkastner/Home-IoT-Server/dev-v2/backend/swagger.yaml` in explorer input.
+
+**
+Minion is a logic device in the system, meaning that a device is a physical device and minion is a logic device that uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device for a few minions, one to central AC control and second for secondary AC control so in it will be two totally  different minions that use one physical device.
+
+
+
+
 ## Main technologies.
 * Node.js (TypeScript) - Server.
 * Angular - Client.
