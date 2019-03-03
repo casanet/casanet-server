@@ -1,4 +1,4 @@
-# CASTANET server.
+# CASANET server.
 This is the casa-net local server the communicats and control IoT devices in home. 
 
 ### Server installation:
