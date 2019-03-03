@@ -28,7 +28,7 @@ definitions:
             - password
         type: object
     LocalNetworkDevice:
-        description: 'Reposnts any pysical device in local network.'
+        description: 'Represents any physical device in a local network.'
         properties:
             name:
                 type: string
@@ -36,37 +36,37 @@ definitions:
                 x-nullable: true
             mac:
                 type: string
-                description: 'The MAC address of device, the value is unique to each device.'
+                description: 'The MAC address of the device, the value is unique to each device.'
             vendor:
                 type: string
                 description: 'Info about device manufacturer.'
                 x-nullable: true
             ip:
                 type: string
-                description: 'The device ip address, if exist it should be unique in netword.'
+                description: 'The device IP address, if exist it should be unique in network.'
                 x-nullable: true
         required:
             - mac
         type: object
     MinionDevice:
-        description: 'Represents a pysical device kind with netword info.'
+        description: 'Represents a physical device kind with network info.'
         properties:
             pysicalDevice:
                 $ref: '#/definitions/LocalNetworkDevice'
-                description: 'The pysical network device.'
+                description: 'The physical network device.'
             brand:
                 type: string
                 description: 'The brand of device.'
             model:
                 type: string
-                description: 'The specific model of device.'
+                description: 'The specific model of the device.'
             token:
                 type: string
-                description: 'Some of devices require a token for communication API.'
+                description: 'Some devices require a token for communication API.'
                 x-nullable: true
             deviceId:
                 type: string
-                description: 'Some of devices require a id for communication API.'
+                description: 'Some devices require id for communication API.'
                 x-nullable: true
         required:
             - pysicalDevice
@@ -74,7 +74,7 @@ definitions:
             - model
         type: object
     Toggle:
-        description: "A toggele value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone change the light status using pysical switche."
+        description: "A toggle value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone changes the light status using physical switche."
         properties:
             status:
                 type: string
@@ -85,7 +85,7 @@ definitions:
             - status
         type: object
     Switch:
-        description: "A switch status.\r\nUsed for a simple devices that can be turn on or off. *and minion status is readble*\r\nThe properties same as toggele, and the difference is logic only (if status is readble or not)."
+        description: "A switch status.\r\n  Used for simple devices that can be turned on or off. *and minion status is readable*\r\nThe properties same as a toggle, and the difference is logic only (if that status is readable or not)."
         properties:
             status:
                 type: string
@@ -96,7 +96,7 @@ definitions:
             - status
         type: object
     AirConditioning:
-        description: 'A AC status.'
+        description: 'An AC status.'
         properties:
             status:
                 type: string
@@ -472,7 +472,7 @@ definitions:
                     - '98'
                     - '99'
                     - '100'
-                description: 'Spectrum is: 1% to warm light and 100% to cold light.'
+                description: 'Spectrum is 1% to warm light and 100% to cold light.'
         required:
             - status
             - brightness
@@ -693,7 +693,7 @@ definitions:
                     - '98'
                     - '99'
                     - '100'
-                description: 'Spectrum is: 1% to warm light and 100% to cold light.'
+                description: 'Spectrum is 1% to warm light and 100% to cold light.'
             red:
                 type: string
                 enum:
@@ -1483,7 +1483,7 @@ definitions:
             - blue
         type: object
     MinionStatus:
-        description: 'Minion status, the avalible values is depend on minion type.'
+        description: 'Minion status, the available values depend on the minion type.'
         properties:
             toggle:
                 $ref: '#/definitions/Toggle'
@@ -1505,7 +1505,7 @@ definitions:
                 x-nullable: true
         type: object
     Minion:
-        description: "Represents a minion in system.\r\nMinion is a logic device in system, mean that device is a pysical device \r\nand minion is a logic device that use a pysical device to switch home kit status.\r\nFor example IR device can be a few minions one to main AC control and second for secondery AC control etc."
+        description: "Represents a minion in system.\r\nMinion is a logic device in the system, meaning that a device is a physical device and minion is a logic device \r\nthat uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device \r\nfor a few minions, one to central AC control and second for secondary AC control \r\nso in it will be two totally different minions that use one physical device."
         properties:
             minionId:
                 type: string
@@ -1513,10 +1513,10 @@ definitions:
                 x-nullable: true
             name:
                 type: string
-                description: 'Display name of minion.'
+                description: 'The display name for a minion.'
             device:
                 $ref: '#/definitions/MinionDevice'
-                description: 'Pysical device of minion.'
+                description: 'Physical device of minion.'
             isProperlyCommunicated:
                 type: boolean
                 description: 'Is communication with device status ok.'
@@ -1533,11 +1533,11 @@ definitions:
                     - light
                     - temperatureLight
                     - colorLight
-                description: 'minion type.'
+                description: 'Minion type.'
             minionAutoTurnOffMS:
                 type: number
                 format: double
-                description: "Auto turn off duration, *if* set member value then the minion will turn off in X ms after turning it on, \r\nUsed for example in boiler minion etc."
+                description: "Auto turns  off duration, *if* set member value then the minion will turn off in X ms after turning it on, \r\nUsed for example in boiler minion etc."
                 x-nullable: true
         required:
             - name
@@ -1575,11 +1575,11 @@ definitions:
                         - thursday
                         - friday
                         - saturday
-                description: 'Selected days in week.'
+                description: 'Selected days in a week.'
             durationMinutes:
                 type: number
                 format: double
-                description: "Minutes from sun trigger.\r\ncan be befor or after the sun trigger.\r\nFor example to invoke 40 minutes befor sunset set -40 and to invoke 40 minutes after sunset set 40."
+                description: "Minutes from the sun trigger.\r\ncan be before or after the sun triggers.\r\nFor example to invoke 40 minutes before sunset set -40 and to invoke 40 minutes after sunset set 40."
             sunTrigger:
                 type: string
                 enum:
@@ -1592,7 +1592,7 @@ definitions:
             - sunTrigger
         type: object
     DailyTimeTrigger:
-        description: 'Daily timing based on time in day.'
+        description: 'Daily timing based on time in a day.'
         properties:
             days:
                 type: array
@@ -1606,7 +1606,7 @@ definitions:
                         - thursday
                         - friday
                         - saturday
-                description: 'Selected days in week.'
+                description: 'Selected days in a week.'
             hour:
                 type: string
                 enum:
@@ -1634,7 +1634,7 @@ definitions:
                     - '21'
                     - '22'
                     - '23'
-                description: 'Hour in a day.'
+                description: 'The hour in a day.'
             minutes:
                 type: string
                 enum:
@@ -1698,7 +1698,7 @@ definitions:
                     - '57'
                     - '58'
                     - '59'
-                description: 'Minutes in a hour.'
+                description: 'Minutes in an hour.'
         required:
             - days
             - hour
@@ -1724,7 +1724,7 @@ definitions:
             durationInMimutes:
                 type: number
                 format: double
-                description: 'Duration in from start date in minutes.'
+                description: 'Duration to activate timing from the start timeout time in minutes.'
         required:
             - startDate
             - durationInMimutes
@@ -1746,7 +1746,7 @@ definitions:
                 x-nullable: true
         type: object
     Timing:
-        description: 'Represents a timing in system.'
+        description: 'Represents a timing in the system.'
         properties:
             timingId:
                 type: string
@@ -1780,14 +1780,14 @@ definitions:
             - timingProperties
         type: object
     OperationResult:
-        description: 'Operation result to hole set minion status result per minion.'
+        description: 'Operation result s, hold set minion status result per minion.'
         properties:
             minionId:
                 type: string
                 description: 'Minion Id.'
             error:
                 $ref: '#/definitions/ErrorResponse'
-                description: 'Set minion status result. (undefined if sets successfully)'
+                description: 'Set a minion status results. (undefined if sets successfully).'
                 x-nullable: true
         required:
             - minionId
@@ -1806,7 +1806,7 @@ definitions:
             - results
         type: object
     LocalServerInfo:
-        description: 'Info about local server.'
+        description: 'Info about a local server.'
         properties:
             localServerId:
                 type: string
@@ -1819,7 +1819,7 @@ definitions:
             - displayName
         type: object
     LoginLocalServer:
-        description: "Extends login with local server selection, case use own more then one local server.\r\nneeds to know witch server to connect."
+        description: "Extends login with local server selection, \r\ncase use owns more than one local server needs to know which server to connect."
         properties:
             email:
                 type: string
@@ -1827,14 +1827,14 @@ definitions:
                 type: string
             localServerId:
                 type: string
-                description: "Local server to login to. \r\nif user exsit only in one local server ignore field."
+                description: "Local server to login to.\r\nif the user exists only in one local server ignore the field."
                 x-nullable: true
         required:
             - email
             - password
         type: object
     User:
-        description: 'Represents a user in system.'
+        description: 'Represents a user in the system.'
         properties:
             displayName:
                 type: string
@@ -1846,10 +1846,10 @@ definitions:
             sessionTimeOutMS:
                 type: number
                 format: double
-                description: 'Time duration for session in miliseconds (1/1000 from second).'
+                description: 'The time duration for a session in milliseconds (1/1000 from second).'
             password:
                 type: string
-                description: 'User passwrod.'
+                description: 'User password.'
             ignoreTfa:
                 type: boolean
                 description: 'Ignore 2-step verification on login or not.'
@@ -1867,7 +1867,7 @@ definitions:
             - scope
         type: object
     LocalServer:
-        description: 'Reposents a local server in system.'
+        description: 'Represents a local server in the system.'
         properties:
             localServerId:
                 type: string
@@ -1877,15 +1877,15 @@ definitions:
                 description: 'Display name'
             macAddress:
                 type: string
-                description: 'The local machine mac addrress, should be uniqe'
+                description: 'The local machine mac address should be unique.'
             validUsers:
                 type: array
                 items:
                     type: string
-                description: 'Users from local server that can access via remote server'
+                description: 'Users from the local server that can access via remote server.'
             connectionStatus:
                 type: boolean
-                description: 'Connection with local server status'
+                description: 'Connection with local server status.'
                 x-nullable: true
         required:
             - localServerId

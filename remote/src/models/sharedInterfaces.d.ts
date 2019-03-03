@@ -1,23 +1,23 @@
 import { Login } from '../../../backend/src/models/sharedInterfaces'
 
 /**
-* Reposents a local server in system.
+* Represents a local server in the system.
 */
 export declare interface LocalServer {
     /** Local server id */
     localServerId: string;
     /** Display name */
     displayName: string;
-    /** The local machine mac addrress, should be uniqe */
+    /** The local machine mac address should be unique. */
     macAddress: string;
-    /** Users from local server that can access via remote server */
+    /** Users from the local server that can access via remote server. */
     validUsers: string[];
-    /** Connection with local server status */
+    /** Connection with local server status. */
     connectionStatus?: boolean;
 }
 
 /**
- * Info about local server.
+ * Info about a local server.
  */
 export declare interface LocalServerInfo {
     /** Local server id */
@@ -27,13 +27,13 @@ export declare interface LocalServerInfo {
 }
 
 /**
- * Extends login with local server selection, case use own more then one local server.
- * needs to know witch server to connect. 
+ * Extends login with local server selection, 
+ * case use owns more than one local server needs to know which server to connect.
  */
 export declare interface LoginLocalServer extends Login {
     /**
-     * Local server to login to. 
-     * if user exsit only in one local server ignore field.
+     * Local server to login to.
+     * if the user exists only in one local server ignore the field.
      */
     localServerId?: string;
 }

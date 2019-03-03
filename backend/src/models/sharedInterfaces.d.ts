@@ -14,7 +14,7 @@ export declare interface ErrorResponse {
 }
 
 /**
- * Operation result to hole set minion status result per minion.
+ * Operation result s, hold set minion status result per minion.
  */
 export declare interface OperationResult {
     /**
@@ -23,18 +23,18 @@ export declare interface OperationResult {
     minionId: string;
 
     /**
-     * Set minion status result. (undefined if sets successfully)
+     * Set a minion status results. (undefined if sets successfully).
      */
     error?: ErrorResponse;
 }
 
-/** Optional status on remote connection */
+/** Optional status on a remote connection */
 export declare type RemoteConnectionStatus =
-    /** There is no remote settings. */
+    /** There are no remote settings.. */
     'notConfigured' | 
     /** From some reason the connection to remote server offline. */
     'cantReachRemoteServer' |
-    /** Remote server thrown authorization of local server. */
+    /** The remote server has thrown authorization of the local server. */
     'authorizationFail' |
     /** Connection OK. */
     'connectionOK';
@@ -43,9 +43,9 @@ export declare type RemoteConnectionStatus =
  * Remote server settings.
  */
 export declare interface RemoteSettings {
-    /** host name / ip of remote server */
+    /** hostname / IP of the remote server */
     host: string;
-    /** access key for authorization local server in remote server */
+    /** Access key for authorization local server in the remote server */
     connectionKey: string;
 }
 
@@ -57,23 +57,9 @@ export declare interface Login {
     password: string;
 }
 
-/**
- * Use to support multi languages in UI.
- */
-export declare interface StringMap {
-    /**
-     * Message code.
-     */
-    code: number,
-    /**
-     * string to get, map by language name.
-     * For example 'en' 'he' etc.
-     */
-    string: { [key: string]: string };
-}
 
 /**
- * Reposnts any pysical device in local network.
+ * Represents any physical device in a local network.
  */
 export declare interface LocalNetworkDevice {
 
@@ -83,7 +69,7 @@ export declare interface LocalNetworkDevice {
     name?: string;
 
     /**
-     * The MAC address of device, the value is unique to each device.
+     * The MAC address of the device, the value is unique to each device.
      */
     mac: string;
 
@@ -93,18 +79,18 @@ export declare interface LocalNetworkDevice {
     vendor?: string;
 
     /**
-     * The device ip address, if exist it should be unique in netword.
+     * The device IP address, if exist it should be unique in network.
      */
     ip?: string;
 }
 
 /**
- * Represents a pysical device kind with netword info. 
+ * Represents a physical device kind with network info. 
  */
 export declare interface MinionDevice {
 
     /**
-     * The pysical network device.
+     * The physical network device.
      */
     pysicalDevice: LocalNetworkDevice;
 
@@ -114,28 +100,28 @@ export declare interface MinionDevice {
     brand: string;
 
     /**
-     * The specific model of device.
+     *  The specific model of the device.
      */
     model: string;
 
     /**
-     * Some of devices require a token for communication API.
+     *Some devices require a token for communication API.
      */
     token?: string;
 
     /**
-     * Some of devices require a id for communication API.
+     * Some devices require id for communication API.
      */
     deviceId?: string;
 }
 
 
 /**
- * For each suppoeted device there is limitations and abilities of it.
+ * For each supported device, there are limitations and abilities of it.
  */
 export declare interface DeviceKind {
     /**
-     * The brand of current minion type. (see device model).
+     * The brand of the current minion type. (see device model).
      */
     brand: string;
 
@@ -146,14 +132,14 @@ export declare interface DeviceKind {
 
     /**
      * The max minions that can be in one device, or -1 if unlimited.
-     * For example simple smart socket can be 1 minion per device, 
+     * For example, a simple smart socket can be 1 minion per device, 
      * Wall switch with 3 switches can be 3 minions per device,
      * And IR transmitter can be unlimited minions per device.
      */
     minionsPerDevice: number;
 
     /**
-     * Is device require token for communication API.
+     * Is the device require a token for communication API.
      */
     isTokenRequierd: boolean;
 
@@ -163,24 +149,24 @@ export declare interface DeviceKind {
     isIdRequierd: boolean;
 
     /**
-     * Supported minion type for current device.
+     * Supported minion type for the current device.
      */
     suppotedMinionType: MinionTypes;
 
     /**
-     * Some of device supported recording (for example IR transmitter).
+     * Some of the devices supported recording (for example IR transmitter).
      */
     isRecordingSupported: boolean;
 }
 
 /**
- * Scopes of authentication, right know in our system there is only 2 scopes.
+ * Scopes of authentication, right know in our system there are only 2 scopes.
  * admin and user. any API route protect by one of them.
  */
 export declare type AuthScopes = 'adminAuth' | 'userAuth';
 
 /**
- * Represents a user in system. 
+ * Represents a user in the system. 
  */
 export declare interface User {
 
@@ -195,12 +181,12 @@ export declare interface User {
     email: string;
 
     /**
-     * Time duration for session in miliseconds (1/1000 from second). 
+     * The time duration for a session in milliseconds (1/1000 from second). 
      */
     sessionTimeOutMS: number;
 
     /**
-     * User passwrod.
+     * User password.
      */
     password: string;
 
@@ -237,12 +223,12 @@ export declare type SunTriggerOptions = 'sunrise' | 'sunset';
 
 
 /**
- * Valid Houre in day.
+ * Valid Hours in day.
  */
 export declare type HourInDayOptions = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23;
 
 /**
- * Valid minutes in hour.
+ * Valid minutes in an hour.
  */
 export declare type MinutesInHourOptions = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
     26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |
@@ -282,7 +268,7 @@ export declare type ColorOptions = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 
 export declare type ACModeOptions = 'hot' | 'cold' | 'dry' | 'auto';
 
 /**
- * Valid AC fanStrength.
+ * Valid AC fan strength.
  */
 export declare type ACFanStrengthOptions = 'low' | 'med' | 'high' | 'auto';
 
@@ -292,9 +278,9 @@ export declare type ACFanStrengthOptions = 'low' | 'med' | 'high' | 'auto';
 export declare type SwitchOptions = 'on' | 'off';
 
 /**
- * A toggele value, the toggle is on way communicated device,
+ * A toggle value, the toggle is on way communicated device,
  * For example wall light switches with 433 RF that can turn on or off 
- * but there is no way to know the real light status if someone change the light status using pysical switche.   
+ * but there is no way to know the real light status if someone changes the light status using physical switche. 
  */
 export declare interface Toggle {
     status: SwitchOptions
@@ -302,15 +288,15 @@ export declare interface Toggle {
 
 /**
  * A switch status.
- * Used for a simple devices that can be turn on or off. *and minion status is readble*
- * The properties same as toggele, and the difference is logic only (if status is readble or not).
+ *  Used for simple devices that can be turned on or off. *and minion status is readable*
+ * The properties same as a toggle, and the difference is logic only (if that status is readable or not).
  */
 export declare interface Switch extends Toggle {
 
 }
 
 /**
- * A AC status.
+ * An AC status.
  */
 export declare interface AirConditioning extends Switch {
     temperature: TemperatureOptions;
@@ -335,7 +321,7 @@ export declare interface Light extends Switch {
  */
 export declare interface TemperatureLight extends Light {
     /**
-     * Spectrum is: 1% to warm light and 100% to cold light.
+     * Spectrum is 1% to warm light and 100% to cold light.
      */
     temperature: PercentOptions;
 }
@@ -379,7 +365,7 @@ export declare interface TimeoutTiming {
     startDate: number;
 
     /**
-     * Duration in from start date in minutes.
+     *  Duration to activate timing from the start timeout time in minutes.
      */
     durationInMimutes: number;
 }
@@ -389,7 +375,7 @@ export declare interface TimeoutTiming {
  */
 export declare interface DailyTiming {
     /**
-     * Selected days in week.
+     * Selected days in a week.
      */
     days: DaysOptions[];
 }
@@ -399,9 +385,9 @@ export declare interface DailyTiming {
  */
 export declare interface DailySunTrigger extends DailyTiming {
     /**
-     * Minutes from sun trigger.
-     * can be befor or after the sun trigger.
-     * For example to invoke 40 minutes befor sunset set -40 and to invoke 40 minutes after sunset set 40. 
+     * Minutes from the sun trigger.
+     * can be before or after the sun triggers.
+     * For example to invoke 40 minutes before sunset set -40 and to invoke 40 minutes after sunset set 40. 
      */
     durationMinutes: number;
 
@@ -412,22 +398,22 @@ export declare interface DailySunTrigger extends DailyTiming {
 }
 
 /**
- * Daily timing based on time in day.
+ * Daily timing based on time in a day.
  */
 export declare interface DailyTimeTrigger extends DailyTiming {
     /**
-     * Hour in a day.
+     * The hour in a day.
      */
     hour: HourInDayOptions;
 
     /**
-     * Minutes in a hour.
+     * Minutes in an hour.
      */
     minutes: MinutesInHourOptions;
 }
 
 /**
- * Minion status, the avalible values is depend on minion type.
+ *  Minion status, the available values depend on the minion type.
  */
 export declare interface MinionStatus {
     toggle?: Toggle;
@@ -439,7 +425,7 @@ export declare interface MinionStatus {
 }
 
 /**
- * Feed update type enum
+ * Feed update type enum.
  */
 export declare type FeedEvent = 'created' | 'update' | 'removed';
 
@@ -452,7 +438,7 @@ export declare interface MinionFeed {
 }
 
 /**
- * Used to change minion auto turn of timeout value.
+ * Used to change the minion auto turn off the timeout value.
  */
 export declare interface SetMinionAutoTurnOff {
     setAutoTurnOffMS: number;
@@ -460,9 +446,10 @@ export declare interface SetMinionAutoTurnOff {
 
 /**
  * Represents a minion in system.
- * Minion is a logic device in system, mean that device is a pysical device 
- * and minion is a logic device that use a pysical device to switch home kit status.
- * For example IR device can be a few minions one to main AC control and second for secondery AC control etc.
+ * Minion is a logic device in the system, meaning that a device is a physical device and minion is a logic device 
+ * that uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device 
+ * for a few minions, one to central AC control and second for secondary AC control 
+ * so in it will be two totally different minions that use one physical device.
  */
 export declare interface Minion {
     /**
@@ -471,12 +458,12 @@ export declare interface Minion {
     minionId?: string;
 
     /**
-     * Display name of minion.
+     * The display name for a minion.
      */
     name: string;
 
     /**
-     * Pysical device of minion. 
+     * Physical device of minion. 
      */
     device: MinionDevice;
 
@@ -491,12 +478,12 @@ export declare interface Minion {
     minionStatus: MinionStatus;
 
     /**
-     * minion type.
+     * Minion type.
      */
     minionType: MinionTypes;
 
     /**
-     * Auto turn off duration, *if* set member value then the minion will turn off in X ms after turning it on, 
+     * Auto turns  off duration, *if* set member value then the minion will turn off in X ms after turning it on, 
      * Used for example in boiler minion etc.
      */
     minionAutoTurnOffMS?: number;
@@ -516,10 +503,10 @@ export declare interface OperationActivity {
 }
 
 /**
- * Represents a operation in system.
- * Operation is set of action to do.
- * For example to turn on all home light operation 
- * set a array of activitie for each light in home to set light status 'on'.
+ * Represents an operation in the system.
+ * An operation is a set of activities to do.
+ * For example, to turn on all home light operation 
+ * sets an array of activity for each light in the home to set light status 'on'.
  */
 export declare interface Operation {
     /**
@@ -557,7 +544,7 @@ export declare interface TimingFeed {
 }
 
 /**
- * Represents a timing in system.
+ * Represents a timing in the system.
  */
 export declare interface Timing {
     /**
