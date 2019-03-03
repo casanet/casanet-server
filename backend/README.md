@@ -49,7 +49,7 @@ To confiugure it use follwing  environment variables:
 
 ## Devices connection:
 Each IoT device should be connected to local router before can add it to casa-net.
-For each supported IoT device model connection and pairing instructions see [modules documentations](./src/modules).
+For each supported IoT device model connection and pairing instructions see [modules documentations](./src/modules/README.md).
 
 ## API
 The UI should wrap API. 
