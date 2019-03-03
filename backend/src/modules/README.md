@@ -24,7 +24,7 @@ Then scan it and add it by casa-net server.
 Connect device to local network by [official app](https://play.google.com/store/apps/details?id=com.tuya.smart).
 Note that a lot of chinese devices supported tuya API, see [tuyapi project](https://github.com/codetheweb/tuyapi).
 
-then you need to get the devies id and devies key before it can access by casa-net server.
+then you need to get the devies id and key before it can access by casa-net server.
 to get the id and key see [Linking a Tuya Device](https://github.com/codetheweb/tuyapi/blob/master/docs/SETUP.md).
 
 After you get the id and key (called token in casa-net) then scan it insert the id and key/token and add it to casa-net server. 
