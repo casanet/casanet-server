@@ -68,16 +68,33 @@ class ForwardAuthBl {
                 /**
                  * If user mention in more then one local server
                  * send him back array of his local servers to select local server in login.
-                 * TODO: for security issue, not just return local server id/name.
-                 * but check if at least one of them auth user, befor giveing clent this information.
                  */
-                /** Mark 210 http status code. */
-                response.statusCode = 210;
-                response.send(userLocalServersInfo);
-                return;
+                /**
+                 * Just before sending this information,
+                 * make sure that least one of local server authenticate request username + password.
+                 */
+                for (const userLocalServerInfo of userLocalServersInfo) {
+                    /** Send login HTTP request over WS to local server, and wait for the answer. */
+                    const localLoginCheckResponse = await this.channelsBl.sendHttpViaChannels(userLocalServerInfo.localServerId, {
+                        requestId: undefined,
+                        httpPath: request.path,
+                        httpMethod: request.method.toUpperCase(),
+                        httpBody: { email: login.email, password: login.password },
+                        httpSession: '',
+                    });
+                    /** If the local server authenticate request certificate let client select whitch local server he wants to connect */
+                    if (localLoginCheckResponse.httpStatus === 200 || localLoginCheckResponse.httpStatus === 201) {
+                        /** Mark 210 http status code. */
+                        response.statusCode = 210;
+                        response.send(userLocalServersInfo);
+                        return;
+                    }
+                }
+                /** If non of local servers auth login cert, just return generic message */
+                throw errorResponse;
             }
         }
-        /** Send login http request over ws to local server, and wait for answer. */
+        /** Send login HTTP request over WS to local server, and wait for the answer. */
         const localResponse = await this.channelsBl.sendHttpViaChannels(connectLocalServerId, {
             requestId: undefined,
             httpPath: request.path,
