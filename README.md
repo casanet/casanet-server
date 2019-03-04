@@ -1,3 +1,7 @@
+> The version 1 of the project placed in [here](https://github.com/haimkastner/Home-IoT-Server/tree/archive-v1), maintaining for security and fatal bugs fixes only.
+---
+
+
 ![screenshot](https://user-images.githubusercontent.com/28386247/53685975-4b22bf80-3d2a-11e9-99c7-09b2093c8060.png)
 
 Let's create a smart home, without giving anyone access to our house 😊.
