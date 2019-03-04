@@ -12,6 +12,11 @@ export class LocalServersDal {
 
     constructor(private dataIo: IDataIO) {
         this.localServers = dataIo.getDataSync();
+
+        /** On startup, it doesn't matter the last update connection. */
+        for (const localServer of this.localServers) {
+            localServer.connectionStatus = false;
+        }
     }
 
     /**
