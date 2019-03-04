@@ -2,6 +2,7 @@ import * as cryptoJs from 'crypto-js';
 import { Request, Response } from 'express';
 import * as randomstring from 'randomstring';
 import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
+import { logger } from '../../../backend/src/utilities/logger';
 import { LocalServersDal, LocalServersDalSingleton } from '../data-layer/localServersDal';
 import { LocalServer, LocalServerInfo } from '../models/sharedInterfaces';
 
@@ -72,19 +73,21 @@ export class LocalServersBl {
      */
     public async createLocalServer(localServer: LocalServer): Promise<void> {
         /** local server mac address shuold be uniqe. */
-        let isLocalSereverMacIsUse = false;
+        let isLocalSereverMacInUse = false;
         try {
             await this.getlocalServersByMac(localServer.macAddress);
-            isLocalSereverMacIsUse = true;
+            isLocalSereverMacInUse = true;
         } catch (error) { }
-        if (isLocalSereverMacIsUse) {
+        if (isLocalSereverMacInUse) {
             throw {
                 responseCode: 5001,
-                message: 'local server with given mac address aready exsit',
+                message: 'local server with given mac address already exsit',
             } as ErrorResponse;
         }
         /** Generate id to local server */
         localServer.localServerId = randomstring.generate(5);
+
+        localServer.connectionStatus = false;
 
         /** save it */
         await this.localServersDal.createLocalServer(localServer);
@@ -106,11 +109,25 @@ export class LocalServersBl {
             } as ErrorResponse;
         }
 
-        /** Thre is no point to update status from client. */
+        /** There is no point to update status from client. */
         localServer.connectionStatus = currentLocalServer.connectionStatus;
 
         /** save update */
         await this.localServersDal.updateLocalServer(localServer);
+    }
+
+    /**
+     * Change local server status property.
+     * @param localServerId local server to set status.
+     * @param status The new status.
+     */
+    public async setLocalServerConnectionStatus(localServerId: string, status: boolean) {
+        try {
+            const localServer = await this.getlocalServersById(localServerId);
+            localServer.connectionStatus = status;
+        } catch (error) {
+            logger.debug(`faile to set ${localServerId} status ${status}, local server not exists`);
+        }
     }
 
     /**
