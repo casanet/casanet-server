@@ -5,6 +5,7 @@ import { SystemAuthScopes } from '../../../backend/src/security/authentication';
 import { RequestSchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { ForwardAuthController as ForwardAuthController } from '../controllers/forwardAuthController';
 import { ForwardUserSession } from '../models/remoteInterfaces';
+import { LocalServerInfo } from '../models/sharedInterfaces';
 import { expressAuthentication } from '../security/authenticationExtend';
 import { LoginLocalServerSchema } from '../security/schemaValidatorExtend';
 
@@ -27,20 +28,14 @@ export class ForwardAuthRouter {
                     return;
                 }
 
-                this.forwardAuthController.login(req, res, loginData)
-                    .then(() => {
-                        res.send();
-                    })
-                    .catch(() => {
-                        const err: ErrorResponse = {
-                            responseCode: 403,
-                        };
-                        if (res.statusCode === 200) {
-                            res.statusCode = 501;
-                            err.responseCode = 501;
-                        }
-                        res.send(err);
-                    });
+                try {
+                    const apiResData: ErrorResponse | LocalServerInfo[] = await this.forwardAuthController.login(req, res, loginData);
+                    /** Case error is planned (and not some inner error that was thrown from somewhere) return it to client. */
+                    res.send(apiResData);
+                } catch (error) {
+                    /** Any other unplanned error, don't send to the client any clue about it. */
+                    res.status(403).send();
+                }
             });
 
         app.route('/API/auth/login/tfa')
@@ -53,13 +48,14 @@ export class ForwardAuthRouter {
                     return;
                 }
 
-                this.forwardAuthController.loginTfa(req, res, loginData)
-                    .then(() => {
-                        res.send();
-                    })
-                    .catch(() => {
-                        res.status(403).send();
-                    });
+                try {
+                    const apiError: ErrorResponse = await this.forwardAuthController.loginTfa(req, res, loginData);
+                    /** Case error is planned (and not some inner error that was thrown from somewhere) return it to client. */
+                    res.send(apiError);
+                } catch (error) {
+                    /** Any other unplanned error, don't send to the client any clue about it. */
+                    res.status(403).send();
+                }
             });
 
         app.route('/API/auth/logout')

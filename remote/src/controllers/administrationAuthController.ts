@@ -12,27 +12,6 @@ import { ErrorResponse, Login, User } from '../../../backend/src/models/sharedIn
 @Route('/administration/auth')
 export class AdministrationAuthController extends Controller {
 
-    /**
-     * Login to remote administration system.
-     */
-    public async login(request: express.Request, response: express.Response, login: Login): Promise<void> {
-        await AuthBlSingleton.login(response, login);
-    }
-
-    /**
-     * 2-step verification login to remote administration.
-     */
-    public async loginTfa(request: express.Request, response: express.Response, login: Login): Promise<void> {
-        await AuthBlSingleton.loginTfa(response, login);
-    }
-
-    /**
-     * Logout manually from system.
-     */
-    public async logout(request: express.Request, response: express.Response): Promise<void> {
-        await AuthBlSingleton.logout(request.cookies.session, response);
-    }
-
     //////////////////////////////////////////////////
     /////// SWAGGER DOCUMENTATION ONLY METHODS ///////
     //////////////////////////////////////////////////

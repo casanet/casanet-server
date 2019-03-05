@@ -26,16 +26,14 @@ export class AdministrationAuthRouter {
                     return;
                 }
 
-                this.authController.login(req, res, loginData)
-                    .then(() => {
-                        res.send();
-                    })
-                    .catch(() => {
-                        if (res.statusCode === 200) {
-                            res.statusCode = 501;
-                        }
-                        res.send();
-                    });
+                try {
+                    const apiError: ErrorResponse = await this.authController.login(req, res, loginData);
+                    /** Case error is planned (and not some inner error that was thrown from somewhere) return it to client. */
+                    res.send(apiError);
+                } catch (error) {
+                    /** Any other unplanned error, don't send to the client any clue about it. */
+                    res.status(403).send();
+                }
             });
 
         app.route('/API/administration/auth/login/tfa')
@@ -48,13 +46,14 @@ export class AdministrationAuthRouter {
                     return;
                 }
 
-                this.authController.loginTfa(req, res, loginData)
-                    .then(() => {
-                        res.send();
-                    })
-                    .catch(() => {
-                        res.status(403).send();
-                    });
+                try {
+                    const apiError: ErrorResponse = await this.authController.loginTfa(req, res, loginData);
+                    /** Case error is planned (and not some inner error that was thrown from somewhere) return it to client. */
+                    res.send(apiError);
+                } catch (error) {
+                    /** Any other unplanned error, don't send to the client any clue about it. */
+                    res.status(403).send();
+                }
             });
 
         app.route('/API/administration/auth/logout')
