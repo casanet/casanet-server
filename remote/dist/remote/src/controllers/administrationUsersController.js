@@ -42,21 +42,21 @@ let AdministrationUsersController = class AdministrationUsersController extends 
         return this.cleanUpUserBeforRelease(await usersBl_1.UsersBlSingleton.getUser(userSession.email));
     }
     /**
-     * Get all admin users in system.
+     * Get all admin users in the administraion system.
      * @returns Users array.
      */
     async getUsers() {
         return this.cleanUpUsersBeforRelease(await usersBl_1.UsersBlSingleton.getUsers());
     }
     /**
-     * Get admin user by id.
+     * Get administraion user by id.
      * @returns User.
      */
     async getUser(adminId) {
         return this.cleanUpUserBeforRelease(await usersBl_1.UsersBlSingleton.getUser(adminId));
     }
     /**
-     * Update admin user properties.
+     * Update administraion user properties.
      * @param adminId User id.
      */
     async setUser(adminId, user) {
@@ -64,15 +64,15 @@ let AdministrationUsersController = class AdministrationUsersController extends 
         return await usersBl_1.UsersBlSingleton.updateUser(user);
     }
     /**
-     * Delete admin user from system.
+     * Delete admin user from the administraion system.
      * @param adminId User id.
      */
     async deleteUser(adminId) {
         return await usersBl_1.UsersBlSingleton.deleteUser(adminId);
     }
     /**
-     *  Creates new admin user.
-     * @param user new admin to create.
+     *  Creates a new administraion user.
+     * @param user The new administraion to create.
      */
     async createUser(user) {
         return await usersBl_1.UsersBlSingleton.createUser(user);

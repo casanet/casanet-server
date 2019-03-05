@@ -10,48 +10,29 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
-const authBl_1 = require("../../../backend/src/business-layer/authBl");
 /**
  * Because that express response object needs in auth logic (to write cookies)
  * The TSOA routing is for documentation only.
  * and one day i will extends TSOA lib to support response in parameter inject like request object.
  */
 let AdministrationAuthController = class AdministrationAuthController extends tsoa_1.Controller {
-    /**
-     * Login to remote administration system.
-     */
-    async login(request, response, login) {
-        await authBl_1.AuthBlSingleton.login(response, login);
-    }
-    /**
-     * 2-step verification login to remote administration.
-     */
-    async loginTfa(request, response, login) {
-        await authBl_1.AuthBlSingleton.loginTfa(response, login);
-    }
-    /**
-     * Logout manualy from system.
-     */
-    async logout(request, response) {
-        await authBl_1.AuthBlSingleton.logout(request.cookies.session, response);
-    }
     //////////////////////////////////////////////////
     /////// SWAGGER DOCUMENTATION ONLY METHODS ///////
     //////////////////////////////////////////////////
     /**
-     * Login to remote administration system.
+     * Login to the administration system.
      */
     async administrationLoginDocumentation(request, login) {
         throw new Error('Request never should be here. it is a documentation only route.');
     }
     /**
-     * 2-step verification login to remote administration.
+     * 2-step verification login to the administration system.
      */
     async administrationLoginTfaDocumentation(request, login) {
         throw new Error('Request never should be here. it is a documentation only route.');
     }
     /**
-     * Logout manualy from administration system.
+     * Logout manually from the administration system.
      */
     async administrationLogoutDocumentation() {
         throw new Error('Request never should be here. it is a documentation only route.');

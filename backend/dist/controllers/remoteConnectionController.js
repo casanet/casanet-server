@@ -15,7 +15,7 @@ const schemaValidator_1 = require("../security/schemaValidator");
 const macAddress_1 = require("../utilities/macAddress");
 let RemoteConnectionController = class RemoteConnectionController extends tsoa_1.Controller {
     /**
-     * Get remote server host/ip.
+     * Get remote server host/IP.
      * or empty if not set.
      */
     async getRemoteHost() {
@@ -29,13 +29,13 @@ let RemoteConnectionController = class RemoteConnectionController extends tsoa_1
     }
     /**
      * Get local casa-server machine mac address.
-     * Used when remote server require local server mac address befor pairing.
+     * Used when creating a new local server in a remote server.
      */
     async getMachineMac() {
         return await macAddress_1.GetMachinMacAddress();
     }
     /**
-     * Connect to remote server by given remote settings.
+     * Connect to remote server with given remote settings.
      */
     async setRemoteSettings(remoteSettings) {
         try {
@@ -51,7 +51,7 @@ let RemoteConnectionController = class RemoteConnectionController extends tsoa_1
         }
     }
     /**
-     * Remove/disconnect remote server connection.
+     * Remove and disconnect remote server connection.
      */
     async removeRemoteSettings() {
         return await remoteConnectionBl_1.RemoteConnectionBlSingleton.removeRemoteSettings();

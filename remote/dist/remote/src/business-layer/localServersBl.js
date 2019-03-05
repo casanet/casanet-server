@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const randomstring = require("randomstring");
+const logger_1 = require("../../../backend/src/utilities/logger");
 const localServersDal_1 = require("../data-layer/localServersDal");
 class LocalServersBl {
     constructor(localServersDal) {
@@ -62,20 +63,21 @@ class LocalServersBl {
      */
     async createLocalServer(localServer) {
         /** local server mac address shuold be uniqe. */
-        let isLocalSereverMacIsUse = false;
+        let isLocalSereverMacInUse = false;
         try {
             await this.getlocalServersByMac(localServer.macAddress);
-            isLocalSereverMacIsUse = true;
+            isLocalSereverMacInUse = true;
         }
         catch (error) { }
-        if (isLocalSereverMacIsUse) {
+        if (isLocalSereverMacInUse) {
             throw {
                 responseCode: 5001,
-                message: 'local server with given mac address aready exsit',
+                message: 'local server with given mac address already exsit',
             };
         }
         /** Generate id to local server */
         localServer.localServerId = randomstring.generate(5);
+        localServer.connectionStatus = false;
         /** save it */
         await this.localServersDal.createLocalServer(localServer);
     }
@@ -92,10 +94,24 @@ class LocalServersBl {
                 message: 'changing local server mac address is unable.',
             };
         }
-        /** Thre is no point to update status from client. */
+        /** There is no point to update status from client. */
         localServer.connectionStatus = currentLocalServer.connectionStatus;
         /** save update */
         await this.localServersDal.updateLocalServer(localServer);
+    }
+    /**
+     * Change local server status property.
+     * @param localServerId local server to set status.
+     * @param status The new status.
+     */
+    async setLocalServerConnectionStatus(localServerId, status) {
+        try {
+            const localServer = await this.getlocalServersById(localServerId);
+            localServer.connectionStatus = status;
+        }
+        catch (error) {
+            logger_1.logger.debug(`faile to set ${localServerId} status ${status}, local server not exists`);
+        }
     }
     /**
      * Remove local server from system

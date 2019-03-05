@@ -13,7 +13,7 @@ const tsoa_1 = require("tsoa");
 const minionsBl_1 = require("../business-layer/minionsBl");
 let MinionsController = class MinionsController extends tsoa_1.Controller {
     /**
-     * Get all minions in system.
+     * Get all minions in the system.
      * @returns Minions array.
      */
     async getMinions() {
@@ -35,9 +35,9 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
         return await minionsBl_1.MinionsBlSingleton.setMinionStatus(minionId, setStatus);
     }
     /**
-     * Update minion turn off timout.
+     * Update minion auto turns off timeout.
      * @param minionId Minon id.
-     * @param minion Minion object to update to.
+     * @param setTimeout Timeout property.
      */
     async setMinionTimeout(minionId, setTimeout) {
         return await minionsBl_1.MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS);
@@ -60,21 +60,21 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
     /**
      * Recheck every minion device status (update server status cache).
      * Note that this is not the devices scan!
-     * This scen only checks every minion API to know the current status.
+     * This scanning only checks every minion API to know the current status.
      */
     async rescanMinionsStatus() {
         return await minionsBl_1.MinionsBlSingleton.scanMinionsStatus();
     }
     /**
-     * Delete minion from system.
+     * Delete minion from the system.
      * @param minionId Minon id.
      */
     async deleteMinion(minionId) {
         return await minionsBl_1.MinionsBlSingleton.deleteMinion(minionId);
     }
     /**
-     *  Creates new minion.
-     * @param minion new minion to create.
+     *  Creates a new minion.
+     * @param minion The new minion to create.
      */
     async createMinion(minion) {
         return await minionsBl_1.MinionsBlSingleton.createMinion(minion);

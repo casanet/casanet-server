@@ -83,7 +83,7 @@ let FeedController = class FeedController extends tsoa_1.Controller {
     //////////////////////////////////////////////////
     /**
      * Local server minions feed.
-     * when minion status changed minion created etc.
+     * when minion status changed, minion created etc.
      */
     async getMinionsFeed() {
         throw new Error('Request never should be here. it is a documentation only route.');

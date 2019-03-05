@@ -21,16 +21,16 @@ let AuthController = class AuthController extends tsoa_1.Controller {
      * Login to system.
      */
     async login(request, response, login) {
-        await authBl_1.AuthBlSingleton.login(response, login);
+        return await authBl_1.AuthBlSingleton.login(response, login);
     }
     /**
      * 2-step verification login.
      */
     async loginTfa(request, response, login) {
-        await authBl_1.AuthBlSingleton.loginTfa(response, login);
+        return await authBl_1.AuthBlSingleton.loginTfa(response, login);
     }
     /**
-     * Logout manualy from system.
+     * LLogout manually from the system.
      */
     async logout(request, response) {
         await authBl_1.AuthBlSingleton.logout(request.cookies.session, response);
@@ -51,7 +51,7 @@ let AuthController = class AuthController extends tsoa_1.Controller {
         throw new Error('Request never should be here. it is a documentation only route.');
     }
     /**
-     * Logout manualy from system.
+     * Logout manually from the system.
      */
     async logoutDocumentation() {
         throw new Error('Request never should be here. it is a documentation only route.');
