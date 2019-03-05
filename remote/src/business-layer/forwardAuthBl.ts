@@ -11,6 +11,11 @@ import { ForwardUsersSessionsBl, ForwardUsersSessionsBlSingleton } from './forwa
 
 export class ForwardAuthBl {
 
+    private readonly GENERIC_ERROR_RESPONSE: ErrorResponse = {
+        responseCode: 2403,
+        message: 'username password or local server is incorrect',
+    };
+
     /**
      *
      * @param channelsBl channel bl injection.
@@ -51,13 +56,7 @@ export class ForwardAuthBl {
     /**
      * Forward login request to local server. and save session if success.
      */
-    public async login(request: express.Request, response: express.Response, login: LoginLocalServer): Promise<any> {
-
-        /** Use only generic error response */
-        const errorResponse: ErrorResponse = {
-            responseCode: 2403,
-            message: 'user name or password incorrent',
-        };
+    public async login(request: express.Request, response: express.Response, login: LoginLocalServer): Promise<ErrorResponse> {
 
         /** local server id to try login to. */
         let connectLocalServerId: string;
@@ -70,7 +69,8 @@ export class ForwardAuthBl {
             const userLocalServersInfo = await this.localServersBl.getLocalServerInfoByUser(login.email);
             /** If there is not any local server that user is mantion in it. throw it out.  */
             if (userLocalServersInfo.length === 0) {
-                throw errorResponse;
+                response.statusCode = 403;
+                return this.GENERIC_ERROR_RESPONSE;
             } else if (userLocalServersInfo.length === 1) {
                 /** If user is mention in one local server, use it and continue. */
                 connectLocalServerId = userLocalServersInfo[0].localServerId;
@@ -104,7 +104,8 @@ export class ForwardAuthBl {
                 }
 
                 /** If non of local servers auth login cert, just return generic message */
-                throw errorResponse;
+                response.statusCode = 403;
+                return this.GENERIC_ERROR_RESPONSE;
             }
         }
 
@@ -131,12 +132,8 @@ export class ForwardAuthBl {
     /**
      * Forward login tfa request to local server. and save session if success.
      */
-    public async loginTfa(request: express.Request, response: express.Response, login: LoginLocalServer): Promise<any> {
+    public async loginTfa(request: express.Request, response: express.Response, login: LoginLocalServer): Promise<ErrorResponse> {
         /** See comments in login function, its almost same. */
-        const errorResponse: ErrorResponse = {
-            responseCode: 2403,
-            message: 'user name or password incorrent',
-        };
 
         let connectLocalServerId: string;
 
@@ -145,18 +142,17 @@ export class ForwardAuthBl {
         } else {
             const userLocalServersInfo = await this.localServersBl.getLocalServerInfoByUser(login.email);
             if (userLocalServersInfo.length === 0) {
-                throw errorResponse;
+                response.statusCode = 403;
+                return this.GENERIC_ERROR_RESPONSE;
             } else if (userLocalServersInfo.length === 1) {
                 connectLocalServerId = userLocalServersInfo[0].localServerId;
             } else {
                 /**
-                 * If there is more then one local server, throw it. user should know local server id.
-                 * from login request.
+                 * If there is more then one local server, throw it.
+                 * Client should know from last his login request if he needs to mention local server id or not.
                  */
-                throw {
-                    responseCode: 6404,
-                    message: 'local server not exist',
-                } as ErrorResponse;
+                response.statusCode = 403;
+                return this.GENERIC_ERROR_RESPONSE;
             }
         }
 
