@@ -7,7 +7,7 @@ import { ErrorResponse, Operation, OperationResult } from '../models/sharedInter
 export class OperationsController extends Controller {
 
     /**
-     * Get all operations in system.
+     * Get all operations in the system.
      * @returns Operations array.
      */
     @Security('userAuth')
@@ -31,7 +31,7 @@ export class OperationsController extends Controller {
     }
 
     /**
-     * Update operation values.
+     * Update operation properties.
      * @param operationId OperationId id.
      * @param operation Operation object to update to.
      */
@@ -44,7 +44,7 @@ export class OperationsController extends Controller {
     }
 
     /**
-     * Delete operation from system.
+     * Delete operation from the system.
      * @param operationId Operation id.
      */
     @Security('userAuth')
@@ -56,8 +56,8 @@ export class OperationsController extends Controller {
     }
 
     /**
-     *  Creates new operation.
-     * @param operation new operation to create.
+     * Creates a new operation.
+     * @param operation The new operation to create.
      */
     @Security('userAuth')
     @Security('adminAuth')
@@ -68,8 +68,9 @@ export class OperationsController extends Controller {
     }
 
     /**
-     *  Trigger operation by id.
-     * @returns Set minions status errors (if any).
+     * Invoke operation.
+     * @param operationId Operation id.
+     * @returns Array of minions set status errors (if any).
      */
     @Security('userAuth')
     @Security('adminAuth')

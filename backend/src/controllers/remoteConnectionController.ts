@@ -10,7 +10,7 @@ import { GetMachinMacAddress } from '../utilities/macAddress';
 export class RemoteConnectionController extends Controller {
 
     /**
-     * Get remote server host/ip.
+     * Get remote server host/IP.
      * or empty if not set.
      */
     @Security('adminAuth')
@@ -34,7 +34,7 @@ export class RemoteConnectionController extends Controller {
 
     /**
      * Get local casa-server machine mac address.
-     * Used when remote server require local server mac address befor pairing.
+     * Used when creating a new local server in a remote server.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -44,7 +44,7 @@ export class RemoteConnectionController extends Controller {
     }
 
     /**
-     * Connect to remote server by given remote settings.
+     * Connect to remote server with given remote settings.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -63,7 +63,7 @@ export class RemoteConnectionController extends Controller {
     }
 
     /**
-     * Remove/disconnect remote server connection.
+     * Remove and disconnect remote server connection.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')

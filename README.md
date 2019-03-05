@@ -66,7 +66,7 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
 Yes, it is possible and will be welcome, see [modules](./backend/src/modules/README.md#-for-development-only-).
 
 ## Using scenario:
-- Buy new [supported](#Supported Right now.) smart devices.
+- Buy new [supported](#supported-right-now) smart devices.
 - [Connect it to local network](./backend/src/modules/README.md) via official app.
 - Scan the local network to find the new device. (POST /devices/rescan).
 - Get all kinds of supported devices to know with them is belong to the new device. (GET /devices/kinds).

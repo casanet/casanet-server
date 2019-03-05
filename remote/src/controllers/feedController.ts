@@ -92,7 +92,7 @@ export class FeedController extends Controller {
 
     /**
      * Local server minions feed.
-     * when minion status changed minion created etc.
+     * when minion status changed, minion created etc.
      */
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')

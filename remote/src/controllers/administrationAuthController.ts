@@ -27,7 +27,7 @@ export class AdministrationAuthController extends Controller {
     }
 
     /**
-     * Logout manualy from system.
+     * Logout manually from system.
      */
     public async logout(request: express.Request, response: express.Response): Promise<void> {
         await AuthBlSingleton.logout(request.cookies.session, response);
@@ -38,7 +38,7 @@ export class AdministrationAuthController extends Controller {
     //////////////////////////////////////////////////
 
     /**
-     * Login to remote administration system.
+     * Login to the administration system.
      */
     @Response<void>(201, '2-fatore code sent')
     @Response<ErrorResponse>(501, 'Server error')
@@ -50,7 +50,7 @@ export class AdministrationAuthController extends Controller {
     }
 
     /**
-     * 2-step verification login to remote administration.
+     * 2-step verification login to the administration system.
      */
     @Response<ErrorResponse>(501, 'Server error')
     @Response<ErrorResponse>(403, 'Auth fail')
@@ -61,7 +61,7 @@ export class AdministrationAuthController extends Controller {
     }
 
     /**
-     * Logout manualy from administration system.
+     * Logout manually from the administration system.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')

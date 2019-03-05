@@ -43,7 +43,7 @@ export class AdministrationUsersController extends Controller {
     }
 
     /**
-     * Get all admin users in system.
+     * Get all admin users in the administraion system.
      * @returns Users array.
      */
     @Security('adminAuth')
@@ -54,7 +54,7 @@ export class AdministrationUsersController extends Controller {
     }
 
     /**
-     * Get admin user by id.
+     * Get administraion user by id.
      * @returns User.
      */
     @Security('adminAuth')
@@ -65,7 +65,7 @@ export class AdministrationUsersController extends Controller {
     }
 
     /**
-     * Update admin user properties.
+     * Update administraion user properties.
      * @param adminId User id.
      */
     @Security('adminAuth')
@@ -77,7 +77,7 @@ export class AdministrationUsersController extends Controller {
     }
 
     /**
-     * Delete admin user from system.
+     * Delete admin user from the administraion system.
      * @param adminId User id.
      */
     @Security('adminAuth')
@@ -88,8 +88,8 @@ export class AdministrationUsersController extends Controller {
     }
 
     /**
-     *  Creates new admin user.
-     * @param user new admin to create.
+     *  Creates a new administraion user.
+     * @param user The new administraion to create.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')

@@ -7,7 +7,7 @@ import { ErrorResponse, LocalNetworkDevice, Minion, MinionStatus, SetMinionAutoT
 export class MinionsController extends Controller {
 
     /**
-     * Get all minions in system.
+     * Get all minions in the system.
      * @returns Minions array.
      */
     @Security('userAuth')
@@ -43,9 +43,9 @@ export class MinionsController extends Controller {
     }
 
     /**
-     * Update minion turn off timout.
+     * Update minion auto turns off timeout.
      * @param minionId Minon id.
-     * @param minion Minion object to update to.
+     * @param setTimeout Timeout property.
      */
     @Security('userAuth')
     @Security('adminAuth')
@@ -83,7 +83,7 @@ export class MinionsController extends Controller {
     /**
      * Recheck every minion device status (update server status cache).
      * Note that this is not the devices scan!
-     * This scen only checks every minion API to know the current status.
+     * This scanning only checks every minion API to know the current status.
      */
     @Security('userAuth')
     @Security('adminAuth')
@@ -94,7 +94,7 @@ export class MinionsController extends Controller {
     }
 
     /**
-     * Delete minion from system.
+     * Delete minion from the system.
      * @param minionId Minon id.
      */
     @Security('userAuth')
@@ -106,8 +106,8 @@ export class MinionsController extends Controller {
     }
 
     /**
-     *  Creates new minion.
-     * @param minion new minion to create.
+     *  Creates a new minion.
+     * @param minion The new minion to create.
      */
     @Security('userAuth')
     @Security('adminAuth')

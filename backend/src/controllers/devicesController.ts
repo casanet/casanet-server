@@ -7,7 +7,7 @@ import { DeviceKind, ErrorResponse, LocalNetworkDevice } from '../models/sharedI
 export class DevicesController extends Controller {
 
     /**
-     * Get all devices in local network.
+     * Get all devices in the local network.
      * @returns Local network devices array.
      */
     @Security('userAuth')
@@ -31,9 +31,9 @@ export class DevicesController extends Controller {
     }
 
     /**
-     * Set new name to device.
+     * Set name to a device.
      * @param deviceMac Device mac address.
-     * @param newName New name to set.
+     * @param newName The name to set.
      */
     @Security('userAuth')
     @Security('adminAuth')
@@ -45,9 +45,9 @@ export class DevicesController extends Controller {
     }
 
     /**
-     * Rescan all device in LAN.
-     * Use when there is changes in local network.
-     * For example if the router (DHCP server) change IP's of devices , or new device in network etc.
+     * Rescan all devices in LAN.
+     * Used when there are changes in the local network.
+     * For example, if the router (DHCP server) change IP's of devices or new device connect to the local network etc.
      */
     @Security('userAuth')
     @Security('adminAuth')

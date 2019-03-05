@@ -27,7 +27,7 @@ export class AuthController extends Controller {
     }
 
     /**
-     * Logout manualy from system.
+     * LLogout manually from the system.
      */
     public async logout(request: express.Request, response: express.Response): Promise<void> {
         await AuthBlSingleton.logout(request.cookies.session, response);
@@ -61,7 +61,7 @@ export class AuthController extends Controller {
     }
 
     /**
-     * Logout manualy from system.
+     * Logout manually from the system.
      */
     @Security('userAuth')
     @Security('adminAuth')
