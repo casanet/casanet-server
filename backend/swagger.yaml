@@ -2016,7 +2016,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Logout manualy from system.'
+            description: 'Logout manually from the system.'
             tags:
                 - Authentication
             security:
@@ -2087,7 +2087,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get all devices in local network.'
+            description: 'Get all devices in the local network.'
             tags:
                 - Devices
             security:
@@ -2133,7 +2133,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Set new name to device.'
+            description: 'Set name to a device.'
             tags:
                 - Devices
             security:
@@ -2166,7 +2166,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Rescan all device in LAN.\r\nUse when there is changes in local network.\r\nFor example if the router (DHCP server) change IP's of devices , or new device in network etc."
+            description: "Rescan all devices in LAN.\r\nUsed when there are changes in the local network.\r\nFor example, if the router (DHCP server) change IP's of devices or new device connect to the local network etc."
             tags:
                 - Devices
             security:
@@ -2191,7 +2191,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get all minions in system.'
+            description: 'Get all minions in the system.'
             tags:
                 - Minions
             security:
@@ -2211,7 +2211,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Creates new minion.'
+            description: 'Creates a new minion.'
             tags:
                 - Minions
             security:
@@ -2221,7 +2221,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'new minion to create.'
+                    description: 'The new minion to create.'
                     in: body
                     name: minion
                     required: true
@@ -2295,7 +2295,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Delete minion from system.'
+            description: 'Delete minion from the system.'
             tags:
                 - Minions
             security:
@@ -2322,7 +2322,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Update minion turn off timout.'
+            description: 'Update minion auto turns off timeout.'
             tags:
                 - Minions
             security:
@@ -2338,6 +2338,7 @@ paths:
                     required: true
                     type: string
                 -
+                    description: 'Timeout property.'
                     in: body
                     name: setTimeout
                     required: true
@@ -2415,7 +2416,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Recheck every minion device status (update server status cache).\r\nNote that this is not the devices scan!\r\nThis scen only checks every minion API to know the current status."
+            description: "Recheck every minion device status (update server status cache).\r\nNote that this is not the devices scan!\r\nThis scanning only checks every minion API to know the current status."
             tags:
                 - Minions
             security:
@@ -2440,7 +2441,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get all operations in system.'
+            description: 'Get all operations in the system.'
             tags:
                 - Operations
             security:
@@ -2460,7 +2461,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Creates new operation.'
+            description: 'Creates a new operation.'
             tags:
                 - Operations
             security:
@@ -2470,7 +2471,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'new operation to create.'
+                    description: 'The new operation to create.'
                     in: body
                     name: operation
                     required: true
@@ -2515,7 +2516,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Update operation values.'
+            description: 'Update operation properties.'
             tags:
                 - Operations
             security:
@@ -2548,7 +2549,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Delete operation from system.'
+            description: 'Delete operation from the system.'
             tags:
                 - Operations
             security:
@@ -2579,7 +2580,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Trigger operation by id.'
+            description: 'Invoke operation.'
             tags:
                 - Operations
             security:
@@ -2589,6 +2590,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
+                    description: 'Operation id.'
                     in: path
                     name: operationId
                     required: true
@@ -2609,7 +2611,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get all timings in system.'
+            description: 'Get all the timings in the system.'
             tags:
                 - Timings
             security:
@@ -2629,7 +2631,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Creates new timing.'
+            description: 'Creates a new timing.'
             tags:
                 - Timings
             security:
@@ -2639,7 +2641,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'new timing to create.'
+                    description: 'The new timing to create.'
                     in: body
                     name: timing
                     required: true
@@ -2659,7 +2661,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get operation by id.'
+            description: 'Get timing by id.'
             tags:
                 - Timings
             security:
@@ -2684,7 +2686,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Update timing values.'
+            description: 'Update timing properties.'
             tags:
                 - Timings
             security:
@@ -2717,7 +2719,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Delete timing from system.'
+            description: 'Delete timing from the system.'
             tags:
                 - Timings
             security:
@@ -2771,7 +2773,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get all users in system.'
+            description: 'Get all users in the system.'
             tags:
                 - Users
             security:
@@ -2789,7 +2791,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Creates new user.'
+            description: 'Creates a new user.'
             tags:
                 - Users
             security:
@@ -2797,7 +2799,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'new user to create.'
+                    description: 'The new user to create.'
                     in: body
                     name: user
                     required: true
@@ -2842,7 +2844,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Update user values.'
+            description: 'Update user properties.'
             tags:
                 - Users
             security:
@@ -2875,7 +2877,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Delete user from system.'
+            description: 'Delete user from the system.'
             tags:
                 - Users
             security:
@@ -2904,7 +2906,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Get remote server host/ip.\r\nor empty if not set."
+            description: "Get remote server host/IP.\r\nor empty if not set."
             tags:
                 - Remote
             security:
@@ -2924,7 +2926,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Connect to remote server by given remote settings.'
+            description: 'Connect to remote server with given remote settings.'
             tags:
                 - Remote
             security:
@@ -2948,7 +2950,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Remove/disconnect remote server connection.'
+            description: 'Remove and disconnect remote server connection.'
             tags:
                 - Remote
             security:
@@ -2997,7 +2999,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Get local casa-server machine mac address.\r\nUsed when remote server require local server mac address befor pairing."
+            description: "Get local casa-server machine mac address.\r\nUsed when creating a new local server in a remote server."
             tags:
                 - Remote
             security:
@@ -3016,7 +3018,7 @@ paths:
                         type: object
                 '404':
                     description: 'Page not found'
-            description: 'Get public assets of casa-net client side.'
+            description: 'Get public assets for casa-net client side.'
             tags:
                 - Public
             security: []

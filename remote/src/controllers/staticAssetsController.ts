@@ -6,7 +6,7 @@ import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Respon
 export class StaticsAssetsController extends Controller {
 
     /**
-     * Get public assets of casa-net client side.
+     * Get public assets for casa-net client side.
      */
     @Response(404, 'Page not found')
     @Get('**/*')
