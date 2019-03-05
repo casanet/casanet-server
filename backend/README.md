@@ -37,15 +37,21 @@ It doesn't need to be the exact location but needs to be close enough.
 
 To get your home latitude and longitude you can use https://www.latlong.net/.
 
-#### Two factor authentication:
-To Allows MFA protection the server needs access to the email account to send the code to user email before login.
-(Tested with Gmail account).
+#### Two factor authentication (MFA):
+To Allows MFA protection the server needs access to the email account to send the code to user email before login is done.
 
-To confiugure it use follwing  environment variables:
+Let's take for example how to config a Gmail account: (Of course, it will work for any other SMTP services).
+
+First needs to turn on the IMAP/SMTP access service for the account, [see google instructions](https://support.google.com/mail/answer/7126229) and follow `Step 1` only.
+
+If MFA is enabled for the Gmail account create an application key for the password. [see google instructions](https://support.google.com/accounts/answer/185833).
+
+And use the following environment variables:
 * `TFA_SMTP_SERVER` (value example: `smtp.gmail.com`)
 * `TFA_USER_NAME` (value example: `my-usename@gmail.com`)
-* `TFA_USER_KEY` (value example: `my-gmail-password`)
+* `TFA_USER_KEY` (value example: `my-gmail-password or my-application-password`)
 
+that's all.
 
 ## Devices connection:
 Each IoT device should be connected to the local network before can add it to the casa-net server.
