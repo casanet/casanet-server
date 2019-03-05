@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
 let StaticAssetsController = class StaticAssetsController extends tsoa_1.Controller {
     /**
-     * Get public assets of casa-net client side.
+     * Get public assets for casa-net client side.
      */
     async getStaticsAssets() {
         throw new Error('Request never should be here. it is a documentation only route.');

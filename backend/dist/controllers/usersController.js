@@ -42,8 +42,8 @@ let UsersController = class UsersController extends tsoa_1.Controller {
          */
         if (userSession.scope !== 'adminAuth' && userSession.email !== userIdInReq) {
             throw {
-                responseCode: 6405,
-                message: 'user not allowd to watch other account',
+                responseCode: 4403,
+                message: 'user not allowed to watch other accounts',
             };
         }
     }
@@ -56,7 +56,7 @@ let UsersController = class UsersController extends tsoa_1.Controller {
         return this.cleanUpUserBeforRelease(await usersBl_1.UsersBlSingleton.getUser(userSession.email));
     }
     /**
-     * Get all users in system.
+     * Get all users in the system.
      * @returns Users array.
      */
     async getUsers() {
@@ -71,7 +71,7 @@ let UsersController = class UsersController extends tsoa_1.Controller {
         return this.cleanUpUserBeforRelease(await usersBl_1.UsersBlSingleton.getUser(userId));
     }
     /**
-     * Update user values.
+     * Update user properties.
      * @param userId User id.
      * @param user User object to update to.
      */
@@ -88,7 +88,7 @@ let UsersController = class UsersController extends tsoa_1.Controller {
         return await usersBl_1.UsersBlSingleton.updateUser(user);
     }
     /**
-     * Delete user from system.
+     * Delete user from the system.
      * @param userId User id.
      */
     async deleteUser(userId, request) {
@@ -96,8 +96,8 @@ let UsersController = class UsersController extends tsoa_1.Controller {
         return await usersBl_1.UsersBlSingleton.deleteUser(userId);
     }
     /**
-     *  Creates new user.
-     * @param user new user to create.
+     *  Creates a new user.
+     * @param user The new user to create.
      */
     async createUser(user) {
         return await usersBl_1.UsersBlSingleton.createUser(user);

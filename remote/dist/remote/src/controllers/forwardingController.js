@@ -19,7 +19,7 @@ let ForwardingController = class ForwardingController extends tsoa_1.Controller 
     /////// SWAGGER DOCUMENTATION ONLY METHODS ///////
     //////////////////////////////////////////////////
     /**
-     * Forward each /API/** path to local server to handle it as is.
+     * Forward each /API/** path to the local server to handle it AS IS.
      */
     async apiForwardingDocumentation() {
         throw new Error('Request never should be here. it is a documentation only route.');

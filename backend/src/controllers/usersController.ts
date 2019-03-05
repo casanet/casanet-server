@@ -39,8 +39,8 @@ export class UsersController extends Controller {
          */
         if (userSession.scope !== 'adminAuth' && userSession.email !== userIdInReq) {
             throw {
-                responseCode: 6405,
-                message: 'user not allowd to watch other account',
+                responseCode: 4403,
+                message: 'user not allowed to watch other accounts',
             } as ErrorResponse;
         }
     }
@@ -59,7 +59,7 @@ export class UsersController extends Controller {
     }
 
     /**
-     * Get all users in system.
+     * Get all users in the system.
      * @returns Users array.
      */
     @Security('adminAuth')
@@ -83,7 +83,7 @@ export class UsersController extends Controller {
     }
 
     /**
-     * Update user values.
+     * Update user properties.
      * @param userId User id.
      * @param user User object to update to.
      */
@@ -107,7 +107,7 @@ export class UsersController extends Controller {
     }
 
     /**
-     * Delete user from system.
+     * Delete user from the system.
      * @param userId User id.
      */
     @Security('adminAuth')
@@ -120,8 +120,8 @@ export class UsersController extends Controller {
     }
 
     /**
-     *  Creates new user.
-     * @param user new user to create.
+     *  Creates a new user.
+     * @param user The new user to create.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')

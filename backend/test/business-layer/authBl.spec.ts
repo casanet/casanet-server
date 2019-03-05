@@ -17,6 +17,11 @@ const sessionsDalMock = new SessionsDalMock();
 const authBlMock = new AuthBl(new SessionsBl(sessionsDalMock as unknown as SessionsDal),
     new UsersBl(usersDalMock as unknown as UsersDal));
 
+const GENERIC_ERROR_RESPONSE: ErrorResponse = {
+    responseCode: 2403,
+    message: 'username or password is incorrect',
+};
+
 describe('Authentication BL tests', () => {
 
     describe('Login to system', () => {
@@ -51,17 +56,12 @@ describe('Authentication BL tests', () => {
                     throw new Error('login request should be forbidden, the user name not exist');
                 },
             };
-            await authBlMock.login(expressResponseMock as express.Response, {
+            const error = await authBlMock.login(expressResponseMock as express.Response, {
                 email: (usersDalMock.mockUsers[0].email + 'ttt'),
                 password: usersDalMock.mockUsers[0].password,
-            })
-                .catch((err) => {
-                    const errorResponse: ErrorResponse = {
-                        responseCode: 2403,
-                        message: 'user name or password incorrent',
-                    };
-                    expect(err).to.deep.equal(errorResponse);
-                });
+            });
+
+            expect(error).to.deep.equal(GENERIC_ERROR_RESPONSE);
         });
 
         it('it should denied login', async () => {
@@ -71,17 +71,27 @@ describe('Authentication BL tests', () => {
                     throw new Error('login request should be forbidden, the user passwrod incorrect');
                 },
             };
-            await authBlMock.login(expressResponseMock as express.Response, {
-                email: usersDalMock.mockUsers[0].email,
+            const error = await authBlMock.login(expressResponseMock as express.Response, {
+                email: (usersDalMock.mockUsers[0].email ),
                 password: usersDalMock.mockUsers[0].password + 'ttt',
-            })
-                .catch((err) => {
-                    const errorResponse: ErrorResponse = {
-                        responseCode: 2403,
-                        message: 'user name or password incorrent',
-                    };
-                    expect(err).to.deep.equal(errorResponse);
-                });
+            });
+
+            expect(error).to.deep.equal(GENERIC_ERROR_RESPONSE);
+        });
+
+        it('it should denied login ta', async () => {
+
+            const expressResponseMock: unknown = {
+                cookie: (sessionName: string, sessionKey: string, options: {}) => {
+                    throw new Error('login request should be forbidden, the user MFA code never required');
+                },
+            };
+            const error = await authBlMock.loginTfa(expressResponseMock as express.Response, {
+                email: (usersDalMock.mockUsers[0].email),
+                password: usersDalMock.mockUsers[0].password ,
+            });
+
+            expect(error).to.deep.equal(GENERIC_ERROR_RESPONSE);
         });
     });
 });

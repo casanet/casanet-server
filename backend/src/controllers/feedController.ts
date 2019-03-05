@@ -5,7 +5,7 @@ import { TimingsBlSingleton } from '../business-layer/timingsBl';
 import { ErrorResponse, Login, MinionFeed, Timing, TimingFeed } from '../models/sharedInterfaces';
 
 /**
- * Because that swagger not fully support SSE.
+ * Because that swagger does not fully support SSE.
  * Use the TSOA routing is for documentation only.
  */
 @Tags('Feeds')

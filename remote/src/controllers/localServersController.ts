@@ -11,7 +11,7 @@ import { LocalServer } from '../models/sharedInterfaces';
 export class LocalServersController extends Controller {
 
     /**
-     * Get local servers in system.
+     * Get local servers in the system.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -21,7 +21,7 @@ export class LocalServersController extends Controller {
     }
 
     /**
-     * Get local server by it`s id.
+     * Get local server by its id.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -31,7 +31,7 @@ export class LocalServersController extends Controller {
     }
 
     /**
-     * Add new local server to system.
+     * Add a new local server to the system.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -54,7 +54,7 @@ export class LocalServersController extends Controller {
     }
 
     /**
-     * Remove local server from system.
+     * Remove local server from the system.
      * @param localServerId local server to remove.
      */
     @Security('adminAuth')
@@ -67,12 +67,12 @@ export class LocalServersController extends Controller {
     }
 
     /**
-     * Generate new authentication key for local server.
-     * (delete current key if exsit).
+     * Generate a new authentication key for the local server.
+     * (delete current key if exist).
      *
      * KEEP GENERATED KEY PRIVATE AND SECURE,
      * PUT IT IN YOUR LOCAL SERVER AND NEVER SHOW IT TO ANYBODY!!!
-     * @param localServerId local server to generate for.
+     * @param localServerId The local server to generate for.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -82,9 +82,9 @@ export class LocalServersController extends Controller {
     }
 
     /**
-     * Get all user names from local server.
+     * Get all user names from the local server.
      * Used to allow admin select users that can access their local server via remote.
-     * @param localServerId local server to get users from.
+     * @param localServerId The local server to get users from.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')

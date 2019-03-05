@@ -18,14 +18,15 @@ export class ForwardAuthController extends Controller {
      * Login to local server via remote server channel.
      * If users exsits in more then one local server, it`s return status code 210 and the avalible user servers to select.
      */
-    public async login(request: express.Request, response: express.Response, login: LoginLocalServer): Promise<void | LocalServerInfo[]> {
+    public async login(request: express.Request, response: express.Response, login: LoginLocalServer):
+        Promise<ErrorResponse | LocalServerInfo[]> {
         return await ForwardAuthBlSingleton.login(request, response, login);
     }
 
     /**
      * 2-step verification login to local server via remote server channel.
      */
-    public async loginTfa(request: express.Request, response: express.Response, login: LoginLocalServer): Promise<void> {
+    public async loginTfa(request: express.Request, response: express.Response, login: LoginLocalServer): Promise<ErrorResponse> {
         return await ForwardAuthBlSingleton.loginTfa(request, response, login);
     }
 
@@ -42,7 +43,7 @@ export class ForwardAuthController extends Controller {
 
     /**
      * Login to local server via remote server channel.
-     * If users exsits in more then one local server, it`s return status code 210 and the avalible user servers to select.
+     * If users exists in more then one local server, it returns status code 210 and the available user servers to select.
      */
     @Response<void>(201, '2-fatore code sent')
     @Response<LocalServerInfo[]>(210, 'select local server to connect to')
@@ -67,7 +68,7 @@ export class ForwardAuthController extends Controller {
     }
 
     /**
-     * Logout manualy from remote and local server systems.
+     * Logout manually from remote and local server systems.
      */
     @Security('userAuth')
     @Security('adminAuth')

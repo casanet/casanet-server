@@ -43,7 +43,7 @@ export class ChannelsController extends Controller {
     //////////////////////////////////////////////////
 
     /**
-     * Web sockets path, use for local server to connect remote server.
+     * Web-sockets path, used for the local server to connect remote server.
      */
     @Get()
     public async connectToRemoteViaWsDocumentation(): Promise<any> {

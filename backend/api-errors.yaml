@@ -1,8 +1,9 @@
 - { 1401 : 'unauthorized'}
 
 - { 1403 : 'access forbidden'}
-- { 2403 : 'user name or password incorrent'}
+- { 2403 : 'username or password is incorrect'}
 - { 3403 : 'authorization of local server in remote, fail'}
+- { 4403 : 'user not allowed to watch other accounts'}
 
 - { 1404 : 'minion not exist'}
 - { 2404 : 'device not exist in lan network'}
@@ -17,7 +18,6 @@
 - { 2405 : 'incorrect minion status for activity minion type'}
 - { 3405 : 'timing properties not match to timing type'}
 - { 5405 : 'user already exist'}
-- { 6405 : 'user not allowd to watch other account'}
 
 - { 1409 : 'there is no supported model for brand + model'}
 - { 2409 : 'token is requird'}
@@ -45,3 +45,5 @@
 - { 6503 : 'Setting status fail'}
 - { 7503 : 'Getting status fail'}
 - { 8503 : 'local server timeout'}
+- { 9503 : 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.'}
+

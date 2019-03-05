@@ -97,10 +97,10 @@ export class ChannelsBl {
                 if (now.getTime() - value.timeStamped.getTime() > this.httpRequestTimeout.asMilliseconds()) {
                     delete this.sentHttpRequestsMap[key];
                     value.forwardPromise.resolve({
-                        requestId : key,
-                        httpBody : { responseCode: 8503, message: 'local server timeout' },
-                        httpSession : undefined,
-                        httpStatus : 501,
+                        requestId: key,
+                        httpBody: { responseCode: 8503, message: 'local server timeout' },
+                        httpSession: undefined,
+                        httpStatus: 501,
                     });
                 }
             }
@@ -156,6 +156,8 @@ export class ChannelsBl {
 
             /** Send local server authenticatedSuccessfuly message. */
             this.sendMessage(wsChannel, { remoteMessagesType: 'authenticatedSuccessfuly', message: {} });
+
+            this.localServersBl.setLocalServerConnectionStatus(localServer.localServerId, true);
         } catch (error) {
             /** send generic auth fail message */
             this.sendMessage(wsChannel, {
@@ -170,7 +172,7 @@ export class ChannelsBl {
 
             /** wait a while until closing, to allow local server process fail message */
             setTimeout(() => {
-                try {  this.localChannelsMap[certAuth.macAddress].close(); } catch (error) { }
+                try { this.localChannelsMap[certAuth.macAddress].close(); } catch (error) { }
             }, 4000);
         }
     }
@@ -386,11 +388,22 @@ export class ChannelsBl {
      * On any ws channel closed, from any reasone.
      * @param wsChannel closed ws channel.
      */
-    public onWsClose(wsChannel: CasaWs) {
-        /** If channel passed auth  */
-        if (wsChannel.machineMac) {
-            /** Remove it from channel map. */
-            delete this.localChannelsMap[wsChannel.machineMac];
+    public async onWsClose(wsChannel: CasaWs) {
+        /** If channel not passed auth, just return */
+        if (!wsChannel.machineMac) {
+            return;
+        }
+
+        /** Remove it from channel map. */
+        delete this.localChannelsMap[wsChannel.machineMac];
+
+        /** Try to set local server status to be off. */
+        try {
+            /** Get the local server based on cert mac address. */
+            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
+            this.localServersBl.setLocalServerConnectionStatus(localServer.localServerId, false);
+        } catch (error) {
+
         }
     }
 

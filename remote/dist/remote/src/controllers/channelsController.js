@@ -40,7 +40,7 @@ let ChannelsController = class ChannelsController extends tsoa_1.Controller {
     /////// SWAGGER DOCUMENTATION ONLY METHODS ///////
     //////////////////////////////////////////////////
     /**
-     * Web sockets path, use for local server to connect remote server.
+     * Web-sockets path, used for the local server to connect remote server.
      */
     async connectToRemoteViaWsDocumentation() {
         throw new Error('Request never should be here. it is a documentation only route.');

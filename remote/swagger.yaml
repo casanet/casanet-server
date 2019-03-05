@@ -1930,7 +1930,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Login to local server via remote server channel.\r\nIf users exsits in more then one local server, it`s return status code 210 and the avalible user servers to select.\r\n     *"
+            description: "Login to local server via remote server channel.\r\nIf users exists in more then one local server, it returns status code 210 and the available user servers to select."
             tags:
                 - Authentication
             security: []
@@ -1984,7 +1984,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Logout manualy from remote and local server systems.'
+            description: 'Logout manually from remote and local server systems.'
             tags:
                 - Authentication
             security:
@@ -2007,7 +2007,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Local server minions feed.\r\nwhen minion status changed minion created etc."
+            description: "Local server minions feed.\r\nwhen minion status changed, minion created etc."
             tags:
                 - Feeds
             security:
@@ -2045,7 +2045,7 @@ paths:
                     description: Ok
                     schema:
                         type: object
-            description: 'Forward each /API/** path to local server to handle it as is.'
+            description: 'Forward each /API/** path to the local server to handle it AS IS.'
             tags:
                 - Forwarding
             security:
@@ -2062,7 +2062,7 @@ paths:
                     description: Ok
                     schema:
                         type: object
-            description: 'Web sockets path, use for local server to connect remote server.'
+            description: 'Web-sockets path, used for the local server to connect remote server.'
             tags:
                 - Channels
             security: []
@@ -2104,7 +2104,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get all admin users in system.'
+            description: 'Get all admin users in the administraion system.'
             tags:
                 - Administration
             security:
@@ -2122,7 +2122,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Creates new admin user.'
+            description: 'Creates a new administraion user.'
             tags:
                 - Administration
             security:
@@ -2130,7 +2130,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'new admin to create.'
+                    description: 'The new administraion to create.'
                     in: body
                     name: user
                     required: true
@@ -2150,7 +2150,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get admin user by id.'
+            description: 'Get administraion user by id.'
             tags:
                 - Administration
             security:
@@ -2173,7 +2173,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Update admin user properties.'
+            description: 'Update administraion user properties.'
             tags:
                 - Administration
             security:
@@ -2203,7 +2203,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Delete admin user from system.'
+            description: 'Delete admin user from the administraion system.'
             tags:
                 - Administration
             security:
@@ -2232,7 +2232,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get local servers in system.'
+            description: 'Get local servers in the system.'
             tags:
                 - Servers
             security:
@@ -2250,7 +2250,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Add new local server to system.'
+            description: 'Add a new local server to the system.'
             tags:
                 - Servers
             security:
@@ -2277,7 +2277,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Get local server by it`s id.\r\n     *"
+            description: 'Get local server by its id.'
             tags:
                 - Servers
             security:
@@ -2331,7 +2331,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Remove local server from system.'
+            description: 'Remove local server from the system.'
             tags:
                 - Servers
             security:
@@ -2358,7 +2358,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Generate new authentication key for local server.\r\n(delete current key if exsit).\r\n\r\nKEEP GENERATED KEY PRIVATE AND SECURE,\r\nPUT IT IN YOUR LOCAL SERVER AND NEVER SHOW IT TO ANYBODY!!!"
+            description: "Generate a new authentication key for the local server.\r\n(delete current key if exist).\r\n\r\nKEEP GENERATED KEY PRIVATE AND SECURE,\r\nPUT IT IN YOUR LOCAL SERVER AND NEVER SHOW IT TO ANYBODY!!!"
             tags:
                 - Servers
             security:
@@ -2366,7 +2366,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'local server to generate for.'
+                    description: 'The local server to generate for.'
                     in: path
                     name: localServerId
                     required: true
@@ -2387,7 +2387,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Get all user names from local server.\r\nUsed to allow admin select users that can access their local server via remote."
+            description: "Get all user names from the local server.\r\nUsed to allow admin select users that can access their local server via remote."
             tags:
                 - Servers
             security:
@@ -2395,7 +2395,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'local server to get users from.'
+                    description: 'The local server to get users from.'
                     in: path
                     name: localServerId
                     required: true
@@ -2422,7 +2422,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Login to remote administration system.'
+            description: 'Login to the administration system.'
             tags:
                 - Administration
             security: []
@@ -2453,7 +2453,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: '2-step verification login to remote administration.'
+            description: '2-step verification login to the administration system.'
             tags:
                 - Administration
             security: []
@@ -2476,7 +2476,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Logout manualy from administration system.'
+            description: 'Logout manually from the administration system.'
             tags:
                 - Administration
             security:
@@ -2495,7 +2495,7 @@ paths:
                         type: object
                 '404':
                     description: 'Page not found'
-            description: 'Get public assets of casa-net client side.'
+            description: 'Get public assets for casa-net client side.'
             tags:
                 - Public
             security: []
@@ -2512,7 +2512,7 @@ paths:
                         type: object
                 '404':
                     description: 'Page not found'
-            description: 'Get public assets of casa-net remote management client side.'
+            description: 'Get public assets for casa-net remote management client side.'
             tags:
                 - Public
             security: []

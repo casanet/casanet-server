@@ -13,21 +13,21 @@ const tsoa_1 = require("tsoa");
 const timingsBl_1 = require("../business-layer/timingsBl");
 let TimingsController = class TimingsController extends tsoa_1.Controller {
     /**
-     * Get all timings in system.
+     * Get all the timings in the system.
      * @returns Timings array.
      */
     async getTimings() {
         return await timingsBl_1.TimingsBlSingleton.getTimings();
     }
     /**
-     * Get operation by id.
-     * @returns Operation.
+     * Get timing by id.
+     * @returns Timing.
      */
     async getTiming(timingId) {
         return await timingsBl_1.TimingsBlSingleton.getTimingById(timingId);
     }
     /**
-     * Update timing values.
+     * Update timing properties.
      * @param timingId Timing id.
      * @param timing Timing object to update to.
      */
@@ -35,15 +35,15 @@ let TimingsController = class TimingsController extends tsoa_1.Controller {
         return await timingsBl_1.TimingsBlSingleton.SetTiming(timingId, timing);
     }
     /**
-     * Delete timing from system.
+     * Delete timing from the system.
      * @param timingId Timing id.
      */
     async deleteTiming(timingId) {
         return await timingsBl_1.TimingsBlSingleton.DeleteTiming(timingId);
     }
     /**
-     *  Creates new timing.
-     * @param timing new timing to create.
+     *  Creates a new timing.
+     * @param timing The new timing to create.
      */
     async createTiming(timing) {
         return await timingsBl_1.TimingsBlSingleton.CreateTiming(timing);

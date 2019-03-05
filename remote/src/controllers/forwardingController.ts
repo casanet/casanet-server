@@ -21,7 +21,7 @@ export class ForwardingController extends Controller {
     //////////////////////////////////////////////////
 
     /**
-     * Forward each /API/** path to local server to handle it as is.
+     * Forward each /API/** path to the local server to handle it AS IS.
      */
     @Security('userAuth')
     @Get('**/*')

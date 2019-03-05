@@ -12,33 +12,12 @@ import { ErrorResponse, Login, User } from '../../../backend/src/models/sharedIn
 @Route('/administration/auth')
 export class AdministrationAuthController extends Controller {
 
-    /**
-     * Login to remote administration system.
-     */
-    public async login(request: express.Request, response: express.Response, login: Login): Promise<void> {
-        await AuthBlSingleton.login(response, login);
-    }
-
-    /**
-     * 2-step verification login to remote administration.
-     */
-    public async loginTfa(request: express.Request, response: express.Response, login: Login): Promise<void> {
-        await AuthBlSingleton.loginTfa(response, login);
-    }
-
-    /**
-     * Logout manualy from system.
-     */
-    public async logout(request: express.Request, response: express.Response): Promise<void> {
-        await AuthBlSingleton.logout(request.cookies.session, response);
-    }
-
     //////////////////////////////////////////////////
     /////// SWAGGER DOCUMENTATION ONLY METHODS ///////
     //////////////////////////////////////////////////
 
     /**
-     * Login to remote administration system.
+     * Login to the administration system.
      */
     @Response<void>(201, '2-fatore code sent')
     @Response<ErrorResponse>(501, 'Server error')
@@ -50,7 +29,7 @@ export class AdministrationAuthController extends Controller {
     }
 
     /**
-     * 2-step verification login to remote administration.
+     * 2-step verification login to the administration system.
      */
     @Response<ErrorResponse>(501, 'Server error')
     @Response<ErrorResponse>(403, 'Auth fail')
@@ -61,7 +40,7 @@ export class AdministrationAuthController extends Controller {
     }
 
     /**
-     * Logout manualy from administration system.
+     * Logout manually from the administration system.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')

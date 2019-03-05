@@ -13,7 +13,7 @@ const tsoa_1 = require("tsoa");
 const devicesBl_1 = require("../business-layer/devicesBl");
 let DevicesController = class DevicesController extends tsoa_1.Controller {
     /**
-     * Get all devices in local network.
+     * Get all devices in the local network.
      * @returns Local network devices array.
      */
     async getDevices() {
@@ -27,18 +27,18 @@ let DevicesController = class DevicesController extends tsoa_1.Controller {
         return await devicesBl_1.DevicesBlSingleton.getDevicesKins();
     }
     /**
-     * Set new name to device.
+     * Set name to a device.
      * @param deviceMac Device mac address.
-     * @param newName New name to set.
+     * @param newName The name to set.
      */
     async setDeviceName(deviceMac, device) {
         device.mac = deviceMac;
         await devicesBl_1.DevicesBlSingleton.setDeviceName(device);
     }
     /**
-     * Rescan all device in LAN.
-     * Use when there is changes in local network.
-     * For example if the router (DHCP server) change IP's of devices , or new device in network etc.
+     * Rescan all devices in LAN.
+     * Used when there are changes in the local network.
+     * For example, if the router (DHCP server) change IP's of devices or new device connect to the local network etc.
      */
     async rescanDevices() {
         await devicesBl_1.DevicesBlSingleton.rescanNetwork();

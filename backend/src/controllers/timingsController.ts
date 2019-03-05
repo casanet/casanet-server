@@ -7,7 +7,7 @@ import { ErrorResponse, Timing } from '../models/sharedInterfaces';
 export class TimingsController extends Controller {
 
     /**
-     * Get all timings in system.
+     * Get all the timings in the system.
      * @returns Timings array.
      */
     @Security('userAuth')
@@ -19,8 +19,8 @@ export class TimingsController extends Controller {
     }
 
     /**
-     * Get operation by id.
-     * @returns Operation.
+     * Get timing by id.
+     * @returns Timing.
      */
     @Security('userAuth')
     @Security('adminAuth')
@@ -31,7 +31,7 @@ export class TimingsController extends Controller {
     }
 
     /**
-     * Update timing values.
+     * Update timing properties.
      * @param timingId Timing id.
      * @param timing Timing object to update to.
      */
@@ -44,7 +44,7 @@ export class TimingsController extends Controller {
     }
 
     /**
-     * Delete timing from system.
+     * Delete timing from the system.
      * @param timingId Timing id.
      */
     @Security('userAuth')
@@ -56,8 +56,8 @@ export class TimingsController extends Controller {
     }
 
     /**
-     *  Creates new timing.
-     * @param timing new timing to create.
+     *  Creates a new timing.
+     * @param timing The new timing to create.
      */
     @Security('userAuth')
     @Security('adminAuth')

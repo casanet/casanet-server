@@ -10,7 +10,7 @@ const tsoa_1 = require("tsoa");
 const minionsBl_1 = require("../business-layer/minionsBl");
 const timingsBl_1 = require("../business-layer/timingsBl");
 /**
- * Because that swagger not fully support SSE.
+ * Because that swagger does not fully support SSE.
  * Use the TSOA routing is for documentation only.
  */
 let FeedController = class FeedController extends tsoa_1.Controller {

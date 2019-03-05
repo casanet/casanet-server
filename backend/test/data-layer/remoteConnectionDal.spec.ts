@@ -11,7 +11,7 @@ class DataIOMock implements IDataIO {
     public mockData: RemoteSettings[] = [
         {
             connectionKey: 'gggg',
-            host: 'localhost',
+            host: 'ws://localhost',
         },
     ];
 
@@ -53,12 +53,12 @@ describe('Remote connection DAL tests', () => {
     });
 
     const newRemoteSettings: RemoteSettings = {
-        host: '127.0.0.1',
+        host: 'ws://127.0.0.1',
         connectionKey: '123',
     };
 
     const secondNewRemoteSettings: RemoteSettings = {
-        host: 'localhost',
+        host: 'ws://localhost',
         connectionKey: '123456789',
     };
 

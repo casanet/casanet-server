@@ -123,8 +123,8 @@ describe('Modules Manager tests', () => {
                 });
             } catch (error) {
                 expect(error).to.be.deep.equal({
-                    responseCode: 4005,
-                    message: 'unknown model',
+                    responseCode: 8404,
+                    message: 'unknown minion model',
                 } as ErrorResponse);
                 return;
             }
@@ -162,8 +162,8 @@ describe('Modules Manager tests', () => {
                 await modulesManager.getStatus(lightMinionMock);
             } catch (error) {
                 expect(error).to.be.deep.equal({
-                    responseCode: 4005,
-                    message: 'unknown model',
+                    responseCode: 8404,
+                    message: 'unknown minion model',
                 } as ErrorResponse);
                 return;
             }
@@ -182,8 +182,8 @@ describe('Modules Manager tests', () => {
                 await modulesManager.enterRecordMode(switchMinionMock, {});
             } catch (error) {
                 expect(error).to.be.deep.equal({
-                    responseCode: 4005,
-                    message: `the minioin not supporting command record`,
+                    responseCode: 6409,
+                    message: `the minioin not support command recording`,
                 } as ErrorResponse);
                 return;
             }

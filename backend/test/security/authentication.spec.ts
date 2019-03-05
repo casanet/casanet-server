@@ -52,7 +52,7 @@ describe('Security scopes validation middelwere', () => {
                 })
                 .catch((err: ErrorResponse) => {
                     const expectedError: ErrorResponse = {
-                        responseCode: 1403,
+                        responseCode: 1401,
                     };
                     expect(err).to.deep.equal(expectedError);
                 });

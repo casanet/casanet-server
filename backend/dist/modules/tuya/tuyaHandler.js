@@ -161,6 +161,12 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
         const stausResult = await tuyaDevice.get({ schema: true })
             .catch((err) => {
             logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
+            if (err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                throw {
+                    responseCode: 9503,
+                    message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                };
+            }
             throw {
                 responseCode: 1503,
                 message: 'communication with tuya device fail',
@@ -210,6 +216,12 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
         await tuyaDevice.set({ set: setStatus.switch.status === 'on', dps: gangIndex })
             .catch((err) => {
             logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
+            if (err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                throw {
+                    responseCode: 9503,
+                    message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                };
+            }
             throw {
                 responseCode: 1503,
                 message: 'communication with tuya device fail',
