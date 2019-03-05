@@ -4,7 +4,7 @@ import { RemoteSettings } from '../../src/models/sharedInterfaces';
 export class RemoteConnectionDalMock {
 
     public mockSettings: RemoteSettings = {
-        host: '127.0.0.1',
+        host: 'ws://127.0.0.1',
         connectionKey: '1234567890',
     };
 
