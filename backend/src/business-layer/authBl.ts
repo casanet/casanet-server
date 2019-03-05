@@ -16,6 +16,11 @@ declare interface TfaData {
 
 export class AuthBl {
 
+    private readonly GENERIC_ERROR_RESPONSE: ErrorResponse = {
+        responseCode: 2403,
+        message: 'username or password is incorrect',
+    };
+
     private sessionsBl: SessionsBl;
     private usersBl: UsersBl;
 
@@ -50,91 +55,101 @@ export class AuthBl {
     /**
      * Login to system.
      */
-    public async login(response: express.Response, login: Login): Promise<void> {
+    public async login(response: express.Response, login: Login): Promise<ErrorResponse> {
 
-        const errorResponse: ErrorResponse = {
-            responseCode: 2403,
-            message: 'user name or password incorrent',
-        };
-
-        const user = await this.usersBl.getUser(login.email)
-            .catch(() => {
-                logger.info(`login email ${login.email} fail, invalid cert`);
-                response.statusCode = 403;
-                throw errorResponse;
-            });
-
-        if (cryptoJs.SHA256(login.password).toString() !== user.password) {
+        let userTryToLogin: User;
+        try {
+            userTryToLogin = await this.usersBl.getUser(login.email);
+        } catch (error) {
+            /** case user not in system return generic error. */
+            logger.info(`login email ${login.email} fail, invalid cert`);
             response.statusCode = 403;
-            throw errorResponse;
+            return this.GENERIC_ERROR_RESPONSE;
         }
 
-        if (user.ignoreTfa) {
-            await this.activeSession(response, user);
+        if (cryptoJs.SHA256(login.password).toString() !== userTryToLogin.password) {
+            /** Case password incorrect return generic error. */
+            response.statusCode = 403;
+            return this.GENERIC_ERROR_RESPONSE;
+        }
+
+        /** Case user not require MFA, the login prossess done. */
+        if (userTryToLogin.ignoreTfa) {
+            await this.activeSession(response, userTryToLogin);
             return;
         }
 
+        /** Case user require MFA but email account not properly sets, send error message about it. */
         if (!Configuration.twoStepsVerification.TwoStepEnabled) {
-            logger.warn(`User ${user.email} try to login but there is no support in tfa right now`);
-            throw {
+            logger.warn(`User ${userTryToLogin.email} try to login but there is no support in tfa right now`);
+            response.statusCode = 501;
+            return {
                 responseCode: 2501,
                 message: 'MFA configuration not set correctly',
             } as ErrorResponse;
         }
 
+        /** Generate random MFA key. */
         const tfaKey = randomstring.generate({
             charset: 'numeric',
             length: 6,
         });
 
         try {
-            await SendMail(user.email, tfaKey);
+            /** Try to send MFA key to user email. */
+            await SendMail(userTryToLogin.email, tfaKey);
         } catch (error) {
+            /** Case sending fail leet hime know it. */
             logger.error(`Mail API problem, ${error.message}`);
-            throw {
+            response.statusCode = 501;
+            return {
                 responseCode: 3501,
                 message: 'Fail to send MFA mail message, inner error.',
             } as ErrorResponse;
         }
 
-        this.tfaLogins[user.email] = {
+        /** Map generated key to user. */
+        this.tfaLogins[userTryToLogin.email] = {
             generatedKey: tfaKey,
             timeStamp: new Date(),
         };
 
+        /** Mark status to 201, means, the login is OK but needs extra, MFA. */
         response.statusCode = 201;
     }
 
     /**
      * Login to system after tfa sent.
      */
-    public async loginTfa(response: express.Response, login: Login): Promise<void> {
+    public async loginTfa(response: express.Response, login: Login): Promise<ErrorResponse> {
 
-        const errorResponse: ErrorResponse = {
-            responseCode: 2403,
-            message: 'user name or password incorrent',
-        };
-
-        const user = await this.usersBl.getUser(login.email)
-            .catch(() => {
-                logger.info(`login email ${login.email} fail, invalid cert`);
-                response.statusCode = 403;
-                throw errorResponse;
-            });
-
-        const tfaData = this.tfaLogins[user.email];
-
-        /**
-         * If password not match or time from pass generation is more then 5 minuts.
-         */
-        if (tfaData.generatedKey !== login.password ||
-            new Date().getTime() - tfaData.timeStamp.getTime() > momoent.duration(5, 'minutes').asMilliseconds()) {
+        let userTryToLogin: User;
+        try {
+            userTryToLogin = await this.usersBl.getUser(login.email);
+        } catch (error) {
+            /** case user not in system return generic error. */
+            logger.info(`login email ${login.email} fail, invalid cert`);
             response.statusCode = 403;
-            throw errorResponse;
+            return this.GENERIC_ERROR_RESPONSE;
         }
 
-        delete this.tfaLogins[user.email];
-        await this.activeSession(response, user);
+        /** Get MFA key if exists */
+        const tfaData = this.tfaLogins[userTryToLogin.email];
+
+        /**
+         * If user request MFA in last 5 minutes, and MFA key same as generated, let user pass.
+         */
+        if (tfaData &&
+            tfaData.generatedKey === login.password &&
+            new Date().getTime() - tfaData.timeStamp.getTime() < momoent.duration(5, 'minutes').asMilliseconds()) {
+            delete this.tfaLogins[userTryToLogin.email];
+            await this.activeSession(response, userTryToLogin);
+            return;
+        }
+
+        /** Any other case, return generic error. */
+        response.statusCode = 403;
+        return this.GENERIC_ERROR_RESPONSE;
     }
 
     /**
