@@ -15,7 +15,7 @@ export class TuyaHandler extends BrandModuleBase {
             minionsPerDevice: 3,
             model: 'wall switch, 3 gangs, first one',
             suppotedMinionType: 'switch',
-            isRecordingSupported : false,
+            isRecordingSupported: false,
         },
         {
             brand: this.brandName,
@@ -24,7 +24,7 @@ export class TuyaHandler extends BrandModuleBase {
             minionsPerDevice: 3,
             model: 'wall switch, 3 gangs, second one',
             suppotedMinionType: 'switch',
-            isRecordingSupported : false,
+            isRecordingSupported: false,
         },
         {
             brand: this.brandName,
@@ -33,7 +33,7 @@ export class TuyaHandler extends BrandModuleBase {
             minionsPerDevice: 3,
             model: 'wall switch, 3 gangs, third one',
             suppotedMinionType: 'switch',
-            isRecordingSupported : false,
+            isRecordingSupported: false,
         },
     ];
 
@@ -179,6 +179,14 @@ export class TuyaHandler extends BrandModuleBase {
         const stausResult = await tuyaDevice.get({ schema: true })
             .catch((err: Error) => {
                 logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
+
+                if (err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                    throw {
+                        responseCode: 9503,
+                        message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                    } as ErrorResponse;
+                }
+
                 throw {
                     responseCode: 1503,
                     message: 'communication with tuya device fail',
@@ -233,6 +241,14 @@ export class TuyaHandler extends BrandModuleBase {
         await tuyaDevice.set({ set: setStatus.switch.status === 'on', dps: gangIndex })
             .catch((err) => {
                 logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
+
+                if (err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                    throw {
+                        responseCode: 9503,
+                        message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                    } as ErrorResponse;
+                }
+
                 throw {
                     responseCode: 1503,
                     message: 'communication with tuya device fail',
