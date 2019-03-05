@@ -15,15 +15,15 @@ export class AuthController extends Controller {
     /**
      * Login to system.
      */
-    public async login(request: express.Request, response: express.Response, login: Login): Promise<void> {
-        await AuthBlSingleton.login(response, login);
+    public async login(request: express.Request, response: express.Response, login: Login): Promise<ErrorResponse> {
+        return await AuthBlSingleton.login(response, login);
     }
 
     /**
      * 2-step verification login.
      */
-    public async loginTfa(request: express.Request, response: express.Response, login: Login): Promise<void> {
-        await AuthBlSingleton.loginTfa(response, login);
+    public async loginTfa(request: express.Request, response: express.Response, login: Login): Promise<ErrorResponse> {
+        return await AuthBlSingleton.loginTfa(response, login);
     }
 
     /**
