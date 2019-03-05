@@ -1,7 +1,7 @@
 - { 1401 : 'unauthorized'}
 
 - { 1403 : 'access forbidden'}
-- { 2403 : 'user name or password incorrent'}
+- { 2403 : 'username or password is incorrect'}
 - { 3403 : 'authorization of local server in remote, fail'}
 - { 4403 : 'user not allowed to watch other accounts'}
 
