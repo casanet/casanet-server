@@ -166,7 +166,23 @@ export class DashboardCrmComponent implements OnInit {
 		minion['recording'] = false;
 	}
 
-	public showDeviceInfo(minion: Minion) { }
+	public async showDeviceInfo(minion: Minion) {
+		const swalResult: void | SweetAlertResult = await swal({
+			type: 'info',
+			title: minion.name,
+			html:
+				`<table border="1">
+					<tr><td><b>${this.translatePipe.transform('INNER_ID')}:</b>     </td><td> ${minion.minionId} </td></tr> 
+					<tr><td><b>${this.translatePipe.transform('MODEL')}:</b>        </td><td> ${minion.device.brand} </td></tr> 
+					<tr><td><b>${this.translatePipe.transform('BRAND')}:</b>        </td><td> ${minion.device.model} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_NAME')}:</b>  </td><td> ${minion.device.pysicalDevice.name || '?'} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_MAC')}:</b>   </td><td> ${minion.device.pysicalDevice.mac} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_IP')}:</b>    </td><td> ${minion.device.pysicalDevice.ip}</td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_VENDOR')}:</b></td><td> ${minion.device.pysicalDevice.vendor} </td></tr>
+				</table>`,
+			confirmButtonText: this.translatePipe.transform('CLOSE'),
+		});
+	}
 
 	public async refreshMinion(minion: Minion) {
 		minion['sync'] = true;
@@ -400,16 +416,16 @@ export class DashboardCrmComponent implements OnInit {
 		await this.minionsService.createMinion({
 			device: {
 				brand: selectedBrand,
-				model : selectedModel,
-				deviceId : deviceId,
+				model: selectedModel,
+				deviceId: deviceId,
 				token: deviceToken,
-				pysicalDevice : {
-					mac : selectedDevice,
+				pysicalDevice: {
+					mac: selectedDevice,
 				}
 			},
-			name : swalNameResult.value,
+			name: swalNameResult.value,
 			minionType: 'toggle',
-			minionStatus : { }
+			minionStatus: {}
 		})
 	}
 
