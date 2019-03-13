@@ -195,4 +195,12 @@ export class MinionsService {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
 	}
+
+	public async setAutoTimeout(minion: Minion, timeout: number){
+		try {
+			await this.httpClient.put(`/API/minions/timeout/${minion.minionId}`, { setAutoTurnOffMS : timeout }).toPromise();
+		} catch (error) {
+			this.toastrAndErrorsService.OnHttpError(error);
+		}
+	}
 }

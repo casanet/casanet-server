@@ -14,8 +14,8 @@ import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import swal, { SweetAlertResult } from 'sweetalert2';
 import { TranslateService } from '../translate.service';
 import { TranslatePipe } from '../translate.pipe';
-import { MatDialog, MatDialogConfig } from '@angular/material';
-
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { AutoTimeoutDialogComponent } from '../dialogs/auto-timeout-dialog/auto-timeout-dialog.component'
 @Component({
 	selector: 'app-dashboard-crm',
 	templateUrl: './dashboard-crm.component.html',
@@ -31,6 +31,7 @@ export class DashboardCrmComponent implements OnInit {
 	private translatePipe: TranslatePipe;
 
 	constructor(
+		public dialog: MatDialog,
 		private translateService: TranslateService,
 		private minionsService: MinionsService,
 		private devicesService: DevicesService
@@ -171,14 +172,14 @@ export class DashboardCrmComponent implements OnInit {
 			type: 'info',
 			title: minion.name,
 			html:
-				`<table border="1">
-					<tr><td><b>${this.translatePipe.transform('INNER_ID')}:</b>     </td><td> ${minion.minionId} </td></tr> 
-					<tr><td><b>${this.translatePipe.transform('MODEL')}:</b>        </td><td> ${minion.device.brand} </td></tr> 
-					<tr><td><b>${this.translatePipe.transform('BRAND')}:</b>        </td><td> ${minion.device.model} </td></tr>
-					<tr><td><b>${this.translatePipe.transform('DEVICE_NAME')}:</b>  </td><td> ${minion.device.pysicalDevice.name || '?'} </td></tr>
-					<tr><td><b>${this.translatePipe.transform('DEVICE_MAC')}:</b>   </td><td> ${minion.device.pysicalDevice.mac} </td></tr>
-					<tr><td><b>${this.translatePipe.transform('DEVICE_IP')}:</b>    </td><td> ${minion.device.pysicalDevice.ip}</td></tr>
-					<tr><td><b>${this.translatePipe.transform('DEVICE_VENDOR')}:</b></td><td> ${minion.device.pysicalDevice.vendor} </td></tr>
+				`<table border="1" style="margin: auto">
+					<tr><td><b>${this.translatePipe.transform('INNER_ID')}</b>     </td><td> ${minion.minionId} </td></tr> 
+					<tr><td><b>${this.translatePipe.transform('MODEL')}</b>        </td><td> ${minion.device.brand} </td></tr> 
+					<tr><td><b>${this.translatePipe.transform('BRAND')}</b>        </td><td> ${minion.device.model} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_NAME')}</b>  </td><td> ${minion.device.pysicalDevice.name || '?'} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_MAC')}</b>   </td><td> ${minion.device.pysicalDevice.mac} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_IP')}</b>    </td><td> ${minion.device.pysicalDevice.ip || '?'}</td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_VENDOR')}</b></td><td> ${minion.device.pysicalDevice.vendor || '?'} </td></tr>
 				</table>`,
 			confirmButtonText: this.translatePipe.transform('CLOSE'),
 		});
@@ -427,6 +428,12 @@ export class DashboardCrmComponent implements OnInit {
 			minionType: 'toggle',
 			minionStatus: {}
 		})
+	}
+
+	public async editAutoTimeout(minion: Minion) {
+		this.dialog.open(AutoTimeoutDialogComponent, {
+			data: minion
+		  });
 	}
 
 	public async refreshMinions() {
