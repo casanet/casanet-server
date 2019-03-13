@@ -14,13 +14,13 @@ export class DevicesService {
   private isLanDevicesRetrived = false;
   public devicesKinds: DeviceKind[] = [];
 
-  private lanDevices: LocalNetworkDevice[] = [];
+  public lanDevices: LocalNetworkDevice[] = [];
   public lanDevicesFeed: BehaviorSubject<LocalNetworkDevice[]> = new BehaviorSubject<LocalNetworkDevice[]>(this.lanDevices);
 
   constructor(private toastrAndErrorsService: ToasterAndErrorsService,
     private httpClient: HttpClient) {
-      this.retriveDevicesKindsData();
-
+    this.retriveDevicesKindsData();
+    this.loadLanDevices();
   }
 
   private async loadDevicesKindsData() {

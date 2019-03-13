@@ -19,7 +19,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 @Component({
 	selector: 'app-dashboard-crm',
 	templateUrl: './dashboard-crm.component.html',
-	styleUrls: [ './dashboard-crm.component.scss' ]
+	styleUrls: ['./dashboard-crm.component.scss']
 })
 export class DashboardCrmComponent implements OnInit {
 	/** Mark to show or not loading animation */
@@ -66,7 +66,7 @@ export class DashboardCrmComponent implements OnInit {
 		minionsService.retriveMinions();
 	}
 
-	ngOnInit() {}
+	ngOnInit() { }
 
 	public createUpdateSet(minion: Minion) {
 		minion['updateSet'] = DeepCopy<MinionStatus>(minion.minionStatus);
@@ -166,7 +166,7 @@ export class DashboardCrmComponent implements OnInit {
 		minion['recording'] = false;
 	}
 
-	public showDeviceInfo(minion: Minion) {}
+	public showDeviceInfo(minion: Minion) { }
 
 	public async refreshMinion(minion: Minion) {
 		minion['sync'] = true;
@@ -204,11 +204,213 @@ export class DashboardCrmComponent implements OnInit {
 		}
 
 		minion['sync'] = true;
-		this.minionsService.deleteStatus(minion);
+		this.minionsService.deleteMinion(minion);
 	}
 
 	public async createMinion() {
 
+		// Select brand.
+		const devices = {};
+		for (const device of this.devicesService.lanDevices) {
+			devices[device.mac] = `${device.name || ''} MAC: ${device.mac}, IP: ${device.ip}, VEN.: ${device.vendor ? device.vendor.substr(0, Math.min(device.vendor.length, 10)) : ''}`;
+		}
+
+		const swalDeviceResult: void | SweetAlertResult = await swal({
+			title: `${this.translatePipe.transform('SELECT_DEVICE')}`,
+			input: 'select',
+			inputOptions: devices,
+			inputPlaceholder: this.translatePipe.transform('SELECT_A_DEVICE'),
+			showConfirmButton: true,
+			showCancelButton: true,
+			confirmButtonText: this.translatePipe.transform('SUBMIT'),
+			cancelButtonText: this.translatePipe.transform('CANCEL'),
+			onOpen: function () {
+				swal.disableConfirmButton();
+				swal.getInput().addEventListener('input', (e: KeyboardEvent) => {
+					if (!e.target['value']) {
+						swal.disableConfirmButton();
+					} else {
+						swal.enableConfirmButton();
+					}
+				});
+			}
+		});
+
+		if (!swalDeviceResult.value) {
+			return;
+		}
+		const selectedDevice = swalDeviceResult.value;
+
+		// Select brand.
+		const brands = {};
+		for (const kind of this.devicesService.devicesKinds) {
+			brands[kind.brand] = kind.brand;
+		}
+
+		const swalBrandResult: void | SweetAlertResult = await swal({
+			title: `${this.translatePipe.transform('SELECT_BRAND')}`,
+			input: 'select',
+			inputOptions: brands,
+			inputPlaceholder: this.translatePipe.transform('SELECT_A_BRAND'),
+			showConfirmButton: true,
+			showCancelButton: true,
+			confirmButtonText: this.translatePipe.transform('SUBMIT'),
+			cancelButtonText: this.translatePipe.transform('CANCEL'),
+			onOpen: function () {
+				swal.disableConfirmButton();
+				swal.getInput().addEventListener('input', (e: KeyboardEvent) => {
+					if (!e.target['value']) {
+						swal.disableConfirmButton();
+					} else {
+						swal.enableConfirmButton();
+					}
+				});
+			}
+		});
+
+		if (!swalBrandResult.value) {
+			return;
+		}
+		const selectedBrand = swalBrandResult.value;
+
+		// Select model.
+		const models = {};
+		for (const kind of this.devicesService.devicesKinds) {
+			if (kind.brand === selectedBrand) {
+				models[kind.model] = kind.model;
+			}
+		}
+
+		const swalModelResult: void | SweetAlertResult = await swal({
+			title: `${this.translatePipe.transform('SELECT_MODEL')}`,
+			input: 'select',
+			inputOptions: models,
+			inputPlaceholder: this.translatePipe.transform('SELECT_A_MODEL'),
+			showConfirmButton: true,
+			showCancelButton: true,
+			confirmButtonText: this.translatePipe.transform('SUBMIT'),
+			cancelButtonText: this.translatePipe.transform('CANCEL'),
+			onOpen: function () {
+				swal.disableConfirmButton();
+				swal.getInput().addEventListener('input', (e: KeyboardEvent) => {
+					if (!e.target['value']) {
+						swal.disableConfirmButton();
+					} else {
+						swal.enableConfirmButton();
+					}
+				});
+			}
+		});
+
+		if (!swalModelResult.value) {
+			return;
+		}
+		const selectedModel = swalModelResult.value;
+
+		// Get the minion kind
+		let selectedKind: DeviceKind;
+		for (const kind of this.devicesService.devicesKinds) {
+			if (kind.brand === selectedBrand && kind.model === selectedModel) {
+				selectedKind = kind;
+				break;
+			}
+		}
+
+		let deviceToken: string;
+		if (selectedKind.isTokenRequierd) {
+			const swalTokenResult: void | SweetAlertResult = await swal({
+				title: `${this.translatePipe.transform('ENTER_TOKEN')}`,
+				input: 'text',
+				inputPlaceholder: this.translatePipe.transform('ENTER_TOKEN_HERE'),
+				showConfirmButton: true,
+				showCancelButton: true,
+				confirmButtonText: this.translatePipe.transform('SUBMIT'),
+				cancelButtonText: this.translatePipe.transform('CANCEL'),
+				onOpen: function () {
+					swal.disableConfirmButton();
+					swal.getInput().addEventListener('input', (e: KeyboardEvent) => {
+						if (!e.target['value']) {
+							swal.disableConfirmButton();
+						} else {
+							swal.enableConfirmButton();
+						}
+					});
+				}
+			});
+
+			if (!swalTokenResult.value) {
+				return;
+			}
+			deviceToken = swalTokenResult.value;
+		}
+
+		let deviceId: string;
+		if (selectedKind.isIdRequierd) {
+			const swalIdResult: void | SweetAlertResult = await swal({
+				title: `${this.translatePipe.transform('ENTER_ID')}`,
+				input: 'text',
+				inputPlaceholder: this.translatePipe.transform('ENTER_ID_HERE'),
+				showConfirmButton: true,
+				showCancelButton: true,
+				confirmButtonText: this.translatePipe.transform('SUBMIT'),
+				cancelButtonText: this.translatePipe.transform('CANCEL'),
+				onOpen: function () {
+					swal.disableConfirmButton();
+					swal.getInput().addEventListener('input', (e: KeyboardEvent) => {
+						if (!e.target['value']) {
+							swal.disableConfirmButton();
+						} else {
+							swal.enableConfirmButton();
+						}
+					});
+				}
+			});
+
+			if (!swalIdResult.value) {
+				return;
+			}
+			deviceId = swalIdResult.value;
+		}
+
+		const swalNameResult: void | SweetAlertResult = await swal({
+			title: `${this.translatePipe.transform('ENTER_NAME')}`,
+			input: 'text',
+			inputPlaceholder: this.translatePipe.transform('ENTER_NAME_HERE'),
+			showConfirmButton: true,
+			showCancelButton: true,
+			confirmButtonText: this.translatePipe.transform('CREATE_MINION'),
+			cancelButtonText: this.translatePipe.transform('CANCEL'),
+			showLoaderOnConfirm: true,
+			onOpen: function () {
+				swal.disableConfirmButton();
+				swal.getInput().addEventListener('input', (e: KeyboardEvent) => {
+					if (!e.target['value']) {
+						swal.disableConfirmButton();
+					} else {
+						swal.enableConfirmButton();
+					}
+				});
+			},
+		});
+
+		if (!swalNameResult.value) {
+			return;
+		}
+
+		await this.minionsService.createMinion({
+			device: {
+				brand: selectedBrand,
+				model : selectedModel,
+				deviceId : deviceId,
+				token: deviceToken,
+				pysicalDevice : {
+					mac : selectedDevice,
+				}
+			},
+			name : swalNameResult.value,
+			minionType: 'toggle',
+			minionStatus : { }
+		})
 	}
 
 	public async refreshMinions() {

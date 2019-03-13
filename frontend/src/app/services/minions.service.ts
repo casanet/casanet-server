@@ -173,7 +173,7 @@ export class MinionsService {
 		this.minionsFeed.next(DeepCopy<Minion[]>(this.minions));
 	}
 
-	public async deleteStatus(minionToRemove: Minion) {
+	public async deleteMinion(minionToRemove: Minion) {
 		try {
 			await this.httpClient.delete(`/API/minions/${minionToRemove.minionId}`).toPromise();
 
@@ -183,6 +183,14 @@ export class MinionsService {
 			}
 
 			this.minionsFeed.next(DeepCopy<Minion[]>(this.minions));
+		} catch (error) {
+			this.toastrAndErrorsService.OnHttpError(error);
+		}
+	}
+
+	public async createMinion(minionToCreate: Minion) {
+		try {
+			await this.httpClient.post(`/API/minions`, minionToCreate).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
