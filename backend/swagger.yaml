@@ -1852,6 +1852,7 @@ definitions:
             setAutoTurnOffMS:
                 type: number
                 format: double
+                description: 'The timeout duration in ms, to turn off set 0 as valse.'
         required:
             - setAutoTurnOffMS
         type: object
