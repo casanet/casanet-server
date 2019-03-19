@@ -79,6 +79,12 @@
     "DEVICE_MAC" : "physical device address",
     "DEVICE_IP" : "physical device ip address",
     "DEVICE_VENDOR" : "pysical device vendor",
+    "NEXT" : "Next",
+    "BACK" : "Back",
+    "DONE" : "Done",
+    "CREATE" : "Create",
+    "RESET" : "Reset",
+    "DONE_MINION_MESSAGE" : "Ready to create a minion",
     "api-messages": {
         "0": "offline",
         "1401": "unauthorized",

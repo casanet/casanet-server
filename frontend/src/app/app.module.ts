@@ -9,14 +9,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { TranslateService } from './translate.service';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { ToasterAndErrorsService } from './services/toaster-and-errors.service';
-import { AutoTimeoutDialogComponent } from './dialogs/auto-timeout-dialog/auto-timeout-dialog.component'
+import { AutoTimeoutDialogComponent } from './dialogs/auto-timeout-dialog/auto-timeout-dialog.component';
+import { CreateMinionDialogComponent } from './dialogs/create-minion-dialog/create-minion-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedModule } from './shared.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatSelectModule } from '@angular/material/select';
 
 export function setupTranslateFactory(
   service: TranslateService): Function {
@@ -32,6 +35,7 @@ import { DevicesService } from './services/devices.service';
   declarations: [
     AppComponent,
     AutoTimeoutDialogComponent,
+    CreateMinionDialogComponent,
   ],
   exports: [
   ],
@@ -54,7 +58,10 @@ import { DevicesService } from './services/devices.service';
     MatInputModule,
     MatFormFieldModule,
     FormsModule,
-    MatButtonModule
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatStepperModule,
+    MatSelectModule,
   ],
   providers: [
     MinionsService,
@@ -69,6 +76,6 @@ import { DevicesService } from './services/devices.service';
     }
   ],
   bootstrap: [AppComponent],
-  entryComponents: [AutoTimeoutDialogComponent]
+  entryComponents: [AutoTimeoutDialogComponent, CreateMinionDialogComponent]
 })
 export class AppModule { }
