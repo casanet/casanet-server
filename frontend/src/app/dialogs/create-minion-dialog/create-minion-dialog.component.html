@@ -96,7 +96,7 @@
     <div>
       <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
       <button mat-button (click)="stepper.reset()">{{ 'RESET' | translate}}</button>
-      <button mat-button (click)="createMinion()">{{ 'CREATE' | translate}}</button>
+      <button mat-button (click)="createMinion()" cdkFocusInitial mat-raised-button>{{ 'CREATE' | translate}}</button>
     </div>
   </mat-step>
 </mat-vertical-stepper>
