@@ -67,6 +67,7 @@ export class DashboardCrmComponent implements OnInit {
 			this.dataLoading = false;
 		});
 		minionsService.retriveMinions();
+		devicesService.retriveLanDevices();
 	}
 
 	ngOnInit() { }
