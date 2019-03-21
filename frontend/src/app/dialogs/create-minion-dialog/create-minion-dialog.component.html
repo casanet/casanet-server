@@ -1,0 +1,102 @@
+<mat-vertical-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="devicesControl">
+    <form>
+      <ng-template matStepLabel>{{ 'SELECT_A_DEVICE' | translate}}</ng-template>
+      <mat-form-field>
+        <mat-select placeholder="{{ 'SELECT_A_DEVICE' | translate}}" [formControl]="devicesControl" required>
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let device of devices" [value]="device.mac" style="min-width: 400px">
+            <b>
+              {{device.mac}}
+            </b>
+            <span style="font-size: 15px"> {{device.display}}</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="brandsControl">
+    <form>
+      <ng-template matStepLabel>{{ 'SELECT_A_BRAND' | translate}}</ng-template>
+      <mat-form-field>
+        <mat-select placeholder="{{ 'SELECT_A_BRAND' | translate}}" [formControl]="brandsControl" required
+          (selectionChange)="onBrandSelected()">
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let brand of brands" [value]="brand">
+            {{brand}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="modelsControl">
+    <form>
+      <ng-template matStepLabel>{{ 'SELECT_A_MODEL' | translate}}</ng-template>
+      <mat-form-field>
+        <mat-select placeholder="{{ 'SELECT_A_MODEL' | translate}}" [formControl]="modelsControl" required
+          (selectionChange)="onModelSelected()">
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let model of models" [value]="model">
+            {{model}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+          <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+          <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="requiredTokenControl" *ngIf="requireToken">
+    <form>
+      <ng-template matStepLabel>{{ 'ENTER_TOKEN' | translate}}</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="{{ 'ENTER_TOKEN_HERE' | translate}}" [formControl]="requiredTokenControl" required>
+      </mat-form-field>
+        <div>
+            <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+            <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+        </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="requiredIdControl" *ngIf="requireDeviceId">
+    <form>
+      <ng-template matStepLabel>{{ 'ENTER_ID' | translate}}</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="{{ 'ENTER_ID_HERE' | translate}}" [formControl]="requiredIdControl" required>
+      </mat-form-field>
+        <div>
+            <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+            <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+        </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="nameControl">
+    <form>
+      <ng-template matStepLabel>{{ 'ENTER_NAME' | translate}}</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="{{ 'ENTER_NAME_HERE' | translate}}" [formControl]="nameControl" required>
+      </mat-form-field>
+        <div>
+            <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+            <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+        </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>{{ 'DONE' | translate}}</ng-template>
+    {{ 'DONE_MINION_MESSAGE' | translate}}
+    <div>
+      <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+      <button mat-button (click)="stepper.reset()">{{ 'RESET' | translate}}</button>
+      <button mat-button (click)="createMinion()" cdkFocusInitial mat-raised-button>{{ 'CREATE' | translate}}</button>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>

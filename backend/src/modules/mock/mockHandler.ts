@@ -123,4 +123,8 @@ export class MockHandler extends BrandModuleBase {
     public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
         await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
     }
+
+    public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+        await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real command generation.
+    }
 }

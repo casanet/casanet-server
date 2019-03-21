@@ -149,7 +149,7 @@ describe('Minions routing API', () => {
         });
     });
 
-    describe('/POST minions/command/{minionId}', () => {
+    describe('/POST minions/commands/record/{minionId}', () => {
         it('it should respond 20x as status code', (done) => {
             const minionStatus: MinionStatus = {
                 airConditioning : {
@@ -159,7 +159,26 @@ describe('Minions routing API', () => {
                     temperature : 21,
                 },
             };
-            validUserAgent.post('/API/minions/command/m2')
+            validUserAgent.post('/API/minions/commands/record/m2')
+                .send(minionStatus)
+                .end((err, res) => {
+                    expect(res.statusType).eql(2);
+                    done();
+                });
+        });
+    });
+
+    describe('/POST minions/commands/generate/{minionId}', () => {
+        it('it should respond 20x as status code', (done) => {
+            const minionStatus: MinionStatus = {
+                airConditioning : {
+                    fanStrength: 'high',
+                    mode : 'auto',
+                    status : 'on',
+                    temperature : 21,
+                },
+            };
+            validUserAgent.post('/API/minions/commands/generate/m2')
                 .send(minionStatus)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);

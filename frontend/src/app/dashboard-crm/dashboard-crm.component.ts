@@ -1,223 +1,286 @@
 import { Component, OnInit } from '@angular/core';
 import {
-    Minion,
-    SwitchOptions,
-    Toggle,
-    MinionStatus,
-    DeviceKind,
-    ColorLight,
-    ColorOptions
+	Minion,
+	SwitchOptions,
+	Toggle,
+	MinionStatus,
+	DeviceKind,
+	ColorLight,
+	ColorOptions
 } from '../../../../backend/src/models/sharedInterfaces';
 import { MinionsService } from '../services/minions.service';
 import { DevicesService } from '../services/devices.service';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
+import swal, { SweetAlertResult } from 'sweetalert2';
+import { TranslateService } from '../translate.service';
+import { TranslatePipe } from '../translate.pipe';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { AutoTimeoutDialogComponent } from '../dialogs/auto-timeout-dialog/auto-timeout-dialog.component';
+import { CreateMinionDialogComponent } from '../dialogs/create-minion-dialog/create-minion-dialog.component';
 
 @Component({
-    selector: 'app-dashboard-crm',
-    templateUrl: './dashboard-crm.component.html',
-    styleUrls: ['./dashboard-crm.component.scss']
+	selector: 'app-dashboard-crm',
+	templateUrl: './dashboard-crm.component.html',
+	styleUrls: ['./dashboard-crm.component.scss']
 })
-
 export class DashboardCrmComponent implements OnInit {
+	/** Mark to show or not loading animation */
+	public dataLoading = true;
 
-    /** Mark to show or not loading animation */
-    public dataLoading = true;
+	public minions: Minion[] = [];
 
-    public minions: Minion[] = [];
+	// TODO: inject it by angular.
+	private translatePipe: TranslatePipe;
 
-    constructor(private minionsService: MinionsService,
-        private devicesService: DevicesService) {
-        minionsService.minionsFeed.subscribe((minions) => {
+	constructor(
+		public dialog: MatDialog,
+		private translateService: TranslateService,
+		private minionsService: MinionsService,
+		private devicesService: DevicesService
+	) {
+		this.translatePipe = new TranslatePipe(this.translateService);
 
-            const tempMap = {};
-            for (const minion of minions) {
-                // create update set.
-                this.createUpdateSet(minion);
+		minionsService.minionsFeed.subscribe((minions) => {
+			const tempMap = {};
+			for (const minion of minions) {
+				// create update set.
+				this.createUpdateSet(minion);
 
-                // then add it to map...
-                if (!tempMap[minion.minionType]) {
-                    tempMap[minion.minionType] = [];
-                }
-                tempMap[minion.minionType].push(minion);
-            }
+				// then add it to map...
+				if (!tempMap[minion.minionType]) {
+					tempMap[minion.minionType] = [];
+				}
+				tempMap[minion.minionType].push(minion);
+			}
 
-            this.minions = []; // minions;
+			this.minions = []; // minions;
 
-            for (const key of Object.keys(tempMap).sort()) {
-                const arr = tempMap[key];
-                arr.sort((m1: Minion, m2: Minion) => {
-                    return m1.name < m2.name ? -1 : 1;
-                });
-                this.minions.push(...arr);
-            }
-            // this.minions
+			for (const key of Object.keys(tempMap).sort()) {
+				const arr = tempMap[key];
+				arr.sort((m1: Minion, m2: Minion) => {
+					return m1.name < m2.name ? -1 : 1;
+				});
+				this.minions.push(...arr);
+			}
+			// this.minions
 
-            this.dataLoading = false;
-        });
-        minionsService.retriveMinions();
-    }
+			this.dataLoading = false;
+		});
+		minionsService.retriveMinions();
+		devicesService.retriveLanDevices();
+	}
 
-    ngOnInit() {
-    }
+	ngOnInit() { }
 
-    public createUpdateSet(minion: Minion) {
-        minion['updateSet'] = DeepCopy<MinionStatus>(minion.minionStatus);
-    }
+	public createUpdateSet(minion: Minion) {
+		minion['updateSet'] = DeepCopy<MinionStatus>(minion.minionStatus);
+	}
 
-    public getMinionOnOffStatus(minion: Minion, minionStatus: MinionStatus): SwitchOptions {
+	public getMinionOnOffStatus(minion: Minion, minionStatus: MinionStatus): SwitchOptions {
+		const minionSwitchStatus = minionStatus[minion.minionType] as Toggle;
+		return minionSwitchStatus.status;
+	}
 
-        const minionSwitchStatus = minionStatus[minion.minionType] as Toggle;
-        return minionSwitchStatus.status;
-    }
+	public isMinionRecordble(minion: Minion): boolean {
+		for (const deviceKind of this.devicesService.devicesKinds) {
+			if (deviceKind.brand === minion.device.brand && deviceKind.model === minion.device.model) {
+				return deviceKind.isRecordingSupported;
+			}
+		}
+	}
 
-    public isMinionRecordble(minion: Minion): boolean {
-        for (const deviceKind of this.devicesService.devicesKinds) {
-            if (deviceKind.brand === minion.device.brand &&
-                deviceKind.model === minion.device.model) {
-                return deviceKind.isRecordingSupported;
-            }
-        }
-    }
+	public getMinionColor(minion: Minion): { dark: string; light: string } {
+		const switchStatus = this.getMinionOnOffStatus(minion, minion['updateSet']);
 
-    public getMinionColor(minion: Minion): { dark: string, light: string } {
-        const switchStatus = this.getMinionOnOffStatus(minion, minion['updateSet']);
+		if (minion.minionType !== 'toggle' && (!switchStatus || switchStatus !== 'on')) {
+			return {
+				light: '#494a4c',
+				dark: '#8c8f93'
+			};
+		}
 
-        if (minion.minionType !== 'toggle' && (!switchStatus || switchStatus !== 'on')) {
-            return {
-                light: '#494a4c',
-                dark: '#8c8f93'
-            };
-        }
+		switch (minion.minionType) {
+			case 'toggle':
+				return {
+					light: '#42A5F5',
+					dark: '#64B5F6'
+				};
+			case 'switch':
+				return {
+					light: '#26A69A',
+					dark: '#4DB6AC'
+				};
+			case 'airConditioning':
+				return {
+					light: '#5C6BC0',
+					dark: '#7986CB'
+				};
+			case 'light':
+				return {
+					light: '#66BB6A',
+					dark: '#81C784'
+				};
+			case 'temperatureLight':
+				return {
+					light: '#66BB6A',
+					dark: '#81C784'
+				};
+			case 'colorLight':
+				return {
+					light: '#66BB6A',
+					dark: '#81C784'
+				};
+		}
+	}
 
+	public async toggleStatus(minion: Minion) {
+		if (minion['other_keyup'] || minion['sync'] || minion.minionType === 'toggle') {
+			return;
+		}
 
+		const minionStatus = minion['updateSet'][minion.minionType];
+		/** For record mode, copy to updat set too */
+		minion['updateSet'][minion.minionType].status = minionStatus.status === 'on' ? 'off' : 'on';
 
-        switch (minion.minionType) {
-            case 'toggle':
-                return {
-                    light: '#42A5F5',
-                    dark: '#64B5F6'
-                };
-            case 'switch':
-                return {
-                    light: '#26A69A',
-                    dark: '#4DB6AC'
-                };
-            case 'airConditioning':
-                return {
-                    light: '#5C6BC0',
-                    dark: '#7986CB'
-                };
-            case 'light':
-                return {
-                    light: '#66BB6A',
-                    dark: '#81C784'
-                };
-            case 'temperatureLight':
-                return {
-                    light: '#66BB6A',
-                    dark: '#81C784'
-                };
-            case 'colorLight':
-                return {
-                    light: '#66BB6A',
-                    dark: '#81C784'
-                };
-        }
-    }
+		await this.setStatus(minion, minion['updateSet']);
+	}
 
-    public async toggleStatus(minion: Minion) {
-        if (minion['other_keyup'] || minion['sync'] || minion.minionType === 'toggle') {
-            return;
-        }
+	public async setOnOffStatus(minion: Minion, setStatus: SwitchOptions) {
+		minion.minionStatus[minion.minionType].status = setStatus;
 
-        const minionStatus = minion['updateSet'][minion.minionType];
-        /** For record mode, copy to updat set too */
-        minion['updateSet'][minion.minionType].status = minionStatus.status === 'on' ? 'off' : 'on';
+		await this.setStatus(minion, minion.minionStatus);
+	}
 
-        await this.setStatus(minion, minion['updateSet']);
-    }
+	public async setStatus(minion: Minion, setStatus: MinionStatus) {
+		if (minion['recordMode']) {
+			return;
+		}
 
-    public async setOnOffStatus(minion: Minion, setStatus: SwitchOptions) {
-        minion.minionStatus[minion.minionType].status = setStatus;
+		minion.minionStatus = setStatus;
 
-        await this.setStatus(minion, minion.minionStatus);
-    }
+		minion['sync'] = true;
+		await this.minionsService.setStatus(minion);
+	}
 
-    public async setStatus(minion: Minion, setStatus: MinionStatus) {
+	public async recordCommand(minion: Minion) {
+		minion['recording'] = true;
 
-        if (minion['recordMode']) {
-            return;
-        }
+		await this.minionsService.recordCommand(minion, minion['updateSet']);
 
-        minion.minionStatus = setStatus;
+		minion['recording'] = false;
+	}
 
-        minion['sync'] = true;
-        await this.minionsService.setStatus(minion);
-    }
+	public async generateToggleCommands(minion: Minion) {
+		minion['recording'] = true;
 
-    public async recordCommand(minion: Minion) {
-        minion['recording'] = true;
+		await this.minionsService.generateCommand(minion, { toggle: { status: 'on' } });
+		await this.minionsService.generateCommand(minion, { toggle: { status: 'off' } });
 
-        await this.minionsService.recordCommand(minion, minion['updateSet']);
+		minion['recording'] = false;
+	}
 
-        minion['recording'] = false;
-    }
+	public async showDeviceInfo(minion: Minion) {
+		const swalResult: void | SweetAlertResult = await swal({
+			type: 'info',
+			title: minion.name,
+			html:
+				`<table border="1" style="margin: auto">
+					<tr><td><b>${this.translatePipe.transform('INNER_ID')}</b>     </td><td> ${minion.minionId} </td></tr> 
+					<tr><td><b>${this.translatePipe.transform('MODEL')}</b>        </td><td> ${minion.device.brand} </td></tr> 
+					<tr><td><b>${this.translatePipe.transform('BRAND')}</b>        </td><td> ${minion.device.model} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_NAME')}</b>  </td><td> ${minion.device.pysicalDevice.name || '?'} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_MAC')}</b>   </td><td> ${minion.device.pysicalDevice.mac} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_IP')}</b>    </td><td> ${minion.device.pysicalDevice.ip || '?'}</td></tr>
+					<tr><td><b>${this.translatePipe.transform('DEVICE_VENDOR')}</b></td><td> ${minion.device.pysicalDevice.vendor || '?'} </td></tr>
+				</table>`,
+			confirmButtonText: this.translatePipe.transform('CLOSE'),
+		});
+	}
 
-    public showDeviceInfo(minion: Minion) {
+	public async refreshMinion(minion: Minion) {
+		minion['sync'] = true;
 
-    }
+		await this.minionsService.refreshMinion(minion);
 
-    public async refreshMinion(minion: Minion) {
-        minion['sync'] = true;
+		minion['sync'] = false;
+	}
 
-        await this.minionsService.refreshMinion(minion);
+	public recordModePressed(minion: Minion) {
+		if (minion['recordMode']) {
+			minion['recordMode'] = undefined;
+			this.createUpdateSet(minion);
+			return;
+		}
 
-        minion['sync'] = false;
+		minion['recordMode'] = true;
+	}
 
-    }
+	public async deleteMinion(minion: Minion) {
+		const swalResult: void | SweetAlertResult = await swal({
+			type: 'warning',
+			title: `${this.translatePipe.transform('SURE')}?`,
+			text: `${this.translatePipe.transform('BEFORE_DELETE_MESSAGE')} ${minion.name} ?`,
+			showConfirmButton: true,
+			confirmButtonColor: 'red',
+			showCancelButton: true,
+			confirmButtonText: this.translatePipe.transform('DELETE'),
+			cancelButtonText: this.translatePipe.transform('CANCEL')
+		});
 
-    public recordModePressed(minion: Minion) {
-        if (minion['recordMode']) {
-            minion['recordMode'] = undefined;
-            this.createUpdateSet(minion);
-            return;
-        }
+		// Case user select 'cancel' cancel the delete.
+		if (swalResult && swalResult.dismiss) {
+			return;
+		}
 
-        minion['recordMode'] = true;
-    }
+		minion['sync'] = true;
+		this.minionsService.deleteMinion(minion);
+	}
 
-    public deleteMinion(minion: Minion) {
-        minion['sync'] = true;
-    }
+	public async createMinion() {
+		this.dialog.open(CreateMinionDialogComponent, {
+			data: {}
+		});
+	}
 
-    public async refreshMinions() {
-        this.minions = [];
-        this.dataLoading = true;
+	public async editAutoTimeout(minion: Minion) {
+		this.dialog.open(AutoTimeoutDialogComponent, {
+			data: minion
+		});
+	}
 
-        await this.minionsService.refreshMinions();
-    }
+	public async refreshMinions() {
+		this.minions = [];
+		this.dataLoading = true;
 
-    public async reScanNetwordAndRefreshMinions() {
-        this.minions = [];
-        this.dataLoading = true;
+		await this.minionsService.refreshMinions();
+	}
 
-        await this.devicesService.rescanLanDevices();
-        await this.refreshMinions();
-    }
+	public async reScanNetwordAndRefreshMinions() {
+		this.minions = [];
+		this.dataLoading = true;
 
-    public loadChangeColor(colorLight: ColorLight, setRgbHexColor: string) {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(setRgbHexColor);
-        colorLight.red = Math.floor(parseInt(result[1], 16)) as ColorOptions;
-        colorLight.green = Math.floor(parseInt(result[2], 16)) as ColorOptions;
-        colorLight.blue = Math.floor(parseInt(result[3], 16)) as ColorOptions;
-    }
+		await this.devicesService.rescanLanDevices();
+		await this.refreshMinions();
+	}
 
-    private componentToHex(c: number) {
-        const hex = c.toString(16);
-        return hex.length === 1 ? '0' + hex : hex;
-    }
+	public loadChangeColor(colorLight: ColorLight, setRgbHexColor: string) {
+		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(setRgbHexColor);
+		colorLight.red = Math.floor(parseInt(result[1], 16)) as ColorOptions;
+		colorLight.green = Math.floor(parseInt(result[2], 16)) as ColorOptions;
+		colorLight.blue = Math.floor(parseInt(result[3], 16)) as ColorOptions;
+	}
 
-    public rgbToHex(colorLight: ColorLight) {
-        return '#' + this.componentToHex(colorLight.red) + this.componentToHex(colorLight.green) + this.componentToHex(colorLight.blue);
-    }
+	private componentToHex(c: number) {
+		const hex = c.toString(16);
+		return hex.length === 1 ? '0' + hex : hex;
+	}
+
+	public rgbToHex(colorLight: ColorLight) {
+		return (
+			'#' +
+			this.componentToHex(colorLight.red) +
+			this.componentToHex(colorLight.green) +
+			this.componentToHex(colorLight.blue)
+		);
+	}
 }

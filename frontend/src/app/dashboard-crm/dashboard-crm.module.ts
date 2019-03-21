@@ -24,7 +24,6 @@ import { MccColorPickerModule } from 'material-community-components';
 // import { BrowserModule } from '@angular/platform-browser';
 
 import { LoaderComponent } from './loader/loader.component';
-import { TimesPipe } from '../pipes/times.pipe';
 
 export const appRoutes: Routes = [
   { path: '', component: DashboardCrmComponent },
@@ -60,10 +59,9 @@ export const appRoutes: Routes = [
   declarations: [
     DashboardCrmComponent,
     LoaderComponent,
-    TimesPipe,
   ],
   exports: [
-    TimesPipe
+    
   ],
   providers: [
   ],

@@ -1852,6 +1852,7 @@ definitions:
             setAutoTurnOffMS:
                 type: number
                 format: double
+                description: 'The timeout duration in ms, to turn off set 0 as valse.'
         required:
             - setAutoTurnOffMS
         type: object
@@ -2344,7 +2345,7 @@ paths:
                     required: true
                     schema:
                         $ref: '#/definitions/SetMinionAutoTurnOff'
-    '/minions/command/{minionId}':
+    '/minions/commands/record/{minionId}':
         post:
             operationId: RecordMinionCommand
             produces:
@@ -2373,6 +2374,40 @@ paths:
                     type: string
                 -
                     description: 'Minion object status to get command for.'
+                    in: body
+                    name: minionStatus
+                    required: true
+                    schema:
+                        $ref: '#/definitions/MinionStatus'
+    '/minions/commands/generate/{minionId}':
+        post:
+            operationId: GenerateMinionCommand
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Generate a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status."
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'Minon id.'
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
+                -
+                    description: 'Minion object status to generate command for.'
                     in: body
                     name: minionStatus
                     required: true

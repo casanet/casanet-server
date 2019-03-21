@@ -64,9 +64,23 @@ export class MinionsController extends Controller {
     @Security('userAuth')
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
-    @Post('command/{minionId}')
+    @Post('commands/record/{minionId}')
     public async recordMinionCommand(minionId: string, @Body() minionStatus: MinionStatus): Promise<void> {
         return MinionsBlSingleton.recordCommand(minionId, minionStatus);
+    }
+
+    /**
+     * Generate a command (IR, 433-RF or any other supported RF tech)
+     * for current minion status.
+     * @param minionId Minon id.
+     * @param minionStatus Minion object status to generate command for.
+     */
+    @Security('userAuth')
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Post('commands/generate/{minionId}')
+    public async generateMinionCommand(minionId: string, @Body() minionStatus: MinionStatus): Promise<void> {
+        return MinionsBlSingleton.generateCommand(minionId, minionStatus);
     }
 
     /**
