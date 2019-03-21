@@ -39,6 +39,15 @@ export class MockHandler extends BrandModuleBase {
             suppotedMinionType: 'airConditioning',
             isRecordingSupported : true,
         },
+        {
+            brand: this.brandName,
+            isTokenRequierd: false,
+            isIdRequierd: false,
+            minionsPerDevice: -1,
+            model: 'RF toggle demo',
+            suppotedMinionType: 'toggle',
+            isRecordingSupported : true,
+        },
     ];
 
     constructor() {
@@ -110,7 +119,8 @@ export class MockHandler extends BrandModuleBase {
     public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
         await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
         if (miniom.device.model === 'switch demo' ||
-            miniom.device.model === 'ac demo') {
+            miniom.device.model === 'ac demo' ||
+            miniom.device.model === 'RF toggle demo') {
             return;
         }
 
