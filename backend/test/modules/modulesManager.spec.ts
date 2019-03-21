@@ -183,7 +183,27 @@ describe('Modules Manager tests', () => {
             } catch (error) {
                 expect(error).to.be.deep.equal({
                     responseCode: 6409,
-                    message: `the minioin not support command recording`,
+                    message: `the minioin not support command recording or sending`,
+                } as ErrorResponse);
+                return;
+            }
+            throw new Error('Tring record command on unsupported model.');
+        });
+    });
+
+    describe('generate commands tests', () => {
+
+        it('it should generate successfuly', async () => {
+            await modulesManager.generateCommand(acMinionMock, {});
+        });
+
+        it('it should fail record', async () => {
+            try {
+                await modulesManager.generateCommand(switchMinionMock, {});
+            } catch (error) {
+                expect(error).to.be.deep.equal({
+                    responseCode: 6409,
+                    message: `the minioin not support command recording or sending`,
                 } as ErrorResponse);
                 return;
             }

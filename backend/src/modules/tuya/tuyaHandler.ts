@@ -262,4 +262,11 @@ export class TuyaHandler extends BrandModuleBase {
             message: 'the tuya module not support any recording mode',
         } as ErrorResponse;
     }
+
+    public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+        throw {
+            responseCode: 6409,
+            message: 'the tuya module not support any recording mode',
+        } as ErrorResponse;
+    }
 }

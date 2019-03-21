@@ -4,6 +4,7 @@ import { AirConditioning, DeviceKind, ErrorResponse, Minion, MinionStatus, Switc
 import { BrandModuleBase } from '../brandModuleBase';
 // tslint:disable-next-line:no-var-requires
 const Broadlink = require('./broadlinkProtocol');
+const BroadlinkCodeGeneration = require('./commands-generator');
 
 interface AirConditioningCommand {
     command: string;
@@ -95,7 +96,7 @@ export class BroadlinkHandler extends BrandModuleBase {
      * @returns IR code struct or undefined if not exist.
      */
     private getMinionACStatusCommand(airConditioningCommands: AirConditioningCommand[],
-                                     airConditioningStatus: AirConditioning): AirConditioningCommand {
+        airConditioningStatus: AirConditioning): AirConditioningCommand {
         for (const airConditioningCommand of airConditioningCommands) {
             if (airConditioningCommand.status.fanStrength === airConditioningStatus.fanStrength &&
                 airConditioningCommand.status.mode === airConditioningStatus.mode &&
@@ -351,11 +352,33 @@ export class BroadlinkHandler extends BrandModuleBase {
         });
     }
 
+    private async generateRFCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+
+        const generatedCode = BroadlinkCodeGeneration.generate('RF433');
+
+        const minionCache = this.getOrCreateMinionCache(miniom);
+
+        if (!minionCache.toggleCommands) {
+            minionCache.toggleCommands = {
+                on: undefined,
+                off: undefined,
+            }
+        }
+
+        if (statusToRecordFor.toggle.status === 'on') {
+            minionCache.toggleCommands.on = generatedCode;
+        } else {
+            minionCache.toggleCommands.off = generatedCode;
+        }
+
+        this.updateCache();
+    }
+
     private async recordRFToggleCommands(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
         // TODO: swap and then record.
         throw {
-            responseCode : 5501,
-            message : 'Not implemented yet.',
+            responseCode: 5501,
+            message: 'Not implemented yet.',
         } as ErrorResponse;
     }
 
@@ -395,6 +418,17 @@ export class BroadlinkHandler extends BrandModuleBase {
                 return await this.recordRFToggleCommands(miniom, statusToRecordFor);
             case 'RM3 / RM Pro as IR AC':
                 return await this.recordIRACCommands(miniom, statusToRecordFor);
+        }
+        throw {
+            responseCode: 8404,
+            message: 'unknown minion model',
+        } as ErrorResponse;
+    }
+
+    public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+        switch (miniom.device.model) {
+            case 'RM Pro as RF toggle':
+                return await this.generateRFCommand(miniom, statusToRecordFor);
         }
         throw {
             responseCode: 8404,
