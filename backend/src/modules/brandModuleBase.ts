@@ -96,10 +96,19 @@ export abstract class BrandModuleBase {
 
     /**
      * Record data for currrent minion status.
-     * Note, only few devices models support this feature.
+     * Note, only a few devices models support this feature.
      * For example it is used when need to record IR data to math status for next use.
-     * @param miniom minion to record for.
+     * @param minion minion to record for.
      * @param statusToRecordFor the specific status to record for.
      */
-    public abstract enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse>;
+    public abstract enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse>;
+
+    /**
+     * Generate an RF or IR command for given status. 
+     * Note, only a few devices models support this feature.
+     * For example, it is used to generate RF command to the RF wall switch, instead of buying remote and record the commands.
+     * @param minion minion to generate for.
+     * @param statusToGenerateFor the specific status to record for.
+     */
+    public abstract generateCommand(minion: Minion, statusToGenerateFor: MinionStatus): Promise<void | ErrorResponse>;
 }

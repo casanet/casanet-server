@@ -41,7 +41,7 @@ let ForwardAuthController = class ForwardAuthController extends tsoa_1.Controlle
     //////////////////////////////////////////////////
     /**
      * Login to local server via remote server channel.
-     * If users exsits in more then one local server, it`s return status code 210 and the avalible user servers to select.
+     * If users exists in more then one local server, it returns status code 210 and the available user servers to select.
      */
     async loginDocumentation(request, login) {
         throw new Error('Request never should be here. it is a documentation only route.');
@@ -53,7 +53,7 @@ let ForwardAuthController = class ForwardAuthController extends tsoa_1.Controlle
         throw new Error('Request never should be here. it is a documentation only route.');
     }
     /**
-     * Logout manualy from remote and local server systems.
+     * Logout manually from remote and local server systems.
      */
     async logoutDocumentation() {
         throw new Error('Request never should be here. it is a documentation only route.');

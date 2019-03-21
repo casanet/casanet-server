@@ -441,6 +441,7 @@ export declare interface MinionFeed {
  * Used to change the minion auto turn off the timeout value.
  */
 export declare interface SetMinionAutoTurnOff {
+    /** The timeout duration in ms, to turn off set 0 as valse. */
     setAutoTurnOffMS: number;
 }
 

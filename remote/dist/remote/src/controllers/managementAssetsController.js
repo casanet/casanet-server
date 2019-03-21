@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
 let ManagementsAssetsController = class ManagementsAssetsController extends tsoa_1.Controller {
     /**
-     * Get public assets of casa-net remote management client side.
+     * Get public assets for casa-net remote management client side.
      */
     async getManagementsAssets() {
         throw new Error('Request never should be here. it is a documentation only route.');

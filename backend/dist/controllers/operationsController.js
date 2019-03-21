@@ -13,7 +13,7 @@ const tsoa_1 = require("tsoa");
 const operationsBl_1 = require("../business-layer/operationsBl");
 let OperationsController = class OperationsController extends tsoa_1.Controller {
     /**
-     * Get all operations in system.
+     * Get all operations in the system.
      * @returns Operations array.
      */
     async getOperations() {
@@ -27,7 +27,7 @@ let OperationsController = class OperationsController extends tsoa_1.Controller 
         return await operationsBl_1.OperationsBlSingleton.getOperationById(operationId);
     }
     /**
-     * Update operation values.
+     * Update operation properties.
      * @param operationId OperationId id.
      * @param operation Operation object to update to.
      */
@@ -35,22 +35,23 @@ let OperationsController = class OperationsController extends tsoa_1.Controller 
         return await operationsBl_1.OperationsBlSingleton.SetOperation(operationId, operation);
     }
     /**
-     * Delete operation from system.
+     * Delete operation from the system.
      * @param operationId Operation id.
      */
     async deleteOperation(operationId) {
         return await operationsBl_1.OperationsBlSingleton.DeleteOperation(operationId);
     }
     /**
-     *  Creates new operation.
-     * @param operation new operation to create.
+     * Creates a new operation.
+     * @param operation The new operation to create.
      */
     async createOperation(operation) {
         return await operationsBl_1.OperationsBlSingleton.CreateOperation(operation);
     }
     /**
-     *  Trigger operation by id.
-     * @returns Set minions status errors (if any).
+     * Invoke operation.
+     * @param operationId Operation id.
+     * @returns Array of minions set status errors (if any).
      */
     async triggerOperation(operationId) {
         return await operationsBl_1.OperationsBlSingleton.triggerOperation(operationId);

@@ -15,19 +15,19 @@ const localServersBl_1 = require("../business-layer/localServersBl");
 const localServersSessionsBl_1 = require("../business-layer/localServersSessionsBl");
 let LocalServersController = class LocalServersController extends tsoa_1.Controller {
     /**
-     * Get local servers in system.
+     * Get local servers in the system.
      */
     async getLocalServers() {
         return await localServersBl_1.LocalServersBlSingleton.getlocalServers();
     }
     /**
-     * Get local server by it`s id.
+     * Get local server by its id.
      */
     async getLocalServer(localServerId) {
         return await localServersBl_1.LocalServersBlSingleton.getlocalServersById(localServerId);
     }
     /**
-     * Add new local server to system.
+     * Add a new local server to the system.
      */
     async addLocalServer(localServer) {
         return await localServersBl_1.LocalServersBlSingleton.createLocalServer(localServer);
@@ -42,7 +42,7 @@ let LocalServersController = class LocalServersController extends tsoa_1.Control
         return await localServersBl_1.LocalServersBlSingleton.updateLocalServer(localServer);
     }
     /**
-     * Remove local server from system.
+     * Remove local server from the system.
      * @param localServerId local server to remove.
      */
     async deleteLocalServer(localServerId) {
@@ -51,20 +51,20 @@ let LocalServersController = class LocalServersController extends tsoa_1.Control
         await localServersSessionsBl_1.LocalServersSessionBlSingleton.deleteLocalServerSession(localServerId);
     }
     /**
-     * Generate new authentication key for local server.
-     * (delete current key if exsit).
+     * Generate a new authentication key for the local server.
+     * (delete current key if exist).
      *
      * KEEP GENERATED KEY PRIVATE AND SECURE,
      * PUT IT IN YOUR LOCAL SERVER AND NEVER SHOW IT TO ANYBODY!!!
-     * @param localServerId local server to generate for.
+     * @param localServerId The local server to generate for.
      */
     async generateAuthKeyLocalServer(localServerId) {
         return await localServersSessionsBl_1.LocalServersSessionBlSingleton.generateLocalServerSession(localServerId);
     }
     /**
-     * Get all user names from local server.
+     * Get all user names from the local server.
      * Used to allow admin select users that can access their local server via remote.
-     * @param localServerId local server to get users from.
+     * @param localServerId The local server to get users from.
      */
     async getLocalServerUsers(localServerId) {
         return await channelsBl_1.ChannelsBlSingleton.getLocalServerUsers(localServerId);

@@ -420,4 +420,11 @@ export class YeelightHandler extends BrandModuleBase {
             message: 'the yeelight module not support any recording mode',
         } as ErrorResponse;
     }
+
+    public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+        throw {
+            responseCode: 6409,
+            message: 'the yeelight module not support any recording mode',
+        } as ErrorResponse;
+    }
 }

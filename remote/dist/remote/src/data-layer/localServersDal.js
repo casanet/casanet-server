@@ -6,6 +6,10 @@ class LocalServersDal {
     constructor(dataIo) {
         this.dataIo = dataIo;
         this.localServers = dataIo.getDataSync();
+        /** On startup, it doesn't matter the last update connection. */
+        for (const localServer of this.localServers) {
+            localServer.connectionStatus = false;
+        }
     }
     /**
      * Find local server by id.

@@ -15,6 +15,10 @@ class ForwardAuthBl {
         this.channelsBl = channelsBl;
         this.localServersBl = localServersBl;
         this.forwardUsersSessionsBl = forwardUsersSessionsBl;
+        this.GENERIC_ERROR_RESPONSE = {
+            responseCode: 2403,
+            message: 'username password or local server is incorrect',
+        };
     }
     /**
      * Active session of request. call it when auth check success.
@@ -42,11 +46,6 @@ class ForwardAuthBl {
      * Forward login request to local server. and save session if success.
      */
     async login(request, response, login) {
-        /** Use only generic error response */
-        const errorResponse = {
-            responseCode: 2403,
-            message: 'user name or password incorrent',
-        };
         /** local server id to try login to. */
         let connectLocalServerId;
         /** If user know local server id, use it. */
@@ -58,7 +57,8 @@ class ForwardAuthBl {
             const userLocalServersInfo = await this.localServersBl.getLocalServerInfoByUser(login.email);
             /** If there is not any local server that user is mantion in it. throw it out.  */
             if (userLocalServersInfo.length === 0) {
-                throw errorResponse;
+                response.statusCode = 403;
+                return this.GENERIC_ERROR_RESPONSE;
             }
             else if (userLocalServersInfo.length === 1) {
                 /** If user is mention in one local server, use it and continue. */
@@ -91,7 +91,8 @@ class ForwardAuthBl {
                     }
                 }
                 /** If non of local servers auth login cert, just return generic message */
-                throw errorResponse;
+                response.statusCode = 403;
+                return this.GENERIC_ERROR_RESPONSE;
             }
         }
         /** Send login HTTP request over WS to local server, and wait for the answer. */
@@ -116,10 +117,6 @@ class ForwardAuthBl {
      */
     async loginTfa(request, response, login) {
         /** See comments in login function, its almost same. */
-        const errorResponse = {
-            responseCode: 2403,
-            message: 'user name or password incorrent',
-        };
         let connectLocalServerId;
         if (login.localServerId) {
             connectLocalServerId = login.localServerId;
@@ -127,20 +124,19 @@ class ForwardAuthBl {
         else {
             const userLocalServersInfo = await this.localServersBl.getLocalServerInfoByUser(login.email);
             if (userLocalServersInfo.length === 0) {
-                throw errorResponse;
+                response.statusCode = 403;
+                return this.GENERIC_ERROR_RESPONSE;
             }
             else if (userLocalServersInfo.length === 1) {
                 connectLocalServerId = userLocalServersInfo[0].localServerId;
             }
             else {
                 /**
-                 * If there is more then one local server, throw it. user should know local server id.
-                 * from login request.
+                 * If there is more then one local server, throw it.
+                 * Client should know from last his login request if he needs to mention local server id or not.
                  */
-                throw {
-                    responseCode: 6404,
-                    message: 'local server not exist',
-                };
+                response.statusCode = 403;
+                return this.GENERIC_ERROR_RESPONSE;
             }
         }
         const localResponse = await this.channelsBl.sendHttpViaChannels(connectLocalServerId, {

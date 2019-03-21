@@ -107,6 +107,7 @@ class ChannelsBl {
             this.localChannelsMap[certAuth.macAddress] = wsChannel;
             /** Send local server authenticatedSuccessfuly message. */
             this.sendMessage(wsChannel, { remoteMessagesType: 'authenticatedSuccessfuly', message: {} });
+            this.localServersBl.setLocalServerConnectionStatus(localServer.localServerId, true);
         }
         catch (error) {
             /** send generic auth fail message */
@@ -319,11 +320,20 @@ class ChannelsBl {
      * On any ws channel closed, from any reasone.
      * @param wsChannel closed ws channel.
      */
-    onWsClose(wsChannel) {
-        /** If channel passed auth  */
-        if (wsChannel.machineMac) {
-            /** Remove it from channel map. */
-            delete this.localChannelsMap[wsChannel.machineMac];
+    async onWsClose(wsChannel) {
+        /** If channel not passed auth, just return */
+        if (!wsChannel.machineMac) {
+            return;
+        }
+        /** Remove it from channel map. */
+        delete this.localChannelsMap[wsChannel.machineMac];
+        /** Try to set local server status to be off. */
+        try {
+            /** Get the local server based on cert mac address. */
+            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
+            this.localServersBl.setLocalServerConnectionStatus(localServer.localServerId, false);
+        }
+        catch (error) {
         }
     }
     /**
