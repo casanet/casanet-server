@@ -14,11 +14,19 @@ export class MinionsService {
 	private minions: Minion[] = [];
 	public minionsFeed: BehaviorSubject<Minion[]> = new BehaviorSubject<Minion[]>(this.minions);
 
-	constructor(private toastrAndErrorsService: ToasterAndErrorsService, private httpClient: HttpClient) {}
+	constructor(private toastrAndErrorsService: ToasterAndErrorsService, private httpClient: HttpClient) { }
 
 	public async recordCommand(minion: Minion, minionStatus: MinionStatus) {
 		try {
-			await this.httpClient.post(`/API/minions/command/${minion.minionId}`, minionStatus).toPromise();
+			await this.httpClient.post(`/API/minions/commands/record/${minion.minionId}`, minionStatus).toPromise();
+		} catch (error) {
+			this.toastrAndErrorsService.OnHttpError(error);
+		}
+	}
+
+	public async generateCommand(minion: Minion, minionStatus: MinionStatus) {
+		try {
+			await this.httpClient.post(`/API/minions/commands/generate/${minion.minionId}`, minionStatus).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
@@ -196,9 +204,9 @@ export class MinionsService {
 		}
 	}
 
-	public async setAutoTimeout(minion: Minion, timeout: number){
+	public async setAutoTimeout(minion: Minion, timeout: number) {
 		try {
-			await this.httpClient.put(`/API/minions/timeout/${minion.minionId}`, { setAutoTurnOffMS : timeout }).toPromise();
+			await this.httpClient.put(`/API/minions/timeout/${minion.minionId}`, { setAutoTurnOffMS: timeout }).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}

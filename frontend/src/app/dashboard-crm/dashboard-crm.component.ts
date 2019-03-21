@@ -170,6 +170,15 @@ export class DashboardCrmComponent implements OnInit {
 		minion['recording'] = false;
 	}
 
+	public async generateToggleCommands(minion: Minion) {
+		minion['recording'] = true;
+
+		await this.minionsService.generateCommand(minion, { toggle: { status: 'on' } });
+		await this.minionsService.generateCommand(minion, { toggle: { status: 'off' } });
+
+		minion['recording'] = false;
+	}
+
 	public async showDeviceInfo(minion: Minion) {
 		const swalResult: void | SweetAlertResult = await swal({
 			type: 'info',

@@ -6,17 +6,25 @@
             [ngClass]="minion.minionType !== 'toggle' && !minion.sync && minion.keyup && !minion.other_keyup ? 'minion-card' : ''"
             style="max-width: 500px !important" [style.background]="getMinionColor(minion).dark">
             <div *ngIf="minion.recordMode" style="margin: 10px">
-                <button mat-mini-fab color="warn" [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
-                    [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'" matTooltip="{{'PRESS_TO_RECORD' | translate}}"
+                <button *ngIf="minion.minionType !== 'toggle'" mat-mini-fab color="warn" [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
+                    [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'" matTooltip="{{ ('PRESS_TO_RECORD') | translate}}"
                     matTooltipPosition="above" [disabled]="minion.recording" (click)="recordCommand(minion)">
                     <div *ngIf="minion.recording" style="margin: 2.5px">
                         <mat-spinner color="warn" strokeWidth="3" diameter="20"></mat-spinner>
                     </div>
                     <mat-icon *ngIf="!minion.recording">settings_remote</mat-icon>
                 </button>
+                <button *ngIf="minion.minionType === 'toggle'" mat-mini-fab color="warn" [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
+                    [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'" matTooltip="{{ ('GENERATE_COMMANDS') | translate}}"
+                    matTooltipPosition="above" [disabled]="minion.recording" (click)="generateToggleCommands(minion)">
+                    <div *ngIf="minion.recording" style="margin: 2.5px">
+                        <mat-spinner color="warn" strokeWidth="3" diameter="20"></mat-spinner>
+                    </div>
+                    <mat-icon *ngIf="!minion.recording">money</mat-icon>
+                </button>
             </div>
-            <mat-card-header (mouseenter)="minion.area = true" (mouseleave)="minion.area = false" (mouseup)="minion.keyup = false"
-                (mousedown)="minion.keyup = true" (click)="toggleStatus(minion)">
+            <mat-card-header (mouseenter)="minion.area = true" (mouseleave)="minion.area = false"
+                (mouseup)="minion.keyup = false" (mousedown)="minion.keyup = true" (click)="toggleStatus(minion)">
                 <div mat-card-avatar (mouseleave)="minion.other_keyup = false" (mousedown)="minion.other_keyup = true"
                     *ngIf="!minion.isProperlyCommunicated">
                     <button mat-icon-button (click)="refreshMinion(minion)" matTooltipPosition="above" matTooltip="{{'COMMUNICATION_ERROR_PRESS_TO_RESCAN' | translate}}">
@@ -75,9 +83,11 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
 
-                    <div *ngIf="minion.minionType === 'airConditioning'" [style.background]="getMinionColor(minion).dark">
+                    <div *ngIf="minion.minionType === 'airConditioning'"
+                        [style.background]="getMinionColor(minion).dark">
                         <mat-form-field>
-                            <mat-select class="minion-text" placeholder="{{'MODE' | translate}}" [(value)]="minion.updateSet.airConditioning.mode">
+                            <mat-select class="minion-text" placeholder="{{'MODE' | translate}}"
+                                [(value)]="minion.updateSet.airConditioning.mode">
                                 <mat-option value="hot"> {{ 'HOT' | translate}} </mat-option>
                                 <mat-option value="cold"> {{ 'COLD' | translate}} </mat-option>
                                 <mat-option value="dry"> {{ 'DRY' | translate}} </mat-option>
@@ -85,7 +95,8 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field>
-                            <mat-select class="minion-text" placeholder="{{'FAN_STRENGTH' | translate}}" [(value)]="minion.updateSet.airConditioning.fanStrength">
+                            <mat-select class="minion-text" placeholder="{{'FAN_STRENGTH' | translate}}"
+                                [(value)]="minion.updateSet.airConditioning.fanStrength">
                                 <mat-option value="med"> {{ 'MED' | translate}} </mat-option>
                                 <mat-option value="high"> {{ 'HIGH' | translate}} </mat-option>
                                 <mat-option value="dry"> {{ 'LOW' | translate}} </mat-option>
@@ -109,8 +120,9 @@
                         </mat-slider>
                         <p><b>{{'COLOR' | translate}}:</b></p>
                         <div dir="ltr" style="color:black">
-                            <mcc-color-picker [overlay]="false" [selectedColor]="rgbToHex(minion.updateSet.colorLight)"  class="mcc-cp-small" 
-                            (change)="loadChangeColor(minion.updateSet.colorLight, $event)" [hideHexForms]="true" [hideUsedColors]="true" [hideButtons]="true"></mcc-color-picker>
+                            <mcc-color-picker [overlay]="false" [selectedColor]="rgbToHex(minion.updateSet.colorLight)"
+                                class="mcc-cp-small" (change)="loadChangeColor(minion.updateSet.colorLight, $event)"
+                                [hideHexForms]="true" [hideUsedColors]="true" [hideButtons]="true"></mcc-color-picker>
                         </div>
                     </div>
                     <button [disabled]="minion.recordMode" (click)="createUpdateSet(minion)" mat-raised-button style="margin: 5px">{{ 'CANCEL' | translate}}</button>
@@ -125,9 +137,11 @@
     </div>
 </div>
 
-<div dir="ltr" *ngIf="!dataLoading" style="position: absolute; bottom: 50px;" [style.right]="('DIR' | translate) === 'ltr' ? '25px' : null"
+<div dir="ltr" *ngIf="!dataLoading" style="position: absolute; bottom: 50px;"
+    [style.right]="('DIR' | translate) === 'ltr' ? '25px' : null"
     [style.left]="('DIR' | translate) === 'rtl' ? '25px' : null">
-    <eco-fab-speed-dial #allMinionsActionsFab (mouseenter)="allMinionsActionsFab.open = true" (mouseleave)="allMinionsActionsFab.open = false">
+    <eco-fab-speed-dial #allMinionsActionsFab (mouseenter)="allMinionsActionsFab.open = true"
+        (mouseleave)="allMinionsActionsFab.open = false">
         <eco-fab-speed-dial-trigger [spin]="true">
             <button [color]="primary" mat-fab>
                 <mat-icon class="spin180">more_vert</mat-icon>

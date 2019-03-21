@@ -85,6 +85,7 @@
     "CREATE" : "Create",
     "RESET" : "Reset",
     "DONE_MINION_MESSAGE" : "Ready to create a minion",
+    "GENERATE_COMMANDS" : "Generate new random commands fot toggle on/off",
     "api-messages": {
         "0": "offline",
         "1401": "unauthorized",
