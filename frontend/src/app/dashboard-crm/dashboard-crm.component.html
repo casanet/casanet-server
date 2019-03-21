@@ -65,8 +65,8 @@
                     </button>
                     <button mat-menu-item (click)="recordModePressed(minion)" [disabled]="!isMinionRecordble(minion)">
                         <mat-icon>settings_remote</mat-icon>
-                        <span *ngIf="!minion.recordMode">{{ 'ENTER_RECORD_MODE' | translate}}</span>
-                        <span *ngIf="minion.recordMode">{{ 'EXIT_RECORD_MODE' | translate}}</span>
+                        <span *ngIf="!minion.recordMode">{{ 'ENTER_RECORD_OR_GENERATE_MODE' | translate}}</span>
+                        <span *ngIf="minion.recordMode">{{ 'EXIT_RECORD_OR_GENERATE_MODE' | translate}}</span>
                     </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item style="color: salmon;" (click)="deleteMinion(minion)">
