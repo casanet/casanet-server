@@ -245,4 +245,11 @@ export class OrviboHandler extends BrandModuleBase {
             message: 'the orvibo module not support any recording mode',
         } as ErrorResponse;
     }
+
+    public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+        throw {
+            responseCode: 6409,
+            message: 'the orvibo module not support any recording mode',
+        } as ErrorResponse;
+    }
 }

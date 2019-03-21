@@ -510,7 +510,7 @@ export function RegisterRoutes(app: express.Express) {
             const promise = controller.setMinionTimeout.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
-    app.post('/API/minions/command/:minionId',
+    app.post('/API/minions/commands/record/:minionId',
         authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
@@ -532,6 +532,30 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.recordMinionCommand.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/minions/commands/generate/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+                minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.generateMinionCommand.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions/rescan/:minionId',
