@@ -1,4 +1,4 @@
-import * as cryptoJs from 'crypto-js';
+import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { ValidationResult } from 'joi';
 import { Configuration } from '../config';
@@ -41,7 +41,7 @@ export class UsersBl {
          * If there is password to hash, hash it, else load the original password hash.
          */
         if (sanitizeUser.password) {
-            sanitizeUser.password = cryptoJs.SHA256(sanitizeUser.password).toString();
+            sanitizeUser.password = await bcrypt.hash(sanitizeUser.password, 12);
         } else {
             const originalUser = await this.usersDal.getUser(sanitizeUser.email);
             sanitizeUser.password = originalUser.password;

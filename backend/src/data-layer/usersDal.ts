@@ -1,4 +1,4 @@
-import * as cryptoJs from 'crypto-js';
+import * as bcrypt from 'bcrypt';
 import { Configuration } from '../config';
 import { IDataIO } from '../models/backendInterfaces';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
@@ -33,7 +33,7 @@ export class UsersDal {
      */
     private async setDefaultUser() {
         /** Get password from configuration, and hash it like any other password in system */
-        const passwordHash = cryptoJs.SHA256(Configuration.defaultUser.password).toString();
+        const passwordHash =  bcrypt.hashSync(Configuration.defaultUser.password, 12);
 
         /** Extract user domain from configuration */
         const userNameDomain = Configuration.defaultUser.email.split('@')[1];
