@@ -53,6 +53,12 @@ export declare interface Config {
         latitude: number;
         longitude: number;
     };
+    keysHandling: {
+        /** Salt keys by. */
+        saltHash: string;
+        /** Bcrypt salt rounds */
+        bcryptSaltRounds: number;
+    }
 }
 
 /**

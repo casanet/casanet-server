@@ -5,7 +5,6 @@ import { Configuration } from '../config';
 import { SessionsDal, SessionsDalSingelton } from '../data-layer/sessionsDal';
 import { Session } from '../models/backendInterfaces';
 import { User } from '../models/sharedInterfaces';
-import { GetMachinMacAddress } from '../utilities/macAddress';
 
 export class SessionsBl {
 
@@ -26,7 +25,7 @@ export class SessionsBl {
      * @returns session, or inject if not exist.
      */
     public async getSession(sessionKey: string): Promise<Session> {
-        const hashedSession = cryptoJs.SHA512(sessionKey + await GetMachinMacAddress()).toString();
+        const hashedSession = cryptoJs.SHA512(sessionKey + Configuration.keysHandling.saltHash).toString();
         return await this.sessionDal.getSession(hashedSession); // TODO unit test?
     }
 
@@ -58,7 +57,7 @@ export class SessionsBl {
 
         const generatedSession = randomstring.generate(64);
         const newSession: Session = {
-            keyHash: cryptoJs.SHA512(generatedSession + await GetMachinMacAddress()).toString(),
+            keyHash: cryptoJs.SHA512(generatedSession + Configuration.keysHandling.saltHash).toString(),
             timeStamp: new Date().getTime(),
             email: userToCreateFor.email,
         };

@@ -33,7 +33,7 @@ export class UsersDal {
      */
     private async setDefaultUser() {
         /** Get password from configuration, and hash it like any other password in system */
-        const passwordHash =  bcrypt.hashSync(Configuration.defaultUser.password, 12);
+        const passwordHash =  bcrypt.hashSync(Configuration.defaultUser.password, Configuration.keysHandling.bcryptSaltRounds);
 
         /** Extract user domain from configuration */
         const userNameDomain = Configuration.defaultUser.email.split('@')[1];

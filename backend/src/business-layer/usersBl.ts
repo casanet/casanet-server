@@ -41,7 +41,7 @@ export class UsersBl {
          * If there is password to hash, hash it, else load the original password hash.
          */
         if (sanitizeUser.password) {
-            sanitizeUser.password = await bcrypt.hash(sanitizeUser.password, 12);
+            sanitizeUser.password = await bcrypt.hash(sanitizeUser.password, Configuration.keysHandling.bcryptSaltRounds);
         } else {
             const originalUser = await this.usersDal.getUser(sanitizeUser.email);
             sanitizeUser.password = originalUser.password;
