@@ -31,7 +31,7 @@ const signInAdmin: User = {
     email: 'admin@casa.net',
     displayName: 'admin account',
     ignoreTfa: true,
-    password: bcrypt.hashSync(unHashedUserPassword, 12),
+    password: bcrypt.hashSync(unHashedAdminPassword, 12),
     sessionTimeOutMS: 123454321100000,
     scope: 'adminAuth',
 };
