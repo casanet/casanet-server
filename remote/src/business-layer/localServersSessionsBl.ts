@@ -5,6 +5,7 @@ import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
 import { LocalServersSessionsDal, LocalServersSessionsDalSingleton } from '../data-layer/localServersSessionsDal';
 import { LocalServerSession } from '../models/remoteInterfaces';
 import { LocalServersBl, LocalServersBlSingleton } from './localServersBl';
+import { Configuration } from '../../../backend/src/config';
 
 export class LocalServersSessionsBl {
 
@@ -42,7 +43,7 @@ export class LocalServersSessionsBl {
         /**
          * Hash it to save only hash and *not* key plain text
          */
-        const keyHash = cryptoJs.SHA256(sessionKey).toString();
+        const keyHash = cryptoJs.SHA512(sessionKey + Configuration.keysHandling.saltHash).toString();
         /** Create session object */
         const localServerSession: LocalServerSession = {
             localServerId,
