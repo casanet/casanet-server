@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
-import * as cryptoJs from 'crypto-js';
+import * as bcrypt from 'bcrypt';
 import app from '../src/App';
 import { UsersDalSingleton } from '../src/data-layer/usersDal';
 import { Login, Minion } from '../src/models/sharedInterfaces';
@@ -21,7 +21,7 @@ const signInUser: User = {
     email: 'user@casa.net',
     displayName: 'user account',
     ignoreTfa: true,
-    password: cryptoJs.SHA256(unHashedUserPassword).toString(),
+    password: bcrypt.hashSync(unHashedUserPassword, 12),
     sessionTimeOutMS: 123454321100000,
     scope: 'userAuth',
 };
@@ -31,7 +31,7 @@ const signInAdmin: User = {
     email: 'admin@casa.net',
     displayName: 'admin account',
     ignoreTfa: true,
-    password: cryptoJs.SHA256(unHashedAdminPassword).toString(),
+    password: bcrypt.hashSync(unHashedUserPassword, 12),
     sessionTimeOutMS: 123454321100000,
     scope: 'adminAuth',
 };

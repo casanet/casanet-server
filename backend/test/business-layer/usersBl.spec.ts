@@ -1,6 +1,7 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as cryptoJs from 'crypto-js';
+import * as bcrypt from 'bcrypt';
 import { UsersBl } from '../../src/business-layer/usersBl';
 import { UsersDal } from '../../src/data-layer/usersDal';
 import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
@@ -63,9 +64,15 @@ describe('Users BL tests', () => {
 
             const user = await usersBl.getUser(additionalUser.email);
 
-            additionalUser.password = cryptoJs.SHA256(additionalUser.password).toString();
+            /** Make sure tha password hashed */
+            if (!bcrypt.compareSync(additionalUser.password, user.password)) {
+                throw new Error('Passowrd not hashed correctly');
+            }
+
+            /** For test other user properties math only */
+            user.password = additionalUser.password;
+
             expect(user).to.deep.equal(additionalUser);
-            return;
         });
     });
 
