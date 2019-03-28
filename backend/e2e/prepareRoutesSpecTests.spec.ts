@@ -5,6 +5,7 @@ import app from '../src/App';
 import { UsersDalSingleton } from '../src/data-layer/usersDal';
 import { Login, Minion } from '../src/models/sharedInterfaces';
 import { User } from '../src/models/sharedInterfaces';
+import { Configuration } from '../src/config';
 
 /**
  * Perpare chai session agent.
@@ -21,7 +22,7 @@ const signInUser: User = {
     email: 'user@casa.net',
     displayName: 'user account',
     ignoreTfa: true,
-    password: bcrypt.hashSync(unHashedUserPassword, 12),
+    password: bcrypt.hashSync(unHashedUserPassword, Configuration.keysHandling.bcryptSaltRounds),
     sessionTimeOutMS: 123454321100000,
     scope: 'userAuth',
 };
@@ -31,7 +32,7 @@ const signInAdmin: User = {
     email: 'admin@casa.net',
     displayName: 'admin account',
     ignoreTfa: true,
-    password: bcrypt.hashSync(unHashedAdminPassword, 12),
+    password: bcrypt.hashSync(unHashedAdminPassword, Configuration.keysHandling.bcryptSaltRounds),
     sessionTimeOutMS: 123454321100000,
     scope: 'adminAuth',
 };
