@@ -8,7 +8,7 @@ But it not so easy, because some of ISP services giving NAT IP and not public IP
 And also for port forwarding, the computer needs to use a static IP address in a local network.
 
 ### The solution:
-Tthe remote server is built to run on a cloud so the local casa-net server will connect to it via [ws](https://www.w3.org/TR/websockets/),
+The remote server is built to run on a cloud so the local casa-net server will connect to it via [ws](https://www.w3.org/TR/websockets/),
 and each user request will redirect to the local server.
 
 The WS connection used only to redirect requests,
