@@ -73,7 +73,7 @@ Yes, it is possible and will be welcome, see [modules](./backend/src/modules/REA
 - Buy new [supported](#supported-right-now) smart devices.
 - [Connect it to local network](./backend/src/modules/README.md) via official app.
 - Scan the local network to find the new device. (POST /devices/rescan).
-- Get all kinds of supported devices to know with them is belong to the new device. (GET /devices/kinds).
+- Get all kinds of supported devices to know witch of them is belong to the new device. (GET /devices/kinds).
 - Create a new minion** from the new device (POST /minions).
 - Get all minions to know the new minion id and status (GET /minions).
 - Set the new minion some other status (PUT /minions/{minionId})
