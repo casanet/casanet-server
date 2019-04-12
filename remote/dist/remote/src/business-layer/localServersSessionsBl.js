@@ -4,6 +4,7 @@ const cryptoJs = require("crypto-js");
 const randomstring = require("randomstring");
 const localServersSessionsDal_1 = require("../data-layer/localServersSessionsDal");
 const localServersBl_1 = require("./localServersBl");
+const config_1 = require("../../../backend/src/config");
 class LocalServersSessionsBl {
     constructor(localServersSessionsDal, localServerBl) {
         this.localServersSessionsDal = localServersSessionsDal;
@@ -36,7 +37,7 @@ class LocalServersSessionsBl {
         /**
          * Hash it to save only hash and *not* key plain text
          */
-        const keyHash = cryptoJs.SHA256(sessionKey).toString();
+        const keyHash = cryptoJs.SHA512(sessionKey + config_1.Configuration.keysHandling.saltHash).toString();
         /** Create session object */
         const localServerSession = {
             localServerId,

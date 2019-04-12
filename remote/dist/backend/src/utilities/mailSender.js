@@ -24,7 +24,7 @@ exports.SendMail = async (to, code) => {
         replyTo: undefined,
         inReplyTo: undefined,
         subject: 'CASAnet authentication code',
-        html: `<div> Your authentication code is: <br><br><b> ${code} </b><br><br> The password valid only in next 5 minutes. </div>`,
+        html: `<div> Your authentication code is: <br><textarea readonly>${code}</textarea><br>The password valid only in next 5 minutes. </div>`,
     };
     // send mail with defined transport object
     return transporter.sendMail(mailOptions);

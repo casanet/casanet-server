@@ -234,6 +234,12 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
             message: 'the tuya module not support any recording mode',
         };
     }
+    async generateCommand(miniom, statusToRecordFor) {
+        throw {
+            responseCode: 6409,
+            message: 'the tuya module not support any recording mode',
+        };
+    }
 }
 exports.TuyaHandler = TuyaHandler;
 //# sourceMappingURL=tuyaHandler.js.map

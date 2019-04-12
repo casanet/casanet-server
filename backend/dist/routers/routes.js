@@ -439,7 +439,7 @@ function RegisterRoutes(app) {
         const promise = controller.setMinionTimeout.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
-    app.post('/API/minions/command/:minionId', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {
+    app.post('/API/minions/commands/record/:minionId', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {
         const args = {
             minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
             minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
@@ -456,6 +456,25 @@ function RegisterRoutes(app) {
         }
         const controller = new minionsController_1.MinionsController();
         const promise = controller.recordMinionCommand.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/minions/commands/generate/:minionId', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+            minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+            });
+            return;
+        }
+        const controller = new minionsController_1.MinionsController();
+        const promise = controller.generateMinionCommand.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.post('/API/minions/rescan/:minionId', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {

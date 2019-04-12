@@ -14,8 +14,16 @@ class ForwardingRouter {
          */
         app.use('/API/*', async (req, res) => {
             try {
-                /** Make sure, and get valid forward session */
-                const forwardUserSession = await authenticationExtend_1.expressAuthentication(req, [authentication_1.SystemAuthScopes.userScope]);
+                let forwardUserSession;
+                try {
+                    /** Make sure, and get valid forward session */
+                    forwardUserSession =
+                        await authenticationExtend_1.expressAuthentication(req, [authentication_1.SystemAuthScopes.userScope]);
+                }
+                catch (error) {
+                    res.status(401).send({ responseCode: 4001 });
+                    return;
+                }
                 /** Forward request as is and wait for request. */
                 const response = await this.forwardingController.forwardHttpReq(forwardUserSession.localServerId, {
                     requestId: undefined,
@@ -36,7 +44,7 @@ class ForwardingRouter {
                 res.send(response.httpBody);
             }
             catch (error) {
-                res.status(501).send();
+                res.status(501).send({ responseCode: 5000 });
             }
         });
     }

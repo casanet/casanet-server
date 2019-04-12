@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const cryptoJs = require("crypto-js");
 const forwardUsersSessionDal_1 = require("../data-layer/forwardUsersSessionDal");
+const config_1 = require("../../../backend/src/config");
 class ForwardUsersSessionsBl {
     /**
      *
@@ -16,7 +17,7 @@ class ForwardUsersSessionsBl {
      * @returns session, or inject if not exist.
      */
     async getSession(sessionKey) {
-        const hashedSession = cryptoJs.SHA256(sessionKey).toString();
+        const hashedSession = cryptoJs.SHA512(sessionKey + config_1.Configuration.keysHandling.saltHash).toString();
         return await this.usersSessionsDal.getUserSession(hashedSession);
     }
     /**
@@ -26,7 +27,7 @@ class ForwardUsersSessionsBl {
      */
     async createNewSession(localServerId, sessionKey) {
         /** Never save plain text key. */
-        const sessionKeyHash = cryptoJs.SHA256(sessionKey).toString();
+        const sessionKeyHash = cryptoJs.SHA512(sessionKey + config_1.Configuration.keysHandling.saltHash).toString();
         /** save session. */
         await this.usersSessionsDal.saveNewUserSession({
             localServerId,

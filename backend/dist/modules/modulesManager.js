@@ -145,11 +145,38 @@ class ModulesManager {
         if (!modelKind || !modelKind.isRecordingSupported) {
             const errorResponse = {
                 responseCode: 6409,
-                message: `the minioin not support command recording`,
+                message: `the minioin not support command recording or sending`,
             };
             throw errorResponse;
         }
         return await minionModule.enterRecordMode(miniom, statusToRecordFor);
+    }
+    /**
+     * Generate an RF or IR command for given status.
+     * Note, only a few devices models support this feature.
+     * For example, it is used to generate RF command to the RF wall switch, instead of buying remote and record the commands.
+     * @param minion minion to generate for.
+     * @param statusToGenerateFor the specific status to record for.
+     */
+    async generateCommand(minion, statusToGenerateFor) {
+        const minionModule = this.getMinionModule(minion.device.brand);
+        if (!minionModule) {
+            const errorResponse = {
+                responseCode: 7404,
+                message: `there is not module for -${minion.device.brand}- brand`,
+            };
+            throw errorResponse;
+        }
+        /** Make sure that minion supprt recording */
+        const modelKind = this.getModelKind(minionModule, minion.device);
+        if (!modelKind || !modelKind.isRecordingSupported) {
+            const errorResponse = {
+                responseCode: 6409,
+                message: `the minioin not support command recording or sending`,
+            };
+            throw errorResponse;
+        }
+        return await minionModule.generateCommand(minion, statusToGenerateFor);
     }
 }
 exports.ModulesManager = ModulesManager;
