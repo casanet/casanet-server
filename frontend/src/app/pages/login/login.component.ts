@@ -8,6 +8,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 // import { LoadingService } from '../../services/loading/loading.service';
 import { AuthService } from '../../services/auth/auth.service';
 import swal, { SweetAlertResult } from 'sweetalert2';
+import { TranslatePipe } from '../../translate.pipe';
+import { TranslateService } from '../../translate.service';
+import { ToasterAndErrorsService } from '../../services/toaster-and-errors.service';
 
 
 @Component({
@@ -25,23 +28,30 @@ export class LoginComponent implements OnInit, AfterViewInit {
     'email': '',
     'password': '',
   };
-  validationMessages = {
-    'email': {
-      'required': 'הזן דוא"ל',
-      'email': 'דוא"ל לא תקין'
-    },
-    'password': {
-      'required': 'הזן סיסמה',
-      // 'pattern': 'The password must contain numbers and letters',
-      'minlength': 'לפחות 6 תווים בסיסמה',
-      'maxlength': 'Please enter less than 25 characters',
-    },
-  };
+  private validationMessages;
+
+  private translatePipe: TranslatePipe;
 
   constructor(private router: Router,
     private fb: FormBuilder,
     public snackBar: MatSnackBar,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private translateService: TranslateService,
+    private toastrAndErrorsService: ToasterAndErrorsService) {
+    this.translatePipe = new TranslatePipe(this.translateService);
+
+    this.validationMessages = {
+      'email': {
+        'required': this.translatePipe.transform('ENTER_EMAIL'),
+        'email': this.translatePipe.transform('INCORRECT_EMAIL')
+      },
+      'password': {
+        'required': this.translatePipe.transform('ENTER_PASSWORD'),
+        // 'pattern': 'The password must contain numbers and letters',
+        'minlength': this.translatePipe.transform('MIN_PASSWORD_LENGTH_MSG'),
+        'maxlength': this.translatePipe.transform('MAX_PASSWORD_LENGTH_MSG')
+      },
+    };
   }
 
   ngOnInit() {
@@ -51,7 +61,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.genericToast = swal.mixin({
       toast: true,
       position: 'top-start',
-      confirmButtonText: 'סגור',
+      confirmButtonText: this.translatePipe.transform('CLOSE'),
       showConfirmButton: true,
       timer: 60 * 20 * 1000
     });
@@ -104,7 +114,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private onLoginSuccess() {
     this.router.navigate(['/']);
-    this.snackBar.open('התחברות בוצעה בהצלחה', 'אישור', {
+    this.snackBar.open(this.translatePipe.transform('LOGIN_SUCCESSFULLY'), this.translatePipe.transform('SUBMIT'), {
       duration: 20000,
     });
   }
@@ -113,24 +123,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     // this.loadingService.stopLoading();
 
-    if (err.status === 403) {
-      this.snackBar.open('שגיאה בהתחברות, נסה שוב', 'אישור', {
+    if (err.status === 403 || err.status === 401) {
+      this.snackBar.open(this.translatePipe.transform('CONNECTED_FAIL'), this.translatePipe.transform('SUBMIT'), {
         duration: 20000,
       });
       return;
-    } else if (err.status === 501) {
-      this.genericToast({
-        type: 'warning',
-        title: 'לא הצלחנו לשלוח מייל אימות',
-        text: 'הבעיה היא פנימית בשרת המייל, נא נסה שוב בעוד כמה רגעים',
-      });
-    } else {
-      this.genericToast({
-        type: 'warning',
-        title: 'שגיאה בלתי צפויה',
-        text: 'נא נסה שוב להתחבר בעוד מספר רגעים',
-      });
     }
+
+    this.toastrAndErrorsService.OnHttpError(err);
   }
 
   public async login() {

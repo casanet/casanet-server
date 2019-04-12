@@ -12,7 +12,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTabsModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ToolbarNotificationComponent } from './toolbar-notification/toolbar-notification.component';
@@ -35,7 +34,6 @@ import { SharedModule } from '../shared.module';
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
 };
-import { AuthService } from '../services/auth/auth.service';
 
 @NgModule({
 
@@ -87,11 +85,7 @@ import { AuthService } from '../services/auth/auth.service';
     ],
 
     providers: [
-        AuthService,
-        {
-            provide: PERFECT_SCROLLBAR_CONFIG,
-            useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-        }
+
     ],
     entryComponents: [
         AboutDialogComponent,
