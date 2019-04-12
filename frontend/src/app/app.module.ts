@@ -20,6 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
+import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
 export function setupTranslateFactory(
   service: TranslateService): Function {
@@ -30,6 +31,11 @@ export function setupTranslateFactory(
 }
 import { MinionsService } from './services/minions.service';
 import { DevicesService } from './services/devices.service';
+import { AuthService } from './services/auth/auth.service';
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true
+};
 
 @NgModule({
   declarations: [
@@ -66,6 +72,11 @@ import { DevicesService } from './services/devices.service';
   providers: [
     MinionsService,
     DevicesService,
+    AuthService,
+        {
+            provide: PERFECT_SCROLLBAR_CONFIG,
+            useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+        },
     ToasterAndErrorsService,
     TranslateService,
     {

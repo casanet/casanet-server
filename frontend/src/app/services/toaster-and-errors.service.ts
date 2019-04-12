@@ -20,7 +20,7 @@ export class ToasterAndErrorsService {
     this.genericToast = swal.mixin({
       toast: true,
       position: 'top-start',
-      confirmButtonText: 'סגור',
+      confirmButtonText: this.translatePipe.transform('CLOSE'),
       showConfirmButton: true,
       timer: 20 * 1000
     });

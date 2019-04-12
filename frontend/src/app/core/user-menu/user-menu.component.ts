@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { TranslateService } from '../../translate.service';
 import { User } from '../../../../../backend/src/models/sharedInterfaces';
+import { TranslatePipe } from '../../translate.pipe';
 
 // import { LoadingService } from '../../services/loading/loading.service';
 
@@ -20,6 +21,7 @@ export class UserMenuComponent implements OnInit {
 	isOpen = false;
 
 	public profile: User;
+	translatePipe: TranslatePipe;
 
 	@Input() currentUser = null;
 	@HostListener('document:click', ['$event', '$event.target'])
@@ -38,7 +40,9 @@ export class UserMenuComponent implements OnInit {
 		public snackBar: MatSnackBar,
 		public dialog: MatDialog,
 		private router: Router,
-		private authService: AuthService) {
+		private authService: AuthService,
+		private translateService: TranslateService) {
+		this.translatePipe = new TranslatePipe(this.translateService);
 
 		authService.userProfile.subscribe((profile) => {
 			this.profile = profile;
@@ -51,11 +55,11 @@ export class UserMenuComponent implements OnInit {
 
 	onLogout() {
 		this.authService.logout().then(() => {
-			this.snackBar.open('התנתקות בוצעה בהצלחה', 'אישור', {
+			this.snackBar.open(this.translatePipe.transform('LOGOUT_SUCCESSFULLY'), this.translatePipe.transform('SUBMIT'), {
 				duration: 20000,
 			});
 		}).catch((() => {
-			this.snackBar.open('ההתנתקות לא הושלמה!', 'אישור', {
+			this.snackBar.open(this.translatePipe.transform('LOGOUT_FAIL'), this.translatePipe.transform('SUBMIT'), {
 				duration: 20000,
 			});
 		}).bind(this));
