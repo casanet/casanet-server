@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import * as express from 'express';
 import * as SseStream from 'express-sse';
+import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
 import { SystemAuthScopes } from '../../../backend/src/security/authentication';
 import { logger } from '../../../backend/src/utilities/logger';
 import { ForwardUsersSessionsBlSingleton } from '../business-layer/forwardUserSessionsBl';
 import { ForwardingController } from '../controllers/forwardingController';
 import { ForwardUserSession } from '../models/remoteInterfaces';
 import { expressAuthentication } from '../security/authenticationExtend';
-import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
 
 export class ForwardingRouter {
 
@@ -29,7 +29,6 @@ export class ForwardingRouter {
                     res.status(401).send({ responseCode: 4001 } as ErrorResponse);
                     return;
                 }
-
 
                 /** Forward request as is and wait for request. */
                 const response = await this.forwardingController.forwardHttpReq(forwardUserSession.localServerId,
