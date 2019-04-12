@@ -2,6 +2,7 @@ import * as cryptoJs from 'crypto-js';
 import { Request, Response } from 'express';
 import { ForwardUsersSessionsDal, ForwardUsersSessionsDalSingleton } from '../data-layer/forwardUsersSessionDal';
 import { ForwardUserSession } from '../models/remoteInterfaces';
+import { Configuration } from '../../../backend/src/config';
 
 export class ForwardUsersSessionsBl {
 
@@ -18,7 +19,7 @@ export class ForwardUsersSessionsBl {
      * @returns session, or inject if not exist.
      */
     public async getSession(sessionKey: string): Promise<ForwardUserSession> {
-        const hashedSession = cryptoJs.SHA256(sessionKey).toString();
+        const hashedSession = cryptoJs.SHA512(sessionKey + Configuration.keysHandling.saltHash).toString();
         return await this.usersSessionsDal.getUserSession(hashedSession);
     }
 
@@ -29,7 +30,7 @@ export class ForwardUsersSessionsBl {
      */
     public async createNewSession(localServerId: string, sessionKey: string): Promise<void> {
         /** Never save plain text key. */
-        const sessionKeyHash = cryptoJs.SHA256(sessionKey).toString();
+        const sessionKeyHash = cryptoJs.SHA512(sessionKey + Configuration.keysHandling.saltHash).toString();
         /** save session. */
         await this.usersSessionsDal.saveNewUserSession({
             localServerId,

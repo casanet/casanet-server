@@ -11,6 +11,7 @@ import { logger } from '../../../backend/src/utilities/logger';
 import { LocalServer } from '../models/sharedInterfaces';
 import { LocalServersBl, LocalServersBlSingleton } from './localServersBl';
 import { LocalServersSessionBlSingleton, LocalServersSessionsBl } from './localServersSessionsBl';
+import { Configuration } from '../../../backend/src/config';
 
 /**
  * Extend ws to allow hold uniqe id to each authenticated local server ws channel.
@@ -130,7 +131,7 @@ export class ChannelsBl {
             const localServerSession = await this.localServersSessionsBl.getlocalServerSession(localServer.localServerId);
 
             /** Check if hash of local server cert key is same as session hash key  */
-            if (cryptoJs.SHA256(certAuth.remoteAuthKey).toString() !== localServerSession.keyHash) {
+            if (cryptoJs.SHA512(certAuth.remoteAuthKey + Configuration.keysHandling.saltHash).toString() !== localServerSession.keyHash) {
                 throw new Error('key not match');
             }
 
