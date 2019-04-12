@@ -7,6 +7,7 @@ const rxjs_1 = require("rxjs");
 const logger_1 = require("../../../backend/src/utilities/logger");
 const localServersBl_1 = require("./localServersBl");
 const localServersSessionsBl_1 = require("./localServersSessionsBl");
+const config_1 = require("../../../backend/src/config");
 /**
  * Manage all local servers ws I/O messages.
  * The main goal is to allow used ws protocol as req/res architecture.
@@ -87,7 +88,7 @@ class ChannelsBl {
             /** Get local server session based on local server id.  */
             const localServerSession = await this.localServersSessionsBl.getlocalServerSession(localServer.localServerId);
             /** Check if hash of local server cert key is same as session hash key  */
-            if (cryptoJs.SHA256(certAuth.remoteAuthKey).toString() !== localServerSession.keyHash) {
+            if (cryptoJs.SHA512(certAuth.remoteAuthKey + config_1.Configuration.keysHandling.saltHash).toString() !== localServerSession.keyHash) {
                 throw new Error('key not match');
             }
             /** If there is other channel from same local server */

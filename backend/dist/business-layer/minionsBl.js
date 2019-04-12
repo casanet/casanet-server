@@ -442,6 +442,30 @@ class MinionsBl {
         }
         await this.modulesManager.enterRecordMode(minion, statusToRecordFor);
     }
+    /**
+     * Record command for current minion status.
+     * @param minionId minion to record for.
+     * @param statusToGenerateFor The status to record command for.
+     */
+    async generateCommand(minionId, statusToGenerateFor) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        /**
+         * The minion status is depend on minion type.
+         */
+        if (!statusToGenerateFor[minion.minionType]) {
+            throw {
+                responseCode: 1405,
+                message: 'incorrect minion status for current minion type',
+            };
+        }
+        await this.modulesManager.generateCommand(minion, statusToGenerateFor);
+    }
 }
 exports.MinionsBl = MinionsBl;
 exports.MinionsBlSingleton = new MinionsBl(minionsDal_1.MinionsDalSingleton, devicesBl_1.DevicesBlSingleton, modulesManager_1.ModulesManagerSingltone);

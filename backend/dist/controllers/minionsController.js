@@ -52,6 +52,15 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
         return minionsBl_1.MinionsBlSingleton.recordCommand(minionId, minionStatus);
     }
     /**
+     * Generate a command (IR, 433-RF or any other supported RF tech)
+     * for current minion status.
+     * @param minionId Minon id.
+     * @param minionStatus Minion object status to generate command for.
+     */
+    async generateMinionCommand(minionId, minionStatus) {
+        return minionsBl_1.MinionsBlSingleton.generateCommand(minionId, minionStatus);
+    }
+    /**
      * Recheck minion device status (update server status cache).
      */
     async rescanMinionStatus(minionId) {
@@ -109,9 +118,16 @@ __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),
     tsoa_1.Response(501, 'Server error'),
-    tsoa_1.Post('command/{minionId}'),
+    tsoa_1.Post('commands/record/{minionId}'),
     __param(1, tsoa_1.Body())
 ], MinionsController.prototype, "recordMinionCommand", null);
+__decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Post('commands/generate/{minionId}'),
+    __param(1, tsoa_1.Body())
+], MinionsController.prototype, "generateMinionCommand", null);
 __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),

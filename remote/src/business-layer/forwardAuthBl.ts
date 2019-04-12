@@ -69,8 +69,7 @@ export class ForwardAuthBl {
             const userLocalServersInfo = await this.localServersBl.getLocalServerInfoByUser(login.email);
             /** If there is not any local server that user is mantion in it. throw it out.  */
             if (userLocalServersInfo.length === 0) {
-                response.statusCode = 403;
-                return this.GENERIC_ERROR_RESPONSE;
+                throw this.GENERIC_ERROR_RESPONSE;
             } else if (userLocalServersInfo.length === 1) {
                 /** If user is mention in one local server, use it and continue. */
                 connectLocalServerId = userLocalServersInfo[0].localServerId;
@@ -124,6 +123,13 @@ export class ForwardAuthBl {
             return;
         }
 
+        /** If request fail becuase that local server not conected,
+         * hide this info from user, case attaker want to know if username valid.
+         */
+        if (localResponse.httpStatus === 501 && localResponse.httpBody && localResponse.httpBody.responseCode === 4501) {
+            throw this.GENERIC_ERROR_RESPONSE;
+        }
+
         /** Any other case, send local server response as is to client. */
         response.statusCode = localResponse.httpStatus;
         return localResponse.httpBody;
@@ -142,8 +148,7 @@ export class ForwardAuthBl {
         } else {
             const userLocalServersInfo = await this.localServersBl.getLocalServerInfoByUser(login.email);
             if (userLocalServersInfo.length === 0) {
-                response.statusCode = 403;
-                return this.GENERIC_ERROR_RESPONSE;
+                throw this.GENERIC_ERROR_RESPONSE;
             } else if (userLocalServersInfo.length === 1) {
                 connectLocalServerId = userLocalServersInfo[0].localServerId;
             } else {
@@ -151,8 +156,7 @@ export class ForwardAuthBl {
                  * If there is more then one local server, throw it.
                  * Client should know from last his login request if he needs to mention local server id or not.
                  */
-                response.statusCode = 403;
-                return this.GENERIC_ERROR_RESPONSE;
+                throw this.GENERIC_ERROR_RESPONSE;
             }
         }
 
@@ -167,6 +171,13 @@ export class ForwardAuthBl {
         if (localResponse.httpStatus === 200 && localResponse.httpSession) {
             await this.activeSession(response, connectLocalServerId, localResponse);
             return;
+        }
+
+        /** If request fail becuase that local server not conected,
+         * hide this info from user, case attaker want to know if username valid.
+         */
+        if (localResponse.httpStatus === 501 && localResponse.httpBody && localResponse.httpBody.responseCode === 4501) {
+            throw this.GENERIC_ERROR_RESPONSE;
         }
 
         response.statusCode = localResponse.httpStatus;

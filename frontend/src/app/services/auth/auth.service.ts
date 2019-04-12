@@ -87,6 +87,8 @@ export class AuthService {
 
   public async logout(): Promise<void> {
     await this.httpClient.post('/API/auth/logout', {}).toPromise();
+
+    this.setProfile(this.DEFAULT_USER);
     this.router.navigate(['/login']);
   }
 }

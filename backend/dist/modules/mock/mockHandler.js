@@ -35,6 +35,15 @@ class MockHandler extends brandModuleBase_1.BrandModuleBase {
                 suppotedMinionType: 'airConditioning',
                 isRecordingSupported: true,
             },
+            {
+                brand: this.brandName,
+                isTokenRequierd: false,
+                isIdRequierd: false,
+                minionsPerDevice: -1,
+                model: 'RF toggle demo',
+                suppotedMinionType: 'toggle',
+                isRecordingSupported: true,
+            },
         ];
         // for debug updattes remove 'return'
         return;
@@ -94,7 +103,8 @@ class MockHandler extends brandModuleBase_1.BrandModuleBase {
     async setStatus(miniom, setStatus) {
         await sleep_1.Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
         if (miniom.device.model === 'switch demo' ||
-            miniom.device.model === 'ac demo') {
+            miniom.device.model === 'ac demo' ||
+            miniom.device.model === 'RF toggle demo') {
             return;
         }
         throw {
@@ -104,6 +114,9 @@ class MockHandler extends brandModuleBase_1.BrandModuleBase {
     }
     async enterRecordMode(miniom, statusToRecordFor) {
         await sleep_1.Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
+    }
+    async generateCommand(miniom, statusToRecordFor) {
+        await sleep_1.Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real command generation.
     }
 }
 exports.MockHandler = MockHandler;

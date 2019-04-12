@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as express from 'express';
 import * as SseStream from 'express-sse';
+import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
 import { SystemAuthScopes } from '../../../backend/src/security/authentication';
 import { logger } from '../../../backend/src/utilities/logger';
 import { ForwardUsersSessionsBlSingleton } from '../business-layer/forwardUserSessionsBl';
@@ -19,9 +20,15 @@ export class ForwardingRouter {
          */
         app.use('/API/*', async (req: Request, res: Response) => {
             try {
-                /** Make sure, and get valid forward session */
-                const forwardUserSession =
-                    await expressAuthentication(req, [SystemAuthScopes.userScope]) as ForwardUserSession;
+                let forwardUserSession: ForwardUserSession;
+                try {
+                    /** Make sure, and get valid forward session */
+                    forwardUserSession =
+                        await expressAuthentication(req, [SystemAuthScopes.userScope]) as ForwardUserSession;
+                } catch (error) {
+                    res.status(401).send({ responseCode: 4001 } as ErrorResponse);
+                    return;
+                }
 
                 /** Forward request as is and wait for request. */
                 const response = await this.forwardingController.forwardHttpReq(forwardUserSession.localServerId,
@@ -42,7 +49,7 @@ export class ForwardingRouter {
                 res.statusCode = response.httpStatus;
                 res.send(response.httpBody);
             } catch (error) {
-                res.status(501).send();
+                res.status(501).send({ responseCode: 5000 } as ErrorResponse);
             }
         });
     }

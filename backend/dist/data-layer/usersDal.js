@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const cryptoJs = require("crypto-js");
+const bcrypt = require("bcrypt");
 const config_1 = require("../config");
 const logger_1 = require("../utilities/logger");
 const macAddress_1 = require("../utilities/macAddress");
@@ -24,7 +24,7 @@ class UsersDal {
      */
     async setDefaultUser() {
         /** Get password from configuration, and hash it like any other password in system */
-        const passwordHash = cryptoJs.SHA256(config_1.Configuration.defaultUser.password).toString();
+        const passwordHash = bcrypt.hashSync(config_1.Configuration.defaultUser.password, config_1.Configuration.keysHandling.bcryptSaltRounds);
         /** Extract user domain from configuration */
         const userNameDomain = config_1.Configuration.defaultUser.email.split('@')[1];
         /**

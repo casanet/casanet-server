@@ -6,6 +6,7 @@ import { SessionsDal } from '../../src/data-layer/sessionsDal';
 import { Session } from '../../src/models/backendInterfaces';
 import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
 import { SessionsDalMock } from '../data-layer/sessionsDal.mock.spec';
+import { Configuration } from '../../src/config';
 
 const sessionDalMock = new SessionsDalMock();
 const SessionBlMock = new SessionsBl(sessionDalMock as unknown as SessionsDal);
@@ -16,7 +17,7 @@ describe('Sesssion BL tests', () => {
         it('it should get session succsessfully', async () => {
 
             const key = '543583bfngfnds45453535256524';
-            sessionDalMock.mockSessions[2].keyHash = cryptoJs.SHA256(key).toString();
+            sessionDalMock.mockSessions[2].keyHash = cryptoJs.SHA512(key + Configuration.keysHandling.saltHash).toString();
             const session = await SessionBlMock.getSession(key);
 
             expect(session).to.deep.equal(sessionDalMock.mockSessions[2]);

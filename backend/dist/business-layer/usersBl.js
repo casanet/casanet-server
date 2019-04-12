@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const cryptoJs = require("crypto-js");
+const bcrypt = require("bcrypt");
+const config_1 = require("../config");
 const usersDal_1 = require("../data-layer/usersDal");
 const schemaValidator_1 = require("../security/schemaValidator");
 class UsersBl {
@@ -32,7 +33,7 @@ class UsersBl {
          * If there is password to hash, hash it, else load the original password hash.
          */
         if (sanitizeUser.password) {
-            sanitizeUser.password = cryptoJs.SHA256(sanitizeUser.password).toString();
+            sanitizeUser.password = await bcrypt.hash(sanitizeUser.password, config_1.Configuration.keysHandling.bcryptSaltRounds);
         }
         else {
             const originalUser = await this.usersDal.getUser(sanitizeUser.email);

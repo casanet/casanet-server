@@ -5,8 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class TranslateService {
-
-  private readonly LENG_STORAGE_KEY = 'leng';
+  private readonly LANG_STORAGE_KEY = 'lang';
   /**
    * Strings map.
    */
@@ -18,7 +17,9 @@ export class TranslateService {
    * Set html body element to be with corrent 'dir' attribute value.
    */
   private changePageDir() {
-    window.document.getElementById('casa-page').setAttribute('dir', this.data['DIR']);
+    window.document
+      .getElementById('casa-page')
+      .setAttribute('dir', this.data['DIR']);
   }
 
   /**
@@ -27,7 +28,9 @@ export class TranslateService {
    */
   private async retriveLeng(lang: string) {
     const langPath = `assets/i18n/${lang || 'en'}.json`;
-    const translation = await this.http.get<{}>(langPath).toPromise()
+    const translation = await this.http
+      .get<{}>(langPath)
+      .toPromise()
       .catch(() => {
         this.data = {};
       });
@@ -39,14 +42,24 @@ export class TranslateService {
    * Get client leng based on broswer leng and old selections.
    */
   private getLeng(): string {
-    let clientLeng = localStorage.getItem(this.LENG_STORAGE_KEY);
-    if (!clientLeng) {
-      clientLeng = (window.navigator['language'].toLowerCase().indexOf('he') !== -1 ||
-        window.navigator['language'].toLowerCase().indexOf('il') !== -1)
-        ? 'he'
-        : 'en';
+    const clientLeng = localStorage.getItem(this.LANG_STORAGE_KEY);
+
+    if (clientLeng) {
+      return clientLeng;
     }
-    return clientLeng;
+    const langCode =
+      navigator.language ||
+      (navigator.languages && navigator.languages[0]) || 'en';
+
+    // check for hebrew
+    if (langCode.indexOf('he') !== -1) {
+      return 'he';
+    }
+
+    // check for othe lenguages here.
+
+    // Otherways return en.
+    return 'en';
   }
 
   /**
@@ -54,7 +67,7 @@ export class TranslateService {
    */
   public async setLeng(lang: string) {
     await this.retriveLeng(lang);
-    localStorage.setItem(this.LENG_STORAGE_KEY, lang);
+    localStorage.setItem(this.LANG_STORAGE_KEY, lang);
   }
 
   /**

@@ -1,4 +1,5 @@
 import * as fse from 'fs-extra';
+import * as randomstring from 'randomstring';
 import { Config, RunningMode } from './models/backendInterfaces';
 import { logger } from './utilities/logger';
 
@@ -12,6 +13,7 @@ const rawNodeEnv = process.env.NODE_ENV;
 const rawTfaSmtpServer = process.env.TFA_SMTP_SERVER;
 const rawTfaUserName = process.env.TFA_USER_NAME;
 const rawTfaUserKey = process.env.TFA_USER_KEY;
+const rawSaltKeys = process.env.SALT_KEYS;
 
 /**
  * Read casanet configuration file.
@@ -70,5 +72,14 @@ if (rawTfaSmtpServer && rawTfaUserName && rawTfaUserKey) {
         userName: '',
     };
 }
+
+if (!rawSaltKeys) {
+    logger.warn('There is no SALT_KEYS env var, generating random');
+}
+configuration.keysHandling = {
+    saltHash: rawSaltKeys || randomstring.generate(64),
+    bcryptSaltRounds: 12,
+}
+
 /** System configuration */
 export const Configuration: Config = configuration;

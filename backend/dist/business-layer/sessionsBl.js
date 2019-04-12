@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const cryptoJs = require("crypto-js");
 const randomstring = require("randomstring");
+const config_1 = require("../config");
 const sessionsDal_1 = require("../data-layer/sessionsDal");
 class SessionsBl {
     /**
@@ -17,7 +18,7 @@ class SessionsBl {
      * @returns session, or inject if not exist.
      */
     async getSession(sessionKey) {
-        const hashedSession = cryptoJs.SHA256(sessionKey).toString();
+        const hashedSession = cryptoJs.SHA512(sessionKey + config_1.Configuration.keysHandling.saltHash).toString();
         return await this.sessionDal.getSession(hashedSession); // TODO unit test?
     }
     /**
@@ -43,7 +44,7 @@ class SessionsBl {
     async generateSession(userToCreateFor) {
         const generatedSession = randomstring.generate(64);
         const newSession = {
-            keyHash: cryptoJs.SHA256(generatedSession).toString(),
+            keyHash: cryptoJs.SHA512(generatedSession + config_1.Configuration.keysHandling.saltHash).toString(),
             timeStamp: new Date().getTime(),
             email: userToCreateFor.email,
         };

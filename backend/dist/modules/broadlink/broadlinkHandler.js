@@ -4,6 +4,7 @@ const moment = require("moment");
 const brandModuleBase_1 = require("../brandModuleBase");
 // tslint:disable-next-line:no-var-requires
 const Broadlink = require('./broadlinkProtocol');
+const BroadlinkCodeGeneration = require('./commands-generator');
 class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
     constructor() {
         super();
@@ -287,6 +288,23 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
             });
         });
     }
+    async generateRFCommand(miniom, statusToRecordFor) {
+        const generatedCode = BroadlinkCodeGeneration.generate('RF433');
+        const minionCache = this.getOrCreateMinionCache(miniom);
+        if (!minionCache.toggleCommands) {
+            minionCache.toggleCommands = {
+                on: undefined,
+                off: undefined,
+            };
+        }
+        if (statusToRecordFor.toggle.status === 'on') {
+            minionCache.toggleCommands.on = generatedCode;
+        }
+        else {
+            minionCache.toggleCommands.off = generatedCode;
+        }
+        this.updateCache();
+    }
     async recordRFToggleCommands(miniom, statusToRecordFor) {
         // TODO: swap and then record.
         throw {
@@ -328,6 +346,16 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
                 return await this.recordRFToggleCommands(miniom, statusToRecordFor);
             case 'RM3 / RM Pro as IR AC':
                 return await this.recordIRACCommands(miniom, statusToRecordFor);
+        }
+        throw {
+            responseCode: 8404,
+            message: 'unknown minion model',
+        };
+    }
+    async generateCommand(miniom, statusToRecordFor) {
+        switch (miniom.device.model) {
+            case 'RM Pro as RF toggle':
+                return await this.generateRFCommand(miniom, statusToRecordFor);
         }
         throw {
             responseCode: 8404,

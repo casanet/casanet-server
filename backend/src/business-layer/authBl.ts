@@ -1,4 +1,4 @@
-import * as cryptoJs from 'crypto-js';
+import * as bcrypt from 'bcrypt';
 import * as express from 'express';
 import * as momoent from 'moment';
 import * as randomstring from 'randomstring';
@@ -62,12 +62,18 @@ export class AuthBl {
             userTryToLogin = await this.usersBl.getUser(login.email);
         } catch (error) {
             /** case user not in system return generic error. */
-            logger.info(`login email ${login.email} fail, invalid cert`);
-            response.statusCode = 403;
-            return this.GENERIC_ERROR_RESPONSE;
+            logger.debug(`login email ${login.email} fail, invalid cert`);
+
+            /** Even if the user name not exists, check hash, to hide from the attacker if the username is not valid by comparing a response time.  */
         }
 
-        if (cryptoJs.SHA256(login.password).toString() !== userTryToLogin.password) {
+        const compereResults = await bcrypt.compare(
+            login.password,
+            !!userTryToLogin ? userTryToLogin.password : randomstring.generate(60)
+        );
+
+        /** If User not fauld or password not match  */
+        if (!userTryToLogin || !compereResults) {
             /** Case password incorrect return generic error. */
             response.statusCode = 403;
             return this.GENERIC_ERROR_RESPONSE;
