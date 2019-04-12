@@ -13,6 +13,9 @@ Then open the browser in `http://127.0.0.1:3000`.
 
 In `casanet.json` file you can edit the configuration of a few stuff.
 
+#### Password hash salt
+set `SALT_KEYS` env var for salt sessions hash. otherways the salt will generate randomly on runtime, and in next running, all sessions will be invalid. 
+
 #### Default user:
 You can edit any property of the default user. 
 
