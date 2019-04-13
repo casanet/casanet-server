@@ -86,6 +86,12 @@ export class TuyaHandler extends BrandModuleBase {
              * Get the current status (the 'data' paramerer is invalid)
              */
             tuyaDevice.get({ schema: true }).then((status) => {
+
+                /** Case status get a garbage value */
+                if (typeof status !== 'object' || !status.dps) {
+                    return;
+                }
+
                 /**
                  * Pull the current minions array in system.
                  */
@@ -178,9 +184,10 @@ export class TuyaHandler extends BrandModuleBase {
 
         const stausResult = await tuyaDevice.get({ schema: true })
             .catch((err: Error) => {
-                logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
+                logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
 
-                if (err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                if (typeof err === 'object' &&
+                    err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
                     throw {
                         responseCode: 9503,
                         message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
@@ -192,6 +199,14 @@ export class TuyaHandler extends BrandModuleBase {
                     message: 'communication with tuya device fail',
                 } as ErrorResponse;
             });
+
+        /** Case status get a garbage value */
+        if (typeof status !== 'object' || !stausResult.dps) {
+            throw {
+                responseCode: 10503,
+                message: 'tuya device gives garbage values.',
+            } as ErrorResponse;
+        }
 
         /**
          * Extract the current minion status.
@@ -240,9 +255,10 @@ export class TuyaHandler extends BrandModuleBase {
 
         await tuyaDevice.set({ set: setStatus.switch.status === 'on', dps: gangIndex })
             .catch((err) => {
-                logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
+                logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
 
-                if (err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                if (typeof err === 'object' &&
+                    err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
                     throw {
                         responseCode: 9503,
                         message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',

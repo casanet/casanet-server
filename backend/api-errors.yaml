@@ -46,4 +46,5 @@
 - { 7503 : 'Getting status fail'}
 - { 8503 : 'local server timeout'}
 - { 9503 : 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.'}
+- { 10503 : 'Tuya device gives garbage values.'}
 
