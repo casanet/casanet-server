@@ -111,7 +111,7 @@ export class CreateMinionDialogComponent implements OnInit {
       device: {
         brand: this.brandsControl.value,
         model: this.modelsControl.value,
-        deviceId: this.devicesControl.value,
+        deviceId: this.requiredIdControl.value,
         token: this.requiredTokenControl.value,
         pysicalDevice: {
           mac: this.devicesControl.value,

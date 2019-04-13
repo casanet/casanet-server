@@ -82,6 +82,10 @@ export class TuyaHandler extends BrandModuleBase {
         tuyaDevice.on('data', (data) => {
             logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} data arrived`);
 
+            /** Case data arrived with garbage value */
+            if (typeof data === 'string') {
+                return;
+            }
             /**
              * Get the current status (the 'data' paramerer is invalid)
              */
@@ -200,8 +204,8 @@ export class TuyaHandler extends BrandModuleBase {
                 } as ErrorResponse;
             });
 
-        /** Case status get a garbage value */
-        if (typeof status !== 'object' || !stausResult.dps) {
+        /** Case stausResult get a garbage value */
+        if (typeof stausResult !== 'object' || !stausResult.dps) {
             throw {
                 responseCode: 10503,
                 message: 'tuya device gives garbage values.',
