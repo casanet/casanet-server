@@ -7,6 +7,7 @@ import { BrandModuleBase } from './brandModuleBase';
 //////////////// TO EXTEND: Place here handler reference //////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 import { BroadlinkHandler } from './broadlink/broadlinkHandler';
+import { IftttHandler } from './ifttt/iftttHandler';
 import { MockHandler } from './mock/mockHandler';
 import { OrviboHandler } from './orvibo/orviboHandler';
 import { TuyaHandler } from './tuya/tuyaHandler';
@@ -60,6 +61,7 @@ export class ModulesManager {
         this.initHandler(new BroadlinkHandler());
         this.initHandler(new YeelightHandler());
         this.initHandler(new OrviboHandler());
+        this.initHandler(new IftttHandler());
 
     }
 
