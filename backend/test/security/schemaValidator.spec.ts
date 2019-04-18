@@ -1,8 +1,14 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as express from 'express';
-import { ErrorResponse, Login } from '../../src/models/sharedInterfaces';
-import { ErrorResponseSchema, LoginSchema, RequestSchemaValidator, SchemaValidator } from '../../src/security/schemaValidator';
+import { ErrorResponse, Login, RemoteSettings } from '../../src/models/sharedInterfaces';
+import {
+    ErrorResponseSchema,
+    LoginSchema,
+    RemoteSettingsSchema,
+    RequestSchemaValidator,
+    SchemaValidator,
+} from '../../src/security/schemaValidator';
 
 describe('Schema validator tests', () => {
 
@@ -50,6 +56,64 @@ describe('Schema validator tests', () => {
             }
 
             return;
+        });
+    });
+
+    describe('Test RemoteSettingsSchema schema', () => {
+        it('it should pass ws succsessfully', async () => {
+            const remoteSettings: RemoteSettings = {
+                host: 'ws://127.0.0.1',
+                connectionKey: '123456',
+            };
+            const filterdRemoteSettings = await SchemaValidator(remoteSettings, RemoteSettingsSchema)
+                .catch(() => {
+                    throw new Error('valid ws RemoteSettingsSchema schema fail');
+                });
+
+            expect(filterdRemoteSettings).to.deep.equal(remoteSettings);
+        });
+
+        it('it should pass wss succsessfully', async () => {
+            const remoteSettings: RemoteSettings = {
+                host: 'wss://localhost:8080',
+                connectionKey: '123456',
+            };
+            const filterdRemoteSettings = await SchemaValidator(remoteSettings, RemoteSettingsSchema)
+                .catch(() => {
+                    throw new Error('valid wss RemoteSettingsSchema schema fail');
+                });
+
+            expect(filterdRemoteSettings).to.deep.equal(remoteSettings);
+        });
+
+        it('it should fail other protocol URI', async () => {
+            const remoteSettings: RemoteSettings = {
+                host: 'http://127.0.0.1',
+                connectionKey: '123456',
+            };
+
+            try {
+                await await SchemaValidator(remoteSettings, RemoteSettingsSchema);
+            } catch (error) {
+                return;
+            }
+
+            throw new Error('invalid RemoteSettings URI schema passed validator');
+        });
+
+        it('it should fail without protocol URI', async () => {
+            const remoteSettings: RemoteSettings = {
+                host: '127.0.0.1:8080',
+                connectionKey: '123456',
+            };
+
+            try {
+                await await SchemaValidator(remoteSettings, RemoteSettingsSchema);
+            } catch (error) {
+                return;
+            }
+
+            throw new Error('invalid RemoteSettings URI schema passed validator');
         });
     });
 

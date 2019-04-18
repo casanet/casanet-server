@@ -5,7 +5,7 @@ import { ErrorResponse } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
 export const RemoteSettingsSchema: ObjectSchema = Joi.object().keys({
-    host: Joi.string().uri().required(),
+    host: Joi.string().uri().regex(/^(ws:\/\/|wss:\/\/)/).required(),
     connectionKey: Joi.string().not('').required(),
 }).required();
 
