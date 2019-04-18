@@ -40,7 +40,7 @@ export class TuyaHandler extends BrandModuleBase {
     /**
      * Map devices by mac address
      */
-    private pysicalDevicesMap: { [key: string]: any } = {};
+    private pysicalDevicesMap: { [key: string]: Tuyapi } = {};
 
     constructor() {
         super();
@@ -288,5 +288,12 @@ export class TuyaHandler extends BrandModuleBase {
             responseCode: 6409,
             message: 'the tuya module not support any recording mode',
         } as ErrorResponse;
+    }
+
+    public async refreshCommunication(): Promise<void> {
+        for (const tuyaApi of Object.values(this.pysicalDevicesMap)) {
+            tuyaApi.disconnect();
+        }
+        this.pysicalDevicesMap = {};
     }
 }

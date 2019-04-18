@@ -4,6 +4,7 @@ import { AirConditioning, DeviceKind, ErrorResponse, Minion, MinionStatus, Switc
 import { BrandModuleBase } from '../brandModuleBase';
 // tslint:disable-next-line:no-var-requires
 const Broadlink = require('./broadlinkProtocol');
+// tslint:disable-next-line:no-var-requires
 const BroadlinkCodeGeneration = require('./commands-generator');
 
 interface AirConditioningCommand {
@@ -96,7 +97,7 @@ export class BroadlinkHandler extends BrandModuleBase {
      * @returns IR code struct or undefined if not exist.
      */
     private getMinionACStatusCommand(airConditioningCommands: AirConditioningCommand[],
-        airConditioningStatus: AirConditioning): AirConditioningCommand {
+                                     airConditioningStatus: AirConditioning): AirConditioningCommand {
         for (const airConditioningCommand of airConditioningCommands) {
             if (airConditioningCommand.status.fanStrength === airConditioningStatus.fanStrength &&
                 airConditioningCommand.status.mode === airConditioningStatus.mode &&
@@ -362,7 +363,7 @@ export class BroadlinkHandler extends BrandModuleBase {
             minionCache.toggleCommands = {
                 on: undefined,
                 off: undefined,
-            }
+            };
         }
 
         if (statusToRecordFor.toggle.status === 'on') {
@@ -434,5 +435,9 @@ export class BroadlinkHandler extends BrandModuleBase {
             responseCode: 8404,
             message: 'unknown minion model',
         } as ErrorResponse;
+    }
+
+    public async refreshCommunication(): Promise<void> {
+        // There's nothing to do.
     }
 }

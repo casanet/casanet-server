@@ -85,4 +85,10 @@ export class ModulesManagerMock {
         await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
         return;
     }
+
+    public async refreshModules(): Promise<void> {
+    }
+
+    public async refreshModule(brand: string): Promise<void> {
+    }
 }

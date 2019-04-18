@@ -1,7 +1,6 @@
+import * as bcrypt from 'bcrypt';
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
-import * as cryptoJs from 'crypto-js';
-import * as bcrypt from 'bcrypt';
 import { UsersBl } from '../../src/business-layer/usersBl';
 import { UsersDal } from '../../src/data-layer/usersDal';
 import { ErrorResponse, User } from '../../src/models/sharedInterfaces';
@@ -36,7 +35,7 @@ describe('Users BL tests', () => {
         email: '12345cm@vf.com',
         displayName: 'fnl',
         ignoreTfa: false,
-        password: '123456789',
+        password: '123',
         sessionTimeOutMS: 5359436,
         scope: 'userAuth',
     };
@@ -54,7 +53,7 @@ describe('Users BL tests', () => {
                 return;
             }
 
-            throw new Error('new user created while password less then 10 chars');
+            throw new Error('new user created while password less then 6 chars');
         });
 
         it('it should create user succsessfully', async () => {

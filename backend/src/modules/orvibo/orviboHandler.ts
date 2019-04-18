@@ -252,4 +252,8 @@ export class OrviboHandler extends BrandModuleBase {
             message: 'the orvibo module not support any recording mode',
         } as ErrorResponse;
     }
+
+    public async refreshCommunication(): Promise<void> {
+        // There's nothing to do.
+    }
 }

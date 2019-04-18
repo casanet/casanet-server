@@ -427,4 +427,8 @@ export class YeelightHandler extends BrandModuleBase {
             message: 'the yeelight module not support any recording mode',
         } as ErrorResponse;
     }
+
+    public async refreshCommunication(): Promise<void> {
+        // There's nothing to do.
+    }
 }
