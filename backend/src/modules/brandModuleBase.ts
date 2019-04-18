@@ -104,11 +104,17 @@ export abstract class BrandModuleBase {
     public abstract enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse>;
 
     /**
-     * Generate an RF or IR command for given status. 
+     * Generate an RF or IR command for given status.
      * Note, only a few devices models support this feature.
      * For example, it is used to generate RF command to the RF wall switch, instead of buying remote and record the commands.
      * @param minion minion to generate for.
      * @param statusToGenerateFor the specific status to record for.
      */
     public abstract generateCommand(minion: Minion, statusToGenerateFor: MinionStatus): Promise<void | ErrorResponse>;
+
+    /**
+     * Refresh and reset all module communications.
+     * Used for cleaning up communication before re-reading data, after communication auth changed or just hard reset module etc.
+     */
+    public abstract refreshCommunication(): Promise<void>;
 }

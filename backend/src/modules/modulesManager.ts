@@ -180,7 +180,7 @@ export class ModulesManager {
     }
 
     /**
-     * Generate an RF or IR command for given status. 
+     * Generate an RF or IR command for given status.
      * Note, only a few devices models support this feature.
      * For example, it is used to generate RF command to the RF wall switch, instead of buying remote and record the commands.
      * @param minion minion to generate for.
@@ -208,6 +208,34 @@ export class ModulesManager {
         }
 
         return await minionModule.generateCommand(minion, statusToGenerateFor);
+    }
+
+    /**
+     * Refresh and reset all module communications.
+     * Used for cleaning up communication before re-reading data, after communication auth changed or just hard reset module etc.
+     */
+    public async refreshModules(): Promise<void> {
+        for (const brandHandler of this.modulesHandlers) {
+            await brandHandler.refreshCommunication();
+        }
+    }
+
+    /**
+     * Reset module communication.
+     * @param brand Brand module to reset.
+     */
+    public async refreshModule(brand: string): Promise<void> {
+        const minionModule = this.getMinionModule(brand);
+
+        if (!minionModule) {
+            const errorResponse: ErrorResponse = {
+                responseCode: 7404,
+                message: `there is not module for -${brand}- brand`,
+            };
+            throw errorResponse;
+        }
+
+        await minionModule.refreshCommunication();
     }
 }
 

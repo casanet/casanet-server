@@ -254,6 +254,7 @@ class MinionsBl {
      * mean update minions cache by request each device what is the real status.
      */
     async scanMinionsStatus() {
+        await this.modulesManager.refreshModules();
         await this.readMinionsStatus();
     }
     /**
@@ -417,6 +418,8 @@ class MinionsBl {
             event: 'removed',
             minion: originalMinion,
         });
+        // Finally clean module communication
+        await this.modulesManager.refreshModule(originalMinion.device.brand);
     }
     /**
      * Record command for current minion status.

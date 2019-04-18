@@ -292,6 +292,7 @@ export class MinionsBl {
      * mean update minions cache by request each device what is the real status.
      */
     public async scanMinionsStatus(): Promise<void> {
+        await this.modulesManager.refreshModules();
         await this.readMinionsStatus();
     }
 
@@ -478,6 +479,9 @@ export class MinionsBl {
             event: 'removed',
             minion: originalMinion,
         });
+
+        // Finally clean module communication
+        await this.modulesManager.refreshModule(originalMinion.device.brand);
     }
 
     /**
@@ -512,7 +516,7 @@ export class MinionsBl {
      * @param minionId minion to record for.
      * @param statusToGenerateFor The status to record command for.
      */
-    public async generateCommand(minionId: string, statusToGenerateFor  : MinionStatus): Promise<void> {
+    public async generateCommand(minionId: string, statusToGenerateFor: MinionStatus): Promise<void> {
         const minion = this.findMinion(minionId);
         if (!minion) {
             throw {
