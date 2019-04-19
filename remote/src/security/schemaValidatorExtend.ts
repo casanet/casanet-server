@@ -1,6 +1,12 @@
 import * as Joi from 'joi';
 import { ObjectSchema } from 'joi';
 
+export const IftttOnChangedSchema: ObjectSchema = Joi.object().keys({
+    localMac: Joi.string().not('').required(),
+    deviceId: Joi.string().not('').required(),
+    newStatus: Joi.string().allow('on', 'off').required(),
+}).required();
+
 export const LoginLocalServerSchema: ObjectSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().not('').required(),

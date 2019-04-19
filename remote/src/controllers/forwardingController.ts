@@ -16,6 +16,13 @@ export class ForwardingController extends Controller {
         return await ChannelsBlSingleton.sendHttpViaChannels(localServerId, httpRequest);
     }
 
+    /**
+     * Forward request  to local server by local server mac address (used for ifttt).
+     */
+    public async forwardHttpReqByMac(localMac: string, httpRequest: HttpRequest): Promise<HttpResponse> {
+        return await ChannelsBlSingleton.sendHttpViaChannelsByMac(localMac, httpRequest);
+    }
+
     //////////////////////////////////////////////////
     /////// SWAGGER DOCUMENTATION ONLY METHODS ///////
     //////////////////////////////////////////////////
