@@ -578,3 +578,13 @@ export declare interface Timing {
      */
     timingProperties: TimingProperties;
 }
+
+/** Ifttt webhook request body to notify minion status changed */
+export declare interface IftttOnChanged {
+    /** Allow remote-server to forward request to local server */
+    localMac?:string;
+    /** Device id (AKA Ifttt webhook API key), this is the authentication of request. */ 
+    deviceId: string;
+    /** The new status */
+    newStatus: SwitchOptions;
+}

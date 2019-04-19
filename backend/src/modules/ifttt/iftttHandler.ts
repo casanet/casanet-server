@@ -21,16 +21,24 @@ export class IftttHandler extends BrandModuleBase {
             suppotedMinionType: 'toggle',
             isRecordingSupported: false,
         },
+        {
+            brand: this.brandName,
+            isTokenRequierd: false,
+            isIdRequierd: true,
+            minionsPerDevice: -1,
+            model: 'switch',
+            suppotedMinionType: 'switch',
+            isRecordingSupported: false,
+        },
     ];
 
     constructor() {
-
         super();
     }
+
     public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
-        return {
-            status: 'on',
-        } as MinionStatus;
+        /** Currently there is no API to get the real current status. */
+        return miniom.minionStatus;
     }
 
     public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {

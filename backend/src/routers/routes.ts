@@ -182,6 +182,13 @@ const models: TsoaRoute.Models = {
             "setAutoTurnOffMS": { "dataType": "double", "required": true },
         },
     },
+    "IftttOnChanged": {
+        "properties": {
+            "localMac": { "dataType": "string" },
+            "deviceId": { "dataType": "string", "required": true },
+            "newStatus": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+        },
+    },
     "OperationActivity": {
         "properties": {
             "minionId": { "dataType": "string", "required": true },
@@ -647,6 +654,29 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.createMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.put('/API/minions/:minionId/ifttt',
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+                iftttOnChanged: { "in": "body", "name": "iftttOnChanged", "required": true, "ref": "IftttOnChanged" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.notifyMinionStatusChanged.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/operations',

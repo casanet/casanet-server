@@ -2,7 +2,15 @@ import * as moment from 'moment';
 import * as randomstring from 'randomstring';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { MinionsDal, MinionsDalSingleton } from '../data-layer/minionsDal';
-import { DeviceKind, ErrorResponse, LocalNetworkDevice, Minion, MinionDevice, MinionFeed, MinionStatus } from '../models/sharedInterfaces';
+import {
+    DeviceKind,
+    ErrorResponse,
+    IftttOnChanged,
+    LocalNetworkDevice,
+    Minion,
+    MinionFeed,
+    MinionStatus,
+} from '../models/sharedInterfaces';
 import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
@@ -536,6 +544,48 @@ export class MinionsBl {
         }
 
         await this.modulesManager.generateCommand(minion, statusToGenerateFor);
+    }
+
+    /**
+     * Notify minion status changed by ifttt
+     * @param minionId Minon id.
+     * @param iftttOnChanged Minion key amd status to set.
+     */
+    public async notifyMinionChangedByIfttt(minionId: string, iftttOnChanged: IftttOnChanged) {
+        const minion = this.findMinion(minionId);
+
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            } as ErrorResponse;
+        }
+
+        /** Make sure the deviceId match to minion deviceId (there is no other authentication!!!) */
+        if (iftttOnChanged.deviceId !== minion.device.deviceId) {
+            throw {
+                responseCode: 5403,
+                message: 'invalid device id',
+            } as ErrorResponse;
+        }
+
+        /** Case it's first time update. */
+        if (!minion.minionStatus[minion.minionType]) {
+            minion.minionStatus[minion.minionType] = {
+                status: 'on',
+            };
+        }
+
+        /** Update the minion status */
+        minion.minionStatus[minion.minionType].status = iftttOnChanged.newStatus;
+
+        /**
+         * Send minions feed update.
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
     }
 }
 
