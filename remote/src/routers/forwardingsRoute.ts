@@ -1,20 +1,43 @@
 import { NextFunction, Request, Response } from 'express';
 import * as express from 'express';
 import * as SseStream from 'express-sse';
-import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
+import { ErrorResponse, IftttOnChanged } from '../../../backend/src/models/sharedInterfaces';
 import { SystemAuthScopes } from '../../../backend/src/security/authentication';
 import { logger } from '../../../backend/src/utilities/logger';
 import { ForwardUsersSessionsBlSingleton } from '../business-layer/forwardUserSessionsBl';
 import { ForwardingController } from '../controllers/forwardingController';
 import { ForwardUserSession } from '../models/remoteInterfaces';
 import { expressAuthentication } from '../security/authenticationExtend';
-
+import { IftttOnChangedSchema } from '../security/schemaValidatorExtend';
+import { RequestSchemaValidator } from '../../../backend/src/security/schemaValidator';
 export class ForwardingRouter {
 
     private forwardingController: ForwardingController = new ForwardingController();
 
     public forwardRouter(app: express.Express): void {
 
+        app.put('/API/minions/:minionId/ifttt', async (req: Request, res: Response) => {
+            const iftttOnChanged = await RequestSchemaValidator(req, IftttOnChangedSchema) as IftttOnChanged;
+
+            try {
+                /** Forward request as is and wait for request. */
+                const response = await this.forwardingController.forwardHttpReqByMac(iftttOnChanged.localMac,
+                    {
+                        requestId: undefined,
+                        httpPath: req.originalUrl,
+                        httpMethod: req.method.toUpperCase(),
+                        httpBody: req.body,
+                        httpSession: req.cookies.session,
+                    });
+
+                /** Set status and data and send response back */
+                res.statusCode = response.httpStatus;
+                res.send(response.httpBody);
+
+            } catch (error) {
+                res.status(501).send({ responseCode: 5000 } as ErrorResponse);
+            }
+        });
         /**
          * Listen to all casa API, to forward request to local server via WS channel.
          */
