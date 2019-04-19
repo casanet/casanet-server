@@ -1856,6 +1856,26 @@ definitions:
         required:
             - setAutoTurnOffMS
         type: object
+    IftttOnChanged:
+        description: 'Ifttt webhook request body to notify minion status changed'
+        properties:
+            localMac:
+                type: string
+                description: 'Allow remote-server to forward request to local server'
+                x-nullable: true
+            deviceId:
+                type: string
+                description: 'Device id (AKA Ifttt webhook API key), this is the authentication of request.'
+            newStatus:
+                type: string
+                enum:
+                    - on
+                    - off
+                description: 'The new status'
+        required:
+            - deviceId
+            - newStatus
+        type: object
     OperationActivity:
         description: 'Represents acivity.'
         properties:
@@ -2460,6 +2480,36 @@ paths:
                 -
                     adminAuth: []
             parameters: []
+    '/minions/{minionId}/ifttt':
+        put:
+            operationId: NotifyMinionStatusChanged
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Notify minion status changed by ifttt webhook (https://ifttt.com/maker_webhooks).'
+            tags:
+                - Minions
+            security: []
+            parameters:
+                -
+                    description: 'Minon id.'
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
+                -
+                    description: 'Minion key amd status to set.'
+                    in: body
+                    name: iftttOnChanged
+                    required: true
+                    schema:
+                        $ref: '#/definitions/IftttOnChanged'
     /operations:
         get:
             operationId: GetOperations

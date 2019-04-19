@@ -4,6 +4,7 @@
 - { 2403 : 'username or password is incorrect'}
 - { 3403 : 'authorization of local server in remote, fail'}
 - { 4403 : 'user not allowed to watch other accounts'}
+- { 5403 : 'invalid device id'}
 
 - { 1404 : 'minion not exist'}
 - { 2404 : 'device not exist in lan network'}

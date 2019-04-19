@@ -58,7 +58,7 @@ export declare interface Config {
         saltHash: string;
         /** Bcrypt salt rounds */
         bcryptSaltRounds: number;
-    }
+    };
 }
 
 /**

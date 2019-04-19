@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
-import { ErrorResponse, LocalNetworkDevice, Minion, MinionStatus, SetMinionAutoTurnOff, Timing } from '../models/sharedInterfaces';
+import { ErrorResponse, IftttOnChanged, Minion, MinionStatus, SetMinionAutoTurnOff } from '../models/sharedInterfaces';
 
 @Tags('Minions')
 @Route('minions')
@@ -129,5 +129,16 @@ export class MinionsController extends Controller {
     @Post()
     public async createMinion(@Body() minion: Minion): Promise<void> {
         return await MinionsBlSingleton.createMinion(minion);
+    }
+
+    /**
+     * Notify minion status changed by ifttt webhook (https://ifttt.com/maker_webhooks).
+     * @param minionId Minon id.
+     * @param iftttOnChanged Minion key amd status to set.
+     */
+    @Response<ErrorResponse>(501, 'Server error')
+    @Put('{minionId}/ifttt')
+    public async notifyMinionStatusChanged(minionId: string, @Body() iftttOnChanged: IftttOnChanged): Promise<void> {
+        return await MinionsBlSingleton.notifyMinionChangedByIfttt(minionId, iftttOnChanged);
     }
 }
