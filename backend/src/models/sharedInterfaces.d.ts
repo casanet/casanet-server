@@ -31,7 +31,7 @@ export declare interface OperationResult {
 /** Optional status on a remote connection */
 export declare type RemoteConnectionStatus =
     /** There are no remote settings.. */
-    'notConfigured' | 
+    'notConfigured' |
     /** From some reason the connection to remote server offline. */
     'cantReachRemoteServer' |
     /** The remote server has thrown authorization of the local server. */
@@ -160,10 +160,10 @@ export declare interface DeviceKind {
 }
 
 /**
- * Scopes of authentication, right know in our system there are only 2 scopes.
+ * Scopes of authentication, right know in our system there are only 3 scopes.
  * admin and user. any API route protect by one of them.
  */
-export declare type AuthScopes = 'adminAuth' | 'userAuth';
+export declare type AuthScopes = 'adminAuth' | 'userAuth' | 'iftttAuth';
 
 /**
  * Represents a user in the system. 
@@ -579,12 +579,36 @@ export declare interface Timing {
     timingProperties: TimingProperties;
 }
 
-/** Ifttt webhook request body to notify minion status changed */
+/** 
+ * Ifttt webhook request body to notify minion status changed.
+ * *Used in ifttt module interface only* 
+ */
 export declare interface IftttOnChanged {
     /** Allow remote-server to forward request to local server */
-    localMac?:string;
-    /** Device id (AKA Ifttt webhook API key), this is the authentication of request. */ 
+    localMac?: string;
+    /** Device id (AKA Ifttt webhook API key), this is the authentication of request. */
     deviceId: string;
     /** The new status */
     newStatus: SwitchOptions;
+}
+
+/** Ifttt integration settings */
+export declare interface IftttIntegrationSettings {
+    /** WebHooks API key */
+    apiKey?: string;
+    /** Open or close ifttt integration. */
+    enableIntegration: boolean;
+}
+
+/** Ifttt trigger action auth and forward fields */
+export declare interface IftttActionTriggeredRequest {
+    /** WebHooks API key */
+    apiKey: string;
+    /** Allow remote-server to forward request to local server */
+    localMac?: string;
+}
+
+/** Ifttt trigger set status action */
+export declare interface IftttActionTriggered extends IftttActionTriggeredRequest {
+    setStatus: SwitchOptions;
 }
