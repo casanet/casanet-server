@@ -13,6 +13,7 @@ import { AdministrationAuthRouter } from './routers/administrationAuthRoute';
 import { FeedRouter } from './routers/feedRoute';
 import { ForwardAuthRouter } from './routers/forwardAuthRoute';
 import { ForwardingRouter } from './routers/forwardingsRoute';
+import { ForwardingIftttRouter } from './routers/forwardingsIftttRoute';
 import { RegisterRoutes } from './routers/routes';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
@@ -30,6 +31,7 @@ class App {
     private administrationAuthRouter: AdministrationAuthRouter = new AdministrationAuthRouter();
     private feedRouter: FeedRouter = new FeedRouter();
     private forwardingRouter: ForwardingRouter = new ForwardingRouter();
+    private forwardingIftttRouter: ForwardingIftttRouter = new ForwardingIftttRouter();
 
     constructor() {
         /** Creat the express app */
@@ -52,7 +54,7 @@ class App {
 
         /** Route inner system */
         this.routes();
-
+        
         /** Finaly route API of casa and forward it as is to local server */
         this.forwardingToLocal();
 
@@ -104,6 +106,7 @@ class App {
      * Forward each casa API request to user local server AS IS.
      */
     private forwardingToLocal(): void {
+        this.forwardingIftttRouter.forwardRouter(this.express);
         this.forwardingRouter.forwardRouter(this.express);
     }
 

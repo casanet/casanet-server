@@ -2,10 +2,15 @@ import * as moment from 'moment';
 import { Duration } from 'moment';
 import { AirConditioning, DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { BrandModuleBase } from '../brandModuleBase';
-// tslint:disable-next-line:no-var-requires
-const Broadlink = require('./broadlinkProtocol');
-// tslint:disable-next-line:no-var-requires
-const BroadlinkCodeGeneration = require('./commands-generator');
+
+/** In remote server, getting js files fail. */
+try {
+    // tslint:disable-next-line:no-var-requires
+    var Broadlink = require('./broadlinkProtocol');
+    // tslint:disable-next-line:no-var-requires
+    var BroadlinkCodeGeneration = require('./commands-generator');
+
+} catch (error) { }
 
 interface AirConditioningCommand {
     command: string;
@@ -97,7 +102,7 @@ export class BroadlinkHandler extends BrandModuleBase {
      * @returns IR code struct or undefined if not exist.
      */
     private getMinionACStatusCommand(airConditioningCommands: AirConditioningCommand[],
-                                     airConditioningStatus: AirConditioning): AirConditioningCommand {
+        airConditioningStatus: AirConditioning): AirConditioningCommand {
         for (const airConditioningCommand of airConditioningCommands) {
             if (airConditioningCommand.status.fanStrength === airConditioningStatus.fanStrength &&
                 airConditioningCommand.status.mode === airConditioningStatus.mode &&

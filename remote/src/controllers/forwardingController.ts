@@ -28,6 +28,15 @@ export class ForwardingController extends Controller {
     //////////////////////////////////////////////////
 
     /**
+     * Forward each /API/ifttt/trigger/** path to the local server to handle it AS IS.
+     */
+    @Security('iftttAuth')
+    @Post('ifttt/trigger/**/*')
+    public async apiForwardingIftttDocumentation(): Promise<any> {
+        throw new Error('Request never should be here. it is a documentation only route.');
+    }
+
+    /**
      * Forward each /API/** path to the local server to handle it AS IS.
      */
     @Security('userAuth')

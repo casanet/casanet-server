@@ -187,7 +187,7 @@ const models: TsoaRoute.Models = {
             "sessionTimeOutMS": { "dataType": "double", "required": true },
             "password": { "dataType": "string", "required": true },
             "ignoreTfa": { "dataType": "boolean", "required": true },
-            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth"], "required": true },
+            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },
         },
     },
     "LocalServer": {
@@ -381,6 +381,28 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.logoutDocumentation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/API/ifttt/trigger/**/*',
+        authenticateMiddleware([{ "iftttAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new ForwardingController();
+
+
+            const promise = controller.apiForwardingIftttDocumentation.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/API/**/*',
