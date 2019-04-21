@@ -1,9 +1,10 @@
 import * as express from 'express';
 import { Application, NextFunction, Request, Response } from 'express';
+import { IftttIntegrationBlSingleton } from '../business-layer/iftttIntegrationBl';
 import { SessionsBlSingleton } from '../business-layer/sessionsBl';
 import { UsersBlSingleton } from '../business-layer/usersBl';
 import { Session } from '../models/backendInterfaces';
-import { AuthScopes, ErrorResponse, User } from '../models/sharedInterfaces';
+import { AuthScopes, ErrorResponse, IftttActionTriggeredRequest, IftttIntegrationSettings, User } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
 /**
@@ -12,9 +13,11 @@ import { logger } from '../utilities/logger';
 export const SystemAuthScopes: {
     adminScope: AuthScopes,
     userScope: AuthScopes,
+    iftttScope: AuthScopes,
 } = {
     adminScope: 'adminAuth',
     userScope: 'userAuth',
+    iftttScope: 'iftttAuth',
 };
 
 /**
@@ -30,6 +33,21 @@ export const expressAuthentication = async (request: express.Request, scopes: st
         throw {
             responseCode: 1501,
         } as ErrorResponse;
+    }
+
+    if (scopes.indexOf(SystemAuthScopes.iftttScope) !== -1) {
+        const authedRequest: IftttActionTriggeredRequest = request.body;
+        if (typeof authedRequest === 'object' && authedRequest.apiKey) {
+            const iftttIntegrationSettings: IftttIntegrationSettings = await IftttIntegrationBlSingleton.getIftttIntergrationSettings();
+            if (iftttIntegrationSettings.enableIntegration && authedRequest.apiKey === iftttIntegrationSettings.apiKey) {
+                return;
+            }
+        }
+
+        throw {
+            responseCode: 1401,
+        } as ErrorResponse;
+
     }
 
     // If the session cookie empty, ther is nothing to check.

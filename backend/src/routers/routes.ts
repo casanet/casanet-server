@@ -10,6 +10,7 @@ import { TimingsController } from './../controllers/timingsController';
 import { UsersController } from './../controllers/usersController';
 import { RemoteConnectionController } from './../controllers/remoteConnectionController';
 import { StaticAssetsController } from './../controllers/staticAssetsController';
+import { IftttController } from './../controllers/iftttController';
 import { expressAuthentication } from './../security/authentication';
 import * as express from 'express';
 import { ErrorResponse, User } from '../../../backend/src/models/sharedInterfaces';
@@ -209,13 +210,19 @@ const models: TsoaRoute.Models = {
             "sessionTimeOutMS": { "dataType": "double", "required": true },
             "password": { "dataType": "string", "required": true },
             "ignoreTfa": { "dataType": "boolean", "required": true },
-            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth"], "required": true },
+            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },
         },
     },
     "RemoteSettings": {
         "properties": {
             "host": { "dataType": "string", "required": true },
             "connectionKey": { "dataType": "string", "required": true },
+        },
+    },
+    "IftttIntegrationSettings": {
+        "properties": {
+            "apiKey": { "dataType": "string" },
+            "enableIntegration": { "dataType": "boolean", "required": true },
         },
     },
 };
@@ -1203,6 +1210,29 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.getStaticsAssets.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.put('/API/ifttt/settings',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                iftttIntegrationSettings: { "in": "body", "name": "iftttIntegrationSettings", "required": true, "ref": "IftttIntegrationSettings" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new IftttController();
+
+
+            const promise = controller.setIftttIntegrationSettings.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 

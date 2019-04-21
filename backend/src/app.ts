@@ -18,6 +18,7 @@ import { logger } from './utilities/logger';
 import './controllers/authController';
 import './controllers/devicesController';
 import './controllers/feedController';
+import './controllers/iftttController';
 import './controllers/minionsController';
 import './controllers/operationsController';
 import './controllers/remoteConnectionController';

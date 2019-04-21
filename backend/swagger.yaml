@@ -1857,7 +1857,7 @@ definitions:
             - setAutoTurnOffMS
         type: object
     IftttOnChanged:
-        description: 'Ifttt webhook request body to notify minion status changed'
+        description: "Ifttt webhook request body to notify minion status changed.\r\n*Used in ifttt module interface only*"
         properties:
             localMac:
                 type: string
@@ -1933,6 +1933,7 @@ definitions:
                 enum:
                     - adminAuth
                     - userAuth
+                    - iftttAuth
                 description: 'User scopes.'
         required:
             - email
@@ -1953,6 +1954,18 @@ definitions:
         required:
             - host
             - connectionKey
+        type: object
+    IftttIntegrationSettings:
+        properties:
+            apiKey:
+                type: string
+                description: 'WebHooks API key'
+                x-nullable: true
+            enableIntegration:
+                type: boolean
+                description: 'Open or close ifttt integration.'
+        required:
+            - enableIntegration
         type: object
 info:
     title: 'CASAnet - API'
@@ -3108,6 +3121,31 @@ paths:
                 - Public
             security: []
             parameters: []
+    /ifttt/settings:
+        put:
+            operationId: SetIftttIntegrationSettings
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get all minions in the system.'
+            tags:
+                - Ifttt
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    in: body
+                    name: iftttIntegrationSettings
+                    required: true
+                    schema:
+                        $ref: '#/definitions/IftttIntegrationSettings'
 produces:
     - application/json
 swagger: '2.0'
@@ -3119,6 +3157,10 @@ securityDefinitions:
     adminAuth:
         type: apiKey
         name: Cookie
+        in: header
+    iftttAuth:
+        type: apiKey
+        name: apiKey
         in: header
 host: 'localhost:3000'
 tags:
@@ -3140,6 +3182,9 @@ tags:
     -
         name: Timings
         description: 'Manage timings in system, such as invoke turn off lights operation today 12 AM etc.'
+    -
+        name: Ifttt
+        description: 'Manage IFTTT (https://ifttt.com/) integration and allow to turn on/off any device by any Ifttt trigger and to trigger by minion on/off event.'
     -
         name: Feeds
         description: 'Feed of updates from system, such as minion turned on/off etc. all using SSE protocol'
