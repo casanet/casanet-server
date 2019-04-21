@@ -45,6 +45,7 @@
     "pull-behavior": "^1.1.0",
     "randomstring": "^1.1.5",
     "reconnecting-ws": "^2.0.3",
+    "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "rxjs": "^6.3.3",
     "suncalc": "^1.8.0",

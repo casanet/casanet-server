@@ -225,6 +225,13 @@ const models: TsoaRoute.Models = {
             "enableIntegration": { "dataType": "boolean", "required": true },
         },
     },
+    "IftttActionTriggered": {
+        "properties": {
+            "apiKey": { "dataType": "string", "required": true },
+            "localMac": { "dataType": "string" },
+            "setStatus": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+        },
+    },
 };
 const validationService = new ValidationService(models);
 
@@ -1233,6 +1240,30 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.setIftttIntegrationSettings.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/ifttt/trigger/minions/:minionId',
+        authenticateMiddleware([{ "iftttAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+                iftttActionTriggered: { "in": "body", "name": "iftttActionTriggered", "required": true, "ref": "IftttActionTriggered" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new IftttController();
+
+
+            const promise = controller.triggeredAction.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 
