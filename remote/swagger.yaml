@@ -1858,6 +1858,7 @@ definitions:
                 enum:
                     - adminAuth
                     - userAuth
+                    - iftttAuth
                 description: 'User scopes.'
         required:
             - email
@@ -2034,6 +2035,23 @@ paths:
             security:
                 -
                     userAuth: []
+            parameters: []
+    '/API/ifttt/trigger/**/*':
+        post:
+            operationId: ApiForwardingIftttDocumentation
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: object
+            description: 'Forward each /API/ifttt/trigger/** path to the local server to handle it AS IS.'
+            tags:
+                - Forwarding
+            security:
+                -
+                    iftttAuth: []
             parameters: []
     '/API/**/*':
         get:
