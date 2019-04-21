@@ -86,8 +86,17 @@ To watch full API specs use [swagger UI](https://petstore.swagger.io/) and put `
 **
 Minion is a logic device in the system, meaning that a device is a physical device and minion is a logic device that uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device for a few minions, one to central AC control and second for secondary AC control so in it will be two totally  different minions that use one physical device.
 
+## IFTTT integration.
+The [IFTTT](https://ifttt.com/discover) ecosystem is great ;). 
+Now, invoking trigger when a minion turned on/off or turning on/off minion when any IFTTT trigger invoked is possible.
 
+The integration is using [WebHooks](https://ifttt.com/maker_webhooks) API.
 
+Receiving invoked triggers allow only if casa-net server accessible via public internet or via a remote server.
+
+Invoking trigger when a device turned on/off the local server require an internet connection.  
+
+See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 
 ## Main technologies.
 * Node.js (TypeScript) - Server.
