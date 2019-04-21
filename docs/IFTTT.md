@@ -71,6 +71,6 @@ For example sending phone notification, email alert, or any idea from wide IFTTT
       }
       ```
       localMac field is required only if using remote-server. to get the local mac-address `GET` `/API/remote/machine-mac`.
-     - ![Screenshot](./screenshots/ifttt/request-struce.PNG)
+     - ![Screenshot](./screenshots/ifttt/request-struct.PNG)
 
 That's it ;).
