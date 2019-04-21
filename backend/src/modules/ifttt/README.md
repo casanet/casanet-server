@@ -20,22 +20,22 @@ but this project made to be totally in users hands and control. so using webhook
     - Go to https://ifttt.com/maker_webhooks and press on `documentation`
         ![Screenshot](../../../../screenshots/ifttt/go-to-webhooks-documentation.PNG)
     - Watch and copy the webhooks API key.
-        ![Screenshot](../../../../screenshots/ifttt/watch-webhooks-api-key.PNG)
+        ![Screenshot](../../../../docs/screenshots/ifttt/watch-webhooks-api-key.PNG)
 1) Create a new minion in casa-net with brand `ifttt` model `switch` or `toggle` and paste the webhooks API key as device id.
 1) Copy the new minion inner-id from device meta.
     - Open the new minion menu and select `device meta`, then copy inner-id.
-        ![Screenshot](../../../../screenshots/ifttt/copy-inner-id.PNG)
+        ![Screenshot](../../../../docs/screenshots/ifttt/copy-inner-id.PNG)
 
 ### Trigger turn on/off.
 1) Go to [ifttt applets page](https://ifttt.com/my_applets) and press `new applet`.
 1) Press on `+this` button.
 1) Choose webhooks service. 
-    - ![Screenshot](../../../../screenshots/ifttt/choose-webhooks-service.PNG)
+    - ![Screenshot](../../../../docs/screenshots/ifttt/choose-webhooks-service.PNG)
 1) Choose the sebhooks trigger. 
-    - ![Screenshot](../../../../screenshots/ifttt/choose-webhooks-trigger.PNG)
+    - ![Screenshot](../../../../docs/screenshots/ifttt/choose-webhooks-trigger.PNG)
 1) In event name put the copied `inner-id` and on/off operation divided by `-`, And press `create trigger`.
     > Example here is for `on` operation, the `off` operation is just the same, but instead of 'on' put 'off'. 
-    - ![Screenshot](../../../../screenshots/ifttt/put-interface-trigger-name.PNG)
+    - ![Screenshot](../../../../docs/screenshots/ifttt/put-interface-trigger-name.PNG)
 1) Press on `+that` button and select the Ifttt service and the action that turn the device on.
 1) Create the same trigger for `off` operation.
 
@@ -47,7 +47,7 @@ Make sure casa-net accessible via public internet or via remote-server.
 ### Listen to device turned on/off.
 1) Create a trigger to be invoked when the device turned on/off using the manufature Ifttt service.
 1) Select WebHooks as an action service.
-    - ![Screenshot](../../../../screenshots/ifttt/select-action-service.PNG)
+    - ![Screenshot](../../../../docs/screenshots/ifttt/select-action-service.PNG)
  1) Select make request action
     - ![Screenshot](../../../../docs/screenshots/ifttt/choose-action.PNG)
  1) Set the HTTP request as following struct:
@@ -63,6 +63,6 @@ Make sure casa-net accessible via public internet or via remote-server.
       }
       ```
       localMac field is required only if using remote-server. to get the local mac-address `GET` `/API/remote/machine-mac`.
-     - ![Screenshot](../../../../screenshots/ifttt/interface-request-struce.PNG)
+     - ![Screenshot](../../../../docs/screenshots/ifttt/interface-request-struce.PNG)
 
 That's it ;).
