@@ -25,8 +25,48 @@ export const SendMail = async (to: string, code: string) => {
         to,
         replyTo: undefined,
         inReplyTo: undefined,
-        subject: 'CASAnet authentication code',
-        html: `<div> Your authentication code is: <br><textarea readonly>${code}</textarea><br>The password valid only in next 5 minutes. </div>`,
+        subject: 'CasaNet account verification',
+        html: `
+        <!DOCTYPE html>
+        <body>
+            <table style="width:420px;text-align:center;margin:0 auto;padding:30px 0;line-height:1.5;">
+                <tbody>
+                    <tr>
+                        <td>
+                            <table style="width:100%;margin-top:46px;background:#fff;
+                                          box-shadow:0px 0px 15px rgb(138, 135, 135);text-align:center;">
+                                <tbody>
+                                    <tr>
+                                        <td style="font-size:20px;font-weight:400;padding-top:120px;color:#303030;">
+                                            CasaNet Verification Code
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:36px;font-weight:800;color: rgb(6, 99, 75);">${code}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:16px;font-weight:200;padding-top:30px;color: #303030;">
+                                            This code is used to validate your account:
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:16px;font-weight:400;color: #303030;
+                                                   padding-bottom:108px;border-bottom:1px solid #eee;">
+                                             ${to}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:13px;font-weight:200;color: #9b9b9b;padding-top:20px;">
+                                            The generated code will expire within 5 minutes
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </body>`,
     };
 
     // send mail with defined transport object
