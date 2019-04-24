@@ -39,20 +39,14 @@
     "joi": "^14.3.0",
     "log4js": "^3.0.6",
     "moment": "^2.23.0",
-    "network-list2": "^1.0.2",
-    "node-orvibo-2": "^1.1.2",
-    "node-yeelight-wifi": "^0.1.2",
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
-    "pull-behavior": "^1.1.0",
     "randomstring": "^1.1.5",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "rxjs": "^6.3.3",
     "tsoa": "^2.3.8",
-    "tuyapi": "^4.0.4",
-    "ws": "^6.1.4",
-    "yeelight-awesome": "^1.0.12"
+    "ws": "^6.1.4"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
