@@ -3,13 +3,14 @@ import * as express from 'express';
 import * as SseStream from 'express-sse';
 import { ErrorResponse, IftttOnChanged } from '../../../backend/src/models/sharedInterfaces';
 import { SystemAuthScopes } from '../../../backend/src/security/authentication';
+import { RequestSchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { logger } from '../../../backend/src/utilities/logger';
 import { ForwardUsersSessionsBlSingleton } from '../business-layer/forwardUserSessionsBl';
 import { ForwardingController } from '../controllers/forwardingController';
 import { ForwardUserSession } from '../models/remoteInterfaces';
 import { expressAuthentication } from '../security/authenticationExtend';
 import { IftttOnChangedSchema } from '../security/schemaValidatorExtend';
-import { RequestSchemaValidator } from '../../../backend/src/security/schemaValidator';
+
 export class ForwardingRouter {
 
     private forwardingController: ForwardingController = new ForwardingController();
