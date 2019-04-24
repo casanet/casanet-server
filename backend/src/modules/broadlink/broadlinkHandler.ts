@@ -3,14 +3,10 @@ import { Duration } from 'moment';
 import { AirConditioning, DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { BrandModuleBase } from '../brandModuleBase';
 
-/** In remote server, getting js files fail. */
-try {
-    // tslint:disable-next-line:no-var-requires
-    var Broadlink = require('./broadlinkProtocol');
-    // tslint:disable-next-line:no-var-requires
-    var BroadlinkCodeGeneration = require('./commands-generator');
-
-} catch (error) { }
+// tslint:disable-next-line:no-var-requires
+const Broadlink = require('./broadlinkProtocol');
+// tslint:disable-next-line:no-var-requires
+const BroadlinkCodeGeneration = require('./commands-generator');
 
 interface AirConditioningCommand {
     command: string;
