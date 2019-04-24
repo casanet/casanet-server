@@ -29,7 +29,8 @@
             ],
             "styles": [
               "src/theme/theme.scss",
-              "src/theme/typography.scss"
+              "src/theme/typography.scss",
+              "src/assets/icons/google-material-icons.css"
             ],
             "scripts": []
           },
