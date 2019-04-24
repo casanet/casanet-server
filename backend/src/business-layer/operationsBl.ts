@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import * as randomstring from 'randomstring';
 import { OperationsDal, OperationsDalSingleton } from '../data-layer/operationsDal';
 import { ErrorResponse, MinionStatus, Operation, OperationActivity, OperationResult } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
@@ -100,6 +101,10 @@ export class OperationsBl {
      */
     public async CreateOperation(operation: Operation): Promise<void> {
         await this.validateNewOperationActivities(operation.activities);
+        /**
+         * Generate new id. (never trust client....)
+         */
+        operation.operationId = randomstring.generate(6);
         return await this.operationsDal.createOperation(operation);
     }
 
