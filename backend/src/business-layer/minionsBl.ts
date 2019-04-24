@@ -436,7 +436,7 @@ export class MinionsBl {
         /**
          * Generate new id. (never trust client....)
          */
-        minion.minionId = randomstring.generate(5);
+        minion.minionId = randomstring.generate(6);
 
         /**
          * Create new minion in dal.

@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { Moment } from 'moment';
+import * as randomstring from 'randomstring';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import * as suncalc from 'suncalc';
 import { Configuration } from '../config';
@@ -281,6 +282,10 @@ export class TimingsBl {
      */
     public async CreateTiming(timing: Timing): Promise<void> {
         await this.validateNewTimingOperation(timing);
+        /**
+         * Generate new id. (never trust client....)
+         */
+        timing.timingId = randomstring.generate(6);
         return await this.timingsDal.createTiming(timing);
     }
 
