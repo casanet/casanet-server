@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { IftttIntegrationBlSingleton } from '../business-layer/iftttIntegrationBl';
-import { ErrorResponse, IftttActionTriggered, IftttIntegrationSettings } from '../models/sharedInterfaces';
+import { ErrorResponse, IftttActionTriggered, IftttActionTriggeredRequest, IftttIntegrationSettings } from '../models/sharedInterfaces';
 
 @Tags('Ifttt')
 @Route('ifttt')
@@ -17,14 +17,27 @@ export class IftttController extends Controller {
     }
 
     /**
-     * Ifttt webhooks triggering casa-net action API.
+     * Ifttt webhooks triggering casa-net *minion* action API.
      * @param minionId minion to set status.
      * @param iftttActionTriggered status to set.
      */
     @Response<ErrorResponse>(501, 'Server error')
     @Security('iftttAuth')
     @Post('/trigger/minions/{minionId}/')
-    public async triggeredAction(minionId: string, @Body() iftttActionTriggered: IftttActionTriggered): Promise<void> {
-        await IftttIntegrationBlSingleton.triggeredAction(minionId, iftttActionTriggered);
+    public async triggeredMinionAction(minionId: string, @Body() iftttActionTriggered: IftttActionTriggered): Promise<void> {
+        await IftttIntegrationBlSingleton.triggeredMinionAction(minionId, iftttActionTriggered);
+    }
+
+    /**
+     * Ifttt webhooks triggering casa-net *operation* action API.
+     * @param operationId operation to invoke.
+     * @param iftttActionTriggeredRequest Ifttt request auth and redirect data.
+     */
+    @Response<ErrorResponse>(501, 'Server error')
+    @Security('iftttAuth')
+    @Post('/trigger/operations/{operationId}/')
+    public async triggeredOperationAction(operationId: string, @Body() iftttActionTriggeredRequest: IftttActionTriggeredRequest)
+        : Promise<void> {
+        await IftttIntegrationBlSingleton.triggeredOperationAction(operationId);
     }
 }

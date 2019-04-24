@@ -232,6 +232,12 @@ const models: TsoaRoute.Models = {
             "setStatus": { "dataType": "enum", "enums": ["on", "off"], "required": true },
         },
     },
+    "IftttActionTriggeredRequest": {
+        "properties": {
+            "apiKey": { "dataType": "string", "required": true },
+            "localMac": { "dataType": "string" },
+        },
+    },
 };
 const validationService = new ValidationService(models);
 
@@ -1263,7 +1269,31 @@ export function RegisterRoutes(app: express.Express) {
             const controller = new IftttController();
 
 
-            const promise = controller.triggeredAction.apply(controller, validatedArgs as any);
+            const promise = controller.triggeredMinionAction.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/ifttt/trigger/operations/:operationId',
+        authenticateMiddleware([{ "iftttAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
+                iftttActionTriggeredRequest: { "in": "body", "name": "iftttActionTriggeredRequest", "required": true, "ref": "IftttActionTriggeredRequest" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new IftttController();
+
+
+            const promise = controller.triggeredOperationAction.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 
