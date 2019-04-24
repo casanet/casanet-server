@@ -5,6 +5,8 @@ import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import { MinionsService } from '../../services/minions.service';
+import { DevicesService } from '../../services/devices.service';
 import { TranslateService } from '../../translate.service';
 import { User } from '../../../../../backend/src/models/sharedInterfaces';
 import { TranslatePipe } from '../../translate.pipe';
@@ -41,6 +43,8 @@ export class UserMenuComponent implements OnInit {
 		public dialog: MatDialog,
 		private router: Router,
 		private authService: AuthService,
+		private minionsService: MinionsService,
+		private devicesService: DevicesService,
 		private translateService: TranslateService) {
 		this.translatePipe = new TranslatePipe(this.translateService);
 
@@ -55,6 +59,10 @@ export class UserMenuComponent implements OnInit {
 
 	onLogout() {
 		this.authService.logout().then(() => {
+
+			this.minionsService.cleanUp();
+			this.devicesService.cleanUp();
+
 			this.snackBar.open(this.translatePipe.transform('LOGOUT_SUCCESSFULLY'), this.translatePipe.transform('SUBMIT'), {
 				duration: 20000,
 			});

@@ -52,9 +52,10 @@ export class MinionsService {
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
+		await this.patchMinions();
 	}
 
-	private async loadMinions() {
+	private async patchMinions() {
 		try {
 			const minions = await this.httpClient.get<Minion[]>('/API/minions').toPromise();
 			this.isMinionsRetrived = true;
@@ -69,6 +70,12 @@ export class MinionsService {
 			this.isMinionsRetrived = false;
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
+
+	}
+
+	private async loadMinions() {
+
+		await this.patchMinions();
 
 		if (this.minionsServerFeed) {
 			this.minionsServerFeed.close();
@@ -121,7 +128,7 @@ export class MinionsService {
 
 	public async retriveMinions() {
 		if (!this.isMinionsRetrived) {
-			this.loadMinions();
+			await this.loadMinions();
 		}
 	}
 
@@ -210,5 +217,12 @@ export class MinionsService {
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
+	}
+
+	public async cleanUp() {
+		this.isMinionsRetrived = false;
+		this.minions = [];
+		this.minionsServerFeed.close();
+		this.minionsServerFeed = null;
 	}
 }

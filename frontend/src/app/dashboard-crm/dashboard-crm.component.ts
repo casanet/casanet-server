@@ -68,6 +68,7 @@ export class DashboardCrmComponent implements OnInit {
 		});
 		minionsService.retriveMinions();
 		devicesService.retriveLanDevices();
+		devicesService.retriveDevicesKindsData();
 	}
 
 	ngOnInit() { }
@@ -185,8 +186,8 @@ export class DashboardCrmComponent implements OnInit {
 			title: minion.name,
 			html:
 				`<table border="1" style="margin: auto">
-					<tr><td><b>${this.translatePipe.transform('INNER_ID')}</b>     </td><td> ${minion.minionId} </td></tr> 
-					<tr><td><b>${this.translatePipe.transform('MODEL')}</b>        </td><td> ${minion.device.brand} </td></tr> 
+					<tr><td><b>${this.translatePipe.transform('INNER_ID')}</b>     </td><td> ${minion.minionId} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('MODEL')}</b>        </td><td> ${minion.device.brand} </td></tr>
 					<tr><td><b>${this.translatePipe.transform('BRAND')}</b>        </td><td> ${minion.device.model} </td></tr>
 					<tr><td><b>${this.translatePipe.transform('DEVICE_NAME')}</b>  </td><td> ${minion.device.pysicalDevice.name || '?'} </td></tr>
 					<tr><td><b>${this.translatePipe.transform('DEVICE_MAC')}</b>   </td><td> ${minion.device.pysicalDevice.mac} </td></tr>
