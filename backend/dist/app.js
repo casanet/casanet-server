@@ -19,6 +19,7 @@ const logger_1 = require("./utilities/logger");
 require("./controllers/authController");
 require("./controllers/devicesController");
 require("./controllers/feedController");
+require("./controllers/iftttController");
 require("./controllers/minionsController");
 require("./controllers/operationsController");
 require("./controllers/remoteConnectionController");

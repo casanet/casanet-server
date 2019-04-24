@@ -2,9 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
 const brandModuleBase_1 = require("../brandModuleBase");
-// tslint:disable-next-line:no-var-requires
-const Broadlink = require('./broadlinkProtocol');
-const BroadlinkCodeGeneration = require('./commands-generator');
+/** In remote server, getting js files fail. */
+try {
+    // tslint:disable-next-line:no-var-requires
+    var Broadlink = require('./broadlinkProtocol');
+    // tslint:disable-next-line:no-var-requires
+    var BroadlinkCodeGeneration = require('./commands-generator');
+}
+catch (error) { }
 class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
     constructor() {
         super();
@@ -361,6 +366,9 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
             responseCode: 8404,
             message: 'unknown minion model',
         };
+    }
+    async refreshCommunication() {
+        // There's nothing to do.
     }
 }
 exports.BroadlinkHandler = BroadlinkHandler;

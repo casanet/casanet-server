@@ -73,10 +73,18 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
          */
         tuyaDevice.on('data', (data) => {
             logger_1.logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} data arrived`);
+            /** Case data arrived with garbage value */
+            if (typeof data === 'string') {
+                return;
+            }
             /**
              * Get the current status (the 'data' paramerer is invalid)
              */
             tuyaDevice.get({ schema: true }).then((status) => {
+                /** Case status get a garbage value */
+                if (typeof status !== 'object' || !status.dps) {
+                    return;
+                }
                 /**
                  * Pull the current minions array in system.
                  */
@@ -160,8 +168,9 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
         const tuyaDevice = this.getTuyaDevice(miniom.device);
         const stausResult = await tuyaDevice.get({ schema: true })
             .catch((err) => {
-            logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
-            if (err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+            logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+            if (typeof err === 'object' &&
+                err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
                 throw {
                     responseCode: 9503,
                     message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
@@ -172,6 +181,13 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
                 message: 'communication with tuya device fail',
             };
         });
+        /** Case stausResult get a garbage value */
+        if (typeof stausResult !== 'object' || !stausResult.dps) {
+            throw {
+                responseCode: 10503,
+                message: 'tuya device gives garbage values.',
+            };
+        }
         /**
          * Extract the current minion status.
          */
@@ -215,8 +231,9 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
         }
         await tuyaDevice.set({ set: setStatus.switch.status === 'on', dps: gangIndex })
             .catch((err) => {
-            logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err.message}`);
-            if (err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+            logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+            if (typeof err === 'object' &&
+                err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
                 throw {
                     responseCode: 9503,
                     message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
@@ -239,6 +256,12 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
             responseCode: 6409,
             message: 'the tuya module not support any recording mode',
         };
+    }
+    async refreshCommunication() {
+        for (const tuyaApi of Object.values(this.pysicalDevicesMap)) {
+            tuyaApi.disconnect();
+        }
+        this.pysicalDevicesMap = {};
     }
 }
 exports.TuyaHandler = TuyaHandler;

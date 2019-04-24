@@ -15,9 +15,21 @@ let ForwardingController = class ForwardingController extends tsoa_1.Controller 
     async forwardHttpReq(localServerId, httpRequest) {
         return await channelsBl_1.ChannelsBlSingleton.sendHttpViaChannels(localServerId, httpRequest);
     }
+    /**
+     * Forward request  to local server by local server mac address (used for ifttt).
+     */
+    async forwardHttpReqByMac(localMac, httpRequest) {
+        return await channelsBl_1.ChannelsBlSingleton.sendHttpViaChannelsByMac(localMac, httpRequest);
+    }
     //////////////////////////////////////////////////
     /////// SWAGGER DOCUMENTATION ONLY METHODS ///////
     //////////////////////////////////////////////////
+    /**
+     * Forward each /API/ifttt/trigger/** path to the local server to handle it AS IS.
+     */
+    async apiForwardingIftttDocumentation() {
+        throw new Error('Request never should be here. it is a documentation only route.');
+    }
     /**
      * Forward each /API/** path to the local server to handle it AS IS.
      */
@@ -25,6 +37,10 @@ let ForwardingController = class ForwardingController extends tsoa_1.Controller 
         throw new Error('Request never should be here. it is a documentation only route.');
     }
 };
+__decorate([
+    tsoa_1.Security('iftttAuth'),
+    tsoa_1.Post('ifttt/trigger/**/*')
+], ForwardingController.prototype, "apiForwardingIftttDocumentation", null);
 __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Get('**/*')

@@ -206,6 +206,9 @@ class OrviboHandler extends brandModuleBase_1.BrandModuleBase {
             message: 'the orvibo module not support any recording mode',
         };
     }
+    async refreshCommunication() {
+        // There's nothing to do.
+    }
 }
 exports.OrviboHandler = OrviboHandler;
 //# sourceMappingURL=orviboHandler.js.map
