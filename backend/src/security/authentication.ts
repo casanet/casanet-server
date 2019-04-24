@@ -1,8 +1,8 @@
 import * as express from 'express';
 import { Application, NextFunction, Request, Response } from 'express';
-import { IftttIntegrationBlSingleton } from '../business-layer/iftttIntegrationBl';
 import { SessionsBlSingleton } from '../business-layer/sessionsBl';
 import { UsersBlSingleton } from '../business-layer/usersBl';
+import { IftttIntergrationDalSingleton } from '../data-layer/iftttIntegrationDal';
 import { Session } from '../models/backendInterfaces';
 import { AuthScopes, ErrorResponse, IftttActionTriggeredRequest, IftttIntegrationSettings, User } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
@@ -38,7 +38,7 @@ export const expressAuthentication = async (request: express.Request, scopes: st
     if (scopes.indexOf(SystemAuthScopes.iftttScope) !== -1) {
         const authedRequest: IftttActionTriggeredRequest = request.body;
         if (typeof authedRequest === 'object' && authedRequest.apiKey) {
-            const iftttIntegrationSettings: IftttIntegrationSettings = await IftttIntegrationBlSingleton.getIftttIntergrationSettings();
+            const iftttIntegrationSettings: IftttIntegrationSettings = await IftttIntergrationDalSingleton.getIntegrationSettings();
             if (iftttIntegrationSettings.enableIntegration && authedRequest.apiKey === iftttIntegrationSettings.apiKey) {
                 return;
             }
