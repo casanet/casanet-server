@@ -1,10 +1,10 @@
 import * as request from 'request-promise';
 import { IftttIntergrationDal, IftttIntergrationDalSingleton } from '../data-layer/iftttIntegrationDal';
-import { IftttActionTriggered, IftttIntegrationSettings, Minion, MinionFeed } from '../models/sharedInterfaces';
+import { IftttActionTriggered, IftttIntegrationSettings, Minion, MinionFeed, Operation } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
 import { logger } from '../utilities/logger';
-import { MinionsBl } from './minionsBl';
-import { MinionsBlSingleton } from './minionsBl';
+import { MinionsBl, MinionsBlSingleton } from './minionsBl';
+import { OperationsBl, OperationsBlSingleton } from './operationsBl';
 /**
  * Used to invoke ifttt triggers and to act ifttt actions.
  * Using Webhooks API.
@@ -18,6 +18,7 @@ export class IftttIntegrationBl {
      */
     constructor(private iftttIntergrationDal: IftttIntergrationDal,
                 private minionsBl: MinionsBl,
+                private operationsBl: OperationsBl,
     ) {
         /** Subscribe to minions feed, to trigger an wenhooks event */
         this.minionsBl.minionFeed.subscribe((minionFeed: MinionFeed) => {
@@ -40,11 +41,16 @@ export class IftttIntegrationBl {
         return await this.iftttIntergrationDal.getIntegrationSettings();
     }
 
-    /** Trigger requested action. */
-    public async triggeredAction(minionId: string, iftttActionTriggered: IftttActionTriggered): Promise<void> {
+    /** Trigger requested minion action. */
+    public async triggeredMinionAction(minionId: string, iftttActionTriggered: IftttActionTriggered): Promise<void> {
         const minion = DeepCopy<Minion>(await this.minionsBl.getMinionById(minionId));
         minion.minionStatus[minion.minionType].status = iftttActionTriggered.setStatus;
         await this.minionsBl.setMinionStatus(minionId, minion.minionStatus);
+    }
+
+    /** Trigger requested operation action. */
+    public async triggeredOperationAction(operationId: string): Promise<void> {
+        await this.operationsBl.triggerOperation(operationId);
     }
 
     /** Send trigger to webhooks API */
@@ -65,4 +71,4 @@ export class IftttIntegrationBl {
 
 }
 
-export const IftttIntegrationBlSingleton = new IftttIntegrationBl(IftttIntergrationDalSingleton, MinionsBlSingleton);
+export const IftttIntegrationBlSingleton = new IftttIntegrationBl(IftttIntergrationDalSingleton, MinionsBlSingleton, OperationsBlSingleton);

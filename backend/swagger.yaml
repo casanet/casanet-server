@@ -1987,6 +1987,19 @@ definitions:
             - apiKey
             - setStatus
         type: object
+    IftttActionTriggeredRequest:
+        description: 'Ifttt trigger action auth and forward fields'
+        properties:
+            apiKey:
+                type: string
+                description: 'WebHooks API key'
+            localMac:
+                type: string
+                description: 'Allow remote-server to forward request to local server'
+                x-nullable: true
+        required:
+            - apiKey
+        type: object
 info:
     title: 'CASAnet - API'
     version: 2.0.0
@@ -3168,7 +3181,7 @@ paths:
                         $ref: '#/definitions/IftttIntegrationSettings'
     '/ifttt/trigger/minions/{minionId}':
         post:
-            operationId: TriggeredAction
+            operationId: TriggeredMinionAction
             produces:
                 - application/json
             responses:
@@ -3178,7 +3191,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Ifttt webhooks triggering casa-net action API.'
+            description: 'Ifttt webhooks triggering casa-net *minion* action API.'
             tags:
                 - Ifttt
             security:
@@ -3198,6 +3211,38 @@ paths:
                     required: true
                     schema:
                         $ref: '#/definitions/IftttActionTriggered'
+    '/ifttt/trigger/operations/{operationId}':
+        post:
+            operationId: TriggeredOperationAction
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Ifttt webhooks triggering casa-net *operation* action API.'
+            tags:
+                - Ifttt
+            security:
+                -
+                    iftttAuth: []
+            parameters:
+                -
+                    description: 'operation to invoke.'
+                    in: path
+                    name: operationId
+                    required: true
+                    type: string
+                -
+                    description: 'Ifttt request auth and redirect data.'
+                    in: body
+                    name: iftttActionTriggeredRequest
+                    required: true
+                    schema:
+                        $ref: '#/definitions/IftttActionTriggeredRequest'
 produces:
     - application/json
 swagger: '2.0'
