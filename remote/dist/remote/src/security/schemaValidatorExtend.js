@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Joi = require("joi");
+exports.IftttOnChangedSchema = Joi.object().keys({
+    localMac: Joi.string().not('').required(),
+    deviceId: Joi.string().not('').required(),
+    newStatus: Joi.string().allow('on', 'off').required(),
+}).required();
 exports.LoginLocalServerSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().not('').required(),

@@ -15,6 +15,7 @@ const administrationAuthRoute_1 = require("./routers/administrationAuthRoute");
 const feedRoute_1 = require("./routers/feedRoute");
 const forwardAuthRoute_1 = require("./routers/forwardAuthRoute");
 const forwardingsRoute_1 = require("./routers/forwardingsRoute");
+const forwardingsIftttRoute_1 = require("./routers/forwardingsIftttRoute");
 const routes_1 = require("./routers/routes");
 // controllers need to be referenced in order to get crawled by the TSOA generator
 require("./controllers/administrationAuthController");
@@ -30,6 +31,7 @@ class App {
         this.administrationAuthRouter = new administrationAuthRoute_1.AdministrationAuthRouter();
         this.feedRouter = new feedRoute_1.FeedRouter();
         this.forwardingRouter = new forwardingsRoute_1.ForwardingRouter();
+        this.forwardingIftttRouter = new forwardingsIftttRoute_1.ForwardingIftttRouter();
         /** Creat the express app */
         this.express = express();
         /** Security is the first thing, right?  */
@@ -84,6 +86,7 @@ class App {
      * Forward each casa API request to user local server AS IS.
      */
     forwardingToLocal() {
+        this.forwardingIftttRouter.forwardRouter(this.express);
         this.forwardingRouter.forwardRouter(this.express);
     }
     /**

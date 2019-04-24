@@ -179,6 +179,11 @@ class ChannelsBl {
         /** Activate promise resolve method with response as is. */
         sentRequest.forwardPromise.resolve(localUsersResponse.users);
     }
+    /** Send http request to local server over ws channel. */
+    async sendHttpViaChannelsByMac(localMac, httpRequest) {
+        const localServer = await this.localServersBl.getlocalServersByMac(localMac);
+        return await this.sendHttpViaChannels(localServer.localServerId, httpRequest);
+    }
     /**
      * Send http request to local server over ws channel.
      * @param localServerId local server to send rrquest for.

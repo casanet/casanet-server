@@ -78,7 +78,7 @@
     "DEVICE_NAME" : "physical device name",
     "DEVICE_MAC" : "physical device address",
     "DEVICE_IP" : "physical device ip address",
-    "DEVICE_VENDOR" : "pysical device vendor",
+    "DEVICE_VENDOR" : "physical device vendor",
     "NEXT" : "Next",
     "BACK" : "Back",
     "DONE" : "Done",

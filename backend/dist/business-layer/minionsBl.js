@@ -469,6 +469,42 @@ class MinionsBl {
         }
         await this.modulesManager.generateCommand(minion, statusToGenerateFor);
     }
+    /**
+     * Notify minion status changed by ifttt
+     * @param minionId Minon id.
+     * @param iftttOnChanged Minion key amd status to set.
+     */
+    async notifyMinionChangedByIfttt(minionId, iftttOnChanged) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        /** Make sure the deviceId match to minion deviceId (there is no other authentication!!!) */
+        if (iftttOnChanged.deviceId !== minion.device.deviceId) {
+            throw {
+                responseCode: 5403,
+                message: 'invalid device id',
+            };
+        }
+        /** Case it's first time update. */
+        if (!minion.minionStatus[minion.minionType]) {
+            minion.minionStatus[minion.minionType] = {
+                status: 'on',
+            };
+        }
+        /** Update the minion status */
+        minion.minionStatus[minion.minionType].status = iftttOnChanged.newStatus;
+        /**
+         * Send minions feed update.
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
 }
 exports.MinionsBl = MinionsBl;
 exports.MinionsBlSingleton = new MinionsBl(minionsDal_1.MinionsDalSingleton, devicesBl_1.DevicesBlSingleton, modulesManager_1.ModulesManagerSingltone);

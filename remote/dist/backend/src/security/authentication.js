@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sessionsBl_1 = require("../business-layer/sessionsBl");
 const usersBl_1 = require("../business-layer/usersBl");
+const iftttIntegrationDal_1 = require("../data-layer/iftttIntegrationDal");
 const logger_1 = require("../utilities/logger");
 /**
  * System auth scopes, shown in swagger doc as 2 kinds of security definitions.
@@ -9,6 +10,7 @@ const logger_1 = require("../utilities/logger");
 exports.SystemAuthScopes = {
     adminScope: 'adminAuth',
     userScope: 'userAuth',
+    iftttScope: 'iftttAuth',
 };
 /**
  * Cert Authentication middelwhere API.
@@ -21,6 +23,18 @@ exports.expressAuthentication = async (request, scopes) => {
         logger_1.logger.fatal('invalid or empty security scope');
         throw {
             responseCode: 1501,
+        };
+    }
+    if (scopes.indexOf(exports.SystemAuthScopes.iftttScope) !== -1) {
+        const authedRequest = request.body;
+        if (typeof authedRequest === 'object' && authedRequest.apiKey) {
+            const iftttIntegrationSettings = await iftttIntegrationDal_1.IftttIntergrationDalSingleton.getIntegrationSettings();
+            if (iftttIntegrationSettings.enableIntegration && authedRequest.apiKey === iftttIntegrationSettings.apiKey) {
+                return;
+            }
+        }
+        throw {
+            responseCode: 1401,
         };
     }
     // If the session cookie empty, ther is nothing to check.

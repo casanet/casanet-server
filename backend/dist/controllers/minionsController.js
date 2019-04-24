@@ -88,6 +88,14 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
     async createMinion(minion) {
         return await minionsBl_1.MinionsBlSingleton.createMinion(minion);
     }
+    /**
+     * Notify minion status changed by ifttt webhook (https://ifttt.com/maker_webhooks).
+     * @param minionId Minon id.
+     * @param iftttOnChanged Minion key amd status to set.
+     */
+    async notifyMinionStatusChanged(minionId, iftttOnChanged) {
+        return await minionsBl_1.MinionsBlSingleton.notifyMinionChangedByIfttt(minionId, iftttOnChanged);
+    }
 };
 __decorate([
     tsoa_1.Security('userAuth'),
@@ -153,6 +161,11 @@ __decorate([
     tsoa_1.Post(),
     __param(0, tsoa_1.Body())
 ], MinionsController.prototype, "createMinion", null);
+__decorate([
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Put('{minionId}/ifttt'),
+    __param(1, tsoa_1.Body())
+], MinionsController.prototype, "notifyMinionStatusChanged", null);
 MinionsController = __decorate([
     tsoa_1.Tags('Minions'),
     tsoa_1.Route('minions')

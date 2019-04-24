@@ -6,6 +6,7 @@ const rxjs_1 = require("rxjs");
 //////////////// TO EXTEND: Place here handler reference //////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 const broadlinkHandler_1 = require("./broadlink/broadlinkHandler");
+const iftttHandler_1 = require("./ifttt/iftttHandler");
 const mockHandler_1 = require("./mock/mockHandler");
 const orviboHandler_1 = require("./orvibo/orviboHandler");
 const tuyaHandler_1 = require("./tuya/tuyaHandler");
@@ -48,6 +49,7 @@ class ModulesManager {
         this.initHandler(new broadlinkHandler_1.BroadlinkHandler());
         this.initHandler(new yeelightHandler_1.YeelightHandler());
         this.initHandler(new orviboHandler_1.OrviboHandler());
+        this.initHandler(new iftttHandler_1.IftttHandler());
     }
     /**
      * Hold the hendler instance and registar to minions status changed.
@@ -177,6 +179,30 @@ class ModulesManager {
             throw errorResponse;
         }
         return await minionModule.generateCommand(minion, statusToGenerateFor);
+    }
+    /**
+     * Refresh and reset all module communications.
+     * Used for cleaning up communication before re-reading data, after communication auth changed or just hard reset module etc.
+     */
+    async refreshModules() {
+        for (const brandHandler of this.modulesHandlers) {
+            await brandHandler.refreshCommunication();
+        }
+    }
+    /**
+     * Reset module communication.
+     * @param brand Brand module to reset.
+     */
+    async refreshModule(brand) {
+        const minionModule = this.getMinionModule(brand);
+        if (!minionModule) {
+            const errorResponse = {
+                responseCode: 7404,
+                message: `there is not module for -${brand}- brand`,
+            };
+            throw errorResponse;
+        }
+        await minionModule.refreshCommunication();
     }
 }
 exports.ModulesManager = ModulesManager;

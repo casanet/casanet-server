@@ -187,7 +187,7 @@ const models = {
             "sessionTimeOutMS": { "dataType": "double", "required": true },
             "password": { "dataType": "string", "required": true },
             "ignoreTfa": { "dataType": "boolean", "required": true },
-            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth"], "required": true },
+            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },
         },
     },
     "LocalServer": {
@@ -340,6 +340,22 @@ function RegisterRoutes(app) {
         }
         const controller = new forwardAuthController_1.ForwardAuthController();
         const promise = controller.logoutDocumentation.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/API/ifttt/trigger/**/*', authenticateMiddleware([{ "iftttAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+            });
+            return;
+        }
+        const controller = new forwardingController_1.ForwardingController();
+        const promise = controller.apiForwardingIftttDocumentation.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.get('/API/API/**/*', authenticateMiddleware([{ "userAuth": [] }]), function (request, response, next) {

@@ -12,6 +12,7 @@ const timingsController_1 = require("./../controllers/timingsController");
 const usersController_1 = require("./../controllers/usersController");
 const remoteConnectionController_1 = require("./../controllers/remoteConnectionController");
 const staticAssetsController_1 = require("./../controllers/staticAssetsController");
+const iftttController_1 = require("./../controllers/iftttController");
 const authentication_1 = require("./../security/authentication");
 const models = {
     "ErrorResponse": {
@@ -182,6 +183,13 @@ const models = {
             "setAutoTurnOffMS": { "dataType": "double", "required": true },
         },
     },
+    "IftttOnChanged": {
+        "properties": {
+            "localMac": { "dataType": "string" },
+            "deviceId": { "dataType": "string", "required": true },
+            "newStatus": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+        },
+    },
     "OperationActivity": {
         "properties": {
             "minionId": { "dataType": "string", "required": true },
@@ -202,13 +210,32 @@ const models = {
             "sessionTimeOutMS": { "dataType": "double", "required": true },
             "password": { "dataType": "string", "required": true },
             "ignoreTfa": { "dataType": "boolean", "required": true },
-            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth"], "required": true },
+            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },
         },
     },
     "RemoteSettings": {
         "properties": {
             "host": { "dataType": "string", "required": true },
             "connectionKey": { "dataType": "string", "required": true },
+        },
+    },
+    "IftttIntegrationSettings": {
+        "properties": {
+            "apiKey": { "dataType": "string" },
+            "enableIntegration": { "dataType": "boolean", "required": true },
+        },
+    },
+    "IftttActionTriggered": {
+        "properties": {
+            "apiKey": { "dataType": "string", "required": true },
+            "localMac": { "dataType": "string" },
+            "setStatus": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+        },
+    },
+    "IftttActionTriggeredRequest": {
+        "properties": {
+            "apiKey": { "dataType": "string", "required": true },
+            "localMac": { "dataType": "string" },
         },
     },
 };
@@ -545,6 +572,25 @@ function RegisterRoutes(app) {
         }
         const controller = new minionsController_1.MinionsController();
         const promise = controller.createMinion.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.put('/API/minions/:minionId/ifttt', function (request, response, next) {
+        const args = {
+            minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+            iftttOnChanged: { "in": "body", "name": "iftttOnChanged", "required": true, "ref": "IftttOnChanged" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+            });
+            return;
+        }
+        const controller = new minionsController_1.MinionsController();
+        const promise = controller.notifyMinionStatusChanged.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.get('/API/operations', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {
@@ -949,6 +995,62 @@ function RegisterRoutes(app) {
         }
         const controller = new staticAssetsController_1.StaticAssetsController();
         const promise = controller.getStaticsAssets.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.put('/API/ifttt/settings', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            iftttIntegrationSettings: { "in": "body", "name": "iftttIntegrationSettings", "required": true, "ref": "IftttIntegrationSettings" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+            });
+            return;
+        }
+        const controller = new iftttController_1.IftttController();
+        const promise = controller.setIftttIntegrationSettings.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/ifttt/trigger/minions/:minionId', authenticateMiddleware([{ "iftttAuth": [] }]), function (request, response, next) {
+        const args = {
+            minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+            iftttActionTriggered: { "in": "body", "name": "iftttActionTriggered", "required": true, "ref": "IftttActionTriggered" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+            });
+            return;
+        }
+        const controller = new iftttController_1.IftttController();
+        const promise = controller.triggeredMinionAction.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/ifttt/trigger/operations/:operationId', authenticateMiddleware([{ "iftttAuth": [] }]), function (request, response, next) {
+        const args = {
+            operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
+            iftttActionTriggeredRequest: { "in": "body", "name": "iftttActionTriggeredRequest", "required": true, "ref": "IftttActionTriggeredRequest" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+            });
+            return;
+        }
+        const controller = new iftttController_1.IftttController();
+        const promise = controller.triggeredOperationAction.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     function authenticateMiddleware(security = []) {

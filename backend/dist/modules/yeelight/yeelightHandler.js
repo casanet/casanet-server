@@ -338,6 +338,9 @@ class YeelightHandler extends brandModuleBase_1.BrandModuleBase {
             message: 'the yeelight module not support any recording mode',
         };
     }
+    async refreshCommunication() {
+        // There's nothing to do.
+    }
 }
 exports.YeelightHandler = YeelightHandler;
 //# sourceMappingURL=yeelightHandler.js.map
