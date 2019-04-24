@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as express from 'express';
 import { ErrorResponse, IftttActionTriggeredRequest } from '../../../backend/src/models/sharedInterfaces';
+import { logger } from '../../../backend/src/utilities/logger';
 import { ForwardingController } from '../controllers/forwardingController';
 
 export class ForwardingIftttRouter {
@@ -9,7 +10,8 @@ export class ForwardingIftttRouter {
 
     public forwardRouter(app: express.Express): void {
 
-        app.post('/API/ifttt/trigger/minions/:minionId', async (req: Request, res: Response) => {
+        /** Handle all ifttt triggers requests */
+        app.post('/API/ifttt/trigger/*', async (req: Request, res: Response) => {
             const iftttTriggerRequest = req.body as IftttActionTriggeredRequest;
 
             /** Make sure request contance local server to forward to. */
@@ -34,6 +36,9 @@ export class ForwardingIftttRouter {
                 res.send(response.httpBody);
 
             } catch (error) {
+                logger.debug(`Forwarding ifttt trigger action to local server mac: ${iftttTriggerRequest.localMac},` +
+                    `fail ${JSON.stringify(error)}`);
+                // Dont tell if its fail becuase of mac not connected or not exist, to avoid attakers to know if mac is valid or not.
                 res.status(501).send({ responseCode: 5000 } as ErrorResponse);
             }
         });
