@@ -37,7 +37,7 @@ export class DevicesService {
 
   public async retriveDevicesKindsData() {
     if (!this.isDevicesKindsRetrived) {
-      this.loadDevicesKindsData();
+      await this.loadDevicesKindsData();
     }
   }
 
@@ -57,7 +57,7 @@ export class DevicesService {
 
   public async retriveLanDevices() {
     if (!this.isLanDevicesRetrived) {
-      this.loadLanDevices();
+      await this.loadLanDevices();
     }
   }
 
@@ -71,5 +71,12 @@ export class DevicesService {
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
+  }
+
+  public async cleanUp() {
+    this.isDevicesKindsRetrived = false;
+    this.isLanDevicesRetrived = false;
+    this.devicesKinds = [];
+    this.lanDevices = [];
   }
 }
