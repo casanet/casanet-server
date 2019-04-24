@@ -63,6 +63,6 @@ Make sure casa-net accessible via public internet or via remote-server.
       }
       ```
       localMac field is required only if using remote-server. to get the local mac-address `GET` `/API/remote/machine-mac`.
-     - ![Screenshot](../../../../docs/screenshots/ifttt/interface-request-struce.PNG)
+     - ![Screenshot](../../../../docs/screenshots/ifttt/interface-request.PNG)
 
 That's it ;).

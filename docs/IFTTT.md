@@ -56,11 +56,11 @@ For example sending phone notification, email alert, or any idea from wide IFTTT
 1) Create a trigger to be invoked by any IFTTT trigger service.
 1) Select WebHooks as an action service.
     - ![Screenshot](./screenshots/ifttt/select-action-service.PNG)
- 1) Select make request action
+1) Select make request action
     - ![Screenshot](./screenshots/ifttt/choose-action.PNG)
- 1) Set the HTTP request as following struct:
+1) Set the HTTP request as following struct:
     - URL: `http://[casa-net server or remote server host/ip]/API/ifttt/trigger/minions/[inner-id]`.
-    - Method: `PUT`.
+    - Method: `POST`.
     - Content-TypeL `application/json`.
     - Body: 
       ```
@@ -71,6 +71,26 @@ For example sending phone notification, email alert, or any idea from wide IFTTT
       }
       ```
       localMac field is required only if using remote-server. to get the local mac-address `GET` `/API/remote/machine-mac`.
-     - ![Screenshot](./screenshots/ifttt/request-struct.PNG)
+     - ![Screenshot](./screenshots/ifttt/trigger-minion-request.PNG)
+
+### Invoke operation when IFTTT trigger invoked.
+1) Create a trigger to be invoked by any IFTTT trigger service.
+1) Select WebHooks as an action service.
+    - ![Screenshot](./screenshots/ifttt/select-action-service.PNG)
+1) Select make request action
+    - ![Screenshot](./screenshots/ifttt/choose-action.PNG)
+1) Set the HTTP request as following struct:
+    - URL: `http://[casa-net server or remote server host/ip]/API/ifttt/trigger/operations/[operationId]`.
+    - Method: `POST`.
+    - Content-TypeL `application/json`.
+    - Body: 
+      ```
+      { 
+        "localMac":"f4********83",
+        "apiKey": "hjg***Webhooks API key***kjh"
+      }
+      ```
+      localMac field is required only if using remote-server. to get the local mac-address `GET` `/API/remote/machine-mac`.
+     - ![Screenshot](./screenshots/ifttt/trigger-operation-request.PNG)
 
 That's it ;).
