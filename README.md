@@ -1,8 +1,7 @@
 > The version 1 of the project placed in [here](https://github.com/haimkastner/Home-IoT-Server/tree/archive-v1), maintaining for security and fatal bugs fixes only.
 ---
 
-
-![screenshot](https://user-images.githubusercontent.com/28386247/53685975-4b22bf80-3d2a-11e9-99c7-09b2093c8060.png)
+![Screenshot](./docs/images/logo-wide.png)
 
 Let's create a smart home, without giving anyone access to our house 😊.
 
@@ -24,7 +23,7 @@ The logic and design of the server is that there are several types of devices in
 This structure enables the creation of a separate server and a collection of modules that enable communication by implementing preset methods for each device type (such as the OOP interface).
 
 ## How does it look?
-![screenshot](https://user-images.githubusercontent.com/28386247/53686146-2f201d80-3d2c-11e9-8d99-fb72a9255327.JPG)
+![Screenshot](./docs/images/dashboard.JPG)
 
 
 ### UI Languages support.
