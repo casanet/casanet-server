@@ -56,16 +56,25 @@ export class IftttIntegrationBl {
     /** Send trigger to webhooks API */
     private async invokeTrigger(minion: Minion) {
 
-        const ifttSettings = await this.iftttIntergrationDal.getIntegrationSettings();
-        if (!ifttSettings.enableIntegration) {
+        const iftttSettings = await this.iftttIntergrationDal.getIntegrationSettings();
+        if (!iftttSettings.enableIntegration) {
             return;
         }
 
         try {
-            // tslint:disable-next-line:max-line-length
-            await request(`https://maker.ifttt.com/trigger/when-${minion.minionId}-${minion.minionStatus[minion.minionType].status}/with/key/${ifttSettings.apiKey}`);
+            await request({
+                method: 'POST',
+                // tslint:disable-next-line:max-line-length
+                uri: `https://maker.ifttt.com/trigger/when-${minion.minionId}-${minion.minionStatus[minion.minionType].status}/with/key/${iftttSettings.apiKey}`,
+                body: {
+                    value1: minion.name,
+                    value2: minion.minionType,
+                    value3: minion.minionStatus[minion.minionType],
+                },
+                json: true,
+            });
         } catch (error) {
-            logger.warn(`Sent IFTTT trigger for ${minion.minionId} fail, ${JSON.stringify(error.message)}`);
+            logger.warn(`Sent IFTTT trigger for ${minion.minionId} fail, ${JSON.stringify(!error ? error : error.message)}`);
         }
     }
 
