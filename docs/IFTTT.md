@@ -24,7 +24,7 @@ but this project made to be totally in users hands and control. so using webhook
     - Go to https://ifttt.com/maker_webhooks and press on `documentation`
         ![Screenshot](./screenshots/ifttt/go-to-webhooks-documentation.PNG)
     - Watch and copy the webhooks API key.
-        ![Screenshot](./screenshots/watch-webhooks-api-key.PNG)
+        ![Screenshot](./screenshots/ifttt/watch-webhooks-api-key.PNG)
 1) Login to casa-net as admin and enable ifttt intergration:
         - POST /API/ifttt/settings
         Body:
