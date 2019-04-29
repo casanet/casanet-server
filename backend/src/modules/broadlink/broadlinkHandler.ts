@@ -1,12 +1,21 @@
 import * as moment from 'moment';
 import { Duration } from 'moment';
 import { AirConditioning, DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
+import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 
 // tslint:disable-next-line:no-var-requires
 const Broadlink = require('./broadlinkProtocol');
 // tslint:disable-next-line:no-var-requires
 const BroadlinkCodeGeneration = require('./commands-generator');
+
+/** Represents the broadlink protocol handler API */
+interface BroadlinkAPI {
+    sendData: (hexCommandCode: string, callback: (err: any) => void) => void;
+    enterLearning: (timeoutDurationInMs: number, callback: (err: any, hexStringCommand: string) => void) => void;
+    checkPower: (callback: (err: any, status: boolean) => void) => void;
+    setPower: (status: boolean, callback: (err: any) => void) => void;
+}
 
 interface AirConditioningCommand {
     command: string;
@@ -98,7 +107,7 @@ export class BroadlinkHandler extends BrandModuleBase {
      * @returns IR code struct or undefined if not exist.
      */
     private getMinionACStatusCommand(airConditioningCommands: AirConditioningCommand[],
-        airConditioningStatus: AirConditioning): AirConditioningCommand {
+                                     airConditioningStatus: AirConditioning): AirConditioningCommand {
         for (const airConditioningCommand of airConditioningCommands) {
             if (airConditioningCommand.status.fanStrength === airConditioningStatus.fanStrength &&
                 airConditioningCommand.status.mode === airConditioningStatus.mode &&
@@ -108,10 +117,11 @@ export class BroadlinkHandler extends BrandModuleBase {
         }
     }
 
-    private async getSP2Status(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
-        return new Promise<MinionStatus | ErrorResponse>((resolve, reject) => {
-            const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
-                miniom.device.pysicalDevice.mac, (err) => {
+    /** Get broadlink protocol handler instance for given minion */
+    private async getBroadlinkInstance(minoin: Minion): Promise<BroadlinkAPI | ErrorResponse> {
+        return new Promise<BroadlinkAPI | ErrorResponse>((resolve, reject) => {
+            const broadlinkDevice = new Broadlink({ address: minoin.device.pysicalDevice.ip, port: 80 },
+                minoin.device.pysicalDevice.mac, (err) => {
                     if (err) {
                         reject({
                             responseCode: 1503,
@@ -120,49 +130,72 @@ export class BroadlinkHandler extends BrandModuleBase {
                         return;
                     }
 
-                    broadlinkDevice.checkPower((err2, state) => {
-                        if (err2) {
-                            reject({
-                                responseCode: 7503,
-                                message: 'Getting status fail',
-                            } as ErrorResponse);
-                            return;
-                        }
-
-                        resolve({
-                            switch: {
-                                status: state ? 'on' : 'off',
-                            },
-                        });
-                    });
+                    resolve(broadlinkDevice);
                 });
         });
     }
 
-    private async setSP2Status(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+    /** Send RF/IR command */
+    private async sendBeamCommand(broadlink: BroadlinkAPI, beamCommand: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            broadlink.sendData(beamCommand, (err) => {
+                if (err) {
+                    reject({
+                        responseCode: 11503,
+                        message: 'Sending beam command fail.',
+                    } as ErrorResponse);
+                    return;
+                }
+                resolve();
+            });
+        });
+    }
+
+    /** Enter learn mode */
+    private async enterBeamLearningMode(broadlink: BroadlinkAPI): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
+            broadlink.enterLearning(moment.duration(5, 'seconds').asMilliseconds(), (err, hexStringCommand) => {
+                if (err) {
+                    reject({
+                        responseCode: 2503,
+                        message: 'Recording fail or timeout',
+                    } as ErrorResponse);
+                    return;
+                }
+                resolve(hexStringCommand);
+            });
+        });
+    }
+
+    /** Get current broadlink power */
+    private async getBroadlinkPowerMode(broadlink: BroadlinkAPI): Promise<SwitchOptions | ErrorResponse> {
+        return new Promise<SwitchOptions | ErrorResponse>((resolve, reject) => {
+            broadlink.checkPower((err, state) => {
+                if (err) {
+                    reject({
+                        responseCode: 7503,
+                        message: 'Getting status fail',
+                    } as ErrorResponse);
+                    return;
+                }
+                resolve(state ? 'on' : 'off');
+            });
+        });
+    }
+
+    /** Set broadlink power */
+    private async setBroadlinkPowerMode(broadlink: BroadlinkAPI, switchOptions: SwitchOptions): Promise<void | ErrorResponse> {
         return new Promise<void | ErrorResponse>((resolve, reject) => {
-            const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
-                miniom.device.pysicalDevice.mac, (err) => {
-                    if (err) {
-                        reject({
-                            responseCode: 1503,
-                            message: 'Connection to device fail',
-                        } as ErrorResponse);
-                        return;
-                    }
-
-                    broadlinkDevice.setPower(setStatus.switch.status === 'on' ? true : false, (err2) => {
-                        if (err2) {
-                            reject({
-                                responseCode: 6503,
-                                message: 'Setting status fail',
-                            } as ErrorResponse);
-                            return;
-                        }
-
-                        resolve();
-                    });
-                });
+            broadlink.setPower(switchOptions === 'on', (err) => {
+                if (err) {
+                    reject({
+                        responseCode: 6503,
+                        message: 'Setting status fail',
+                    } as ErrorResponse);
+                    return;
+                }
+                resolve();
+            });
         });
     }
 
@@ -171,187 +204,141 @@ export class BroadlinkHandler extends BrandModuleBase {
      * @param miniom minion to get last status for.
      */
     private async getCachedStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
-        return new Promise<MinionStatus | ErrorResponse>((resolve, reject) => {
-            const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
-                miniom.device.pysicalDevice.mac, (err) => {
-                    if (err) {
-                        reject({
-                            responseCode: 1503,
-                            message: 'Connection to device fail',
-                        } as ErrorResponse);
-                        return;
-                    }
+        await this.getBroadlinkInstance(miniom);
 
-                    const minionCache = this.getOrCreateMinionCache(miniom);
-                    if (!minionCache.lastStatus) {
-                        reject({
-                            responseCode: 5503,
-                            message: 'Current status is unknown, no history for current one-way transmitter',
-                        } as ErrorResponse);
-                        return;
-                    }
+        const minionCache = this.getOrCreateMinionCache(miniom);
+        if (!minionCache.lastStatus) {
+            throw {
+                responseCode: 5503,
+                message: 'Current status is unknown, no history for current one-way transmitter',
+            } as ErrorResponse;
+        }
 
-                    resolve(minionCache.lastStatus);
-                });
-        });
+        return (minionCache.lastStatus);
+    }
+
+    private async getSP2Status(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
+        const broadlink = await this.getBroadlinkInstance(miniom) as BroadlinkAPI;
+
+        const status = await this.getBroadlinkPowerMode(broadlink) as SwitchOptions;
+        return {
+            switch: {
+                status,
+            },
+        };
+    }
+
+    private async setSP2Status(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+        const broadlink = await this.getBroadlinkInstance(miniom) as BroadlinkAPI;
+
+        await this.setBroadlinkPowerMode(broadlink, setStatus.switch.status);
     }
 
     private async setRFToggleStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
-        return new Promise<void | ErrorResponse>((resolve, reject) => {
-            const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
-                miniom.device.pysicalDevice.mac, (err) => {
-                    if (err) {
-                        reject({
-                            responseCode: 1503,
-                            message: 'Connection to device fail',
-                        } as ErrorResponse);
-                        return;
-                    }
 
-                    const minionCache = this.getOrCreateMinionCache(miniom);
+        const broadlink = await this.getBroadlinkInstance(miniom) as BroadlinkAPI;
 
-                    if (!minionCache.toggleCommands) {
-                        reject({
-                            responseCode: 4503,
-                            message: 'there is no availble command. record a on off commands set.',
-                        } as ErrorResponse);
-                        return;
-                    }
+        const minionCache = this.getOrCreateMinionCache(miniom);
 
-                    const hexCommandCode = setStatus.toggle.status === 'on'
-                        ? minionCache.toggleCommands.on
-                        : minionCache.toggleCommands.off;
-                    broadlinkDevice.sendData(hexCommandCode, (err2) => {
-                        if (err2) {
-                            reject(err2);
-                            return;
-                        }
+        if (!minionCache.toggleCommands) {
+            throw {
+                responseCode: 4503,
+                message: 'there is no availble command. record a on off commands set.',
+            } as ErrorResponse;
+        }
 
-                        minionCache.lastStatus = setStatus;
-                        this.updateCache();
-                        resolve();
-                    });
-                });
-        });
+        const hexCommandCode = setStatus.toggle.status === 'on'
+            ? minionCache.toggleCommands.on
+            : minionCache.toggleCommands.off;
+
+        await this.sendBeamCommand(broadlink, hexCommandCode);
+
+        minionCache.lastStatus = setStatus;
+        this.updateCache();
     }
 
-    private async setIRACSwitchStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
-        return new Promise<void | ErrorResponse>((resolve, reject) => {
-            const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
-                miniom.device.pysicalDevice.mac, (err) => {
-                    if (err) {
-                        reject({
-                            responseCode: 1503,
-                            message: 'Connection to device fail',
-                        } as ErrorResponse);
-                        return;
-                    }
+    private async setIRACStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
 
-                    const minionCache = this.getOrCreateMinionCache(miniom);
+        const broadlink = await this.getBroadlinkInstance(miniom) as BroadlinkAPI;
 
-                    if (!minionCache.acCommands) {
-                        reject({
-                            responseCode: 3503,
-                            message: 'there is no any command',
-                        } as ErrorResponse);
-                        return;
-                    }
+        const minionCache = this.getOrCreateMinionCache(miniom);
 
-                    let hexCommandCode: string;
+        if (!minionCache.acCommands) {
+            throw {
+                responseCode: 3503,
+                message: 'there is no any command',
+            } as ErrorResponse;
+        }
 
-                    /**
-                     * If the request is to set off, get the off command.
-                     */
-                    if (setStatus.airConditioning.status === 'off') {
-                        hexCommandCode = minionCache.acCommands.off;
-                    } else {
-                        /**
-                         * Else try to get the correct command for given status to set.
-                         */
-                        const acCommand =
-                            this.getMinionACStatusCommand(minionCache.acCommands.statusCommands, setStatus.airConditioning);
+        let hexCommandCode: string;
 
-                        /** If there is command, get it. */
-                        hexCommandCode = acCommand ? acCommand.command : '';
-                    }
+        /**
+         * If the request is to set off, get the off command.
+         */
+        if (setStatus.airConditioning.status === 'off') {
+            hexCommandCode = minionCache.acCommands.off;
+        } else {
+            /**
+             * Else try to get the correct command for given status to set.
+             */
+            const acCommand =
+                this.getMinionACStatusCommand(minionCache.acCommands.statusCommands, setStatus.airConditioning);
 
-                    if (!hexCommandCode) {
-                        reject({
-                            responseCode: 4503,
-                            message: 'there is no availble command for current status. record a new command.',
-                        } as ErrorResponse);
-                        return;
-                    }
+            /** If there is command, get it. */
+            hexCommandCode = acCommand ? acCommand.command : '';
+        }
 
-                    broadlinkDevice.sendData(hexCommandCode, (err2) => {
-                        if (err2) {
-                            reject(err2);
-                            return;
-                        }
+        if (!hexCommandCode) {
+            throw {
+                responseCode: 4503,
+                message: 'there is no availble command for current status. record a new command.',
+            } as ErrorResponse;
+        }
 
-                        minionCache.lastStatus = setStatus;
-                        this.updateCache();
-                        resolve();
-                    });
-                });
-        });
+        await this.sendBeamCommand(broadlink, hexCommandCode);
+        /** In case AC has missed the sent command, send it again. */
+        await Delay(moment.duration(1, 'seconds'));
+        await this.sendBeamCommand(broadlink, hexCommandCode);
+
+        minionCache.lastStatus = setStatus;
+        this.updateCache();
     }
 
     private async recordIRACCommands(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
-        return new Promise<void | ErrorResponse>((resolve, reject) => {
-            const broadlinkDevice = new Broadlink({ address: miniom.device.pysicalDevice.ip, port: 80 },
-                miniom.device.pysicalDevice.mac, (err) => {
-                    if (err) {
-                        reject({
-                            responseCode: 1503,
-                            message: 'Connection to device fail',
-                        } as ErrorResponse);
-                        return;
-                    }
+        const broadlink = await this.getBroadlinkInstance(miniom) as BroadlinkAPI;
 
-                    const minionCache = this.getOrCreateMinionCache(miniom);
+        const minionCache = this.getOrCreateMinionCache(miniom);
 
-                    if (!minionCache.acCommands) {
-                        minionCache.acCommands = {
-                            off: '',
-                            statusCommands: [],
-                        };
-                    }
+        if (!minionCache.acCommands) {
+            minionCache.acCommands = {
+                off: '',
+                statusCommands: [],
+            };
+        }
 
-                    broadlinkDevice.enterLearning(moment.duration(5, 'seconds').asMilliseconds(), (err2, hexIRCommand) => {
-                        if (err2) {
-                            reject({
-                                responseCode: 2503,
-                                message: 'Recording fail or timeout',
-                            } as ErrorResponse);
-                            return;
-                        }
+        const hexIRCommand = await this.enterBeamLearningMode(broadlink);
 
-                        /** If status is off, jusr save it. */
-                        if (statusToRecordFor.airConditioning.status === 'off') {
-                            minionCache.acCommands.off = hexIRCommand;
-                        } else {
+        /** If status is off, jusr save it. */
+        if (statusToRecordFor.airConditioning.status === 'off') {
+            minionCache.acCommands.off = hexIRCommand;
+        } else {
 
-                            /** Else, get record objec if exsit and update command */
-                            let statusCommand =
-                                this.getMinionACStatusCommand(minionCache.acCommands.statusCommands, statusToRecordFor.airConditioning);
+            /** Else, get record objec if exsit and update command */
+            let statusCommand =
+                this.getMinionACStatusCommand(minionCache.acCommands.statusCommands, statusToRecordFor.airConditioning);
 
-                            /** If command object not exist yet, create new one and add it to commands array */
-                            if (!statusCommand) {
-                                statusCommand = {
-                                    command: '',
-                                    status: statusToRecordFor.airConditioning,
-                                };
-                                minionCache.acCommands.statusCommands.push(statusCommand);
-                            }
+            /** If command object not exist yet, create new one and add it to commands array */
+            if (!statusCommand) {
+                statusCommand = {
+                    command: '',
+                    status: statusToRecordFor.airConditioning,
+                };
+                minionCache.acCommands.statusCommands.push(statusCommand);
+            }
 
-                            statusCommand.command = hexIRCommand;
-                        }
-                        this.updateCache();
-                        resolve();
-                    });
-                });
-        });
+            statusCommand.command = hexIRCommand;
+        }
+        this.updateCache();
     }
 
     private async generateRFCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
@@ -406,7 +393,7 @@ export class BroadlinkHandler extends BrandModuleBase {
             case 'RM Pro as RF toggle':
                 return await this.setRFToggleStatus(miniom, setStatus);
             case 'RM3 / RM Pro as IR AC':
-                return await this.setIRACSwitchStatus(miniom, setStatus);
+                return await this.setIRACStatus(miniom, setStatus);
         }
         throw {
             responseCode: 8404,
