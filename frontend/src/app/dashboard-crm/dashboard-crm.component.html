@@ -59,6 +59,10 @@
                         <mat-icon>refresh</mat-icon>
                         <span>{{ 'REFRESH_MINION_DATA' | translate}}</span>
                     </button>
+                    <button mat-menu-item (click)="resendLastStatusUpdate(minion)" [disabled]="minion.minionType === 'toggle'">
+                        <mat-icon>repeat</mat-icon>
+                        <span>{{ 'REDO_LAST_UPDATE' | translate}}</span>
+                    </button>
                     <button mat-menu-item (click)="editAutoTimeout(minion)">
                         <mat-icon>hourglass_empty</mat-icon>
                         <span>{{ 'TURN_OFF_TIMEOUT' | translate}}</span>

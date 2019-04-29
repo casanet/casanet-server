@@ -44,6 +44,7 @@
     "CANCEL": "ביטול",
     "DEVICE_META": "מידע על המכשיר",
     "REFRESH_MINION_DATA": "רענן סטטוס",
+    "REDO_LAST_UPDATE": "בצע שוב עדכון סטטוס האחרון",
     "ENTER_RECORD_OR_GENERATE_MODE": "מצב הקלטה/ג'ינרוט",
     "EXIT_RECORD_OR_GENERATE_MODE": "צא ממצב הקלטה/ג'ינרוט",
     "TURN_OFF_TIMEOUT": "כיבוי אוטומטי",
