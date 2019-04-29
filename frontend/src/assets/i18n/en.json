@@ -44,6 +44,7 @@
     "CANCEL": "cancel",
     "DEVICE_META": "Device meta",
     "REFRESH_MINION_DATA": "Refresh minion",
+    "REDO_LAST_UPDATE": "Redo last status update",
     "ENTER_RECORD_OR_GENERATE_MODE": "Enter record/generate mode",
     "TURN_OFF_TIMEOUT": "Auto turn off",
     "EXIT_RECORD_OR_GENERATE_MODE": "Exit record mode",

@@ -206,6 +206,14 @@ export class DashboardCrmComponent implements OnInit {
 		minion['sync'] = false;
 	}
 
+	public async resendLastStatusUpdate(minion: Minion) {
+		minion['sync'] = true;
+
+		await this.minionsService.setStatus(minion);
+
+		minion['sync'] = false;
+	}
+
 	public recordModePressed(minion: Minion) {
 		if (minion['recordMode']) {
 			minion['recordMode'] = undefined;
