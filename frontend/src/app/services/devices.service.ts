@@ -19,15 +19,13 @@ export class DevicesService {
 
   constructor(private toastrAndErrorsService: ToasterAndErrorsService,
     private httpClient: HttpClient) {
-    this.retriveDevicesKindsData();
-    this.loadLanDevices();
   }
 
   private async loadDevicesKindsData() {
     try {
-      const minions = await this.httpClient.get<DeviceKind[]>('/API/devices/kinds').toPromise();
+      const devices = await this.httpClient.get<DeviceKind[]>('/API/devices/kinds').toPromise();
       this.isDevicesKindsRetrived = true;
-      this.devicesKinds = minions;
+      this.devicesKinds = devices;
 
     } catch (error) {
       this.isDevicesKindsRetrived = false;
