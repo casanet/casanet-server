@@ -40,6 +40,8 @@
     "MODE": "מצב",
     "FAN_STRENGTH": "עצמת רוח",
     "TEMERATURE": "טמפרטורה",
+    "BRIGTNESS": "בהירות",
+    "COLOR": "צבע",
     "SUBMIT": "בצע",
     "CANCEL": "ביטול",
     "DEVICE_META": "מידע על המכשיר",

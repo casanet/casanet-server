@@ -40,6 +40,8 @@
     "MODE": "mode",
     "FAN_STRENGTH": "fan strength",
     "TEMERATURE": "temperature",
+    "BRIGTNESS": "brigtness",
+    "COLOR": "color",
     "SUBMIT": "submit",
     "CANCEL": "cancel",
     "DEVICE_META": "Device meta",

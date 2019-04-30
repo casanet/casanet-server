@@ -113,6 +113,24 @@
                         </mat-slider>
                     </div>
 
+                    <div *ngIf="minion.minionType === 'light'">
+                        <p><b>{{'BRIGTNESS' | translate}}:</b> {{minion.updateSet.light.brightness}}% </p>
+                        <mat-slider [color]="primary" [max]="100" [min]="1" [step]="1" [thumbLabel]="true"
+                            [tickInterval]="false" [(ngModel)]="minion.updateSet.light.brightness">
+                        </mat-slider>
+                    </div>
+
+                    <div *ngIf="minion.minionType === 'temperatureLight'">
+                        <p><b>{{'BRIGTNESS' | translate}}:</b> {{minion.updateSet.temperatureLight.brightness}}% </p>
+                        <mat-slider [color]="primary" [max]="100" [min]="1" [step]="1" [thumbLabel]="true"
+                            [tickInterval]="false" [(ngModel)]="minion.updateSet.temperatureLight.brightness">
+                        </mat-slider>
+                        <p><b>{{'TEMERATURE' | translate}}:</b> {{minion.updateSet.temperatureLight.temperature}}% </p>
+                        <mat-slider [color]="primary" [max]="100" [min]="1" [step]="1" [thumbLabel]="true"
+                            [tickInterval]="false" [(ngModel)]="minion.updateSet.temperatureLight.temperature">
+                        </mat-slider>
+                    </div>
+
                     <div *ngIf="minion.minionType === 'colorLight'">
                         <p><b>{{'BRIGTNESS' | translate}}:</b> {{minion.updateSet.colorLight.brightness}}% </p>
                         <mat-slider [color]="primary" [max]="100" [min]="1" [step]="1" [thumbLabel]="true"
