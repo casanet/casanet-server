@@ -111,6 +111,11 @@ export class DashboardCrmComponent implements OnInit {
 					light: '#26A69A',
 					dark: '#4DB6AC'
 				};
+			case 'roller':
+				return {
+					light: '#bf9f73',
+					dark: '#bf9f73'
+				};
 			case 'airConditioning':
 				return {
 					light: '#5C6BC0',

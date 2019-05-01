@@ -28,7 +28,7 @@ export class MockHandler extends BrandModuleBase {
             minionsPerDevice: 1,
             model: 'switch demo',
             suppotedMinionType: 'switch',
-            isRecordingSupported : false,
+            isRecordingSupported: false,
         },
         {
             brand: this.brandName,
@@ -37,7 +37,7 @@ export class MockHandler extends BrandModuleBase {
             minionsPerDevice: -1,
             model: 'ac demo',
             suppotedMinionType: 'airConditioning',
-            isRecordingSupported : true,
+            isRecordingSupported: true,
         },
         {
             brand: this.brandName,
@@ -46,7 +46,43 @@ export class MockHandler extends BrandModuleBase {
             minionsPerDevice: -1,
             model: 'RF toggle demo',
             suppotedMinionType: 'toggle',
-            isRecordingSupported : true,
+            isRecordingSupported: true,
+        },
+        {
+            brand: this.brandName,
+            isTokenRequierd: false,
+            isIdRequierd: false,
+            minionsPerDevice: -1,
+            model: 'Light demo',
+            suppotedMinionType: 'light',
+            isRecordingSupported: false,
+        },
+        {
+            brand: this.brandName,
+            isTokenRequierd: false,
+            isIdRequierd: false,
+            minionsPerDevice: -1,
+            model: 'Temperature Light demo',
+            suppotedMinionType: 'temperatureLight',
+            isRecordingSupported: false,
+        },
+        {
+            brand: this.brandName,
+            isTokenRequierd: false,
+            isIdRequierd: false,
+            minionsPerDevice: -1,
+            model: 'Color Light demo',
+            suppotedMinionType: 'colorLight',
+            isRecordingSupported: false,
+        },
+        {
+            brand: this.brandName,
+            isTokenRequierd: false,
+            isIdRequierd: false,
+            minionsPerDevice: -1,
+            model: 'Roller demo',
+            suppotedMinionType: 'roller',
+            isRecordingSupported: false,
         },
     ];
 
@@ -94,22 +130,58 @@ export class MockHandler extends BrandModuleBase {
     }
     public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
         await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
-        if (miniom.device.model === 'switch demo') {
-            return {
-                switch: {
-                    status: 'on',
-                },
-            };
-        } else if (miniom.device.model === 'ac demo') {
-            return {
-                airConditioning: {
-                    fanStrength: 'med',
-                    mode: 'cold',
-                    status: 'on',
-                    temperature: 21,
-                },
-            };
+
+        switch (miniom.device.model) {
+            case 'switch demo':
+                return {
+                    switch: {
+                        status: 'on',
+                    },
+                };
+            case 'ac demo':
+                return {
+                    airConditioning: {
+                        fanStrength: 'med',
+                        mode: 'cold',
+                        status: 'on',
+                        temperature: 21,
+                    },
+                };
+            case 'Light demo':
+                return {
+                    light: {
+                        brightness: 50,
+                        status: 'on',
+                    },
+                };
+            case 'Temperature Light demo':
+                return {
+                    temperatureLight: {
+                        brightness: 50,
+                        status: 'on',
+                        temperature: 85,
+                    },
+                };
+            case 'Color Light demo':
+                return {
+                    colorLight: {
+                        brightness: 50,
+                        status: 'on',
+                        temperature: 85,
+                        blue: 120,
+                        green: 123,
+                        red: 143,
+                    },
+                };
+            case 'Roller demo':
+                return {
+                    roller: {
+                        status: 'on',
+                        direction: 'up',
+                    },
+                };
         }
+
         throw {
             responseCode: 8404,
             message: 'unknown minion model',
@@ -120,7 +192,11 @@ export class MockHandler extends BrandModuleBase {
         await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
         if (miniom.device.model === 'switch demo' ||
             miniom.device.model === 'ac demo' ||
-            miniom.device.model === 'RF toggle demo') {
+            miniom.device.model === 'RF toggle demo' ||
+            miniom.device.model === 'Roller demo' ||
+            miniom.device.model === 'Light demo' ||
+            miniom.device.model === 'Temperature Light demo' ||
+            miniom.device.model === 'Color Light demo') {
             return;
         }
 

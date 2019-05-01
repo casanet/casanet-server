@@ -95,6 +95,24 @@ definitions:
         required:
             - status
         type: object
+    Roller:
+        description: "A roller switch stauts.\r\nA roller is a switch for curtains or blinds (or for any other needs) that can drag up/down or stop."
+        properties:
+            status:
+                type: string
+                enum:
+                    - on
+                    - off
+            direction:
+                type: string
+                enum:
+                    - up
+                    - down
+                description: 'drag direction'
+        required:
+            - status
+            - direction
+        type: object
     AirConditioning:
         description: 'An AC status.'
         properties:
@@ -1491,6 +1509,9 @@ definitions:
             switch:
                 $ref: '#/definitions/Switch'
                 x-nullable: true
+            roller:
+                $ref: '#/definitions/Roller'
+                x-nullable: true
             airConditioning:
                 $ref: '#/definitions/AirConditioning'
                 x-nullable: true
@@ -1529,6 +1550,7 @@ definitions:
                 enum:
                     - toggle
                     - switch
+                    - roller
                     - airConditioning
                     - light
                     - temperatureLight
@@ -1829,6 +1851,7 @@ definitions:
                 enum:
                     - toggle
                     - switch
+                    - roller
                     - airConditioning
                     - light
                     - temperatureLight

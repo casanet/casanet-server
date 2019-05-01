@@ -19,6 +19,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatDividerModule } from '@angular/material/divider';
 import { EcoFabSpeedDialModule} from '@ecodev/fab-speed-dial';
 import { MccColorPickerModule } from 'material-community-components';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { BrowserModule } from '@angular/platform-browser';
@@ -55,13 +56,14 @@ export const appRoutes: Routes = [
     RouterModule.forChild(appRoutes),
     FlexLayoutModule,
     MatCardModule,
+    MatButtonToggleModule,
+
   ],
   declarations: [
     DashboardCrmComponent,
     LoaderComponent,
   ],
   exports: [
-    
   ],
   providers: [
   ],

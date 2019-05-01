@@ -204,7 +204,7 @@ export declare interface User {
 /**
  * Supported minions types.
  */
-export declare type MinionTypes = 'toggle' | 'switch' | 'airConditioning' | 'light' | 'temperatureLight' | 'colorLight';
+export declare type MinionTypes = 'toggle' | 'switch' | 'roller' | 'airConditioning' | 'light' | 'temperatureLight' | 'colorLight';
 
 /**
  * Supported timings types.
@@ -278,6 +278,11 @@ export declare type ACFanStrengthOptions = 'low' | 'med' | 'high' | 'auto';
 export declare type SwitchOptions = 'on' | 'off';
 
 /**
+ * Roller direction
+ */
+export declare type RollerDirection = 'up' | 'down';
+
+/**
  * A toggle value, the toggle is on way communicated device,
  * For example wall light switches with 433 RF that can turn on or off 
  * but there is no way to know the real light status if someone changes the light status using physical switche. 
@@ -293,6 +298,15 @@ export declare interface Toggle {
  */
 export declare interface Switch extends Toggle {
 
+}
+
+/**
+ * A roller switch stauts.
+ * A roller is a switch for curtains or blinds (or for any other needs) that can drag up/down or stop.
+ */
+export declare interface Roller extends Switch {
+    /** drag direction */
+    direction : RollerDirection
 }
 
 /**
@@ -418,6 +432,7 @@ export declare interface DailyTimeTrigger extends DailyTiming {
 export declare interface MinionStatus {
     toggle?: Toggle;
     switch?: Switch;
+    roller? : Roller;
     airConditioning?: AirConditioning;
     light?: Light;
     temperatureLight?: TemperatureLight;
