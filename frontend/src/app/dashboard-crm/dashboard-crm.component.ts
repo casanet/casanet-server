@@ -29,7 +29,6 @@ export class DashboardCrmComponent implements OnInit {
 
 	public minions: Minion[] = [];
 
-	// TODO: inject it by angular.
 	private translatePipe: TranslatePipe;
 
 	constructor(
@@ -41,37 +40,44 @@ export class DashboardCrmComponent implements OnInit {
 		this.translatePipe = new TranslatePipe(this.translateService);
 
 		minionsService.minionsFeed.subscribe((minions) => {
-			const tempMap = {};
-			for (const minion of minions) {
-				// create update set.
-				this.createUpdateSet(minion);
-
-				// then add it to map...
-				if (!tempMap[minion.minionType]) {
-					tempMap[minion.minionType] = [];
-				}
-				tempMap[minion.minionType].push(minion);
-			}
-
-			this.minions = []; // minions;
-
-			for (const key of Object.keys(tempMap).sort()) {
-				const arr = tempMap[key];
-				arr.sort((m1: Minion, m2: Minion) => {
-					return m1.name < m2.name ? -1 : 1;
-				});
-				this.minions.push(...arr);
-			}
-			// this.minions
-
 			this.dataLoading = false;
+
+			for (const minion of minions) {
+				const existMinion = this.getExistMinion(minion.minionId);
+				if (!existMinion) {
+					// create update set.
+					this.createUpdateSet(minion);
+					this.minions.push(minion);
+					continue;
+				}
+
+				existMinion.minionStatus = minion.minionStatus;
+				this.createUpdateSet(existMinion);
+			}
+
+			this.minions.sort((m1: Minion, m2: Minion) => {
+				/** If type is the same, sort by display name */
+				if (m1.minionType === m2.minionType) {
+					return m1.name < m2.name ? -1 : 1;
+				}
+				return m1.minionType < m2.minionType ? -1 : 1;
+			});
 		});
+
 		minionsService.retriveMinions();
 		devicesService.retriveLanDevices();
 		devicesService.retriveDevicesKindsData();
 	}
 
 	ngOnInit() { }
+
+	private getExistMinion(minionId: string): Minion {
+		for (const existMinion of this.minions) {
+			if (minionId === existMinion.minionId) {
+				return existMinion;
+			}
+		}
+	}
 
 	public createUpdateSet(minion: Minion) {
 		minion['updateSet'] = DeepCopy<MinionStatus>(minion.minionStatus);
@@ -166,6 +172,7 @@ export class DashboardCrmComponent implements OnInit {
 
 		minion['sync'] = true;
 		await this.minionsService.setStatus(minion);
+		minion['sync'] = false;
 	}
 
 	public async recordCommand(minion: Minion) {
