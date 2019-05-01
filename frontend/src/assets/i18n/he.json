@@ -42,6 +42,8 @@
     "TEMERATURE": "טמפרטורה",
     "BRIGTNESS": "בהירות",
     "COLOR": "צבע",
+    "UP_DIRECTION" : "כיוון מעלה",
+    "DOWN_DIRECTION" : "כיוון מטה",
     "SUBMIT": "בצע",
     "CANCEL": "ביטול",
     "DEVICE_META": "מידע על המכשיר",

@@ -114,6 +114,10 @@ export class MinionsService {
 				switch: {
 					status: 'off'
 				},
+				roller: {
+					status: 'off',
+					direction: 'up',
+				},
 				temperatureLight: {
 					brightness: 1,
 					status: 'off',

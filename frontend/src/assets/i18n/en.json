@@ -42,6 +42,8 @@
     "TEMERATURE": "temperature",
     "BRIGTNESS": "brigtness",
     "COLOR": "color",
+    "UP_DIRECTION" : "up direction",
+    "DOWN_DIRECTION" : "down direction",
     "SUBMIT": "submit",
     "CANCEL": "cancel",
     "DEVICE_META": "Device meta",
