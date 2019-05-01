@@ -23,6 +23,7 @@
     "switch": "switch",
     "airConditioning": "air conditioning",
     "light": "light",
+    "roller": "roller",
     "temperatureLight": "temperature light",
     "colorLight": "color light",
     "PROPERTIES": "properties",
@@ -40,10 +41,15 @@
     "MODE": "mode",
     "FAN_STRENGTH": "fan strength",
     "TEMERATURE": "temperature",
+    "BRIGTNESS": "brigtness",
+    "COLOR": "color",
+    "UP_DIRECTION" : "up direction",
+    "DOWN_DIRECTION" : "down direction",
     "SUBMIT": "submit",
     "CANCEL": "cancel",
     "DEVICE_META": "Device meta",
     "REFRESH_MINION_DATA": "Refresh minion",
+    "REDO_LAST_UPDATE": "Redo last status update",
     "ENTER_RECORD_OR_GENERATE_MODE": "Enter record/generate mode",
     "TURN_OFF_TIMEOUT": "Auto turn off",
     "EXIT_RECORD_OR_GENERATE_MODE": "Exit record mode",
@@ -137,6 +143,7 @@
         "7503": "Getting status fail",
         "8503": "local server timeout",
         "9503" : "Error communicating with device. Make sure nothing else is trying to control it or connected to it",
-        "10503" : "Tuya device gives garbage values"
+        "10503" : "Tuya device gives garbage values",
+        "11503" : "Sending the beam command fail"
     }
 }

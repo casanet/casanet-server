@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
+const randomstring = require("randomstring");
 const operationsDal_1 = require("../data-layer/operationsDal");
 const logger_1 = require("../utilities/logger");
 const sleep_1 = require("../utilities/sleep");
@@ -84,6 +85,10 @@ class OperationsBl {
      */
     async CreateOperation(operation) {
         await this.validateNewOperationActivities(operation.activities);
+        /**
+         * Generate new id. (never trust client....)
+         */
+        operation.operationId = randomstring.generate(6);
         return await this.operationsDal.createOperation(operation);
     }
     /**

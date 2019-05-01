@@ -44,6 +44,42 @@ class MockHandler extends brandModuleBase_1.BrandModuleBase {
                 suppotedMinionType: 'toggle',
                 isRecordingSupported: true,
             },
+            {
+                brand: this.brandName,
+                isTokenRequierd: false,
+                isIdRequierd: false,
+                minionsPerDevice: -1,
+                model: 'Light demo',
+                suppotedMinionType: 'light',
+                isRecordingSupported: false,
+            },
+            {
+                brand: this.brandName,
+                isTokenRequierd: false,
+                isIdRequierd: false,
+                minionsPerDevice: -1,
+                model: 'Temperature Light demo',
+                suppotedMinionType: 'temperatureLight',
+                isRecordingSupported: false,
+            },
+            {
+                brand: this.brandName,
+                isTokenRequierd: false,
+                isIdRequierd: false,
+                minionsPerDevice: -1,
+                model: 'Color Light demo',
+                suppotedMinionType: 'colorLight',
+                isRecordingSupported: false,
+            },
+            {
+                brand: this.brandName,
+                isTokenRequierd: false,
+                isIdRequierd: false,
+                minionsPerDevice: -1,
+                model: 'Roller demo',
+                suppotedMinionType: 'roller',
+                isRecordingSupported: false,
+            },
         ];
         // for debug updattes remove 'return'
         return;
@@ -78,22 +114,55 @@ class MockHandler extends brandModuleBase_1.BrandModuleBase {
     }
     async getStatus(miniom) {
         await sleep_1.Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
-        if (miniom.device.model === 'switch demo') {
-            return {
-                switch: {
-                    status: 'on',
-                },
-            };
-        }
-        else if (miniom.device.model === 'ac demo') {
-            return {
-                airConditioning: {
-                    fanStrength: 'med',
-                    mode: 'cold',
-                    status: 'on',
-                    temperature: 21,
-                },
-            };
+        switch (miniom.device.model) {
+            case 'switch demo':
+                return {
+                    switch: {
+                        status: 'on',
+                    },
+                };
+            case 'ac demo':
+                return {
+                    airConditioning: {
+                        fanStrength: 'med',
+                        mode: 'cold',
+                        status: 'on',
+                        temperature: 21,
+                    },
+                };
+            case 'Light demo':
+                return {
+                    light: {
+                        brightness: 50,
+                        status: 'on',
+                    },
+                };
+            case 'Temperature Light demo':
+                return {
+                    temperatureLight: {
+                        brightness: 50,
+                        status: 'on',
+                        temperature: 85,
+                    },
+                };
+            case 'Color Light demo':
+                return {
+                    colorLight: {
+                        brightness: 50,
+                        status: 'on',
+                        temperature: 85,
+                        blue: 120,
+                        green: 123,
+                        red: 143,
+                    },
+                };
+            case 'Roller demo':
+                return {
+                    roller: {
+                        status: 'on',
+                        direction: 'up',
+                    },
+                };
         }
         throw {
             responseCode: 8404,
@@ -104,7 +173,11 @@ class MockHandler extends brandModuleBase_1.BrandModuleBase {
         await sleep_1.Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
         if (miniom.device.model === 'switch demo' ||
             miniom.device.model === 'ac demo' ||
-            miniom.device.model === 'RF toggle demo') {
+            miniom.device.model === 'RF toggle demo' ||
+            miniom.device.model === 'Roller demo' ||
+            miniom.device.model === 'Light demo' ||
+            miniom.device.model === 'Temperature Light demo' ||
+            miniom.device.model === 'Color Light demo') {
             return;
         }
         throw {

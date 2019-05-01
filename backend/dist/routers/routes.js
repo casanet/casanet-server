@@ -54,6 +54,12 @@ const models = {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
         },
     },
+    "Roller": {
+        "properties": {
+            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+            "direction": { "dataType": "enum", "enums": ["up", "down"], "required": true },
+        },
+    },
     "AirConditioning": {
         "properties": {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
@@ -89,6 +95,7 @@ const models = {
         "properties": {
             "toggle": { "ref": "Toggle" },
             "switch": { "ref": "Switch" },
+            "roller": { "ref": "Roller" },
             "airConditioning": { "ref": "AirConditioning" },
             "light": { "ref": "Light" },
             "temperatureLight": { "ref": "TemperatureLight" },
@@ -102,7 +109,7 @@ const models = {
             "device": { "ref": "MinionDevice", "required": true },
             "isProperlyCommunicated": { "dataType": "boolean" },
             "minionStatus": { "ref": "MinionStatus", "required": true },
-            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
         },
     },
@@ -174,7 +181,7 @@ const models = {
             "minionsPerDevice": { "dataType": "double", "required": true },
             "isTokenRequierd": { "dataType": "boolean", "required": true },
             "isIdRequierd": { "dataType": "boolean", "required": true },
-            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "isRecordingSupported": { "dataType": "boolean", "required": true },
         },
     },

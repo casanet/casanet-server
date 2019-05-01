@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
+const randomstring = require("randomstring");
 const rxjs_1 = require("rxjs");
 const suncalc = require("suncalc");
 const config_1 = require("../config");
@@ -233,6 +234,10 @@ class TimingsBl {
      */
     async CreateTiming(timing) {
         await this.validateNewTimingOperation(timing);
+        /**
+         * Generate new id. (never trust client....)
+         */
+        timing.timingId = randomstring.generate(6);
         return await this.timingsDal.createTiming(timing);
     }
     /**
