@@ -30,7 +30,8 @@
             "styles": [
               "src/theme/theme.scss",
               "src/theme/typography.scss",
-              "src/assets/icons/google-material-icons.css"
+              "src/assets/icons/google-material-icons.css",
+              "src/assets/fonts/google-material-fonts.css"
             ],
             "scripts": []
           },

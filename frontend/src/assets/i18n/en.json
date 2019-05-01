@@ -23,6 +23,7 @@
     "switch": "switch",
     "airConditioning": "air conditioning",
     "light": "light",
+    "roller": "roller",
     "temperatureLight": "temperature light",
     "colorLight": "color light",
     "PROPERTIES": "properties",
