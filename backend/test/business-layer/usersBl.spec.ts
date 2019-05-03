@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import { UsersBl } from '../../src/business-layer/usersBl';

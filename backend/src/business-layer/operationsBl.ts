@@ -1,6 +1,6 @@
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import * as randomstring from 'randomstring';
+import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { OperationsDal, OperationsDalSingleton } from '../data-layer/operationsDal';
 import { ErrorResponse, MinionStatus, Operation, OperationActivity, OperationResult } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';

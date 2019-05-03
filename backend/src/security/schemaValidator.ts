@@ -13,7 +13,7 @@ export const UserSchema: ObjectSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     displayName: Joi.string().not('').required(),
     sessionTimeOutMS: Joi.number().min(1000).required(),
-    password: Joi.string().not('').min(6).max(1000).required(),
+    password: Joi.string().not('').min(6).max(18).required(),
     ignoreTfa: Joi.boolean().required(),
     scope: Joi.allow('adminAuth', 'userAuth').required(),
 }).required();

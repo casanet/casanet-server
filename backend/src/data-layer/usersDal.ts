@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Configuration } from '../config';
 import { IDataIO } from '../models/backendInterfaces';
 import { ErrorResponse, User } from '../models/sharedInterfaces';

@@ -72,7 +72,7 @@ describe('Authentication BL tests', () => {
                 },
             };
             const error = await authBlMock.login(expressResponseMock as express.Response, {
-                email: (usersDalMock.mockUsers[0].email ),
+                email: (usersDalMock.mockUsers[0].email),
                 password: usersDalMock.mockUsers[0].password + 'ttt',
             });
 
@@ -88,7 +88,7 @@ describe('Authentication BL tests', () => {
             };
             const error = await authBlMock.loginTfa(expressResponseMock as express.Response, {
                 email: (usersDalMock.mockUsers[0].email),
-                password: usersDalMock.mockUsers[0].password ,
+                password: usersDalMock.mockUsers[0].password,
             });
 
             expect(error).to.deep.equal(GENERIC_ERROR_RESPONSE);

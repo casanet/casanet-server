@@ -21,16 +21,6 @@ OperationsDalSingleton.createOperation(operationMock)
 
 describe('Operations routing API', () => {
 
-    describe('/GET operations', () => {
-        it('it should respond 20x as status code', (done) => {
-            validUserAgent.get('/API/operations')
-                .end((err, res) => {
-                    expect(res.statusType).eql(2);
-                    done();
-                });
-        });
-    });
-
     describe('/GET operations/{operationId}', () => {
         it('it should respond 20x as status code', (done) => {
             validUserAgent.get('/API/operations/o1')
@@ -41,17 +31,35 @@ describe('Operations routing API', () => {
         });
     });
 
+    const operationToPost: Operation = {
+        activities: [],
+        operationId: 'sdsds',
+        operationName: 'sdsd',
+    };
+
     describe('/POST operations', () => {
         it('it should respond 20x as status code', (done) => {
-            const operation: Operation = {
-                activities: [],
-                operationId: 'sdsds',
-                operationName: 'sdsd',
-            };
+
             validUserAgent.post('/API/operations')
-                .send(operation)
+                .send(operationToPost)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
+                    done();
+                });
+        });
+    });
+
+    describe('/GET operations', () => {
+        it('it should respond 20x as status code', (done) => {
+            validUserAgent.get('/API/operations')
+                .end((err, res) => {
+
+                    expect(res.statusType).eql(2);
+
+                    // By the way, update the posted operation id.
+                    const operations: Operation[] = res.body;
+                    operationToPost.operationId = operations[operations.length - 1].operationId;
+
                     done();
                 });
         });
@@ -64,7 +72,7 @@ describe('Operations routing API', () => {
                 operationId: 'sdsds',
                 operationName: 'sdsd',
             };
-            validUserAgent.put('/API/operations/sdsds')
+            validUserAgent.put(`/API/operations/${operationToPost.operationId}`)
                 .send(operation)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
@@ -75,7 +83,7 @@ describe('Operations routing API', () => {
 
     describe('/POST operations/trigger/{operationId}', () => {
         it('it should respond 20x as status code', (done) => {
-            validUserAgent.post('/API/operations/trigger/sdsds')
+            validUserAgent.post(`/API/operations/trigger/${operationToPost.operationId}`)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();
@@ -85,7 +93,7 @@ describe('Operations routing API', () => {
 
     describe('/DELETE operations/{operationId}', () => {
         it('it should respond 20x as status code', (done) => {
-            validUserAgent.del('/API/operations/sdsds')
+            validUserAgent.del(`/API/operations/${operationToPost.operationId}`)
                 .end((err, res) => {
                     expect(res.statusType).eql(2);
                     done();

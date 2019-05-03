@@ -1,11 +1,11 @@
+import * as bcrypt from 'bcryptjs';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
-import * as bcrypt from 'bcrypt';
 import app from '../src/App';
+import { Configuration } from '../src/config';
 import { UsersDalSingleton } from '../src/data-layer/usersDal';
 import { Login, Minion } from '../src/models/sharedInterfaces';
 import { User } from '../src/models/sharedInterfaces';
-import { Configuration } from '../src/config';
 
 /**
  * Perpare chai session agent.

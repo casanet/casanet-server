@@ -17,8 +17,10 @@ describe('Security scopes validation middelwere', () => {
             const user = await expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.userScope])
                 .catch(() => {
                     throw new Error('auth fail');
-                });
+                }) as User;
 
+            // Password hash not same even if plain text is the same.
+            user.password = validSystemUser.password;
             expect(user).to.deep.equal(validSystemUser);
             return;
         });
@@ -73,8 +75,10 @@ describe('Security scopes validation middelwere', () => {
             const user = await expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.adminScope])
                 .catch(() => {
                     throw new Error('admin scope auth fail');
-                });
+                }) as User;
 
+            // Password hash not same even if plain text is the same.
+            user.password = validSystemAdmin.password;
             expect(user).to.deep.equal(validSystemAdmin);
             return;
         });

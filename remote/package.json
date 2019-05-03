@@ -16,8 +16,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@types/express-ws": "^3.0.0",
-    "bcrypt": "^3.0.5",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
@@ -49,6 +48,8 @@
     "ws": "^6.1.4"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/express-ws": "^3.0.0",
     "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.7",
     "@types/crypto-js": "^3.1.43",

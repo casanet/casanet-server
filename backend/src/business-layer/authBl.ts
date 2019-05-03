@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import * as express from 'express';
 import * as momoent from 'moment';
 import * as randomstring from 'randomstring';
@@ -64,19 +64,12 @@ export class AuthBl {
             /** case user not in system return generic error. */
             logger.debug(`login email ${login.email} fail, invalid cert`);
 
-            /**
-             * Even if the user name not exists, check hash,
-             * to hide from the attacker if the username is not valid by comparing a response time.
-             */
+            response.statusCode = 403;
+            return this.GENERIC_ERROR_RESPONSE;
         }
 
-        const compereResults = await bcrypt.compare(
-            login.password,
-            !!userTryToLogin ? userTryToLogin.password : randomstring.generate(60),
-        );
-
         /** If User not fauld or password not match  */
-        if (!userTryToLogin || !compereResults) {
+        if (!await bcrypt.compare(login.password, userTryToLogin.password)) {
             /** Case password incorrect return generic error. */
             response.statusCode = 403;
             return this.GENERIC_ERROR_RESPONSE;
