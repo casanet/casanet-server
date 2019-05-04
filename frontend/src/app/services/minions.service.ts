@@ -204,6 +204,9 @@ export class MinionsService {
 			this.minionsFeed.next(DeepCopy<Minion[]>(this.minions));
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
+
+			/** Throw it next to caller */
+			throw error;
 		}
 	}
 

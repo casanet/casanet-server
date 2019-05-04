@@ -6,7 +6,6 @@ import {
 	MinionStatus,
 	DeviceKind,
 	ColorLight,
-	ColorOptions
 } from '../../../../backend/src/models/sharedInterfaces';
 import { MinionsService } from '../services/minions.service';
 import { DevicesService } from '../services/devices.service';
@@ -51,6 +50,10 @@ export class DashboardCrmComponent implements OnInit {
 					continue;
 				}
 
+				/** Set all possible changes to current minion properties */
+				existMinion.isProperlyCommunicated = minion.isProperlyCommunicated;
+				existMinion.minionAutoTurnOffMS = minion.minionAutoTurnOffMS;
+				existMinion.device = minion.device;
 				existMinion.minionStatus = minion.minionStatus;
 				this.createUpdateSet(existMinion);
 			}
@@ -254,7 +257,13 @@ export class DashboardCrmComponent implements OnInit {
 		}
 
 		minion['sync'] = true;
-		this.minionsService.deleteMinion(minion);
+
+		try {
+			await this.minionsService.deleteMinion(minion);
+			this.minions.splice(this.minions.indexOf(minion), 1);
+		} catch (error) {
+
+		}
 	}
 
 	public async createMinion() {
@@ -286,9 +295,9 @@ export class DashboardCrmComponent implements OnInit {
 
 	public loadChangeColor(colorLight: ColorLight, setRgbHexColor: string) {
 		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(setRgbHexColor);
-		colorLight.red = Math.floor(parseInt(result[1], 16)) as ColorOptions;
-		colorLight.green = Math.floor(parseInt(result[2], 16)) as ColorOptions;
-		colorLight.blue = Math.floor(parseInt(result[3], 16)) as ColorOptions;
+		colorLight.red = Math.floor(parseInt(result[1], 16)) as number;
+		colorLight.green = Math.floor(parseInt(result[2], 16)) as number;
+		colorLight.blue = Math.floor(parseInt(result[3], 16)) as number;
 	}
 
 	private componentToHex(c: number) {
