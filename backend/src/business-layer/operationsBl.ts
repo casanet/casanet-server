@@ -49,8 +49,12 @@ export class OperationsBl {
     private async invokeOperationActivities(operationActiviries: OperationActivity[]): Promise<OperationResult[]> {
         const errors: OperationResult[] = [];
         for (const activity of operationActiviries) {
+            logger.info(`Setting minion ${activity.minionId} a new status by operation activity...`);
             await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus)
                 .catch((error: ErrorResponse) => {
+                    logger.warn(`Setting minion ${activity.minionId} a new status by operation activity data: ` +
+                        `${JSON.stringify(activity.minionStatus)} fail, ` +
+                        `${JSON.stringify(error)}`);
                     errors.push({
                         minionId: activity.minionId,
                         error,
