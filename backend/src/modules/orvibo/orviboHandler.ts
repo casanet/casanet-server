@@ -188,7 +188,7 @@ export class OrviboHandler extends BrandModuleBase {
 
         await this.reSubsribeOrvibo(minion);
 
-        return new Promise((resolve, reject) => {
+        return new Promise<void | ErrorResponse>((resolve, reject) => {
 
             /** Create set status message */
             const message = this.orviboCommunication.prepareMessage({
