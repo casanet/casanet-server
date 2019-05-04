@@ -2,7 +2,6 @@ import * as nodeYeelightWifi from 'node-yeelight-wifi';
 import { Color, CommandType, DevicePropery, Discover, IDevice, Yeelight } from 'yeelight-awesome';
 import {
     ColorLight,
-    ColorOptions,
     DeviceKind,
     ErrorResponse,
     Light,
@@ -10,7 +9,6 @@ import {
     MinionDevice,
     MinionStatus,
     MinionTypes,
-    PercentOptions,
     SwitchOptions,
     TemperatureLight,
     Toggle,
@@ -99,9 +97,9 @@ export class YeelightHandler extends BrandModuleBase {
 
                         if (minion.minionType === 'colorLight') {
 
-                            lightStatus.red = Math.floor(lightUpdate.rgb.r) as ColorOptions;
-                            lightStatus.green = Math.floor(lightUpdate.rgb.g) as ColorOptions;
-                            lightStatus.blue = Math.floor(lightUpdate.rgb.b) as ColorOptions;
+                            lightStatus.red = Math.floor(lightUpdate.rgb.r) as number;
+                            lightStatus.green = Math.floor(lightUpdate.rgb.g) as number;
+                            lightStatus.blue = Math.floor(lightUpdate.rgb.b) as number;
                         }
 
                         this.minionStatusChangedEvent.next({
@@ -249,8 +247,8 @@ export class YeelightHandler extends BrandModuleBase {
             return {
                 temperatureLight: {
                     status: props.result.result[0],
-                    temperature: this.convertColorTempToPercents(parseInt(props.result.result[2], 10)) as PercentOptions,
-                    brightness: parseInt(props.result.result[1], 10) as PercentOptions,
+                    temperature: this.convertColorTempToPercents(parseInt(props.result.result[2], 10)) as number,
+                    brightness: parseInt(props.result.result[1], 10) as number,
                 },
             };
         } catch (error) {
@@ -277,11 +275,11 @@ export class YeelightHandler extends BrandModuleBase {
             return {
                 colorLight: {
                     status: props.result.result[0],
-                    temperature: this.convertColorTempToPercents(parseInt(props.result.result[2], 10)) as PercentOptions,
-                    brightness: parseInt(props.result.result[1], 10) as PercentOptions,
-                    red: rgb.r as ColorOptions,
-                    green: rgb.g as ColorOptions,
-                    blue: rgb.b as ColorOptions,
+                    temperature: this.convertColorTempToPercents(parseInt(props.result.result[2], 10)) as number,
+                    brightness: parseInt(props.result.result[1], 10) as number,
+                    red: rgb.r as number,
+                    green: rgb.g as number,
+                    blue: rgb.b as number,
                 },
             };
         } catch (error) {
@@ -298,12 +296,12 @@ export class YeelightHandler extends BrandModuleBase {
     }
 
     /** Set yeelight temperature (col/warn light) */
-    private async setTemperature(yeelightDevice: Yeelight, setTemperatureLight: PercentOptions) {
+    private async setTemperature(yeelightDevice: Yeelight, setTemperatureLight: number) {
         await yeelightDevice.setCtAbx(this.convertPercentsToLightTemp(setTemperatureLight), 'smooth', 1000);
     }
 
     /** Set yeelight light brightness (1-100) */
-    private async setBrightness(yeelightDevice: Yeelight, setBrightness: PercentOptions) {
+    private async setBrightness(yeelightDevice: Yeelight, setBrightness: number) {
         await yeelightDevice.setBright(setBrightness, 'smooth', 1000);
     }
 

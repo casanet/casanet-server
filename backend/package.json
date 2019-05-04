@@ -49,7 +49,7 @@
     "request-promise": "^4.2.4",
     "rxjs": "^6.3.3",
     "suncalc": "^1.8.0",
-    "tsoa": "^2.3.8",
+    "tsoa": "^2.3.81",
     "tuyapi": "^3.2.3",
     "yeelight-awesome": "^1.0.12"
   },
