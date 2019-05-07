@@ -7,7 +7,6 @@ import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform
 import { CoreModule } from './core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateService } from './translate.service';
-import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { ToasterAndErrorsService } from './services/toaster-and-errors.service';
 import { AutoTimeoutDialogComponent } from './dialogs/auto-timeout-dialog/auto-timeout-dialog.component';
 import { CreateMinionDialogComponent } from './dialogs/create-minion-dialog/create-minion-dialog.component';
@@ -50,14 +49,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     LazyLoadModule,
     CoreModule,
     BrowserAnimationsModule,
-    // NoopAnimationsModule,
     HttpClientModule,
-    SweetAlert2Module.forRoot({
-      buttonsStyling: true,
-      customClass: 'modal-content',
-      confirmButtonClass: 'btn btn-primary',
-      cancelButtonClass: 'btn'
-    }),
     MatDialogModule,
     SharedModule,
     MatSlideToggleModule,

@@ -23,12 +23,6 @@ export class SidemenuItemComponent implements OnInit {
         router.events.subscribe((_: NavigationEnd) => {
             this.currentUrl = this.router.url;
         });
-
-        // this.userInfo = authService.defaultUser;
-
-        // authService.userInfoObserveable.subscribe((userInfo: User) => {
-        //     this.userInfo = userInfo;
-        // });
     }
 
     ngOnInit() {
