@@ -102,7 +102,7 @@ body{
     background-color: white;
     width: 100vw;
     height: 100vh;
-    z-index: 2000;
+    z-index: 2000 !important;
     position: absolute;
 
     -moz-animation: cssAnimation 1s ease-in 3s forwards;
@@ -116,20 +116,20 @@ body{
     animation-fill-mode: forwards;
 }
 
-@keyframes cssAnimation {
-    to {
-        opacity:0;
-        display: none;
-        visibility:hidden;
-    }
-}
-@keyframes cssAnimation {
-    to {
-        visibility:hidden;
-        opacity:0;
-        display: none;
-    }
-}
+// @keyframes cssAnimation {
+//     to {
+//         opacity:0;
+//         display: none;
+//         visibility:hidden;
+//     }
+// }
+// @keyframes cssAnimation {
+//     to {
+//         visibility:hidden;
+//         opacity:0;
+//         display: none;
+//     }
+// }
 
 
 

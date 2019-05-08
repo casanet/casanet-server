@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit } from '@angular/core';
 import {
 	Minion,
 	SwitchOptions,
@@ -22,7 +22,7 @@ import { CreateMinionDialogComponent } from '../dialogs/create-minion-dialog/cre
 	templateUrl: './dashboard-crm.component.html',
 	styleUrls: ['./dashboard-crm.component.scss']
 })
-export class DashboardCrmComponent implements OnInit, AfterViewInit {
+export class DashboardCrmComponent implements OnInit, AfterContentInit {
 	/** Mark to show or not loading animation */
 	public dataLoading = true;
 
@@ -74,7 +74,7 @@ export class DashboardCrmComponent implements OnInit, AfterViewInit {
 
 	ngOnInit() { }
 
-	ngAfterViewInit() {
+	ngAfterContentInit() {
 		/** Clear loader from DOM, to not let him work in background */
 		document.getElementById('loading-app-assets').innerHTML = '';
 	}
