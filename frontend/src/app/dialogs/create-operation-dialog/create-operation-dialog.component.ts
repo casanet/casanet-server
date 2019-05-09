@@ -7,18 +7,7 @@ import { DevicesService } from '../../services/devices.service';
 import { OperationService } from '../../services/operations.service';
 import { CreateActivityDialogComponent } from '../create-activity-dialog/create-activity-dialog.component';
 import { Subscription } from 'rxjs';
-
-declare interface ActivityProperties {
-  name: string;
-  value: string;
-}
-
-declare interface Activity {
-  name: string;
-  status: string;
-  properties: ActivityProperties[];
-  operationActivity: OperationActivity;
-}
+import { Activity, ActivityProperties } from '../../dashboard-crm/operations/operations.component';
 
 @Component({
   selector: 'app-create-operation-dialog',
@@ -34,8 +23,6 @@ export class CreateOperationDialogComponent implements OnInit {
   activities: Activity[] = [];
 
   nameControl: FormControl;
-  minions: Minion[] = [];
-  minionsSubscription: Subscription;
 
   displayedColumns: string[] = ['name', 'status', 'properties', 'remove'];
   dataSource: MatTableDataSource<Activity>;
@@ -46,13 +33,8 @@ export class CreateOperationDialogComponent implements OnInit {
     private operationService: OperationService,
     private dialogRef: MatDialogRef<CreateOperationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) _data) {
-
-    /** Case minoin not,oaded yet. */
-    this.minionsService.retriveMinions();
-
-    this.minionsSubscription = this.minionsService.minionsFeed.subscribe((minions: Minion[]) => {
-      this.minions = minions;
-    });
+    this.activitiesControl = new FormControl([]);
+    this.nameControl = new FormControl('', [Validators.required]);
   }
 
   ngOnInit() {
@@ -69,7 +51,7 @@ export class CreateOperationDialogComponent implements OnInit {
     if (!theNewActivity) {
       return;
     }
-    const minion = this.getMinion(theNewActivity.minionId);
+    const minion = this.minionsService.getMinion(theNewActivity.minionId);
 
     let properties: ActivityProperties[] = Object.entries(theNewActivity.minionStatus[minion.minionType]).map((e) => {
       return {
@@ -92,15 +74,6 @@ export class CreateOperationDialogComponent implements OnInit {
     this.dataSource = new MatTableDataSource<Activity>(this.activities);
   }
 
-
-  private getMinion(minionId: string): Minion {
-    for (const minion of this.minions) {
-      if (minion.minionId === minionId) {
-        return minion;
-      }
-    }
-  }
-
   public removeActivity(activity: Activity) {
     this.activities.splice(this.activities.indexOf(activity), 1);
     this.dataSource = new MatTableDataSource<Activity>(this.activities);
@@ -114,7 +87,6 @@ export class CreateOperationDialogComponent implements OnInit {
       activities: this.activities.map((act) => act.operationActivity),
     });
 
-    this.minionsSubscription.unsubscribe();
     this.dialogRef.close();
   }
 }

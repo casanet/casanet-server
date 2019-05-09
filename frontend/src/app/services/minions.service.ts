@@ -55,6 +55,13 @@ export class MinionsService {
 		await this.patchMinions();
 	}
 
+	public getMinion(minionId): Minion {
+		for (const minion of this.minions) {
+			if (minion.minionId === minionId) {
+				return minion;
+			}
+		}
+	}
 	private async patchMinions() {
 		try {
 			const minions = await this.httpClient.get<Minion[]>('/API/minions').toPromise();

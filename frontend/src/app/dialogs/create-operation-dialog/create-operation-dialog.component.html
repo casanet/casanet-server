@@ -6,7 +6,7 @@
       <button mat-stroked-button color="primary" (click)="createActivity()">{{ 'ADD_ACTIVITY' | translate}}</button>
       <div class="table-container">
         <table *ngIf="dataSource" mat-table [dataSource]="dataSource"
-          class="mat-elevation-z8 example-container">
+          class="mat-elevation-z8 example-container" [style.text-align]="('LEFT_DIR' | translate)">
 
           <!--- Note that these columns can be defined in any order.
                       The actual rendered columns are set as a property on the row definition" -->
