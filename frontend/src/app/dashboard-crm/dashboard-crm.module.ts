@@ -23,6 +23,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { EcoFabSpeedDialModule} from '@ecodev/fab-speed-dial';
 import { MccColorPickerModule } from 'material-community-components';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTableModule } from '@angular/material/table';
 
 
 
@@ -53,7 +54,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     FlexLayoutModule,
     MatCardModule,
     MatButtonToggleModule,
-
+    MatTableModule,
   ],
   declarations: [
     MinionsComponent,

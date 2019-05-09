@@ -46,6 +46,23 @@ export class OperationService {
     }
   }
 
+  public async deleteOperation(operation: Operation) {
+    try {
+      await this.httpClient.delete<Operation[]>(`/API/operations/${operation.operationId}`).toPromise();
+      this.loadOperations();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
+  public async triggerOperation(operation: Operation) {
+    try {
+      await this.httpClient.post<Operation[]>(`/API/operations/trigger/${operation.operationId}`, undefined).toPromise();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
   public async cleanUp() {
     this.isOperationsRetrived = false;
     this.operations = [];
