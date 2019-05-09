@@ -37,6 +37,14 @@ export class TimingsService {
     }
   }
 
+  public getTiming(timingId: string): Timing {
+    for (const timing of this.timings) {
+      if (timing.timingId === timingId) {
+        return timing;
+      }
+    }
+  }
+
   public async createTiming(timing: Timing) {
     try {
       await this.httpClient.post('/API/timings', timing).toPromise();

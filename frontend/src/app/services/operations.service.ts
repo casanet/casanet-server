@@ -55,6 +55,14 @@ export class OperationService {
     }
   }
 
+  public getOperation(operationId: string): Operation {
+    for (const operation of this.operations) {
+      if (operation.operationId === operationId) {
+        return operation;
+      }
+    }
+  }
+
   public async triggerOperation(operation: Operation) {
     try {
       await this.httpClient.post(`/API/operations/trigger/${operation.operationId}`, undefined).toPromise();

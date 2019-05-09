@@ -1,6 +1,129 @@
-<p>
-  timings works!
-</p>
+<app-loader *ngIf="dataLoading"></app-loader>
+<div *ngIf="!dataLoading" fxLayout="row" fxLayout="row wrap">
+    <div *ngFor="let timing of timings" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
+
+        <mat-card class="timing-text" style="max-width: 500px !important; background: #4f93a8">
+            <mat-card-header>
+                <div mat-card-avatar>
+
+                    <!-- swtich on off -->
+                    <mat-slide-toggle [color]="primary" [(checked)]="timing.isActive"
+                        (change)="setTimingActive(timing, $event.checked)" style="margin: 20px">Switch active
+                    </mat-slide-toggle>
+                </div>
+
+                <mat-card-title class="timing-text timing-name">{{timing.timingName}}</mat-card-title>
+                <mat-card-subtitle class="timing-text">{{ timing.operationName }}</mat-card-subtitle>
+
+                <button mat-icon-button [matMenuTriggerFor]="timingMenu"
+                    [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
+                    [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+
+                <mat-menu #timingMenu="matMenu">
+                    <button mat-menu-item disabled>
+                        <mat-icon>edit</mat-icon>
+                        <span>{{ 'EDIT' | translate}}</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item style="color: salmon;" (click)="deleteTiming(timing)">
+                        <mat-icon style="color: salmon;">delete_forever</mat-icon>
+                        <span>{{ 'DELETE_TIMING' | translate}}</span>
+                    </button>
+                </mat-menu>
+            </mat-card-header>
+            <mat-accordion>
+                <mat-expansion-panel style="background: #4f93a8">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title class="timing-text">
+                            {{'PROPERTIES' | translate}} {{ timing.timingType | translate}}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <!-- dailySunTrigger -->
+                    <ng-container *ngIf="timing.timingType === 'dailySunTrigger'"
+                        [style.text-align]="('RIGHT_DIR' | translate)">
+                      
+                        <mat-form-field>
+                            <mat-label>{{ 'DAYS' | translate}}</mat-label>
+                            <mat-select multiple disabled [(value)]="timing.timingProperties.dailySunTrigger.days">
+                                <mat-option value="sunday">{{ 'SUNDAY' | translate}}</mat-option>
+                                <mat-option value="monday">{{ 'MONDAY' | translate}}</mat-option>
+                                <mat-option value="tuesday">{{ 'TUESDAY' | translate}}</mat-option>
+                                <mat-option value="wednesday">{{ 'WEDNSDAY' | translate}}</mat-option>
+                                <mat-option value="thursday">{{ 'THURSDAY' | translate}}</mat-option>
+                                <mat-option value="friday">{{ 'FRIDAY' | translate}}</mat-option>
+                                <mat-option value="saturday">{{ 'SATURDAY' | translate}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <input matInput disabled type="number" [(ngModel)]="timing.timingProperties.dailySunTrigger.durationMinutes" placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
+                        </mat-form-field>
+
+                            <mat-form-field>
+                                <mat-label>{{ 'SUN_TRIGGER' | translate}}</mat-label>
+                                <mat-select disabled [(value)]="timing.timingProperties.dailySunTrigger.sunTrigger">
+                                    <mat-option value="sunrise">{{ 'SUNRISE' | translate}}</mat-option>
+                                    <mat-option value="sunset">{{ 'SUNSET' | translate}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                    </ng-container>
+
+                    <!-- dailyTimeTrigger -->
+                    <ng-container *ngIf="timing.timingType === 'dailyTimeTrigger'">
+
+                        <mat-form-field>
+                            <mat-label>{{ 'DAYS' | translate}}</mat-label>
+                            <mat-select multiple disabled [(value)]="timing.timingProperties.dailyTimeTrigger.days">
+                                <mat-option value="sunday">{{ 'SUNDAY' | translate}}</mat-option>
+                                <mat-option value="monday">{{ 'MONDAY' | translate}}</mat-option>
+                                <mat-option value="tuesday">{{ 'TUESDAY' | translate}}</mat-option>
+                                <mat-option value="wednesday">{{ 'WEDNSDAY' | translate}}</mat-option>
+                                <mat-option value="thursday">{{ 'THURSDAY' | translate}}</mat-option>
+                                <mat-option value="friday">{{ 'FRIDAY' | translate}}</mat-option>
+                                <mat-option value="saturday">{{ 'SATURDAY' | translate}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <input matInput disabled type="number" min="0" max="23" step="1" placeholder="{{ 'HOUR' | translate}}"
+                            [(ngModel)]="timing.timingProperties.dailyTimeTrigger.hour">
+                        </mat-form-field>
+
+                            <mat-form-field>
+                                <input matInput disabled type="number" min="0" max="59" step="1" placeholder="{{ 'MINUTES' | translate}}"
+                                    [(ngModel)]="timing.timingProperties.dailyTimeTrigger.minutes">
+                        </mat-form-field>
+                    </ng-container>
+
+                    <!-- once -->
+                    <ng-container *ngIf="timing.timingType === 'once'">
+
+                        {{ getDataFromUTC(timing.timingProperties.once.date).toLocaleDateString() }}
+                        {{ getDataFromUTC(timing.timingProperties.once.date).toLocaleTimeString() }}
+                    </ng-container>
+
+                    <!-- timeout -->
+                    <ng-container *ngIf="timing.timingType === 'timeout'">
+
+                        <b> {{ 'START_IN' | translate}}: </b>
+                        {{ getDataFromUTC(timing.timingProperties.timeout.startDate).toLocaleDateString() }}
+                        {{ getDataFromUTC(timing.timingProperties.timeout.startDate).toLocaleTimeString() }}
+
+                        <br>
+                        <mat-form-field>
+                            <input matInput disabled type="number" [(ngModel)]="timing.timingProperties.timeout.durationInMimutes" placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
+                        </mat-form-field>
+                    </ng-container>
+                </mat-expansion-panel>
+            </mat-accordion>
+            <mat-progress-bar *ngIf="timing.sync" mode="buffer"></mat-progress-bar>
+        </mat-card>
+    </div>
+</div>
 
 <div dir="ltr" *ngIf="!dataLoading" style="position: absolute; bottom: 50px;"
     [style.right]="('DIR' | translate) === 'ltr' ? '25px' : null"
