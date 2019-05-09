@@ -25,6 +25,7 @@ import { MccColorPickerModule } from 'material-community-components';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
+import { DevicesComponent } from './devices/devices.component';
 
 
 
@@ -63,6 +64,7 @@ import { MatInputModule } from '@angular/material/input';
     LoaderComponent,
     OperationsComponent,
     TimingsComponent,
+    DevicesComponent,
   ],
   exports: [
   ],

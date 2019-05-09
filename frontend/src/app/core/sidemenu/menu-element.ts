@@ -21,7 +21,7 @@ export const menus = [
     {
         'name': 'DEVICES',
         'icon': 'devices',
-        'link': 'auth/devices',
+        'link': 'devices',
         'open': false
     },
     {
