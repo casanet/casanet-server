@@ -12,6 +12,7 @@ import { AutoTimeoutDialogComponent } from './dialogs/auto-timeout-dialog/auto-t
 import { CreateMinionDialogComponent } from './dialogs/create-minion-dialog/create-minion-dialog.component';
 import { CreateOperationDialogComponent } from './dialogs/create-operation-dialog/create-operation-dialog.component';
 import { CreateActivityDialogComponent } from './dialogs/create-activity-dialog/create-activity-dialog.component';
+import { CreateTimingDialogComponent } from './dialogs/create-timing-dialog/create-timing-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedModule } from './shared.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -27,6 +28,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTableModule } from '@angular/material/table';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 export function setupTranslateFactory(
   service: TranslateService): Function {
@@ -38,6 +41,7 @@ export function setupTranslateFactory(
 import { MinionsService } from './services/minions.service';
 import { OperationService } from './services/operations.service';
 import { DevicesService } from './services/devices.service';
+import { TimingsService } from './services/timings.service';
 import { AuthService } from './services/auth/auth.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -51,10 +55,13 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CreateMinionDialogComponent,
     CreateOperationDialogComponent,
     CreateActivityDialogComponent,
+    CreateTimingDialogComponent,
   ],
   exports: [
   ],
   imports: [
+    MatNativeDateModule,
+    MatDatepickerModule,
     MatTableModule,
     MatSliderModule,
     MatIconModule,
@@ -80,6 +87,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MinionsService,
     OperationService,
     DevicesService,
+    TimingsService,
     AuthService,
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
@@ -100,6 +108,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CreateMinionDialogComponent,
     CreateOperationDialogComponent,
     CreateActivityDialogComponent,
+    CreateTimingDialogComponent
   ]
 })
 export class AppModule { }
