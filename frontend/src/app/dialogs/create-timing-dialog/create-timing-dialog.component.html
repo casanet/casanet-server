@@ -1,0 +1,155 @@
+<mat-horizontal-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="selectOperationControl">
+    <form>
+      <ng-template matStepLabel>{{ 'SELECT_OPERATION' | translate}}</ng-template>
+      <mat-form-field>
+        <mat-select placeholder="{{ 'SELECT_OPERATION' | translate}}" [formControl]="selectOperationControl" required>
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let operation of operations" [value]="operation">
+            {{operation.operationName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="timingTypeControl">
+    <form>
+      <ng-template matStepLabel>{{ 'SELECT_A_TYPE' | translate}}</ng-template>
+      <mat-form-field>
+        <mat-select placeholder="{{ 'SELECT_A_TYPE' | translate}}" [formControl]="timingTypeControl"
+          (selectionChange)="timingProperties = {}" required>
+          <mat-option>--</mat-option>
+          <mat-option value="dailySunTrigger">{{ 'dailySunTrigger' | translate}}</mat-option>
+          <mat-option value="dailyTimeTrigger">{{ 'dailyTimeTrigger' | translate}}</mat-option>
+          <mat-option value="once">{{ 'once' | translate}}</mat-option>
+          <mat-option value="timeout">{{ 'timeout' | translate}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="setTimingProperties">
+    <form>
+      <ng-template matStepLabel>{{ 'SET_PROPERTIES' | translate}}</ng-template>
+
+      <!-- dailySunTrigger -->
+      <ng-container *ngIf="timingTypeControl.value === 'dailySunTrigger'">
+        <mat-form-field>
+          <mat-label>{{ 'DAYS' | translate}}</mat-label>
+          <mat-select multiple [(value)]="timingProperties.days">
+            <mat-option value="sunday">{{ 'SUNDAY' | translate}}</mat-option>
+            <mat-option value="monday">{{ 'MONDAY' | translate}}</mat-option>
+            <mat-option value="tuesday">{{ 'TUESDAY' | translate}}</mat-option>
+            <mat-option value="wednesday">{{ 'WEDNSDAY' | translate}}</mat-option>
+            <mat-option value="thursday">{{ 'THURSDAY' | translate}}</mat-option>
+            <mat-option value="friday">{{ 'FRIDAY' | translate}}</mat-option>
+            <mat-option value="saturday">{{ 'SATURDAY' | translate}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="number" placeholder="{{ 'DURATION_IN_MINUTES' | translate}}"
+            (change)="timingProperties.durationMinutes = $event.target.value">
+          <mat-hint><strong>{{ 'DURATION_MUST_BE_IN_SAME_CALANDERY_DAY' | translate}}</strong> </mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'SUN_TRIGGER' | translate}}</mat-label>
+          <mat-select [(value)]="timingProperties.sunTrigger">
+            <mat-option value="sunrise">{{ 'SUNRISE' | translate}}</mat-option>
+            <mat-option value="sunset">{{ 'SUNSET' | translate}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </ng-container>
+
+      <!-- dailyTimeTrigger -->
+      <ng-container *ngIf="timingTypeControl.value === 'dailyTimeTrigger'">
+
+        <mat-form-field>
+          <mat-label>{{ 'DAYS' | translate}}</mat-label>
+          <mat-select multiple [(value)]="timingProperties.days">
+            <mat-option value="sunday">{{ 'SUNDAY' | translate}}</mat-option>
+            <mat-option value="monday">{{ 'MONDAY' | translate}}</mat-option>
+            <mat-option value="tuesday">{{ 'TUESDAY' | translate}}</mat-option>
+            <mat-option value="wednesday">{{ 'WEDNSDAY' | translate}}</mat-option>
+            <mat-option value="thursday">{{ 'THURSDAY' | translate}}</mat-option>
+            <mat-option value="friday">{{ 'FRIDAY' | translate}}</mat-option>
+            <mat-option value="saturday">{{ 'SATURDAY' | translate}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- TODO: use time picker -->
+        <mat-form-field>
+          <input matInput type="number" min="0" max="23" step="1" placeholder="{{ 'HOUR' | translate}}"
+            (change)="timingProperties.hour = $event.target.value">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="number" min="0" max="59" step="1" placeholder="{{ 'MINUTES' | translate}}"
+            (change)="timingProperties.minutes = $event.target.value">
+        </mat-form-field>
+      </ng-container>
+
+      <!-- once -->
+      <ng-container *ngIf="timingTypeControl.value === 'once'">
+
+        <mat-form-field>
+          <input id="once" matInput (dateChange)="timingProperties.dateObj = $event.target.value" [matDatepicker]="picker" placeholder="{{ 'CHOOSE_DATE' | translate}}">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="number" min="0" max="23" step="1" placeholder="{{ 'HOUR' | translate}}"
+            (change)="timingProperties.hour = $event.target.value">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="number" min="0" max="59" step="1" placeholder="{{ 'MINUTES' | translate}}"
+            (change)="timingProperties.minutes = $event.target.value">
+        </mat-form-field>
+
+      </ng-container>
+
+      <!-- timeout -->
+      <ng-container *ngIf="timingTypeControl.value === 'timeout'">
+
+        <mat-form-field>
+          <input matInput type="number" min="1" placeholder="{{ 'DURATION_IN_MINUTES' | translate}}"
+            (change)="timingProperties.durationInMimutes = $event.target.value">
+        </mat-form-field>
+      </ng-container>
+      <div>
+        <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+        <button mat-button matStepperNext [disabled]="!isPropertiesOk()">{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="nameControl">
+    <form>
+      <ng-template matStepLabel>{{ 'ENTER_NAME' | translate}}</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="{{ 'ENTER_NAME_HERE' | translate}}" [formControl]="nameControl" required>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>{{ 'DONE' | translate}}</ng-template>
+    {{ 'DONE_MINION_MESSAGE' | translate}}
+    <div>
+      <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+      <button mat-button (click)="stepper.reset()">{{ 'RESET' | translate}}</button>
+      <button mat-button (click)="createMinion()" cdkFocusInitial mat-raised-button>{{ 'CREATE' | translate}}</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>

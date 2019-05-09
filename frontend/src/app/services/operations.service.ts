@@ -39,7 +39,7 @@ export class OperationService {
 
   public async createOperation(operation: Operation) {
     try {
-      await this.httpClient.post<Operation[]>('/API/operations', operation).toPromise();
+      await this.httpClient.post('/API/operations', operation).toPromise();
       this.loadOperations();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -48,7 +48,7 @@ export class OperationService {
 
   public async deleteOperation(operation: Operation) {
     try {
-      await this.httpClient.delete<Operation[]>(`/API/operations/${operation.operationId}`).toPromise();
+      await this.httpClient.delete(`/API/operations/${operation.operationId}`).toPromise();
       this.loadOperations();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -57,7 +57,7 @@ export class OperationService {
 
   public async triggerOperation(operation: Operation) {
     try {
-      await this.httpClient.post<Operation[]>(`/API/operations/trigger/${operation.operationId}`, undefined).toPromise();
+      await this.httpClient.post(`/API/operations/trigger/${operation.operationId}`, undefined).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
