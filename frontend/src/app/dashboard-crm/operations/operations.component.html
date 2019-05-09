@@ -1,0 +1,22 @@
+<p>
+  {{ operations }}
+</p>
+<div dir="ltr" *ngIf="!dataLoading" style="position: absolute; bottom: 50px;"
+    [style.right]="('DIR' | translate) === 'ltr' ? '25px' : null"
+    [style.left]="('DIR' | translate) === 'rtl' ? '25px' : null">
+    <eco-fab-speed-dial #allOperationsActionsFab (mouseenter)="allOperationsActionsFab.open = true"
+        (mouseleave)="allOperationsActionsFab.open = false">
+        <eco-fab-speed-dial-trigger [spin]="true">
+            <button [color]="primary" mat-fab>
+                <mat-icon class="spin180">more_vert</mat-icon>
+            </button>
+        </eco-fab-speed-dial-trigger>
+
+        <eco-fab-speed-dial-actions>
+            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="createOperation()"
+                matTooltip="{{'CREATE_OPERATION' | translate}}">
+                <mat-icon>add</mat-icon>
+            </button>
+        </eco-fab-speed-dial-actions>
+    </eco-fab-speed-dial>
+</div>

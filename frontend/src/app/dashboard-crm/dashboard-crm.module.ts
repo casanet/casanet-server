@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardCrmComponent } from './dashboard-crm.component';
+import { MinionsComponent } from './minions/minions.component';
+import { OperationsComponent } from './operations/operations.component';
+import { TimingsComponent } from './timings/timings.component';
+import { LoaderComponent } from './loader/loader.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -21,14 +24,8 @@ import { EcoFabSpeedDialModule} from '@ecodev/fab-speed-dial';
 import { MccColorPickerModule } from 'material-community-components';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { BrowserModule } from '@angular/platform-browser';
 
-import { LoaderComponent } from './loader/loader.component';
 
-export const appRoutes: Routes = [
-  { path: '', component: DashboardCrmComponent },
-];
 
 @NgModule({
   imports: [
@@ -53,15 +50,16 @@ export const appRoutes: Routes = [
     MatIconModule,
     MatExpansionModule,
     CommonModule,
-    RouterModule.forChild(appRoutes),
     FlexLayoutModule,
     MatCardModule,
     MatButtonToggleModule,
 
   ],
   declarations: [
-    DashboardCrmComponent,
+    MinionsComponent,
     LoaderComponent,
+    OperationsComponent,
+    TimingsComponent,
   ],
   exports: [
   ],

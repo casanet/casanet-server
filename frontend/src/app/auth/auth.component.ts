@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, AfterContentInit } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 @Component({
@@ -8,7 +8,7 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 })
 
-export class AuthComponent implements OnInit, OnChanges {
+export class AuthComponent implements OnInit, OnChanges, AfterContentInit {
     @Input() isVisible = true;
     visibility = 'shown';
 
@@ -29,6 +29,11 @@ export class AuthComponent implements OnInit, OnChanges {
         this.media.subscribe((mediaChange: MediaChange) => {
             this.toggleView();
         });
+    }
+
+    ngAfterContentInit() {
+        /** Clear loader from DOM, to not let him work in background */
+        document.getElementById('loading-app-assets').innerHTML = '';
     }
 
     getRouteAnimation(outlet) {
