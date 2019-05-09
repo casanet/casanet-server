@@ -71,6 +71,19 @@ export class DevicesService {
     }
   }
 
+  public async setDeviceName(localNetworkDevice: LocalNetworkDevice, name: string) {
+    try {
+      const { mac } = localNetworkDevice;
+      await this.httpClient.put(`/API/devices/${localNetworkDevice.mac}`, {
+        name,
+        mac,
+      }).toPromise();
+      this.loadLanDevices();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
   public async cleanUp() {
     this.isDevicesKindsRetrived = false;
     this.isLanDevicesRetrived = false;
