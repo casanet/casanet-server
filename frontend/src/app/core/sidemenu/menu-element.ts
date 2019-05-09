@@ -2,20 +2,20 @@ export const menus = [
     {
         'name': 'MINIONS',
         'icon': 'wb_incandescent',
-        'link': 'auth/minions',
+        'link': 'minions',
         // 'access': (user: User): boolean => user.access === 'manager' || (user.linkedSchools && user.linkedSchools.length > 1) ,
         'open': false
     },
     {
         'name': 'OPERATIONS',
         'icon': 'assignment',
-        'link': 'auth/operation',
+        'link': 'operations',
         'open': false
     },
     {
         'name': 'TIMINGS',
         'icon': 'alarm',
-        'link': 'auth/timings',
+        'link': 'timings',
         'open': false
     },
     {

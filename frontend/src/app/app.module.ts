@@ -10,6 +10,8 @@ import { TranslateService } from './translate.service';
 import { ToasterAndErrorsService } from './services/toaster-and-errors.service';
 import { AutoTimeoutDialogComponent } from './dialogs/auto-timeout-dialog/auto-timeout-dialog.component';
 import { CreateMinionDialogComponent } from './dialogs/create-minion-dialog/create-minion-dialog.component';
+import { CreateOperationDialogComponent } from './dialogs/create-operation-dialog/create-operation-dialog.component';
+import { CreateActivityDialogComponent } from './dialogs/create-activity-dialog/create-activity-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedModule } from './shared.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -20,6 +22,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatTableModule } from '@angular/material/table';
 
 export function setupTranslateFactory(
   service: TranslateService): Function {
@@ -29,6 +36,7 @@ export function setupTranslateFactory(
   };
 }
 import { MinionsService } from './services/minions.service';
+import { OperationService } from './services/operations.service';
 import { DevicesService } from './services/devices.service';
 import { AuthService } from './services/auth/auth.service';
 
@@ -41,10 +49,17 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     AppComponent,
     AutoTimeoutDialogComponent,
     CreateMinionDialogComponent,
+    CreateOperationDialogComponent,
+    CreateActivityDialogComponent,
   ],
   exports: [
   ],
   imports: [
+    MatTableModule,
+    MatSliderModule,
+    MatIconModule,
+    MatButtonToggleModule,
+    MatTooltipModule,
     BrowserModule,
     LazyLoadModule,
     CoreModule,
@@ -63,12 +78,13 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   ],
   providers: [
     MinionsService,
+    OperationService,
     DevicesService,
     AuthService,
-        {
-            provide: PERFECT_SCROLLBAR_CONFIG,
-            useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-        },
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+    },
     ToasterAndErrorsService,
     TranslateService,
     {
@@ -79,6 +95,11 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     }
   ],
   bootstrap: [AppComponent],
-  entryComponents: [AutoTimeoutDialogComponent, CreateMinionDialogComponent]
+  entryComponents: [
+    AutoTimeoutDialogComponent,
+    CreateMinionDialogComponent,
+    CreateOperationDialogComponent,
+    CreateActivityDialogComponent,
+  ]
 })
 export class AppModule { }

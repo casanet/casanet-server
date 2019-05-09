@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import {
 	Minion,
 	SwitchOptions,
@@ -6,31 +6,35 @@ import {
 	MinionStatus,
 	DeviceKind,
 	ColorLight,
-} from '../../../../backend/src/models/sharedInterfaces';
-import { MinionsService } from '../services/minions.service';
-import { DevicesService } from '../services/devices.service';
-import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
+} from '../../../../../backend/src/models/sharedInterfaces';
+import { MinionsService } from '../../services/minions.service';
+import { DevicesService } from '../../services/devices.service';
+import { DeepCopy } from '../../../../../backend/src/utilities/deepCopy';
 import swal, { SweetAlertResult } from 'sweetalert2';
-import { TranslateService } from '../translate.service';
-import { TranslatePipe } from '../translate.pipe';
+import { TranslateService } from '../../translate.service';
+import { TranslatePipe } from '../../translate.pipe';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AutoTimeoutDialogComponent } from '../dialogs/auto-timeout-dialog/auto-timeout-dialog.component';
-import { CreateMinionDialogComponent } from '../dialogs/create-minion-dialog/create-minion-dialog.component';
+import { AutoTimeoutDialogComponent } from '../../dialogs/auto-timeout-dialog/auto-timeout-dialog.component';
+import { CreateMinionDialogComponent } from '../../dialogs/create-minion-dialog/create-minion-dialog.component';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-dashboard-crm',
-	templateUrl: './dashboard-crm.component.html',
-	styleUrls: ['./dashboard-crm.component.scss']
+	templateUrl: './minions.component.html',
+	styleUrls: ['./minions.component.scss']
 })
-export class DashboardCrmComponent implements OnInit, AfterContentInit {
+export class MinionsComponent implements OnInit, OnDestroy {
+
 	/** Mark to show or not loading animation */
 	public dataLoading = true;
 
 	public minions: Minion[] = [];
 
 	private translatePipe: TranslatePipe;
+	private minionSubscription: Subscription;
 
 	constructor(
+		private changeDetectorRef: ChangeDetectorRef,
 		public dialog: MatDialog,
 		private translateService: TranslateService,
 		private minionsService: MinionsService,
@@ -38,47 +42,48 @@ export class DashboardCrmComponent implements OnInit, AfterContentInit {
 	) {
 		this.translatePipe = new TranslatePipe(this.translateService);
 
-		minionsService.minionsFeed.subscribe((minions) => {
-			this.dataLoading = false;
-
-			for (const minion of minions) {
-				const existMinion = this.getExistMinion(minion.minionId);
-				if (!existMinion) {
-					// create update set.
-					this.createUpdateSet(minion);
-					this.minions.push(minion);
-					continue;
-				}
-
-				/** Set all possible changes to current minion properties */
-				existMinion.isProperlyCommunicated = minion.isProperlyCommunicated;
-				existMinion.minionAutoTurnOffMS = minion.minionAutoTurnOffMS;
-				existMinion.device = minion.device;
-				existMinion.minionStatus = minion.minionStatus;
-				this.createUpdateSet(existMinion);
-			}
-
-			this.minions.sort((m1: Minion, m2: Minion) => {
-				/** If type is the same, sort by display name */
-				if (m1.minionType === m2.minionType) {
-					return m1.name < m2.name ? -1 : 1;
-				}
-				return m1.minionType < m2.minionType ? -1 : 1;
-			});
-		});
-
 		minionsService.retriveMinions();
 		devicesService.retriveLanDevices();
 		devicesService.retriveDevicesKindsData();
 	}
 
-	ngOnInit() { }
+	ngOnInit() {
+		this.minionSubscription =
+			this.minionsService.minionsFeed.subscribe((minions) => {
+				this.dataLoading = false;
 
-	ngAfterContentInit() {
-		/** Clear loader from DOM, to not let him work in background */
-		document.getElementById('loading-app-assets').innerHTML = '';
+				for (const minion of minions) {
+					const existMinion = this.getExistMinion(minion.minionId);
+					if (!existMinion) {
+						// create update set.
+						this.createUpdateSet(minion);
+						this.minions.push(minion);
+						continue;
+					}
+
+					/** Set all possible changes to current minion properties */
+					existMinion.isProperlyCommunicated = minion.isProperlyCommunicated;
+					existMinion.minionAutoTurnOffMS = minion.minionAutoTurnOffMS;
+					existMinion.device = minion.device;
+					existMinion.minionStatus = minion.minionStatus;
+					this.createUpdateSet(existMinion);
+				}
+
+				this.minions.sort((m1: Minion, m2: Minion) => {
+					/** If type is the same, sort by display name */
+					if (m1.minionType === m2.minionType) {
+						return m1.name < m2.name ? -1 : 1;
+					}
+					return m1.minionType < m2.minionType ? -1 : 1;
+				});
+
+				this.changeDetectorRef.detectChanges();
+			});
 	}
 
+	ngOnDestroy(): void {
+		this.minionSubscription.unsubscribe();
+	}
 	private getExistMinion(minionId: string): Minion {
 		for (const existMinion of this.minions) {
 			if (minionId === existMinion.minionId) {

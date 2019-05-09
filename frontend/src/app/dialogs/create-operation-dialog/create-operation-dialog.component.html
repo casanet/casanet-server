@@ -1,0 +1,79 @@
+<mat-horizontal-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="activitiesControl">
+    <form>
+      <ng-template matStepLabel>{{ 'CREATE_ACTIVITIES' | translate}}</ng-template>
+
+      <button mat-stroked-button color="primary" (click)="createActivity()">{{ 'ADD_ACTIVITY' | translate}}</button>
+      <div class="table-container">
+        <table *ngIf="dataSource" mat-table [dataSource]="dataSource"
+          class="mat-elevation-z8 example-container">
+
+          <!--- Note that these columns can be defined in any order.
+                      The actual rendered columns are set as a property on the row definition" -->
+
+          <!-- properties Column -->
+          <ng-container matColumnDef="remove">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="warn">
+                <mat-icon aria-label="Remove activity" (click)="removeActivity(element)">remove_circle</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- properties Column -->
+          <ng-container matColumnDef="properties">
+            <th mat-header-cell *matHeaderCellDef> {{ 'PROPERTIES' | translate}} </th>
+            <td mat-cell *matCellDef="let element">
+              <ul>
+                <li *ngFor="let property of element.properties">
+                  <b>{{ property.name | translate}}</b>: {{ property.value | translate}}
+                </li>
+              </ul>
+            </td>
+          </ng-container>
+
+          <!-- status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef> {{ 'STATUS' | translate}} </th>
+            <td mat-cell *matCellDef="let element"> {{ element.status | translate}} </td>
+          </ng-container>
+
+          <!-- name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> {{ 'NAME' | translate}} </th>
+            <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+      <div>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="nameControl">
+    <form>
+      <ng-template matStepLabel>{{ 'ENTER_NAME' | translate}}</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="{{ 'ENTER_NAME_HERE' | translate}}" [formControl]="nameControl" required>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>{{ 'DONE' | translate}}</ng-template>
+    {{ 'DONE_OPERATION_MESSAGE' | translate}}
+    <div>
+      <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+      <button mat-button (click)="stepper.reset()">{{ 'RESET' | translate}}</button>
+      <button mat-button (click)="createOperation()" cdkFocusInitial
+        mat-raised-button>{{ 'CREATE' | translate}}</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>
