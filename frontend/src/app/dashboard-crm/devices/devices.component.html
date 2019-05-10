@@ -35,7 +35,11 @@
     <ng-container matColumnDef="set-name">
       <th mat-header-cell *matHeaderCellDef> </th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button color="primary" (click)="setName(element)">
+        <div *ngIf="element.sync" [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : '11px'"
+          [style.margin-left]="('DIR' | translate) === 'rtl'? '0' : '11px'">
+          <mat-spinner color="primary" strokeWidth="3" diameter="20"></mat-spinner>
+        </div>
+        <button *ngIf="!element.sync" mat-icon-button color="primary" (click)="setName(element)">
           <mat-icon aria-label="Set name">border_color</mat-icon>
         </button>
       </td>
@@ -55,15 +59,15 @@
     (mouseleave)="allDevicesActionsFab.open = false">
     <eco-fab-speed-dial-trigger [spin]="true">
       <button [color]="primary" mat-fab>
-                <mat-icon class="spin180">more_vert</mat-icon>
-            </button>
+        <mat-icon class="spin180">more_vert</mat-icon>
+      </button>
     </eco-fab-speed-dial-trigger>
 
     <eco-fab-speed-dial-actions>
       <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="reScanNetwork()"
-                matTooltip="{{'RESCAN_NETWORK' | translate}}">
-                <mat-icon>track_changes</mat-icon>
-            </button>
+        matTooltip="{{'RESCAN_NETWORK' | translate}}">
+        <mat-icon>track_changes</mat-icon>
+      </button>
     </eco-fab-speed-dial-actions>
   </eco-fab-speed-dial>
 </div>

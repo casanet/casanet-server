@@ -137,7 +137,7 @@ export class OperationsComponent implements OnInit, OnDestroy {
     const swalResult: void | SweetAlertResult = await swal({
       type: 'warning',
       title: `${this.translatePipe.transform('SURE')}?`,
-      text: `${this.translatePipe.transform('BEFORE_DELETE_OPERATION_MESSAGE')} ${operation.operationName} ?`,
+      text: `${this.translatePipe.transform('BEFORE_DELETE_MESSAGE')} ${operation.operationName} ?`,
       showConfirmButton: true,
       confirmButtonColor: 'red',
       showCancelButton: true,

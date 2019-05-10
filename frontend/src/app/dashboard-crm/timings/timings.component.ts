@@ -82,7 +82,7 @@ export class TimingsComponent implements OnInit, OnDestroy {
     const swalResult: void | SweetAlertResult = await swal({
       type: 'warning',
       title: `${this.translatePipe.transform('SURE')}?`,
-      text: `${this.translatePipe.transform('BEFORE_DELETE_TIMING_MESSAGE')} ${timing.timingName} ?`,
+      text: `${this.translatePipe.transform('BEFORE_DELETE_MESSAGE')} ${timing.timingName} ?`,
       showConfirmButton: true,
       confirmButtonColor: 'red',
       showCancelButton: true,

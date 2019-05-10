@@ -13,7 +13,10 @@
                 </div>
 
                 <mat-card-title class="timing-text timing-name">{{timing.timingName}}</mat-card-title>
-                <mat-card-subtitle class="timing-text">{{ timing.operationName }}</mat-card-subtitle>
+                <mat-card-subtitle class="timing-text">{{ 'ACTIVATE' | translate }}: {{ timing.operationName }}
+                </mat-card-subtitle>
+                <mat-card-subtitle class="timing-text">{{ 'TYPE' | translate }}: {{ timing.timingType | translate }}
+                </mat-card-subtitle>
 
                 <button mat-icon-button [matMenuTriggerFor]="timingMenu"
                     [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
@@ -37,14 +40,14 @@
                 <mat-expansion-panel style="background: #4f93a8">
                     <mat-expansion-panel-header>
                         <mat-panel-title class="timing-text">
-                            {{'PROPERTIES' | translate}} {{ timing.timingType | translate}}
+                            {{'PROPERTIES' | translate}}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
 
                     <!-- dailySunTrigger -->
                     <ng-container *ngIf="timing.timingType === 'dailySunTrigger'"
                         [style.text-align]="('RIGHT_DIR' | translate)">
-                      
+
                         <mat-form-field>
                             <mat-label>{{ 'DAYS' | translate}}</mat-label>
                             <mat-select multiple disabled [(value)]="timing.timingProperties.dailySunTrigger.days">
@@ -59,16 +62,18 @@
                         </mat-form-field>
 
                         <mat-form-field>
-                            <input matInput disabled type="number" [(ngModel)]="timing.timingProperties.dailySunTrigger.durationMinutes" placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
+                            <input matInput disabled type="number"
+                                [(ngModel)]="timing.timingProperties.dailySunTrigger.durationMinutes"
+                                placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
                         </mat-form-field>
 
-                            <mat-form-field>
-                                <mat-label>{{ 'SUN_TRIGGER' | translate}}</mat-label>
-                                <mat-select disabled [(value)]="timing.timingProperties.dailySunTrigger.sunTrigger">
-                                    <mat-option value="sunrise">{{ 'SUNRISE' | translate}}</mat-option>
-                                    <mat-option value="sunset">{{ 'SUNSET' | translate}}</mat-option>
-                                </mat-select>
-                            </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>{{ 'SUN_TRIGGER' | translate}}</mat-label>
+                            <mat-select disabled [(value)]="timing.timingProperties.dailySunTrigger.sunTrigger">
+                                <mat-option value="sunrise">{{ 'SUNRISE' | translate}}</mat-option>
+                                <mat-option value="sunset">{{ 'SUNSET' | translate}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
                     </ng-container>
 
@@ -89,33 +94,40 @@
                         </mat-form-field>
 
                         <mat-form-field>
-                            <input matInput disabled type="number" min="0" max="23" step="1" placeholder="{{ 'HOUR' | translate}}"
-                            [(ngModel)]="timing.timingProperties.dailyTimeTrigger.hour">
+                            <input matInput disabled type="number" min="0" max="23" step="1"
+                                placeholder="{{ 'HOUR' | translate}}"
+                                [(ngModel)]="timing.timingProperties.dailyTimeTrigger.hour">
                         </mat-form-field>
 
-                            <mat-form-field>
-                                <input matInput disabled type="number" min="0" max="59" step="1" placeholder="{{ 'MINUTES' | translate}}"
-                                    [(ngModel)]="timing.timingProperties.dailyTimeTrigger.minutes">
+                        <mat-form-field>
+                            <input matInput disabled type="number" min="0" max="59" step="1"
+                                placeholder="{{ 'MINUTES' | translate}}"
+                                [(ngModel)]="timing.timingProperties.dailyTimeTrigger.minutes">
                         </mat-form-field>
                     </ng-container>
 
                     <!-- once -->
                     <ng-container *ngIf="timing.timingType === 'once'">
-
-                        {{ getDataFromUTC(timing.timingProperties.once.date).toLocaleDateString() }}
-                        {{ getDataFromUTC(timing.timingProperties.once.date).toLocaleTimeString() }}
+                        <div class="timing-properties-text">
+                            {{ getDataFromUTC(timing.timingProperties.once.date).toLocaleDateString() }}
+                            {{ getDataFromUTC(timing.timingProperties.once.date).toLocaleTimeString() }}
+                        </div>
                     </ng-container>
 
                     <!-- timeout -->
                     <ng-container *ngIf="timing.timingType === 'timeout'">
 
-                        <b> {{ 'START_IN' | translate}}: </b>
-                        {{ getDataFromUTC(timing.timingProperties.timeout.startDate).toLocaleDateString() }}
-                        {{ getDataFromUTC(timing.timingProperties.timeout.startDate).toLocaleTimeString() }}
+                        <div class="timing-properties-text">
+                            <b> {{ 'START_IN' | translate}}: </b>
+                            {{ getDataFromUTC(timing.timingProperties.timeout.startDate).toLocaleDateString() }}
+                            {{ getDataFromUTC(timing.timingProperties.timeout.startDate).toLocaleTimeString() }}
+                        </div>
 
                         <br>
                         <mat-form-field>
-                            <input matInput disabled type="number" [(ngModel)]="timing.timingProperties.timeout.durationInMimutes" placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
+                            <input matInput disabled type="number"
+                                [(ngModel)]="timing.timingProperties.timeout.durationInMimutes"
+                                placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
                         </mat-form-field>
                     </ng-container>
                 </mat-expansion-panel>

@@ -44,8 +44,8 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
   public async setName(device: LocalNetworkDevice) {
     const swalResult: void | SweetAlertResult = await swal({
-      type: 'warning',
-      title: `${this.translatePipe.transform('PUT_NAME')}`,
+      type: 'info',
+      title: `${this.translatePipe.transform('PRESS_NAME')}`,
       text: `${this.translatePipe.transform('DEVICE')} ${device.name ? device.name : '--'} ${device.mac}`,
       input: 'text',
       showConfirmButton: true,
