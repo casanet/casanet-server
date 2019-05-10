@@ -1,5 +1,13 @@
-import { Component, OnInit, Input, OnChanges, AfterContentInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, AfterContentInit, OnDestroy } from '@angular/core';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
+import { TimingsService } from '../services/timings.service';
+import { Subscription } from 'rxjs';
+import swal, { SweetAlertResult } from 'sweetalert2';
+import { TranslateService } from '../translate.service';
+import { TranslatePipe } from '../translate.pipe';
+import { MinionsService } from '../services/minions.service';
+import { OperationService } from '../services/operations.service';
+import { Minion } from '../../../../backend/src/models/sharedInterfaces';
 
 @Component({
     selector: 'app-auth',
@@ -8,7 +16,10 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 })
 
-export class AuthComponent implements OnInit, OnChanges, AfterContentInit {
+export class AuthComponent implements OnInit, OnChanges, AfterContentInit, OnDestroy {
+
+    private translatePipe: TranslatePipe;
+
     @Input() isVisible = true;
     visibility = 'shown';
 
@@ -17,25 +28,85 @@ export class AuthComponent implements OnInit, OnChanges, AfterContentInit {
     matDrawerShow = true;
     sideNavMode = 'side';
 
+    activatedTimingSubscription: Subscription;
     ngOnChanges() {
         this.visibility = this.isVisible ? 'shown' : 'hidden';
     }
 
-    constructor(private media: ObservableMedia) {
+    constructor(
+        private media: ObservableMedia,
+        private timingService: TimingsService,
+        private minionsService: MinionsService,
+        private operationService: OperationService,
+        private translateService: TranslateService) {
 
+        this.translatePipe = new TranslatePipe(this.translateService);
     }
 
     ngOnInit() {
         this.media.subscribe((mediaChange: MediaChange) => {
             this.toggleView();
         });
+
+        this.activatedTimingSubscription =
+            this.timingService.timingActivatedFeed.subscribe(async (activateResult) => {
+                if (!activateResult) {
+                    return;
+                }
+
+                const { timing, results } = activateResult;
+
+                let operation = this.operationService.getOperation(timing.triggerOperationId);
+
+                if (!operation) {
+                    /** If operation not exist (?) generate fake. */
+                    operation = {
+                        activities: [],
+                        operationId: '--',
+                        operationName: '--'
+                    };
+                }
+
+                let errorMessages = '<br>';
+                for (const failActivity of results) {
+                    const errorMessage = this.translatePipe.transform(failActivity.error.responseCode, true);
+
+                    let minion = this.minionsService.getMinion(failActivity.minionId);
+
+                    if (!minion) {
+                        minion = {
+                            name: '--',
+                        } as unknown as Minion;
+                    }
+
+                    // tslint:disable-next-line:max-line-length
+                    errorMessages += `<br>${this.translatePipe.transform('SET')} ${minion.name} ${this.translatePipe.transform('FAIL')}, ${errorMessage}`;
+                }
+
+                await swal({
+                    type: results.length < 1
+                        ? 'success'
+                        : 'warning',
+                    title: `${timing.timingName} ${this.translatePipe.transform('ACTIVATED')}`,
+                    html: `<b>${this.translatePipe.transform('ACTIVATED_OPERATION')}: ${operation.operationName}</b>${errorMessages}`,
+                    timer: 60 * 1000,
+                    showConfirmButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: this.translatePipe.transform('OK')
+                });
+
+            });
     }
 
     ngAfterContentInit() {
-        /** Clear loader from DOM, to not let him work in background */
+        /** Clear loader from DOM, to not let it work in background */
         document.getElementById('loading-app-assets').innerHTML = '';
     }
 
+    ngOnDestroy(): void {
+        this.activatedTimingSubscription.unsubscribe();
+
+    }
     getRouteAnimation(outlet) {
 
 

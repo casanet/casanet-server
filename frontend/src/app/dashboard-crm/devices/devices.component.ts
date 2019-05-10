@@ -27,7 +27,6 @@ export class DevicesComponent implements OnInit, OnDestroy {
     private translateService: TranslateService) {
 
     this.translatePipe = new TranslatePipe(this.translateService);
-    this.devicesService.retriveLanDevices();
 
     this.devicesSubscription =
       this.devicesService.lanDevicesFeed.subscribe((devices) => {

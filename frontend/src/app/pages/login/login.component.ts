@@ -11,6 +11,10 @@ import swal, { SweetAlertResult } from 'sweetalert2';
 import { TranslatePipe } from '../../translate.pipe';
 import { TranslateService } from '../../translate.service';
 import { ToasterAndErrorsService } from '../../services/toaster-and-errors.service';
+import { MinionsService } from '../../services/minions.service';
+import { DevicesService } from '../../services/devices.service';
+import { OperationService } from '../../services/operations.service';
+import { TimingsService } from '../../services/timings.service';
 
 
 @Component({
@@ -36,6 +40,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     public snackBar: MatSnackBar,
     private authService: AuthService,
+    private minionsService: MinionsService,
+		private devicesService: DevicesService,
+		private operationService: OperationService,
+		private timingsService: TimingsService,
     private translateService: TranslateService,
     private toastrAndErrorsService: ToasterAndErrorsService) {
     this.translatePipe = new TranslatePipe(this.translateService);
@@ -117,6 +125,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.snackBar.open(this.translatePipe.transform('LOGIN_SUCCESSFULLY'), this.translatePipe.transform('SUBMIT'), {
       duration: 20000,
     });
+
+    this.minionsService.retriveData();
+    this.operationService.retriveData();
+    this.devicesService.retriveData();
+    this.timingsService.retriveData();
   }
 
   private onLoginFail(err: HttpErrorResponse) {

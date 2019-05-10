@@ -17,12 +17,13 @@ export class OperationService {
 
   constructor(private toastrAndErrorsService: ToasterAndErrorsService,
     private httpClient: HttpClient) {
+
+      this.retriveData();
   }
 
   private async loadOperations() {
     try {
       const operations = await this.httpClient.get<Operation[]>('/API/operations').toPromise();
-      this.isOperationsRetrived = true;
       this.operations = operations;
       this.operationFeed.next(this.operations);
     } catch (error) {
@@ -31,8 +32,9 @@ export class OperationService {
     }
   }
 
-  public async retriveOperations() {
+  private async retriveOperations() {
     if (!this.isOperationsRetrived) {
+      this.isOperationsRetrived = true;
       await this.loadOperations();
     }
   }
@@ -75,4 +77,8 @@ export class OperationService {
     this.isOperationsRetrived = false;
     this.operations = [];
   }
+
+  public async retriveData() {
+		this.retriveOperations();
+	}
 }

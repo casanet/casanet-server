@@ -38,9 +38,6 @@ export class TimingsComponent implements OnInit, OnDestroy {
 
     this.translatePipe = new TranslatePipe(this.translateService);
 
-    this.operationService.retriveOperations();
-    this.timingsService.retriveTimings();
-
     this.operationsSubscription =
       this.operationService.operationFeed.subscribe((operations) => {
         this.parseTimings();
@@ -126,7 +123,7 @@ export class TimingsComponent implements OnInit, OnDestroy {
     });
     this.timings.sort((itemA, itemB) => {
       /** If type is the same, sort by display name */
-      if (itemA.timingType === itemA.timingType) {
+      if (itemA.timingType === itemB.timingType) {
         return itemA.timingName < itemB.timingName ? -1 : 1;
       }
       return itemA.timingType < itemB.timingType ? -1 : 1;
