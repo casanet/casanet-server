@@ -14,7 +14,9 @@ export class MinionsService {
 	private minions: Minion[] = [];
 	public minionsFeed: BehaviorSubject<Minion[]> = new BehaviorSubject<Minion[]>(this.minions);
 
-	constructor(private toastrAndErrorsService: ToasterAndErrorsService, private httpClient: HttpClient) { }
+	constructor(private toastrAndErrorsService: ToasterAndErrorsService, private httpClient: HttpClient) {
+		this.retriveData();
+	}
 
 	public async recordCommand(minion: Minion, minionStatus: MinionStatus) {
 		try {
@@ -65,7 +67,6 @@ export class MinionsService {
 	private async patchMinions() {
 		try {
 			const minions = await this.httpClient.get<Minion[]>('/API/minions').toPromise();
-			this.isMinionsRetrived = true;
 			this.minions = minions;
 
 			for (const minion of this.minions) {
@@ -137,8 +138,9 @@ export class MinionsService {
 		}
 	}
 
-	public async retriveMinions() {
+	private async retriveMinions() {
 		if (!this.isMinionsRetrived) {
+			this.isMinionsRetrived = true;
 			await this.loadMinions();
 		}
 	}
@@ -236,7 +238,13 @@ export class MinionsService {
 	public async cleanUp() {
 		this.isMinionsRetrived = false;
 		this.minions = [];
-		this.minionsServerFeed.close();
-		this.minionsServerFeed = null;
+		if (this.minionsServerFeed) {
+			this.minionsServerFeed.close();
+			this.minionsServerFeed = null;
+		}
+	}
+
+	public async retriveData() {
+		this.retriveMinions();
 	}
 }

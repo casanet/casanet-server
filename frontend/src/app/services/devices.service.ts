@@ -19,12 +19,13 @@ export class DevicesService {
 
   constructor(private toastrAndErrorsService: ToasterAndErrorsService,
     private httpClient: HttpClient) {
+
+    this.retriveData();
   }
 
   private async loadDevicesKindsData() {
     try {
       const devices = await this.httpClient.get<DeviceKind[]>('/API/devices/kinds').toPromise();
-      this.isDevicesKindsRetrived = true;
       this.devicesKinds = devices;
 
     } catch (error) {
@@ -33,8 +34,9 @@ export class DevicesService {
     }
   }
 
-  public async retriveDevicesKindsData() {
+  private async retriveDevicesKindsData() {
     if (!this.isDevicesKindsRetrived) {
+      this.isDevicesKindsRetrived = true;
       await this.loadDevicesKindsData();
     }
   }
@@ -43,7 +45,6 @@ export class DevicesService {
   private async loadLanDevices() {
     try {
       const lanDevices = await this.httpClient.get<LocalNetworkDevice[]>('/API/devices').toPromise();
-      this.isLanDevicesRetrived = true;
       this.lanDevices = lanDevices;
 
       this.lanDevicesFeed.next(DeepCopy<LocalNetworkDevice[]>(this.lanDevices));
@@ -53,8 +54,9 @@ export class DevicesService {
     }
   }
 
-  public async retriveLanDevices() {
+  private async retriveLanDevices() {
     if (!this.isLanDevicesRetrived) {
+      this.isLanDevicesRetrived = true;
       await this.loadLanDevices();
     }
   }
@@ -89,5 +91,10 @@ export class DevicesService {
     this.isLanDevicesRetrived = false;
     this.devicesKinds = [];
     this.lanDevices = [];
+  }
+
+  public async retriveData() {
+    this.retriveDevicesKindsData();
+    this.retriveLanDevices();
   }
 }

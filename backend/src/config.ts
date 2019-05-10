@@ -36,7 +36,7 @@ switch (rawNodeEnv) {
     default: configuration.runningMode = 'prod'; break;
 }
 
-logger.info(`casa-net app running in -${configuration.runningMode}- mode (use environments vars to change it)`);
+logger.info(`casa-net app running in -${configuration.runningMode}- mode (use environments vars "NODE_ENV" to change it)`);
 
 if (!rawHttpPort) {
     logger.warn('There is no HTTP_PORT env var, using default port ' + configuration.http.httpPort);

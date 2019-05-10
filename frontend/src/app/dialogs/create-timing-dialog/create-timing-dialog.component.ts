@@ -155,7 +155,7 @@ export class CreateTimingDialogComponent implements OnInit {
       timingType: this.timingTypeControl.value,
       triggerOperationId: this.selectOperationControl.value.operationId,
       timingProperties,
-    })
+    });
 
     this.operationSubscription.unsubscribe();
     this.dialogRef.close();

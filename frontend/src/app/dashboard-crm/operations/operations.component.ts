@@ -47,8 +47,6 @@ export class OperationsComponent implements OnInit, OnDestroy {
     private operationService: OperationService) {
 
     this.translatePipe = new TranslatePipe(this.translateService);
-    /** Case minoin not,oaded yet. */
-    this.minionsService.retriveMinions();
 
     this.minionsSubscription = this.minionsService.minionsFeed.subscribe((minoins) => {
       /** load names agine after minions update */
@@ -60,8 +58,6 @@ export class OperationsComponent implements OnInit, OnDestroy {
         this.rawOperations = operations;
         this.parseOperations();
       });
-
-    this.operationService.retriveOperations();
   }
 
   ngOnInit() {

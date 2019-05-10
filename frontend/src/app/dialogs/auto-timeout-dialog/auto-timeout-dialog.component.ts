@@ -12,8 +12,8 @@ export class AutoTimeoutDialogComponent implements OnInit {
 
   minion: Minion;
   isAutoTimeoutActive: boolean;
-  hours: number = 1;
-  minutes: number = 0;
+  hours = 1;
+  minutes = 0;
   constructor(private minionsService: MinionsService, private dialogRef: MatDialogRef<AutoTimeoutDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data) {
     this.minion = data;

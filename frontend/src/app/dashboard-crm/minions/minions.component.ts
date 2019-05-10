@@ -42,9 +42,6 @@ export class MinionsComponent implements OnInit, OnDestroy {
 	) {
 		this.translatePipe = new TranslatePipe(this.translateService);
 
-		minionsService.retriveMinions();
-		devicesService.retriveLanDevices();
-		devicesService.retriveDevicesKindsData();
 	}
 
 	ngOnInit() {
