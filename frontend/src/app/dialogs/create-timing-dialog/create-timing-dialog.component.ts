@@ -138,7 +138,7 @@ export class CreateTimingDialogComponent implements OnInit {
     }
   }
 
-  public async createMinion() {
+  public async createTiming() {
 
     /** Remove unnecessary data */
     delete this.timingProperties['dateObj'];

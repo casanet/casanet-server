@@ -17,9 +17,9 @@
   </mat-step>
   <mat-step [stepControl]="timingTypeControl">
     <form>
-      <ng-template matStepLabel>{{ 'SELECT_A_TYPE' | translate}}</ng-template>
+      <ng-template matStepLabel>{{ 'SELECT_TIMING_TYPE' | translate}}</ng-template>
       <mat-form-field>
-        <mat-select placeholder="{{ 'SELECT_A_TYPE' | translate}}" [formControl]="timingTypeControl"
+        <mat-select placeholder="{{ 'SELECT_TIMING_TYPE' | translate}}" [formControl]="timingTypeControl"
           (selectionChange)="timingProperties = {}" required>
           <mat-option>--</mat-option>
           <mat-option value="dailySunTrigger">{{ 'dailySunTrigger' | translate}}</mat-option>
@@ -55,7 +55,7 @@
         <mat-form-field>
           <input matInput type="number" placeholder="{{ 'DURATION_IN_MINUTES' | translate}}"
             (change)="timingProperties.durationMinutes = $event.target.value">
-          <mat-hint><strong>{{ 'DURATION_MUST_BE_IN_SAME_CALANDERY_DAY' | translate}}</strong> </mat-hint>
+          <mat-hint><strong>{{ 'DURATION_MUST_BE_ON_SAME_CALENDERY_DAY' | translate}}</strong> </mat-hint>
         </mat-form-field>
 
         <mat-form-field>
@@ -145,11 +145,11 @@
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>{{ 'DONE' | translate}}</ng-template>
-    {{ 'DONE_MINION_MESSAGE' | translate}}
+    {{ 'DONE_TIMING_MESSAGE' | translate}}
     <div>
       <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
       <button mat-button (click)="stepper.reset()">{{ 'RESET' | translate}}</button>
-      <button mat-button (click)="createMinion()" cdkFocusInitial mat-raised-button>{{ 'CREATE' | translate}}</button>
+      <button mat-button (click)="createTiming()" cdkFocusInitial mat-raised-button>{{ 'CREATE' | translate}}</button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>
