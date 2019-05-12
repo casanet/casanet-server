@@ -148,6 +148,7 @@
     "notConfigured": "לא הוגדר שרת מרוחק",
     "cantReachRemoteServer": "שרת מרוחק לא נגיש",
     "authorizationFail": "אימות מול שרת מרוחק נכשל",
+    "localServerDisconnected": "שרת מקומי התנתק",
     "connectionOK": "חיבור לשרת מרוחק תקין",
     "dailySunTrigger": "תזמון מבוסס אירועי שמש",
     "dailyTimeTrigger": "תזמון שבועי",
