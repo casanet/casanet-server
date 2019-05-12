@@ -14,7 +14,6 @@ import { RouterModule } from '@angular/router';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ToolbarNotificationComponent } from './toolbar-notification/toolbar-notification.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { FullscreenComponent } from './fullscreen/fullscreen.component';
@@ -27,6 +26,8 @@ import {
     MatProgressBarModule,
     MatDialogModule
 } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 import { AboutDialogComponent } from './about-dialog/about-dialog.component';
 import { HelpDialogComponent } from './help-dialog/help-dialog.component';
 import { SharedModule } from '../shared.module';
@@ -41,7 +42,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 
         SidemenuComponent,
         SidemenuItemComponent,
-        ToolbarNotificationComponent,
         ToolbarComponent,
         SearchBarComponent,
         FullscreenComponent,
@@ -55,6 +55,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         SharedModule,
         CommonModule,
         MatListModule,
+        MatTooltipModule,
         MatButtonModule,
         MatInputModule,
         MatIconModule,
@@ -74,7 +75,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     exports: [
         SidemenuComponent,
         SidemenuItemComponent,
-        ToolbarNotificationComponent,
         ToolbarComponent,
         SearchBarComponent,
         FullscreenComponent,

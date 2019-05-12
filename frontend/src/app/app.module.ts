@@ -42,6 +42,7 @@ import { MinionsService } from './services/minions.service';
 import { OperationService } from './services/operations.service';
 import { DevicesService } from './services/devices.service';
 import { TimingsService } from './services/timings.service';
+import { SettingsService } from './services/settings.service';
 import { AuthService } from './services/auth/auth.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -88,6 +89,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     OperationService,
     DevicesService,
     TimingsService,
+    SettingsService,
     AuthService,
     {
       provide: PERFECT_SCROLLBAR_CONFIG,

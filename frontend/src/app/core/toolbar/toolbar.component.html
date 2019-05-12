@@ -18,11 +18,33 @@
 
     <cdk-fullscreen></cdk-fullscreen>
 
-    <cdk-toolbar-notification [notifications]="toolbarHelpers?.notifications"></cdk-toolbar-notification>
+    <!-- Liveliness area -->
+    <ng-container>
+        <button  *ngIf="liveliness" mat-icon-button matTooltipPosition="below"
+                matTooltip="{{ 'ONLINE' | translate}}">
+            <mat-icon aria-label="Remote OK">check_circle_outline</mat-icon>
+        </button>
+        <button  *ngIf="!liveliness" mat-icon-button matTooltipPosition="below"
+                matTooltip="{{ 'OFFLINE' | translate}}">
+            <mat-icon aria-label="Remote OK">error_outline</mat-icon>
+        </button>
+    </ng-container>
+
+    <!-- Remote connection status area -->
+    <ng-container *ngIf="remoteConnection !== 'notConfigured'">
+        <button  *ngIf="remoteConnection === 'connectionOK'" mat-icon-button matTooltipPosition="below"
+            matTooltip="{{ remoteConnection | translate}}">
+            <mat-icon aria-label="Remote OK">cloud_done</mat-icon>
+        </button>
+        <button  *ngIf="remoteConnection !== 'connectionOK'" mat-icon-button matTooltipPosition="below"
+            matTooltip="{{ remoteConnection | translate}}" (click)="sidebar.toggle();" [disabled]="userProfile.scope !== 'adminAuth'">
+            <mat-icon aria-label="Remote OK">cloud_off</mat-icon>
+        </button>
+    </ng-container>
 
     <cdk-user-menu [currentUser]="toolbarHelpers?.currentUser" style="z-index:99999;"></cdk-user-menu>
 
-    <button mat-icon-button (click)="sidebar.toggle();">
+    <button mat-icon-button (click)="sidebar.toggle();" [disabled]="userProfile.scope !== 'adminAuth'">
         <i class="material-icons app-toolbar-menu">settings </i>
     </button>
 
