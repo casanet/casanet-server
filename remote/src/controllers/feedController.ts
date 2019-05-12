@@ -83,7 +83,7 @@ export class FeedController extends Controller {
         }
 
         /** Subscribe client to his local server SSE object */
-        this.timingsSseFeedServersMap[localServerId].addClient(request, response);
+        this.timingsSseFeedServersMap[localServerId].init(request, response);
     }
 
     //////////////////////////////////////////////////
