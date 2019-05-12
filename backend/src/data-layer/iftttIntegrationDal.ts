@@ -31,7 +31,7 @@ export class IftttIntergrationDal {
      * Get Integration Settings.
      */
     public async getIntegrationSettings(): Promise<IftttIntegrationSettings> {
-        return this.iftttIntegrationSettings.length > 0 ? this.iftttIntegrationSettings[0] : undefined;
+        return this.iftttIntegrationSettings.length > 0 ? this.iftttIntegrationSettings[0] : { enableIntegration : false };
     }
 
     /**

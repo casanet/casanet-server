@@ -1232,6 +1232,28 @@ export function RegisterRoutes(app: express.Express) {
             const promise = controller.getStaticsAssets.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
+    app.get('/API/ifttt/settings',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new IftttController();
+
+
+            const promise = controller.isIftttEnabled.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
     app.put('/API/ifttt/settings',
         authenticateMiddleware([{ "adminAuth": [] }]),
         function(request: any, response: any, next: any) {

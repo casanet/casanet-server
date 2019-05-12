@@ -7,6 +7,17 @@ import { ErrorResponse, IftttActionTriggered, IftttActionTriggeredRequest, Ifttt
 export class IftttController extends Controller {
 
     /**
+     * Is IFTTT inegration enabled.
+     */
+    @Response<ErrorResponse>(501, 'Server error')
+    @Security('adminAuth')
+    @Get('/settings')
+    public async isIftttEnabled(): Promise<boolean> {
+        const iftttSettings = await IftttIntegrationBlSingleton.getIftttIntergrationSettings();
+        return iftttSettings.enableIntegration;
+    }
+
+    /**
      * Put ifttt integration settings.
      */
     @Response<ErrorResponse>(501, 'Server error')
