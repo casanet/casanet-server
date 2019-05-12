@@ -5,9 +5,9 @@ import { AuthController } from './../../../backend/src/controllers/authControlle
 import { FeedController } from './../controllers/feedController';
 import { ForwardAuthController } from './../controllers/forwardAuthController';
 import { ForwardingController } from './../controllers/forwardingController';
+import { LocalServersController } from './../controllers/localServersController';
 import { ChannelsController } from './../controllers/channelsController';
 import { AdministrationUsersController } from './../controllers/administrationUsersController';
-import { LocalServersController } from './../controllers/localServersController';
 import { AdministrationAuthController } from './../controllers/administrationAuthController';
 import { StaticsAssetsController } from './../controllers/staticAssetsController';
 import { ManagementsAssetsController } from './../controllers/managementAssetsController';
@@ -63,7 +63,7 @@ const models: TsoaRoute.Models = {
     "AirConditioning": {
         "properties": {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "temperature": { "dataType": "enum", "enums": ["16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"], "required": true },
+            "temperature": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 16 }, "maximum": { "value": 30 }, "isInt": { "errorMsg": "true" } } },
             "mode": { "dataType": "enum", "enums": ["hot", "cold", "dry", "auto"], "required": true },
             "fanStrength": { "dataType": "enum", "enums": ["low", "med", "high", "auto"], "required": true },
         },
@@ -71,24 +71,24 @@ const models: TsoaRoute.Models = {
     "Light": {
         "properties": {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "brightness": { "dataType": "enum", "enums": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100"], "required": true },
+            "brightness": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
         },
     },
     "TemperatureLight": {
         "properties": {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "brightness": { "dataType": "enum", "enums": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100"], "required": true },
-            "temperature": { "dataType": "enum", "enums": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100"], "required": true },
+            "brightness": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
+            "temperature": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
         },
     },
     "ColorLight": {
         "properties": {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "brightness": { "dataType": "enum", "enums": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100"], "required": true },
-            "temperature": { "dataType": "enum", "enums": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100"], "required": true },
-            "red": { "dataType": "enum", "enums": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", "126", "127", "128", "129", "130", "131", "132", "133", "134", "135", "136", "137", "138", "139", "140", "141", "142", "143", "144", "145", "146", "147", "148", "149", "150", "151", "152", "153", "154", "155", "156", "157", "158", "159", "160", "161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172", "173", "174", "175", "176", "177", "178", "179", "180", "181", "182", "183", "184", "185", "186", "187", "188", "189", "190", "191", "192", "193", "194", "195", "196", "197", "198", "199", "200", "201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "213", "214", "215", "216", "217", "218", "219", "220", "221", "222", "223", "224", "225", "226", "227", "228", "229", "230", "231", "232", "233", "234", "235", "236", "237", "238", "239", "240", "241", "242", "243", "244", "245", "246", "247", "248", "249", "250", "251", "252", "253", "254", "255"], "required": true },
-            "green": { "dataType": "enum", "enums": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", "126", "127", "128", "129", "130", "131", "132", "133", "134", "135", "136", "137", "138", "139", "140", "141", "142", "143", "144", "145", "146", "147", "148", "149", "150", "151", "152", "153", "154", "155", "156", "157", "158", "159", "160", "161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172", "173", "174", "175", "176", "177", "178", "179", "180", "181", "182", "183", "184", "185", "186", "187", "188", "189", "190", "191", "192", "193", "194", "195", "196", "197", "198", "199", "200", "201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "213", "214", "215", "216", "217", "218", "219", "220", "221", "222", "223", "224", "225", "226", "227", "228", "229", "230", "231", "232", "233", "234", "235", "236", "237", "238", "239", "240", "241", "242", "243", "244", "245", "246", "247", "248", "249", "250", "251", "252", "253", "254", "255"], "required": true },
-            "blue": { "dataType": "enum", "enums": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", "126", "127", "128", "129", "130", "131", "132", "133", "134", "135", "136", "137", "138", "139", "140", "141", "142", "143", "144", "145", "146", "147", "148", "149", "150", "151", "152", "153", "154", "155", "156", "157", "158", "159", "160", "161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172", "173", "174", "175", "176", "177", "178", "179", "180", "181", "182", "183", "184", "185", "186", "187", "188", "189", "190", "191", "192", "193", "194", "195", "196", "197", "198", "199", "200", "201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "213", "214", "215", "216", "217", "218", "219", "220", "221", "222", "223", "224", "225", "226", "227", "228", "229", "230", "231", "232", "233", "234", "235", "236", "237", "238", "239", "240", "241", "242", "243", "244", "245", "246", "247", "248", "249", "250", "251", "252", "253", "254", "255"], "required": true },
+            "brightness": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
+            "temperature": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
+            "red": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
+            "green": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
+            "blue": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
         },
     },
     "MinionStatus": {
@@ -129,8 +129,8 @@ const models: TsoaRoute.Models = {
     "DailyTimeTrigger": {
         "properties": {
             "days": { "dataType": "array", "array": { "dataType": "enum", "enums": ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] }, "required": true },
-            "hour": { "dataType": "enum", "enums": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"], "required": true },
-            "minutes": { "dataType": "enum", "enums": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"], "required": true },
+            "hour": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 23 }, "isInt": { "errorMsg": "true" } } },
+            "minutes": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 59 }, "isInt": { "errorMsg": "true" } } },
         },
     },
     "OnceTiming": {
@@ -187,6 +187,15 @@ const models: TsoaRoute.Models = {
             "localServerId": { "dataType": "string" },
         },
     },
+    "LocalServer": {
+        "properties": {
+            "localServerId": { "dataType": "string", "required": true },
+            "displayName": { "dataType": "string", "required": true },
+            "macAddress": { "dataType": "string", "required": true },
+            "validUsers": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
+            "connectionStatus": { "dataType": "boolean" },
+        },
+    },
     "User": {
         "properties": {
             "displayName": { "dataType": "string" },
@@ -195,15 +204,6 @@ const models: TsoaRoute.Models = {
             "password": { "dataType": "string", "required": true },
             "ignoreTfa": { "dataType": "boolean", "required": true },
             "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },
-        },
-    },
-    "LocalServer": {
-        "properties": {
-            "localServerId": { "dataType": "string", "required": true },
-            "displayName": { "dataType": "string", "required": true },
-            "macAddress": { "dataType": "string", "required": true },
-            "validUsers": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
-            "connectionStatus": { "dataType": "boolean" },
         },
     },
 };
@@ -434,165 +434,6 @@ export function RegisterRoutes(app: express.Express) {
             const promise = controller.apiForwardingDocumentation.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
-    app.get('/API/channels',
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new ChannelsController();
-
-
-            const promise = controller.connectToRemoteViaWsDocumentation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/administration/users/profile',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new AdministrationUsersController();
-
-
-            const promise = controller.getProfile.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/administration/users',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new AdministrationUsersController();
-
-
-            const promise = controller.getUsers.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/administration/users/:adminId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new AdministrationUsersController();
-
-
-            const promise = controller.getUser.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/administration/users/:adminId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
-                user: { "in": "body", "name": "user", "required": true, "ref": "User" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new AdministrationUsersController();
-
-
-            const promise = controller.setUser.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.delete('/API/administration/users/:adminId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new AdministrationUsersController();
-
-
-            const promise = controller.deleteUser.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/administration/users',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                user: { "in": "body", "name": "user", "required": true, "ref": "User" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new AdministrationUsersController();
-
-
-            const promise = controller.createUser.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
     app.get('/API/servers',
         authenticateMiddleware([{ "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
@@ -752,6 +593,165 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.getLocalServerUsers.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/channels',
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new ChannelsController();
+
+
+            const promise = controller.connectToRemoteViaWsDocumentation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/administration/users/profile',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AdministrationUsersController();
+
+
+            const promise = controller.getProfile.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/administration/users',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AdministrationUsersController();
+
+
+            const promise = controller.getUsers.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/administration/users/:adminId',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AdministrationUsersController();
+
+
+            const promise = controller.getUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.put('/API/administration/users/:adminId',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
+                user: { "in": "body", "name": "user", "required": true, "ref": "User" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AdministrationUsersController();
+
+
+            const promise = controller.setUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.delete('/API/administration/users/:adminId',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AdministrationUsersController();
+
+
+            const promise = controller.deleteUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/administration/users',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                user: { "in": "body", "name": "user", "required": true, "ref": "User" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AdministrationUsersController();
+
+
+            const promise = controller.createUser.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/administration/auth/login',

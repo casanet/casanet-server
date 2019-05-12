@@ -36,6 +36,8 @@ export declare type RemoteConnectionStatus =
     'cantReachRemoteServer' |
     /** The remote server has thrown authorization of the local server. */
     'authorizationFail' |
+    /** Local server disconnected. (When using a remote server, and the local server disconnected). */
+    'localServerDisconnected' |
     /** Connection OK. */
     'connectionOK';
 
