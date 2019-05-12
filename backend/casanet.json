@@ -14,7 +14,7 @@
     },
     "requestsLimit": {
         "windowsMs": 1.2e+6,
-        "maxRequests": 250
+        "maxRequests": 1500
     },
     "homePosition": {
         "latitude": 32.816, 

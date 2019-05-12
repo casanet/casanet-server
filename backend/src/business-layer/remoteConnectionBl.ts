@@ -197,6 +197,9 @@ export class RemoteConnectionBl {
         });
 
         this.webSocketClient.on('close', (code: number, reason: string) => {
+            if (this.remoteConnectionStatus !== 'connectionOK') {
+                return;
+            }
             this.remoteConnectionStatus = 'cantReachRemoteServer';
             logger.info(`Ws channel closed ${remoteSettings.host} code: ${code} reasone: ${reason}`);
         });
