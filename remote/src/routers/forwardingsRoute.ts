@@ -1,7 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import * as express from 'express';
-import * as SseStream from 'express-sse';
-import { ErrorResponse, IftttOnChanged } from '../../../backend/src/models/sharedInterfaces';
+import { ErrorResponse, IftttOnChanged, RemoteConnectionStatus } from '../../../backend/src/models/sharedInterfaces';
 import { SystemAuthScopes } from '../../../backend/src/security/authentication';
 import { RequestSchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { logger } from '../../../backend/src/utilities/logger';
@@ -10,10 +9,12 @@ import { ForwardingController } from '../controllers/forwardingController';
 import { ForwardUserSession } from '../models/remoteInterfaces';
 import { expressAuthentication } from '../security/authenticationExtend';
 import { IftttOnChangedSchema } from '../security/schemaValidatorExtend';
+import { LocalServersController } from '../controllers/localServersController';
 
 export class ForwardingRouter {
 
     private forwardingController: ForwardingController = new ForwardingController();
+    private localServersController: LocalServersController = new LocalServersController();
 
     public forwardRouter(app: express.Express): void {
 
@@ -38,6 +39,37 @@ export class ForwardingRouter {
             } catch (error) {
                 res.status(501).send({ responseCode: 5000 } as ErrorResponse);
             }
+        });
+
+        /** 
+         * Overwrite '/API/remote/status' to return remote server status 
+         * from the view fo remote server to local server 
+         */
+        app.get('/API/remote/status', async (req: Request, res: Response) => {
+            try {
+                let forwardUserSession: ForwardUserSession;
+                try {
+                    /** Make sure, and get valid forward session */
+                    forwardUserSession =
+                        await expressAuthentication(req, [SystemAuthScopes.userScope]) as ForwardUserSession;
+                } catch (error) {
+                    res.status(401).send({ responseCode: 4001 } as ErrorResponse);
+                    return;
+                }
+
+                const localServer =
+                    await this.localServersController.getLocalServer(forwardUserSession.localServerId);
+
+                const remoteServerStatus: RemoteConnectionStatus = localServer.connectionStatus
+                    ? 'connectionOK'
+                    : 'localServerDisconnected';
+
+                res.json(remoteServerStatus);
+
+            } catch (error) {
+                res.status(501).send({ responseCode: 5000 } as ErrorResponse);
+            }
+
         });
         /**
          * Listen to all casa API, to forward request to local server via WS channel.
@@ -71,7 +103,7 @@ export class ForwardingRouter {
 
                 /** Set status and data and send response back */
                 res.statusCode = response.httpStatus;
-                res.send(response.httpBody);
+                res.json(response.httpBody);
             } catch (error) {
                 res.status(501).send({ responseCode: 5000 } as ErrorResponse);
             }
