@@ -22,11 +22,11 @@
     <ng-container>
         <button  *ngIf="liveliness" mat-icon-button matTooltipPosition="below"
                 matTooltip="{{ 'ONLINE' | translate}}">
-            <mat-icon aria-label="Remote OK">check_circle_outline</mat-icon>
+            <mat-icon aria-label="server OK">check_circle_outline</mat-icon>
         </button>
         <button  *ngIf="!liveliness" mat-icon-button matTooltipPosition="below"
                 matTooltip="{{ 'OFFLINE' | translate}}">
-            <mat-icon aria-label="Remote OK">error_outline</mat-icon>
+            <mat-icon aria-label="server disconected">error_outline</mat-icon>
         </button>
     </ng-container>
 
