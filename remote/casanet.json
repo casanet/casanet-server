@@ -14,6 +14,6 @@
     },
     "requestsLimit": {
         "windowsMs": 1.2e+6,
-        "maxRequests": 250
+        "maxRequests": 2000
     }
 }
