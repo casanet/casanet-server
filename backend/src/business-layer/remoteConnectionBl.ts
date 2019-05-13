@@ -28,7 +28,7 @@ export class RemoteConnectionBl {
     private expressRouter: express.Express;
 
     /** Hold the remote connection status */
-    private remoteConnectionStatus: RemoteConnectionStatus = 'notConfigured';
+    private remoteConnectionStatus: RemoteConnectionStatus = 'cantReachRemoteServer';
 
     /** Web socket client object, to connect remote server  */
     private webSocketClient: WebSocketClient;
