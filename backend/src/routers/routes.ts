@@ -1233,7 +1233,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/ifttt/settings',
-        authenticateMiddleware([{ "adminAuth": [] }]),
+        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
