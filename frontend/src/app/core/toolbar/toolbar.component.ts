@@ -28,10 +28,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 	liveliness: boolean;
 	livelinessSubscription: Subscription;
 
-	userProfile: User = {} as unknown as User;
-	userProfileSubscription: Subscription;
+	clock = '--:--:--';
 
-	constructor(private settingsService: SettingsService,
+	constructor(
+		private settingsService: SettingsService,
 		private authService: AuthService) {
 		this.remoteConnectionSubscription =
 			this.settingsService.remoteStatusFeed.subscribe((remoteConnection) => {
@@ -43,10 +43,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 				this.liveliness = liveliness;
 			});
 
-		this.userProfileSubscription =
-			this.authService.userProfile.subscribe((userProfile) => {
-				this.userProfile = userProfile;
-			});
+		this.clockActivation();
 	}
 
 	ngOnInit() {
@@ -55,6 +52,11 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 	ngOnDestroy(): void {
 		this.remoteConnectionSubscription.unsubscribe();
 		this.livelinessSubscription.unsubscribe();
-		this.userProfileSubscription.unsubscribe();
+	}
+
+	private clockActivation() {
+		setInterval(() => {
+			this.clock = new Date().toLocaleTimeString();
+		}, 1000);
 	}
 }
