@@ -68,6 +68,9 @@ export class TranslateService {
   public async setLeng(lang: string) {
     await this.retriveLeng(lang);
     localStorage.setItem(this.LANG_STORAGE_KEY, lang);
+
+    /** refresh page to avtivate changes */
+    window.location.reload();
   }
 
   /**
