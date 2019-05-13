@@ -27,6 +27,7 @@ export class ToasterAndErrorsService {
   }
 
   public OnHttpError(httpErrorResponse: HttpErrorResponse) {
+
     if (httpErrorResponse.status === 403 || httpErrorResponse.status === 401) {
       this.router.navigate(['/login']);
       return;
@@ -37,6 +38,14 @@ export class ToasterAndErrorsService {
         type: 'error',
         title: this.translatePipe.transform('REQUEST_FAIL'),
         text: this.translatePipe.transform(0, true),
+      });
+      return;
+    }
+
+    if (!httpErrorResponse.error) {
+      this.genericToast({
+        type: 'error',
+        title: this.translatePipe.transform('REQUEST_FAIL'),
       });
       return;
     }
