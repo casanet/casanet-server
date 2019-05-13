@@ -11,6 +11,7 @@ export class IftttController extends Controller {
      */
     @Response<ErrorResponse>(501, 'Server error')
     @Security('adminAuth')
+    @Security('userAuth')
     @Get('/settings')
     public async isIftttEnabled(): Promise<boolean> {
         const iftttSettings = await IftttIntegrationBlSingleton.getIftttIntergrationSettings();
