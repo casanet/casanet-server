@@ -27,6 +27,7 @@ import {
     MatDialogModule
 } from '@angular/material';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AboutDialogComponent } from './about-dialog/about-dialog.component';
 import { HelpDialogComponent } from './help-dialog/help-dialog.component';
@@ -71,6 +72,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatSnackBarModule,
         MatProgressBarModule,
         MatDialogModule,
+        MatSelectModule,
     ],
     exports: [
         SidemenuComponent,

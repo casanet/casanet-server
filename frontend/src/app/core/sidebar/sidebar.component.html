@@ -1,106 +1,63 @@
-<!-- <mat-tab-group>
-    <mat-tab label="Overview">
-
-        <div class="sidebar">
-
-            <div fxLayout="column" fxLayoutAlign="center center" style="padding: 30px 0; background: url('./assets/darki_wallpaper.jpg');">
-                <div style="width: 100%; height: 22%; position: absolute;background: #17161642;z-index: 1"></div>
-                <div class="mat-display-2" style="margin: 0; color: white;z-index: 2; font-family: 'Varela Round'">{{hebdate}}</div>
-                <div class="mat-subheading-2" style="margin: 0;color: white;z-index: 2">{{today | date:'EEEE'}},
-                    {{today | date:'MMMM'}} {{today | date:'dd'}}
-                </div>
-            </div>
-
-
-            <mat-divider></mat-divider>
-
-            <h3 class="mat-subheading-2" style="margin: 10px 14px 0;">Upcoming Events</h3>
-            <mat-nav-list>
-                <div *ngFor="let event of events;">
-                    <mat-list-item>
-                        <div fxLayout="row" fxLayoutAlign="start center" mat-ripple>
-                            <div fxLayout="column">
-                                <div class="mat-ubheading-2" style="margin: 0; font-weight: bold;">{{ event.title }}</div>
-                                <div style="font-size: 12px;">{{ event.time }}</div>
-                            </div>
-                        </div>
-                    </mat-list-item>
-                </div>
-            </mat-nav-list>
-
-
-
-            <mat-divider></mat-divider>
-
-            <mat-nav-list>
-                <h3 class="mat-subheading-2" style="margin: 10px 14px 0;">Todo-List</h3>
-                <div *ngFor="let todolist of todolists;">
-                    <mat-list-item>
-                        <div fxLayout="row" fxLayoutAlign="start center" mat-ripple>
-                            <div class="title" fxLayout="column">
-                                <div class="mat-ubheading-2" style="margin: 0; font-weight: bold;">{{ todolist.title }}</div>
-                                <div style="font-size: 12px;">{{ todolist.time }}</div>
-                            </div>
-                        </div>
-                    </mat-list-item>
-                </div>
-            </mat-nav-list>
-
-            <mat-divider></mat-divider>
-
-
-        </div>
-    </mat-tab>
-
-    <mat-tab label="Notifications">
-        <div class="sidebar">
-            <div>
-                <h3 style="margin: 10px 14px 0;">Friends</h3>
-
-                <mat-list>
-                    <mat-list-item *ngFor="let message of messages">
-                        <img matListAvatar src="assets/images/avatars/friend1.jpeg" alt="...">
-                        <h3 matLine style="margin: 0; font-weight: bold;"> {{message.from}} </h3>
-                        <p matLine>
-                            <span> {{message.subject}} </span>
-                            <span> -- {{message.content}} </span>
-                        </p>
-                    </mat-list-item>
-                </mat-list>
-
-            </div>
-        </div>
-
-    </mat-tab>
-</mat-tab-group>
-
-<mat-divider></mat-divider>
-
-<mat-nav-list>
-    <div>
-        <h3 class="mat-subheading-2" style="margin: 10px 14px 0;">Server Statistics</h3>
-        <div>
-            <mat-list-item>
-                <h5>CPU Load</h5>
-                <mat-progress-bar [color]="'accent'" [mode]="'buffer'" [value]="'70'" [bufferValue]="100">></mat-progress-bar>
-            </mat-list-item>
-        </div>
-
-
-        <div>
-            <mat-list-item>
-                <h5>RAM Usage</h5>
-                <mat-progress-bar [color]="'primary'" [mode]="'buffer'" [value]="'47'" [bufferValue]="100"></mat-progress-bar>
-            </mat-list-item>
-        </div>
-
-
-        <div>
-            <mat-list-item>
-                <h5>CPU Temp</h5>
-                <mat-progress-bar [color]="'warn'" [mode]="'buffer'" [value]="'43'" [bufferValue]="100"></mat-progress-bar>
-            </mat-list-item>
-        </div>
-
+<div class="settings-viewer-wrapper">
+    <div class="settings-viewer-title">
+        <div class="settings-viewer-title-spacer"> {{ 'LANGUAGE' | translate }}</div>
+        <button mat-icon-button matTooltipPosition="below">
+                <mat-icon>language</mat-icon>
+        </button>
     </div>
-</mat-nav-list> -->
+    <div class="settings-viewer-body">
+        <mat-form-field>
+            <mat-select (selectionChange)="setLang($event.value)" required>
+                <mat-option value="en">English</mat-option>
+                <mat-option value="he">Hebrew | עברית</mat-option>
+            </mat-select>
+            <mat-hint>{{ 'SELECT_LANGUAGE' | translate }}</mat-hint>
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="settings-viewer-wrapper">
+    <div class="settings-viewer-title">
+        <div class="settings-viewer-title-spacer"> {{ 'REMOTE_SERVER' | translate }}</div>
+        <button mat-icon-button matTooltipPosition="below">
+            <mat-icon>cloud_queue</mat-icon>
+        </button>
+    </div>
+    <div class="settings-viewer-body form-container">
+        <mat-form-field class="example-full-width">
+            <input matInput value="{{ remoteConnection | translate }}" disabled>
+            <mat-hint>{{ 'REMOTE_STATUS' | translate }}</mat-hint>
+        </mat-form-field>
+        <br>
+        <mat-form-field *ngIf="remoteHostname">
+            <input matInput disabled [(value)]="remoteHostname">
+            <mat-hint>{{ 'REMOTE_URI' | translate }}</mat-hint>
+        </mat-form-field>
+        <div *ngIf="userProfile.scope === 'adminAuth'">
+            <button class="setting-button" mat-stroked-button (click)="setRemoteServer()">{{ 'EDIT_CONNECTION' | translate }}</button>
+            <button class="setting-button" mat-stroked-button (click)="disconnectRemoteServer()"> {{ 'DISCONNECT' | translate }}</button>
+            <button class="setting-button" mat-stroked-button (click)="showMacAddress()">{{ 'GET_LOCAL_MAC' | translate }}</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="settings-viewer-wrapper">
+    <div class="settings-viewer-title">
+        <div class="settings-viewer-title-spacer"> {{ 'IFTTT_INTEGRATION' | translate }}</div>
+        <button mat-icon-button matTooltipPosition="below">
+                <mat-icon>business</mat-icon>
+            </button>
+    </div>
+    <div class="settings-viewer-body form-container">
+        <mat-form-field class="example-full-width">
+            <input matInput value="{{ (iftttIntegration ? 'ENABLED' : 'DISABLED') | translate}}" disabled>
+            <mat-hint>{{ 'IFTTT_STATUS' | translate }}</mat-hint>
+        </mat-form-field>
+        <br>
+        <div *ngIf="userProfile.scope === 'adminAuth'">
+            <button class="setting-button" mat-stroked-button (click)="setIfttt()">{{ 'CONFIG_CONNECTION' | translate }}</button>
+            <button class="setting-button" mat-stroked-button (click)="disableIfttt()"> {{ 'DISABLE_IFTTT' | translate }}</button>
+        </div>
+    </div>
+</div>
