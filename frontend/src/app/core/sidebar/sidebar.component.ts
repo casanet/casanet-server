@@ -149,7 +149,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
                 await swal({
                     title: this.translatePipe.transform('SETTING_REMOTE_SERVER'),
-                    timer: 2000,
+                    timer: 15000,
                     onBeforeOpen: async () => {
                         swal.showLoading();
                         swal.stopTimer();
