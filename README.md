@@ -56,11 +56,11 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
 ## Supported Right now.
 * Orvibo wiwo - S20.
 * Broadlink SP3.
-* Broadlink RM mini 3 (Sending IR commands).
-* Broadlink RM Pro (Sending IR/RF commands).
-* Xiaomi Yeelight Smart LED Ceiling Light.
-* Xiaomi Yeelight RGBW E27 Smart LED Bulb.
-* Tuya/SmartLift 3 (or less) gangs switch.
+* Broadlink RM mini 3 (As AC).
+* Broadlink RM Pro (As AC / RF toggle).
+* Xiaomi Yeelight with temperature/brightness options.
+* Xiaomi Yeelight with RGBW option.
+* Tuya/SmartLife, with 3 (or less) gangs switch.
 * [IFTTT](https://ifttt.com/discover) Using [WebHooks](https://ifttt.com/maker_webhooks) API.
 
 ## Supported soon.
