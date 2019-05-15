@@ -1,0 +1,110 @@
+<mat-vertical-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="emailControl">
+    <form>
+      <ng-template matStepLabel>{{ 'ENTER_EMAIL' | translate}}</ng-template>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="{{ 'ENTER_EMAIL' | translate}}" [formControl]="emailControl"
+                     [errorStateMatcher]="matcher">
+        <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
+          {{ 'ENTER_VALID_EMAIL' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="displayNameControl">
+    <form>
+      <ng-template matStepLabel>{{ 'ENTER_NAME' | translate}}</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="{{ 'ENTER_NAME_HERE' | translate}}" [formControl]="displayNameControl" required>
+          </mat-form-field>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+          <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+        </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="scopeControl">
+    <form>
+      <ng-template matStepLabel>{{ 'SELECT_USER_SCOPE' | translate}}</ng-template>
+      <mat-form-field>
+        <mat-select placeholder="{{ 'SELECT_USER_SCOPE' | translate}}" [formControl]="scopeControl" required>
+          <mat-option value="adminAuth">{{ 'ADMIN' | translate }}</mat-option>
+          <mat-option value="userAuth">{{ 'USER' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="ignoreTfaControl">
+    <form>
+      <ng-template matStepLabel>{{ 'ALLOW_UNMFA_ACCESS' | translate}}</ng-template>
+      <mat-form-field>
+        <mat-select placeholder="{{ 'ALLOW_UNMFA_ACCESS' | translate}}" [formControl]="ignoreTfaControl" required>
+          <mat-option value="allow">{{ 'ALLOW' | translate }}</mat-option>
+          <mat-option value="reject">{{ 'REJECT' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="sessionMsTimeoutControl">
+    <form>
+      <ng-template matStepLabel>{{ 'SESSION_MS_TIMEOUT' | translate}}</ng-template>
+      <mat-form-field>
+        <input matInput type="number" min="1" [formControl]="sessionMsTimeoutControl" required>
+            </mat-form-field>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+          <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+        </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="passwordControl">
+    <form>
+      <ng-template matStepLabel>{{ 'PRESS_PASSWORD' | translate}}</ng-template>
+      <mat-form-field>
+        <input matInput type="password" placeholder="{{ 'PRESS_PASSWORD' | translate}}" minlength="6" maxlength="18" [formControl]="passwordControl" required>
+        <mat-hint>{{passwordControl.value.length}} / 18</mat-hint>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="passwordSecControl">
+    <form>
+      <ng-template matStepLabel>{{ 'PRESS_PASSWORD_AGINE' | translate}}</ng-template>
+      <mat-form-field>
+        <input matInput type="password" placeholder="{{ 'PRESS_PASSWORD_AGINE' | translate}}"
+                 minlength="6" maxlength="18" (change)="checkPasswords()" [formControl]="passwordSecControl" required>
+        <mat-hint>{{passwordControl.value.length}} / 18</mat-hint>
+        <mat-error *ngIf="passwordSecControl.hasError('unsame')">
+          {{ 'THE_PASSWORDS_NOT_SAME' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+        <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>{{ 'DONE' | translate}}</ng-template>
+    {{ 'DONE_USER_MESSAGE' | translate}}
+    <div>
+      <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
+      <button mat-button (click)="stepper.reset()">{{ 'RESET' | translate}}</button>
+      <button mat-button (click)="createUser()" cdkFocusInitial mat-raised-button>{{ 'CREATE' | translate}}</button>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>

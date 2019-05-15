@@ -26,6 +26,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { DevicesComponent } from './devices/devices.component';
+import { UsersComponent } from './users/users.component';
 
 
 
@@ -65,6 +66,7 @@ import { DevicesComponent } from './devices/devices.component';
     OperationsComponent,
     TimingsComponent,
     DevicesComponent,
+    UsersComponent,
   ],
   exports: [
   ],

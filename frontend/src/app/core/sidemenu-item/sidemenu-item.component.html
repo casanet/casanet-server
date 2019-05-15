@@ -10,14 +10,14 @@
     </mat-list-item>
 
     <!-- RTL -->
-    <mat-list-item *ngIf="('DIR' | translate) === 'rtl' && menu.link!=false && (!menu.access || menu.access(userInfo))" (click)="menu.open = true"
+    <mat-list-item *ngIf="('DIR' | translate) === 'rtl' && menu.link!=false && (!menu.admin || userProfile.scope === 'adminAuth')" (click)="menu.open = true"
         [routerLink]="[menu.link]" [ngStyle]="{'background-color':  currentUrl.indexOf(menu.link) !== -1 ? 'rgba(255, 255, 255, 0.3)' : '', 'border-radius' :currentUrl.indexOf(menu.link) !== -1 ? '25px 0px 0px 25px' : ''}">
         <mat-icon matListIcon iconsmall>{{menu.icon}} </mat-icon>
         <h3 matLine *ngIf="!iconOnly">{{ menu.name | translate }} </h3>
     </mat-list-item>
 
     <!-- LTR -->
-    <mat-list-item *ngIf="('DIR' | translate) === 'ltr' && menu.link!=false && (!menu.access || menu.access(userInfo))" (click)="menu.open = true"
+    <mat-list-item *ngIf="('DIR' | translate) === 'ltr' && menu.link!=false && (!menu.admin || userProfile.scope === 'adminAuth')" (click)="menu.open = true"
         [routerLink]="[menu.link]" [ngStyle]="{'background-color':  currentUrl.indexOf(menu.link) !== -1 ? 'rgba(255, 255, 255, 0.3)' : '', 'border-radius' :currentUrl.indexOf(menu.link) !== -1 ? '0px 25px 25px 0px' : ''}">
         <mat-icon matListIcon iconsmall>{{menu.icon}} </mat-icon>
         <h3 matLine *ngIf="!iconOnly">{{ menu.name | translate }} </h3>

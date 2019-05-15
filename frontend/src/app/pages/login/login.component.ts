@@ -15,6 +15,7 @@ import { MinionsService } from '../../services/minions.service';
 import { DevicesService } from '../../services/devices.service';
 import { OperationService } from '../../services/operations.service';
 import { TimingsService } from '../../services/timings.service';
+import { UsersService } from '../../services/users.service';
 
 
 @Component({
@@ -44,6 +45,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 		private devicesService: DevicesService,
 		private operationService: OperationService,
 		private timingsService: TimingsService,
+		private usersService: UsersService,
     private translateService: TranslateService,
     private toastrAndErrorsService: ToasterAndErrorsService) {
     this.translatePipe = new TranslatePipe(this.translateService);
@@ -130,6 +132,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.operationService.retriveData();
     this.devicesService.retriveData();
     this.timingsService.retriveData();
+    this.usersService.retriveData();
+
   }
 
   private onLoginFail(err: HttpErrorResponse) {

@@ -604,6 +604,7 @@ definitions:
             password:
                 type: string
                 description: 'User password.'
+                x-nullable: true
             ignoreTfa:
                 type: boolean
                 description: 'Ignore 2-step verification on login or not.'
@@ -617,7 +618,6 @@ definitions:
         required:
             - email
             - sessionTimeOutMS
-            - password
             - ignoreTfa
             - scope
         type: object

@@ -27,7 +27,8 @@ export const menus = [
     {
         'name': 'USERS',
         'icon': 'supervised_user_circle',
-        'link': 'auth/users',
-        'open': false
+        'link': 'users',
+        'open': false,
+        'admin': true
     }
 ];

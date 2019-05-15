@@ -12,6 +12,7 @@ import { User } from '../../../../../backend/src/models/sharedInterfaces';
 import { TranslatePipe } from '../../translate.pipe';
 import { OperationService } from '../../services/operations.service';
 import { TimingsService } from '../../services/timings.service';
+import { UsersService } from '../../services/users.service';
 
 // import { LoadingService } from '../../services/loading/loading.service';
 
@@ -49,6 +50,7 @@ export class UserMenuComponent implements OnInit {
 		private devicesService: DevicesService,
 		private operationService: OperationService,
 		private timingsService: TimingsService,
+		private usersService: UsersService,
 		private translateService: TranslateService) {
 		this.translatePipe = new TranslatePipe(this.translateService);
 
@@ -68,6 +70,7 @@ export class UserMenuComponent implements OnInit {
 			this.operationService.cleanUp();
 			this.devicesService.cleanUp();
 			this.timingsService.cleanUp();
+			this.usersService.cleanUp();
 
 			this.snackBar.open(this.translatePipe.transform('LOGOUT_SUCCESSFULLY'), this.translatePipe.transform('SUBMIT'), {
 				duration: 20000,
