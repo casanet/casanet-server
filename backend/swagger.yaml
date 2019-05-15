@@ -604,6 +604,7 @@ definitions:
             password:
                 type: string
                 description: 'User password.'
+                x-nullable: true
             ignoreTfa:
                 type: boolean
                 description: 'Ignore 2-step verification on login or not.'
@@ -617,7 +618,6 @@ definitions:
         required:
             - email
             - sessionTimeOutMS
-            - password
             - ignoreTfa
             - scope
         type: object
@@ -1835,6 +1835,28 @@ paths:
             security: []
             parameters: []
     /ifttt/settings:
+        get:
+            operationId: IsIftttEnabled
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: boolean
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Is IFTTT inegration enabled.'
+            tags:
+                - Ifttt
+            security:
+                -
+                    adminAuth: []
+                -
+                    userAuth: []
+            parameters: []
         put:
             operationId: SetIftttIntegrationSettings
             produces:

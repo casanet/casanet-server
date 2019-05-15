@@ -190,7 +190,7 @@ export declare interface User {
     /**
      * User password.
      */
-    password: string;
+    password?: string;
 
     /**
      * Ignore 2-step verification on login or not.
