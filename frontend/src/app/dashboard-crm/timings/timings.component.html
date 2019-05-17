@@ -26,8 +26,8 @@
 
                 <mat-menu #timingMenu="matMenu">
                     <button mat-menu-item disabled>
-                        <mat-icon>edit</mat-icon>
-                        <span>{{ 'EDIT' | translate}}</span>
+                                <mat-icon>edit</mat-icon>
+                                <span>{{ 'EDIT' | translate}}</span>
                     </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item style="color: salmon;" (click)="deleteTiming(timing)">
@@ -50,7 +50,8 @@
 
                         <mat-form-field>
                             <mat-label>{{ 'DAYS' | translate}}</mat-label>
-                            <mat-select multiple disabled [(value)]="timing.timingProperties.dailySunTrigger.days">
+                            <mat-select multiple [disabled]="!timing.edit"
+                                [(value)]="timing.timingProperties.dailySunTrigger.days">
                                 <mat-option value="sunday">{{ 'SUNDAY' | translate}}</mat-option>
                                 <mat-option value="monday">{{ 'MONDAY' | translate}}</mat-option>
                                 <mat-option value="tuesday">{{ 'TUESDAY' | translate}}</mat-option>
@@ -62,14 +63,15 @@
                         </mat-form-field>
 
                         <mat-form-field>
-                            <input matInput disabled type="number"
+                            <input matInput [disabled]="!timing.edit" type="number"
                                 [(ngModel)]="timing.timingProperties.dailySunTrigger.durationMinutes"
                                 placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
                         </mat-form-field>
 
                             <mat-form-field>
                                 <mat-label>{{ 'SUN_TRIGGER' | translate}}</mat-label>
-                                <mat-select disabled [(value)]="timing.timingProperties.dailySunTrigger.sunTrigger">
+                                <mat-select [disabled]="!timing.edit"
+                                    [(value)]="timing.timingProperties.dailySunTrigger.sunTrigger">
                                     <mat-option value="sunrise">{{ 'SUNRISE' | translate}}</mat-option>
                                     <mat-option value="sunset">{{ 'SUNSET' | translate}}</mat-option>
                                 </mat-select>
@@ -82,7 +84,8 @@
 
                         <mat-form-field>
                             <mat-label>{{ 'DAYS' | translate}}</mat-label>
-                            <mat-select multiple disabled [(value)]="timing.timingProperties.dailyTimeTrigger.days">
+                            <mat-select multiple [disabled]="!timing.edit"
+                                [(value)]="timing.timingProperties.dailyTimeTrigger.days">
                                 <mat-option value="sunday">{{ 'SUNDAY' | translate}}</mat-option>
                                 <mat-option value="monday">{{ 'MONDAY' | translate}}</mat-option>
                                 <mat-option value="tuesday">{{ 'TUESDAY' | translate}}</mat-option>
@@ -94,13 +97,13 @@
                         </mat-form-field>
 
                         <mat-form-field>
-                            <input matInput disabled type="number" min="0" max="23" step="1"
+                            <input matInput [disabled]="!timing.edit" type="number" min="0" max="23" step="1"
                                 placeholder="{{ 'HOUR' | translate}}"
                                 [(ngModel)]="timing.timingProperties.dailyTimeTrigger.hour">
                         </mat-form-field>
 
                             <mat-form-field>
-                                <input matInput disabled type="number" min="0" max="59" step="1"
+                                <input matInput [disabled]="!timing.edit" type="number" min="0" max="59" step="1"
                                 placeholder="{{ 'MINUTES' | translate}}"
                                 [(ngModel)]="timing.timingProperties.dailyTimeTrigger.minutes">
                         </mat-form-field>
@@ -130,6 +133,17 @@
                                 placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
                         </mat-form-field>
                     </ng-container>
+
+                    <!-- Edit button -->
+                    <div [style.text-align]="('RIGHT_DIR' | translate)" class="timing-text">
+                        <button *ngIf="!timing.sync && !timing.edit" mat-icon-button (click)="timing.edit = true;" matTooltipPosition="below"
+                                matTooltip="{{'EDIT_PROPERTIES' | translate}}">
+                            <mat-icon aria-label="Edit">edit</mat-icon>
+                        </button>
+                        <button *ngIf="!timing.sync && timing.edit" mat-icon-button (click)="editTiming(timing)">
+                            <mat-icon aria-label="Save">save</mat-icon>
+                        </button>
+                    </div>
                 </mat-expansion-panel>
             </mat-accordion>
             <mat-progress-bar *ngIf="timing.sync" mode="buffer"></mat-progress-bar>

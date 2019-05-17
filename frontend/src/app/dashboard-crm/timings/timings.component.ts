@@ -60,6 +60,33 @@ export class TimingsComponent implements OnInit, OnDestroy {
     this.timingsSubscription.unsubscribe();
   }
 
+  private parseTimings() {
+    this.timings = this.rawTimings.map((timing): DisplayTiming => {
+      const { isActive, timingId, timingName, timingProperties, timingType, triggerOperationId } = timing;
+      const operation = this.operationService.getOperation(timing.triggerOperationId);
+      const operationName =
+        operation
+          ? operation.operationName
+          : '--';
+      return {
+        isActive,
+        operationName,
+        timingId,
+        timingName,
+        timingProperties,
+        timingType,
+        triggerOperationId
+      };
+    });
+    this.timings.sort((itemA, itemB) => {
+      /** If type is the same, sort by display name */
+      if (itemA.timingType === itemB.timingType) {
+        return itemA.timingName < itemB.timingName ? -1 : 1;
+      }
+      return itemA.timingType < itemB.timingType ? -1 : 1;
+    });
+  }
+
   public createTimings() {
     this.dialog.open(CreateTimingDialogComponent, {
       data: {}
@@ -68,11 +95,34 @@ export class TimingsComponent implements OnInit, OnDestroy {
 
   public async setTimingActive(timing: Timing, setActive: boolean) {
 
+    const { timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
     timing['sync'] = true;
-    const originalTiming = DeepCopy<Timing>(this.timingsService.getTiming(timing.timingId));
-    originalTiming.isActive = setActive;
 
-    await this.timingsService.editTimings(originalTiming);
+    await this.timingsService.editTimings({
+      isActive : setActive,
+      timingId,
+      timingName,
+      timingProperties,
+      timingType,
+      triggerOperationId
+    });
+
+    timing['sync'] = false;
+  }
+
+  public async editTiming(timing: Timing) {
+
+    const { isActive, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
+    timing['sync'] = true;
+
+    await this.timingsService.editTimings({
+      isActive,
+      timingId,
+      timingName,
+      timingProperties,
+      timingType,
+      triggerOperationId
+    });
 
     timing['sync'] = false;
   }
@@ -105,32 +155,7 @@ export class TimingsComponent implements OnInit, OnDestroy {
     return new Date(utcTime);
   }
 
-  private parseTimings() {
-    this.timings = this.rawTimings.map((timing): DisplayTiming => {
-      const { isActive, timingId, timingName, timingProperties, timingType, triggerOperationId } = timing;
-      const operation = this.operationService.getOperation(timing.triggerOperationId);
-      const operationName =
-        operation
-          ? operation.operationName
-          : '--';
-      return {
-        isActive,
-        operationName,
-        timingId,
-        timingName,
-        timingProperties,
-        timingType,
-        triggerOperationId
-      };
-    });
-    this.timings.sort((itemA, itemB) => {
-      /** If type is the same, sort by display name */
-      if (itemA.timingType === itemB.timingType) {
-        return itemA.timingName < itemB.timingName ? -1 : 1;
-      }
-      return itemA.timingType < itemB.timingType ? -1 : 1;
-    });
-  }
+
 
   public async refreshData() {
     this.dataLoading = true;
