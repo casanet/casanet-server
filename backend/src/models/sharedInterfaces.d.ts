@@ -337,7 +337,7 @@ export declare interface ColorLight extends TemperatureLight {
     /**
      * Minimum 0 maximum 255 from blue color.
      * Valid color value. (8 bits number, minimum 0 maximum 255).
-     * @minimum 1
+     * @minimum 0
      * @maximum 255
      * @isInt true
      */
