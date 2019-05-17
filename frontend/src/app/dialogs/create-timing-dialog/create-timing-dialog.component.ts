@@ -68,12 +68,12 @@ export class CreateTimingDialogComponent implements OnInit {
 
       /** Fix duration to be number */
       dailySunTrigger.durationMinutes =
-        dailySunTrigger.durationMinutes
+        dailySunTrigger.durationMinutes !== undefined
           ? parseFloat(dailySunTrigger.durationMinutes as unknown as string)
           : undefined;
       return dailySunTrigger.days &&
-        dailySunTrigger.days.length > 1 &&
-        dailySunTrigger.durationMinutes &&
+        dailySunTrigger.days.length > 0 &&
+        dailySunTrigger.durationMinutes !== undefined &&
         dailySunTrigger.sunTrigger;
     }
 
@@ -81,46 +81,46 @@ export class CreateTimingDialogComponent implements OnInit {
       const dailyTimeTrigger: DailyTimeTrigger = this.timingProperties;
 
       dailyTimeTrigger.hour =
-        dailyTimeTrigger.hour
+        dailyTimeTrigger.hour !== undefined
           ? parseInt(dailyTimeTrigger.hour as unknown as string, 10)
           : undefined;
 
 
       dailyTimeTrigger.minutes =
-        dailyTimeTrigger.minutes
+        dailyTimeTrigger.minutes !== undefined
           ? parseInt(dailyTimeTrigger.minutes as unknown as string, 10)
           : undefined;
 
       return dailyTimeTrigger.days &&
-        dailyTimeTrigger.days.length > 1 &&
-        dailyTimeTrigger.hour &&
-        dailyTimeTrigger.minutes;
+        dailyTimeTrigger.days.length > 0 &&
+        dailyTimeTrigger.hour !== undefined &&
+        dailyTimeTrigger.minutes !== undefined;
     }
 
     if (timingType === 'once') {
       const once: OnceTiming = this.timingProperties;
 
       const hour =
-        this.timingProperties.hour
+        this.timingProperties.hour !== undefined
           ? parseInt(this.timingProperties.hour as unknown as string, 10)
-          : 0;
+          : undefined;
 
 
       const minutes =
-        this.timingProperties.minutes
+        this.timingProperties.minutes !== undefined
           ? parseInt(this.timingProperties.minutes as unknown as string, 10)
-          : 0;
+          : undefined;
 
       if (once['dateObj']) {
         const date: Date = once['dateObj'] as unknown as Date;
-        date.setHours(hour);
-        date.setMinutes(minutes);
+        date.setHours(hour ? hour : 0);
+        date.setMinutes(minutes ? minutes : 0);
 
         /** Convert it to UTC time format */
         once.date = date.getTime();
       }
 
-      return once.date && hour && minutes;
+      return once.date && hour !== undefined && minutes !== undefined;
     }
 
     if (timingType === 'timeout') {
