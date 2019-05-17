@@ -86,6 +86,11 @@ export class DevicesService {
     }
   }
 
+  public async refreshData() {
+    await this.loadDevicesKindsData();
+    await this.loadLanDevices();
+  }
+
   public async cleanUp() {
     this.isDevicesKindsRetrived = false;
     this.isLanDevicesRetrived = false;

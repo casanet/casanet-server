@@ -70,4 +70,10 @@ export class DevicesComponent implements OnInit, OnDestroy {
 
     this.dataLoading = false;
   }
+
+  public async refreshData() {
+    this.dataLoading = true;
+    await this.devicesService.refreshData();
+    this.dataLoading = false;
+  }
 }

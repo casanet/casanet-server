@@ -89,12 +89,14 @@
 
                     <div *ngIf="minion.minionType === 'roller'">
                         <mat-button-toggle-group>
-                            <mat-button-toggle matTooltip="{{ 'UP_DIRECTION' | translate}}" matTooltipPosition="above" 
-                            [checked]="minion.updateSet.roller.direction === 'up'" (click)="minion.updateSet.roller.direction = 'up'">
+                            <mat-button-toggle matTooltip="{{ 'UP_DIRECTION' | translate}}" matTooltipPosition="above"
+                                [checked]="minion.updateSet.roller.direction === 'up'"
+                                (click)="minion.updateSet.roller.direction = 'up'">
                                 <mat-icon>arrow_upward</mat-icon>
                             </mat-button-toggle>
-                            <mat-button-toggle matTooltip="{{ 'DOWN_DIRECTION' | translate}}" matTooltipPosition="above" 
-                            [checked]="minion.updateSet.roller.direction === 'down'" (click)="minion.updateSet.roller.direction = 'down'">
+                            <mat-button-toggle matTooltip="{{ 'DOWN_DIRECTION' | translate}}" matTooltipPosition="above"
+                                [checked]="minion.updateSet.roller.direction === 'down'"
+                                (click)="minion.updateSet.roller.direction = 'down'">
                                 <mat-icon>arrow_downward</mat-icon>
                             </mat-button-toggle>
                         </mat-button-toggle-group>
@@ -184,9 +186,13 @@
         </eco-fab-speed-dial-trigger>
 
         <eco-fab-speed-dial-actions>
-            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="refreshMinions()"
-                matTooltip="{{'REFRESH_ALL_MINIONS' | translate}}">
+            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="refreshData()"
+                matTooltip="{{'REFRESH' | translate}}">
                 <mat-icon>refresh</mat-icon>
+            </button>
+            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="refreshMinions()"
+                matTooltip="{{'REREAD_ALL_MINIONS' | translate}}">
+                <mat-icon>settings_input_antenna</mat-icon>
             </button>
             <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="reScanNetwordAndRefreshMinions()"
                 matTooltip="{{'RESCAN_NETWORK_AND_MINIONS' | translate}}">

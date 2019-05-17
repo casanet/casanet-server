@@ -37,6 +37,8 @@ export class OperationsComponent implements OnInit, OnDestroy {
   private minionsSubscription: Subscription;
   private translatePipe: TranslatePipe;
 
+  public dataLoading = false;
+
   public operations: OperationDisplay[] = [];
   public rawOperations: Operation[] = [];
 
@@ -149,5 +151,11 @@ export class OperationsComponent implements OnInit, OnDestroy {
     operation['sync'] = true;
     await this.operationService.deleteOperation(operation);
     operation['sync'] = false;
+  }
+
+  public async refreshData() {
+    this.dataLoading = true;
+    await this.operationService.refreshData();
+    this.dataLoading = false;
   }
 }

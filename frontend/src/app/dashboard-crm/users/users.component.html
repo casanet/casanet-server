@@ -78,9 +78,9 @@
           [style.margin-left]="('DIR' | translate) === 'rtl'? '0' : '11px'">
           <mat-spinner color="primary" strokeWidth="3" diameter="20"></mat-spinner>
         </div>
-        <button *ngIf="!element.psync" mat-icon-button color="primary" (click)="changePassword(element)" 
+        <button *ngIf="!element.psync" mat-icon-button color="primary" (click)="changePassword(element)"
                 matTooltipPosition="below" matTooltip="{{'SET_PASSWORD' | translate}}" >
-            <mat-icon>code</mat-icon>
+            <mat-icon>settings_ethernet</mat-icon>
         </button>
       </td>
     </ng-container>
@@ -117,6 +117,10 @@
     </eco-fab-speed-dial-trigger>
 
     <eco-fab-speed-dial-actions>
+      <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="refreshData()"
+        matTooltip="{{'REFRESH' | translate}}">
+        <mat-icon>refresh</mat-icon>
+      </button>
       <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="createUser()"
         matTooltip="{{'CREATE_USER' | translate}}">
         <mat-icon>add</mat-icon>

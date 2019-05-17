@@ -46,7 +46,7 @@ export class UsersService {
     }
   }
 
-  private async retriveOperations() {
+  private async retriveUsers() {
     if (!this.isUsersRetrived) {
       this.isUsersRetrived = true;
       await this.loadUsers();
@@ -80,6 +80,10 @@ export class UsersService {
     }
   }
 
+  public async refreshData() {
+    await this.loadUsers();
+  }
+
   public async cleanUp() {
     this.isUsersRetrived = false;
     this.users = [];
@@ -87,7 +91,7 @@ export class UsersService {
 
   public async retriveData() {
     if (this.userProfile.scope === 'adminAuth') {
-      this.retriveOperations();
+      this.retriveUsers();
     }
   }
 }
