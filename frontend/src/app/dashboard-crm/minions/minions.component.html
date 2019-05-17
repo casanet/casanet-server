@@ -156,7 +156,7 @@
                             [tickInterval]="false" [(ngModel)]="minion.updateSet.colorLight.temperature">
                         </mat-slider>
                         <p><b>{{'COLOR' | translate}}:</b></p>
-                        <div dir="ltr" style="color:black">
+                        <div dir="ltr" style="color:black" style="width: 230px">
                             <mcc-color-picker [overlay]="false" [selectedColor]="rgbToHex(minion.updateSet.colorLight)"
                                 class="mcc-cp-small" (change)="loadChangeColor(minion.updateSet.colorLight, $event)"
                                 [hideHexForms]="true" [hideUsedColors]="true" [hideButtons]="true"></mcc-color-picker>

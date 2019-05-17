@@ -93,14 +93,18 @@
         <mat-slider [color]="primary" [max]="100" [min]="1" [step]="1" [thumbLabel]="true" [tickInterval]="false"
           [(value)]="minionPropertiesToSet.temperature">
         </mat-slider>
-
-        <!-- TODO: -->
-        <!-- <p><b>{{'COLOR' | translate}}:</b></p>
-        <div dir="ltr" style="color:black">
-          <mcc-color-picker [overlay]="false" [selectedColor]="rgbToHex(colorLight)"
-            class="mcc-cp-small" (change)="loadChangeColor(minion.updateSet.colorLight, $event)" [hideHexForms]="true"
-            [hideUsedColors]="true" [hideButtons]="true"></mcc-color-picker>
-        </div> -->
+        <p><b>{{'RED' | translate}}:</b> {{red}} </p>
+        <mat-slider [color]="primary" [max]="255" [min]="1" [step]="1" [thumbLabel]="true" [tickInterval]="false"
+          [(value)]="minionPropertiesToSet.red">
+        </mat-slider>
+        <p><b>{{'GREEN' | translate}}:</b> {{green}} </p>
+        <mat-slider [color]="primary" [max]="255" [min]="1" [step]="1" [thumbLabel]="true" [tickInterval]="false"
+          [(value)]="minionPropertiesToSet.green">
+        </mat-slider>
+        <p><b>{{'BLUE' | translate}}:</b> {{blue}} </p>
+        <mat-slider [color]="primary" [max]="255" [min]="1" [step]="1" [thumbLabel]="true" [tickInterval]="false"
+          [(value)]="minionPropertiesToSet.blue">
+        </mat-slider>
       </ng-container>
 
       <!-- roller properties -->
