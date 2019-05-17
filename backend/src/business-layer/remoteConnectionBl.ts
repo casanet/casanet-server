@@ -22,13 +22,16 @@ import { UsersBlSingleton } from './usersBl';
  */
 export class RemoteConnectionBl {
 
+    private ACK_INTERVAL = moment.duration(20, 'seconds');
+    private ackPongRecieved = true;
+
     /** Express router, used to create http requests from
      * remote server without actually open TCP connection.
      */
     private expressRouter: express.Express;
 
     /** Hold the remote connection status */
-    private remoteConnectionStatus: RemoteConnectionStatus = 'cantReachRemoteServer';
+    private remoteConnectionStatus: RemoteConnectionStatus = 'notConfigured';
 
     /** Web socket client object, to connect remote server  */
     private webSocketClient: WebSocketClient;
@@ -41,9 +44,9 @@ export class RemoteConnectionBl {
      * @param usersBl Inject the user bl instance to used userBl.
      */
     constructor(private remoteConnectionDal: RemoteConnectionDal,
-                private minionsBl: MinionsBl,
-                private timingsBl: TimingsBl,
-                private usersBl: UsersBl,
+        private minionsBl: MinionsBl,
+        private timingsBl: TimingsBl,
+        private usersBl: UsersBl,
     ) {
         /** Use chai testing lib, to mock http requests */
         chai.use(chaiHttp);
@@ -89,11 +92,19 @@ export class RemoteConnectionBl {
                 this.remoteConnectionStatus !== 'cantReachRemoteServer') {
                 return;
             }
+
+            if (!this.ackPongRecieved) {
+                this.remoteConnectionStatus = 'cantReachRemoteServer';
+            } else {
+                this.remoteConnectionStatus = 'connectionOK';
+            }
+
+            this.ackPongRecieved = false;
             this.sendMessage({
                 localMessagesType: 'ack',
                 message: {},
             });
-        }, moment.duration(20, 'seconds').asMilliseconds());
+        }, this.ACK_INTERVAL.asMilliseconds());
     }
 
     /**
@@ -141,7 +152,8 @@ export class RemoteConnectionBl {
     }
 
     private sendMessage(localMessage: LocalMessage) {
-        if (this.remoteConnectionStatus !== 'connectionOK') {
+        if (this.remoteConnectionStatus !== 'connectionOK' &&
+            this.remoteConnectionStatus !== 'cantReachRemoteServer') {
             return;
         }
         try { this.webSocketClient.sendData(JSON.stringify(localMessage)); } catch (error) { }
@@ -210,6 +222,7 @@ export class RemoteConnectionBl {
     }
 
     private async OnArkOk() {
+        this.ackPongRecieved = true;
         this.remoteConnectionStatus = 'connectionOK';
     }
 
