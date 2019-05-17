@@ -99,6 +99,10 @@ export class TimingsService {
     }
   }
 
+  public async refreshData() {
+    await this.loadTimings();
+  }
+
   public async cleanUp() {
     this.isTimingsRetrived = false;
     this.timings = [];

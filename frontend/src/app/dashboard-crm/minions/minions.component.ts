@@ -320,4 +320,10 @@ export class MinionsComponent implements OnInit, OnDestroy {
 			this.componentToHex(colorLight.blue)
 		);
 	}
+
+	public async refreshData() {
+		this.dataLoading = true;
+		await this.minionsService.refreshData();
+		this.dataLoading = false;
+	}
 }

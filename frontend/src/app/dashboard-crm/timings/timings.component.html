@@ -67,13 +67,13 @@
                                 placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
                         </mat-form-field>
 
-                        <mat-form-field>
-                            <mat-label>{{ 'SUN_TRIGGER' | translate}}</mat-label>
-                            <mat-select disabled [(value)]="timing.timingProperties.dailySunTrigger.sunTrigger">
-                                <mat-option value="sunrise">{{ 'SUNRISE' | translate}}</mat-option>
-                                <mat-option value="sunset">{{ 'SUNSET' | translate}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'SUN_TRIGGER' | translate}}</mat-label>
+                                <mat-select disabled [(value)]="timing.timingProperties.dailySunTrigger.sunTrigger">
+                                    <mat-option value="sunrise">{{ 'SUNRISE' | translate}}</mat-option>
+                                    <mat-option value="sunset">{{ 'SUNSET' | translate}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
 
                     </ng-container>
 
@@ -99,8 +99,8 @@
                                 [(ngModel)]="timing.timingProperties.dailyTimeTrigger.hour">
                         </mat-form-field>
 
-                        <mat-form-field>
-                            <input matInput disabled type="number" min="0" max="59" step="1"
+                            <mat-form-field>
+                                <input matInput disabled type="number" min="0" max="59" step="1"
                                 placeholder="{{ 'MINUTES' | translate}}"
                                 [(ngModel)]="timing.timingProperties.dailyTimeTrigger.minutes">
                         </mat-form-field>
@@ -149,6 +149,10 @@
         </eco-fab-speed-dial-trigger>
 
         <eco-fab-speed-dial-actions>
+            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="refreshData()"
+                matTooltip="{{'REFRESH' | translate}}">
+                <mat-icon>refresh</mat-icon>
+              </button>
             <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}"
                 (click)="createTimings()" matTooltip="{{'CREATE_TIMING' | translate}}">
                 <mat-icon>add</mat-icon>

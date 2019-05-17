@@ -27,6 +27,8 @@ export class TimingsComponent implements OnInit, OnDestroy {
   private timingsSubscription: Subscription;
   private operationsSubscription: Subscription;
 
+  public dataLoading = false;
+
   timings: DisplayTiming[] = [];
   rawTimings: Timing[] = [];
 
@@ -128,5 +130,11 @@ export class TimingsComponent implements OnInit, OnDestroy {
       }
       return itemA.timingType < itemB.timingType ? -1 : 1;
     });
+  }
+
+  public async refreshData() {
+    this.dataLoading = true;
+    await this.timingsService.refreshData();
+    this.dataLoading = false;
   }
 }

@@ -18,7 +18,7 @@ export class OperationService {
   constructor(private toastrAndErrorsService: ToasterAndErrorsService,
     private httpClient: HttpClient) {
 
-      this.retriveData();
+    this.retriveData();
   }
 
   private async loadOperations() {
@@ -73,12 +73,16 @@ export class OperationService {
     }
   }
 
+  public async refreshData() {
+    await this.loadOperations();
+  }
+
   public async cleanUp() {
     this.isOperationsRetrived = false;
     this.operations = [];
   }
 
   public async retriveData() {
-		this.retriveOperations();
-	}
+    this.retriveOperations();
+  }
 }

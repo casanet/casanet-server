@@ -17,6 +17,8 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   private translatePipe: TranslatePipe;
 
+  public dataLoading = false;
+
   users: User[] = [];
   usersSubscription: Subscription;
 
@@ -133,5 +135,11 @@ export class UsersComponent implements OnInit, OnDestroy {
     user['dsync'] = true;
     await this.usersService.deleteUser(user);
     user['dsync'] = false;
+  }
+
+  public async refreshData() {
+    this.dataLoading = true;
+    await this.usersService.refreshData();
+    this.dataLoading = false;
   }
 }

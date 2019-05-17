@@ -11,7 +11,7 @@
                     </button>
                 </div>
 
-                <mat-card-title class="operation-text operation-name" >{{operation.operationName}}</mat-card-title>
+                <mat-card-title class="operation-text operation-name">{{operation.operationName}}</mat-card-title>
 
                 <button mat-icon-button [matMenuTriggerFor]="operationMenu"
                     [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
@@ -39,14 +39,14 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
 
-                    <table mat-table [dataSource]="operation.activitiesDisplay"
-                        class="mat-elevation-z8" [style.text-align]="('LEFT_DIR' | translate)">
+                    <table mat-table [dataSource]="operation.activitiesDisplay" class="mat-elevation-z8"
+                        [style.text-align]="('LEFT_DIR' | translate)">
 
                         <!-- properties Column -->
                         <ng-container matColumnDef="properties">
                             <th mat-header-cell *matHeaderCellDef> {{ 'PROPERTIES' | translate}} </th>
                             <td mat-cell *matCellDef="let element">
-                                <ul >
+                                <ul>
                                     <li *ngFor="let property of element.properties">
                                         <b>{{ property.name | translate}}</b>: {{ property.value | translate}}
                                     </li>
@@ -62,7 +62,7 @@
 
                         <!-- name Column -->
                         <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef > {{ 'NAME' | translate}} </th>
+                            <th mat-header-cell *matHeaderCellDef> {{ 'NAME' | translate}} </th>
                             <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
                         </ng-container>
 
@@ -88,6 +88,10 @@
         </eco-fab-speed-dial-trigger>
 
         <eco-fab-speed-dial-actions>
+            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="refreshData()"
+                matTooltip="{{'REFRESH' | translate}}">
+                <mat-icon>refresh</mat-icon>
+            </button>
             <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}"
                 (click)="createOperation()" matTooltip="{{'CREATE_OPERATION' | translate}}">
                 <mat-icon>add</mat-icon>

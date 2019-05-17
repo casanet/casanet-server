@@ -64,6 +64,10 @@
     </eco-fab-speed-dial-trigger>
 
     <eco-fab-speed-dial-actions>
+      <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="refreshData()"
+        matTooltip="{{'REFRESH' | translate}}">
+        <mat-icon>refresh</mat-icon>
+      </button>
       <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="reScanNetwork()"
         matTooltip="{{'RESCAN_NETWORK' | translate}}">
         <mat-icon>track_changes</mat-icon>

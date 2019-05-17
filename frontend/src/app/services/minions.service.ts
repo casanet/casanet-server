@@ -235,6 +235,10 @@ export class MinionsService {
 		}
 	}
 
+	public async refreshData() {
+		await this.loadMinions();
+	}
+
 	public async cleanUp() {
 		this.isMinionsRetrived = false;
 		this.minions = [];
