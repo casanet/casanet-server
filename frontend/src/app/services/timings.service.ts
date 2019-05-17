@@ -41,12 +41,12 @@ export class TimingsService {
     }
 
     this.activatedTimingsServerFeed = new EventSource('/API/feed/timings');
-    this.activatedTimingsServerFeed.onmessage = (minionFeedEvent: MessageEvent) => {
-      if (minionFeedEvent.lastEventId === '0') {
+    this.activatedTimingsServerFeed.onmessage = (timingFeedEvent: MessageEvent) => {
+      if (timingFeedEvent.data === '"init"') {
         return;
       }
 
-      const timingDataFeed: TimingFeed = JSON.parse(minionFeedEvent.data);
+      const timingDataFeed: TimingFeed = JSON.parse(timingFeedEvent.data);
       this.timingActivatedFeed.next(timingDataFeed);
     };
   }

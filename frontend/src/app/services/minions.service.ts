@@ -146,7 +146,7 @@ export class MinionsService {
 	}
 
 	private OnMinionFeedUpdate(minionFeedEvent: MessageEvent) {
-		if (minionFeedEvent.lastEventId === '0') {
+		if (minionFeedEvent.data === '"init"') {
 			return;
 		}
 
