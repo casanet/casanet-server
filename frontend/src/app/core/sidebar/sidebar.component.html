@@ -2,7 +2,7 @@
     <div class="settings-viewer-title">
         <div class="settings-viewer-title-spacer"> {{ 'LANGUAGE' | translate }}</div>
         <button mat-icon-button matTooltipPosition="below">
-                <mat-icon>language</mat-icon>
+            <mat-icon>language</mat-icon>
         </button>
     </div>
     <div class="settings-viewer-body">
@@ -34,9 +34,12 @@
             <mat-hint>{{ 'REMOTE_URI' | translate }}</mat-hint>
         </mat-form-field>
         <div *ngIf="userProfile.scope === 'adminAuth'">
-            <button class="setting-button" mat-stroked-button (click)="setRemoteServer()">{{ 'EDIT_CONNECTION' | translate }}</button>
-            <button class="setting-button" mat-stroked-button (click)="disconnectRemoteServer()"> {{ 'DISCONNECT' | translate }}</button>
-            <button class="setting-button" mat-stroked-button (click)="showMacAddress()">{{ 'GET_LOCAL_MAC' | translate }}</button>
+            <button class="setting-button" mat-stroked-button
+                (click)="setRemoteServer()">{{ 'EDIT_CONNECTION' | translate }}</button>
+            <button class="setting-button" mat-stroked-button (click)="disconnectRemoteServer()">
+                {{ 'DISCONNECT' | translate }}</button>
+            <button class="setting-button" mat-stroked-button
+                (click)="showMacAddress()">{{ 'GET_LOCAL_MAC' | translate }}</button>
         </div>
     </div>
 </div>
@@ -46,8 +49,8 @@
     <div class="settings-viewer-title">
         <div class="settings-viewer-title-spacer"> {{ 'IFTTT_INTEGRATION' | translate }}</div>
         <button mat-icon-button matTooltipPosition="below">
-                <mat-icon>business</mat-icon>
-            </button>
+            <mat-icon>business</mat-icon>
+        </button>
     </div>
     <div class="settings-viewer-body form-container">
         <mat-form-field class="example-full-width">
@@ -56,8 +59,24 @@
         </mat-form-field>
         <br>
         <div *ngIf="userProfile.scope === 'adminAuth'">
-            <button class="setting-button" mat-stroked-button (click)="setIfttt()">{{ 'CONFIG_CONNECTION' | translate }}</button>
-            <button class="setting-button" mat-stroked-button (click)="disableIfttt()"> {{ 'DISABLE_IFTTT' | translate }}</button>
+            <button class="setting-button" mat-stroked-button
+                (click)="setIfttt()">{{ 'CONFIG_CONNECTION' | translate }}</button>
+            <button class="setting-button" mat-stroked-button (click)="disableIfttt()">
+                {{ 'DISABLE_IFTTT' | translate }}</button>
         </div>
+    </div>
+</div>
+
+<div class="settings-viewer-wrapper">
+    <div class="settings-viewer-title">
+        <div class="settings-viewer-title-spacer"> {{ 'LIGHT_VERSION' | translate }}</div>
+        <button mat-icon-button matTooltipPosition="below">
+            <mat-icon>healing</mat-icon>
+        </button>
+    </div>
+    <div class="settings-viewer-body form-container">
+        <button mat-stroked-button onclick="window.location.href='/static/light-app/index.html'">
+            {{ 'REDIRECT_TO_THE_LIGHT_VERSION' | translate }}
+        </button>
     </div>
 </div>
