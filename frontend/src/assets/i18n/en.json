@@ -186,6 +186,8 @@
     "PRESS_PASSWORD_AGINE" : "Press password agine",
     "THE_PASSWORDS_NOT_SAME" : "The passwords not match",
     "DONE_USER_MESSAGE" : "The ser creation is ready",
+    "LIGHT_VERSION" : "Light version",
+    "REDIRECT_TO_THE_LIGHT_VERSION" : "Redirect to the light version",
     "notConfigured": "Remote server not configured",
     "cantReachRemoteServer": "Remote server offline",
     "authorizationFail": "Local server fail to authenticate",

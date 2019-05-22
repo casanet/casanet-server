@@ -186,6 +186,8 @@
     "PRESS_PASSWORD_AGINE" : "הזן שוב סיסמה",
     "THE_PASSWORDS_NOT_SAME" : "הסיסמאות לא תואמות",
     "DONE_USER_MESSAGE" : "המשתמש מוכן ליצירה",
+    "LIGHT_VERSION" : "גרסה קלה",
+    "REDIRECT_TO_THE_LIGHT_VERSION" : "מעבר לגרסה הקלה",
     "notConfigured": "לא הוגדר שרת מרוחק",
     "cantReachRemoteServer": "שרת מרוחק לא נגיש",
     "authorizationFail": "אימות מול שרת מרוחק נכשל",

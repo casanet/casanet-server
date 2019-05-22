@@ -1,0 +1,28 @@
+.nobull {
+    list-style-type: none;
+    padding-inline-start: 0;
+}
+
+.minion-button{
+    text-shadow: 3px 2px #0c0e0d;
+    color: #7072bf;
+    font-size: 50px;
+    margin: 5px;
+    width: 95%; 
+    height: 120px;
+}
+
+.minion-on{
+    background: rgb(6,107,20);
+    background: linear-gradient(90deg, rgba(6,107,20,0.9840978627779237) 0%, rgba(9,121,52,1) 45%, rgba(0,255,37,1) 100%);
+}
+
+.minion-off{
+    background: rgb(223,34,25);
+    background: linear-gradient(90deg, rgba(223,34,25,0.9840978627779237) 0%, rgba(159,54,12,1) 45%, rgba(186,98,69,1) 100%);
+}
+
+.minion-sync{
+    background: rgb(25,169,223);
+    background: linear-gradient(90deg, rgba(25,169,223,0.9840978627779237) 0%, rgba(12,156,159,1) 45%, rgba(69,72,186,1) 100%);
+}
