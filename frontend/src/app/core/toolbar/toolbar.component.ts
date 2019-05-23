@@ -34,6 +34,11 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 		private changeDetectorRef: ChangeDetectorRef,
 		private settingsService: SettingsService,
 		private authService: AuthService) {
+
+		this.clockActivation();
+	}
+
+	ngOnInit() {
 		this.remoteConnectionSubscription =
 			this.settingsService.remoteStatusFeed.subscribe((remoteConnection) => {
 				this.remoteConnection = remoteConnection;
@@ -45,11 +50,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 				this.liveliness = liveliness;
 				this.changeDetectorRef.detectChanges();
 			});
-
-		this.clockActivation();
-	}
-
-	ngOnInit() {
 	}
 
 	ngOnDestroy(): void {
