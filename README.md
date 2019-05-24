@@ -78,14 +78,24 @@ Yes, it is possible and will be welcome, see [modules](./backend/src/modules/REA
 ## Using scenario:
 - Buy new [supported](#supported-right-now) smart devices.
 - [Connect it to local network](./backend/src/modules/README.md) via official app.
-- Scan the local network to find the new device. (POST /devices/rescan).
-- Get all kinds of supported devices to know witch of them is belong to the new device. (GET /devices/kinds).
-- Create a new minion** from the new device (POST /minions).
-- Get all minions to know the new minion id and status (GET /minions).
-- Set the new minion some other status (PUT /minions/{minionId})
-- Create a new operation that turns minion status on (POST /operations).
-- Create new timing that invoked the turn-on operation every Saturday sunset (POST /timings).
-- Enjoy, and soon the UI will be ready ;).
+- Scan the local network to find the new device. 
+    ![Screenshot](./docs/screenshots/instructions/scan_devices.png)
+
+    And give a name for the device (optionally).
+    ![Screenshot](./docs/screenshots/instructions/set_device_name.png)
+
+- Create a new minion** from the device.
+    ![Screenshot](./docs/screenshots/instructions/create_minion.png)
+
+- Say hello to the new minion and change the current status ;)
+
+- Create a new operation.
+    ![Screenshot](./docs/screenshots/instructions/create_operation.png)
+
+- Create new timing that invoked the created operation
+    ![Screenshot](./docs/screenshots/instructions/create_timing.png)
+
+- Enjoy.
 
 To watch full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/haimkastner/Home-IoT-Server/master/backend/swagger.yaml` in explorer input.
 
@@ -106,11 +116,11 @@ See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 
 ## Main technologies.
 * Node.js (TypeScript) - Server.
-* Angular - Client.
+* Angular (with angular material) - Client.
 * API - Swagger.
 
 ## TODO:
-- [ ] Finish UI of casanet local server.
+- [X] Finish UI of casanet local server.
 - [ ] Create remote server managments UI.
 - [ ] Support RTSP devices. 
 
