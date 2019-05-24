@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const config_1 = require("../config");
 const usersDal_1 = require("../data-layer/usersDal");
 const schemaValidator_1 = require("../security/schemaValidator");

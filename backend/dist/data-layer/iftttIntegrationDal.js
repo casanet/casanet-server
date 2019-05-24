@@ -18,7 +18,7 @@ class IftttIntergrationDal {
      * Get Integration Settings.
      */
     async getIntegrationSettings() {
-        return this.iftttIntegrationSettings.length > 0 ? this.iftttIntegrationSettings[0] : undefined;
+        return this.iftttIntegrationSettings.length > 0 ? this.iftttIntegrationSettings[0] : { enableIntegration: false };
     }
     /**
      * Delete / Disable Integration Settings.

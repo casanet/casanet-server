@@ -76,7 +76,7 @@ let FeedController = class FeedController extends tsoa_1.Controller {
             this.timingsSseFeedServersMap[localServerId] = new SseStream(['init'], { isSerialized: true });
         }
         /** Subscribe client to his local server SSE object */
-        this.timingsSseFeedServersMap[localServerId].addClient(request, response);
+        this.timingsSseFeedServersMap[localServerId].init(request, response);
     }
     //////////////////////////////////////////////////
     /////// SWAGGER DOCUMENTATION ONLY METHODS ///////

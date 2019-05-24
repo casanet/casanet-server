@@ -226,7 +226,7 @@ definitions:
                 type: integer
                 format: int32
                 description: "Minimum 0 maximum 255 from blue color.\r\nValid color value. (8 bits number, minimum 0 maximum 255)."
-                minimum: 1
+                minimum: 0
                 maximum: 255
         required:
             - status

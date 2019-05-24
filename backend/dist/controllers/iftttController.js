@@ -13,6 +13,13 @@ const tsoa_1 = require("tsoa");
 const iftttIntegrationBl_1 = require("../business-layer/iftttIntegrationBl");
 let IftttController = class IftttController extends tsoa_1.Controller {
     /**
+     * Is IFTTT inegration enabled.
+     */
+    async isIftttEnabled() {
+        const iftttSettings = await iftttIntegrationBl_1.IftttIntegrationBlSingleton.getIftttIntergrationSettings();
+        return iftttSettings.enableIntegration;
+    }
+    /**
      * Put ifttt integration settings.
      */
     async setIftttIntegrationSettings(iftttIntegrationSettings) {
@@ -35,6 +42,12 @@ let IftttController = class IftttController extends tsoa_1.Controller {
         await iftttIntegrationBl_1.IftttIntegrationBlSingleton.triggeredOperationAction(operationId);
     }
 };
+__decorate([
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Get('/settings')
+], IftttController.prototype, "isIftttEnabled", null);
 __decorate([
     tsoa_1.Response(501, 'Server error'),
     tsoa_1.Security('adminAuth'),

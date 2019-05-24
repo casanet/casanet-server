@@ -2,13 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const networkList2 = require("network-list2");
 const logger_1 = require("./logger");
+const config_1 = require("../config");
 /**
  * Get the all local network devices.
  */
 exports.LocalNetworkReader = () => {
     logger_1.logger.info('Scanning network devices...');
     return new Promise((resolve, reject) => {
-        networkList2.scan({}, (err, netTableArray) => {
+        const ops = {};
+        if (config_1.Configuration.scanSubnet) {
+            ops.ip = config_1.Configuration.scanSubnet;
+        }
+        networkList2.scan(ops, (err, netTableArray) => {
             logger_1.logger.info('Scanning network devices done.');
             if (err) {
                 const msg = 'Scen local network fail';

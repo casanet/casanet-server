@@ -88,7 +88,7 @@ const models: TsoaRoute.Models = {
             "temperature": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
             "red": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
             "green": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
-            "blue": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
+            "blue": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
         },
     },
     "MinionStatus": {
@@ -201,7 +201,7 @@ const models: TsoaRoute.Models = {
             "displayName": { "dataType": "string" },
             "email": { "dataType": "string", "required": true },
             "sessionTimeOutMS": { "dataType": "double", "required": true },
-            "password": { "dataType": "string", "required": true },
+            "password": { "dataType": "string" },
             "ignoreTfa": { "dataType": "boolean", "required": true },
             "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },
         },

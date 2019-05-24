@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const config_1 = require("../config");
 const logger_1 = require("../utilities/logger");
 const macAddress_1 = require("../utilities/macAddress");

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const momoent = require("moment");
 const randomstring = require("randomstring");
 const config_1 = require("../config");
@@ -46,14 +46,11 @@ class AuthBl {
         catch (error) {
             /** case user not in system return generic error. */
             logger_1.logger.debug(`login email ${login.email} fail, invalid cert`);
-            /**
-             * Even if the user name not exists, check hash,
-             * to hide from the attacker if the username is not valid by comparing a response time.
-             */
+            response.statusCode = 403;
+            return this.GENERIC_ERROR_RESPONSE;
         }
-        const compereResults = await bcrypt.compare(login.password, !!userTryToLogin ? userTryToLogin.password : randomstring.generate(60));
         /** If User not fauld or password not match  */
-        if (!userTryToLogin || !compereResults) {
+        if (!await bcrypt.compare(login.password, userTryToLogin.password)) {
             /** Case password incorrect return generic error. */
             response.statusCode = 403;
             return this.GENERIC_ERROR_RESPONSE;

@@ -10,7 +10,7 @@ exports.UserSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     displayName: Joi.string().not('').required(),
     sessionTimeOutMS: Joi.number().min(1000).required(),
-    password: Joi.string().not('').min(6).max(1000).required(),
+    password: Joi.string().not('').min(6).max(18).required(),
     ignoreTfa: Joi.boolean().required(),
     scope: Joi.allow('adminAuth', 'userAuth').required(),
 }).required();
@@ -18,7 +18,7 @@ exports.UserUpdateSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     displayName: Joi.string().not('').required(),
     sessionTimeOutMS: Joi.number().min(1000).required(),
-    password: Joi.string().not('').length(10),
+    password: Joi.string().allow('').min(6).max(18),
     ignoreTfa: Joi.boolean().required(),
     scope: Joi.allow('adminAuth', 'userAuth'),
 }).required();

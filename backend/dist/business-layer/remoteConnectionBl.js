@@ -26,6 +26,8 @@ class RemoteConnectionBl {
         this.minionsBl = minionsBl;
         this.timingsBl = timingsBl;
         this.usersBl = usersBl;
+        this.ACK_INTERVAL = moment.duration(20, 'seconds');
+        this.ackPongRecieved = true;
         /** Hold the remote connection status */
         this.remoteConnectionStatus = 'notConfigured';
         /** Use chai testing lib, to mock http requests */
@@ -68,11 +70,18 @@ class RemoteConnectionBl {
                 this.remoteConnectionStatus !== 'cantReachRemoteServer') {
                 return;
             }
+            if (!this.ackPongRecieved) {
+                this.remoteConnectionStatus = 'cantReachRemoteServer';
+            }
+            else {
+                this.remoteConnectionStatus = 'connectionOK';
+            }
+            this.ackPongRecieved = false;
             this.sendMessage({
                 localMessagesType: 'ack',
                 message: {},
             });
-        }, moment.duration(20, 'seconds').asMilliseconds());
+        }, this.ACK_INTERVAL.asMilliseconds());
     }
     /**
      * Let app give the express router instance.
@@ -114,7 +123,8 @@ class RemoteConnectionBl {
         await this.remoteConnectionDal.deleteRemoteSettings();
     }
     sendMessage(localMessage) {
-        if (this.remoteConnectionStatus !== 'connectionOK') {
+        if (this.remoteConnectionStatus !== 'connectionOK' &&
+            this.remoteConnectionStatus !== 'cantReachRemoteServer') {
             return;
         }
         try {
@@ -177,6 +187,9 @@ class RemoteConnectionBl {
             logger_1.logger.info(`Ws channel error ${err.message}`);
         });
         this.webSocketClient.on('close', (code, reason) => {
+            if (this.remoteConnectionStatus !== 'connectionOK') {
+                return;
+            }
             this.remoteConnectionStatus = 'cantReachRemoteServer';
             logger_1.logger.info(`Ws channel closed ${remoteSettings.host} code: ${code} reasone: ${reason}`);
         });
@@ -185,6 +198,7 @@ class RemoteConnectionBl {
         });
     }
     async OnArkOk() {
+        this.ackPongRecieved = true;
         this.remoteConnectionStatus = 'connectionOK';
     }
     /** If remote server needs collection of users in local server, sent it */

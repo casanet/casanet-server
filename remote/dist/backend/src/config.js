@@ -14,6 +14,7 @@ const rawTfaSmtpServer = process.env.TFA_SMTP_SERVER;
 const rawTfaUserName = process.env.TFA_USER_NAME;
 const rawTfaUserKey = process.env.TFA_USER_KEY;
 const rawSaltKeys = process.env.SALT_KEYS;
+const rawSubnetToScan = process.env.SUBNET_TO_SCAN;
 /**
  * Read casanet configuration file.
  */
@@ -42,7 +43,7 @@ switch (rawNodeEnv) {
         configuration.runningMode = 'prod';
         break;
 }
-logger_1.logger.info(`casa-net app running in -${configuration.runningMode}- mode (use environments vars to change it)`);
+logger_1.logger.info(`casa-net app running in -${configuration.runningMode}- mode (use environments vars "NODE_ENV" to change it)`);
 if (!rawHttpPort) {
     logger_1.logger.warn('There is no HTTP_PORT env var, using default port ' + configuration.http.httpPort);
 }
@@ -85,6 +86,10 @@ configuration.keysHandling = {
     saltHash: rawSaltKeys || randomstring.generate(64),
     bcryptSaltRounds: 12,
 };
+if (!rawSubnetToScan) {
+    logger_1.logger.warn('There is no SUBNET_TO_SCAN env var, the default subnet is current machine ip subnet.');
+}
+configuration.scanSubnet = rawSubnetToScan;
 /** System configuration */
 exports.Configuration = configuration;
 //# sourceMappingURL=config.js.map
