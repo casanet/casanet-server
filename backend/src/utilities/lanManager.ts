@@ -1,6 +1,7 @@
 import * as networkList2 from 'network-list2';
 import { LocalNetworkDevice } from '../models/sharedInterfaces';
 import { logger } from './logger';
+import { Configuration } from '../config';
 
 /**
  * Get the all local network devices.
@@ -8,7 +9,13 @@ import { logger } from './logger';
 export const LocalNetworkReader = (): Promise<LocalNetworkDevice[]> => {
     logger.info('Scanning network devices...');
     return new Promise((resolve, reject) => {
-        networkList2.scan({}, (err, netTableArray: any[]) => {
+
+        const ops: { ip?: string } = {};
+        if (Configuration.scanSubnet) {
+            ops.ip = Configuration.scanSubnet;
+        }
+
+        networkList2.scan(ops, (err, netTableArray: any[]) => {
             logger.info('Scanning network devices done.');
             if (err) {
                 const msg = 'Scen local network fail';

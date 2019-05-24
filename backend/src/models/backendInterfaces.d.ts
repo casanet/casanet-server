@@ -27,6 +27,11 @@ export declare interface Config {
         httpsPort: number;
         useHttps: boolean;
     },
+    /** 
+     * Subnet (xxx.xxx.xxx) to scan devices in, 
+     * if undefined using current machine ip as default subnet to scan. 
+     */
+    scanSubnet: string;
     /** Limit one IP requests per time configuration */
     requestsLimit: {
         windowsMs: number;
