@@ -25,16 +25,8 @@ but this project made to be totally in users hands and control. so using webhook
         ![Screenshot](./screenshots/ifttt/go-to-webhooks-documentation.PNG)
     - Watch and copy the webhooks API key.
         ![Screenshot](./screenshots/ifttt/watch-webhooks-api-key.PNG)
-1) Login to casa-net as admin and enable ifttt intergration:
-        - POST /API/ifttt/settings
-        Body:
-        ```
-        {
-            "apiKey": "hjg***Webhooks API key***kjh",
-            "enableIntegration": true
-        }
-        ```
-  
+1) Login to casa-net as admin and go to settings (small icon in toolbar) and in `IFTTT integration` section press on `configure` and paste the ifttt api key.
+       
 ### Invoke IFTTT trigger when minion turned on/off.
 1) Go to [ifttt applets page](https://ifttt.com/my_applets) and press `new applet`.
 1) Press on `+this` button.
