@@ -80,6 +80,14 @@ export class UsersService {
     }
   }
 
+  public async deactivateUserSessions(user: User) {
+    try {
+      await this.httpClient.post(`/API/auth/logout-sessions/${user.email}`, {}).toPromise();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
   public async refreshData() {
     await this.loadUsers();
   }

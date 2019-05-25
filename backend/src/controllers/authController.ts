@@ -1,6 +1,8 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { AuthBlSingleton } from '../business-layer/authBl';
+import { SessionsBlSingleton } from '../business-layer/sessionsBl';
+import { UsersBlSingleton } from '../business-layer/usersBl';
 import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
 
 /**
@@ -31,6 +33,29 @@ export class AuthController extends Controller {
      */
     public async logout(request: express.Request, response: express.Response): Promise<void> {
         await AuthBlSingleton.logout(request.cookies.session, response);
+    }
+
+    /**
+     * Logout from all activate sessions.
+     */
+    @Security('adminAuth')
+    @Security('userAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Post('/logout-sessions/{userId}')
+    public async getUser(userId: string, @Request() request: express.Request): Promise<void> {
+        const userSession = request.user as User;
+        /**
+         * Only admin can update other user.
+         */
+        if (userSession.scope !== 'adminAuth' && userSession.email !== userId) {
+            throw {
+                responseCode: 4403,
+                message: 'user not allowed to logout for other users',
+            } as ErrorResponse;
+        }
+        
+        const user = await UsersBlSingleton.getUser(userId);
+        await SessionsBlSingleton.deleteUserSessions(user);
     }
 
     //////////////////////////////////////////////////

@@ -22,7 +22,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   users: User[] = [];
   usersSubscription: Subscription;
 
-  readonly usersColumns = ['position', 'email', 'displayName', 'ignoreTfa', 'sessionTimeOutMS', 'scope', 'save', 'password', 'remove'];
+  readonly usersColumns = ['position', 'email', 'displayName', 'ignoreTfa', 'sessionTimeOutMS', 'scope', 'save', 'password', 'deactivating', 'remove'];
 
   constructor(
     public dialog: MatDialog,
@@ -113,6 +113,35 @@ export class UsersComponent implements OnInit, OnDestroy {
       password: swalResult.value
     });
     user['psync'] = false;
+  }
+
+  public async deactivateSEssions(user: User) {
+    const swalResult: void | SweetAlertResult = await swal({
+      title: `${this.translatePipe.transform('DEACTIVATE_SESSIONS')}`,
+      text: `${this.translatePipe.transform('FOR_THE_USER')}: ${user.displayName}`,
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: this.translatePipe.transform('SUBMIT'),
+      cancelButtonText: this.translatePipe.transform('CANCEL')
+    });
+
+    // Case user select 'cancel' cancel the delete.
+    if (swalResult && swalResult.dismiss) {
+      return;
+    }
+
+    const { email, displayName, scope, sessionTimeOutMS, ignoreTfa } = user;
+
+    user['bsync'] = true;
+    await this.usersService.deactivateUserSessions({
+      email,
+      displayName,
+      scope,
+      sessionTimeOutMS,
+      ignoreTfa,
+      password: swalResult.value
+    });
+    user['bsync'] = false;
   }
 
   public async deleteUser(user: User) {

@@ -188,6 +188,7 @@
     "DONE_USER_MESSAGE" : "המשתמש מוכן ליצירה",
     "LIGHT_VERSION" : "גרסה קלה",
     "REDIRECT_TO_THE_LIGHT_VERSION" : "מעבר לגרסה הקלה",
+    "DEACTIVATE_SESSIONS": "ניתוק סשנים פעילים",
     "notConfigured": "לא הוגדר שרת מרוחק",
     "cantReachRemoteServer": "שרת מרוחק לא נגיש",
     "authorizationFail": "אימות מול שרת מרוחק נכשל",

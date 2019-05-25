@@ -188,6 +188,7 @@
     "DONE_USER_MESSAGE" : "The ser creation is ready",
     "LIGHT_VERSION" : "Light version",
     "REDIRECT_TO_THE_LIGHT_VERSION" : "Redirect to the light version",
+    "DEACTIVATE_SESSIONS": "Deactivate sessions",
     "notConfigured": "Remote server not configured",
     "cantReachRemoteServer": "Remote server offline",
     "authorizationFail": "Local server fail to authenticate",

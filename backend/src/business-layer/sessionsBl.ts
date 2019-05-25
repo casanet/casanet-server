@@ -74,6 +74,18 @@ export class SessionsBl {
     public async deleteSession(session: Session): Promise<void> {
         return this.sessionDal.deleteSession(session);
     }
+
+    /**
+     * Delete all user session .
+     * @param user user to delete all activated sessions.
+     */
+    public async deleteUserSessions(user: User): Promise<void> {
+        const sessions = await this.getUserSessions(user);
+        for (const session of sessions) {
+            await this.deleteSession(session);
+        }
+    }
+
 }
 
 export const SessionsBlSingleton = new SessionsBl(SessionsDalSingelton);

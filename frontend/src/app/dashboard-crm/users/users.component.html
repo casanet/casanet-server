@@ -9,7 +9,7 @@
     <!-- Position Column -->
     <ng-container matColumnDef="position">
       <th mat-header-cell *matHeaderCellDef> </th>
-      <td mat-cell *matCellDef="let element; let i = index"> {{i + 1}} </td>
+      <td mat-cell *matCellDef="let element; let i = index"> <p style="margin: 6px"> {{i + 1}} </p> </td>
     </ng-container>
 
     <ng-container matColumnDef="email">
@@ -81,6 +81,20 @@
         <button *ngIf="!element.psync" mat-icon-button color="primary" (click)="changePassword(element)"
                 matTooltipPosition="below" matTooltip="{{'SET_PASSWORD' | translate}}" >
             <mat-icon>settings_ethernet</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="deactivating">
+      <th mat-header-cell *matHeaderCellDef> </th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element.bsync" [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : '11px'"
+          [style.margin-left]="('DIR' | translate) === 'rtl'? '0' : '11px'">
+          <mat-spinner color="primary" strokeWidth="3" diameter="20"></mat-spinner>
+        </div>
+        <button *ngIf="!element.bsync" mat-icon-button color="primary" (click)="deactivateSEssions(element)"
+                matTooltipPosition="below" matTooltip="{{'DEACTIVATE_SESSIONS' | translate}}" >
+            <mat-icon>block</mat-icon>
         </button>
       </td>
     </ng-container>
