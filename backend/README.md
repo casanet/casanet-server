@@ -17,6 +17,11 @@ In `casanet.json` file you can edit the configuration of a few stuff.
 #### Password hash salt
 set `SALT_KEYS` env var for salt sessions hash. otherways the salt will generate randomly on runtime, and in next running, all sessions will be invalid. 
 
+#### Devices network 
+set `SUBNET_TO_SCAN` env var to specify the network to scan devices IP's in it. the format is `xxx.xxx.xxx`. 
+
+if not set, the default network is the first current machine IP subnet.  
+
 #### Default user:
 You can edit any property of the default user. 
 
