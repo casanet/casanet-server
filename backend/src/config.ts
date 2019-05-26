@@ -1,7 +1,14 @@
+import * as dotenv from 'dotenv';
+import { existsSync } from 'fs';
 import * as fse from 'fs-extra';
 import * as randomstring from 'randomstring';
 import { Config, RunningMode } from './models/backendInterfaces';
 import { logger } from './utilities/logger';
+
+// load environment variable from .env file
+if (existsSync('.env')) {
+  dotenv.config();
+}
 
 /**
  * Read process env vars
@@ -81,7 +88,7 @@ if (!rawSaltKeys) {
 configuration.keysHandling = {
     saltHash: rawSaltKeys || randomstring.generate(64),
     bcryptSaltRounds: 12,
-}
+};
 
 if (!rawSubnetToScan) {
     logger.warn('There is no SUBNET_TO_SCAN env var, the default subnet is current machine ip subnet.');
