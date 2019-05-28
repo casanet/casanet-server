@@ -14,9 +14,6 @@
         "${workspaceFolder}/dist/**/*.js"
       ],
       "env": {
-        "HTTP_PORT": "3001",
-        "HTTPS_PORT": "4430",
-        "USE_HTTPS": "false",
         "NODE_ENV": "debug"
       }
     },
@@ -27,7 +24,6 @@
       "preLaunchTask": "npm: test",
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "env": {
-        "USE_HTTPS": "false",
         "NODE_ENV": "test",
         "TEST_LONG_SPECS" : "true"
       },
