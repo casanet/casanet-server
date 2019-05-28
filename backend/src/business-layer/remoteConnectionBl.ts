@@ -31,7 +31,7 @@ export class RemoteConnectionBl {
     private expressRouter: express.Express;
 
     /** Hold the remote connection status */
-    private remoteConnectionStatus: RemoteConnectionStatus = 'notConfigured';
+    private remoteConnectionStatus: RemoteConnectionStatus = 'cantReachRemoteServer';
 
     /** Web socket client object, to connect remote server  */
     private webSocketClient: WebSocketClient;
@@ -44,9 +44,9 @@ export class RemoteConnectionBl {
      * @param usersBl Inject the user bl instance to used userBl.
      */
     constructor(private remoteConnectionDal: RemoteConnectionDal,
-        private minionsBl: MinionsBl,
-        private timingsBl: TimingsBl,
-        private usersBl: UsersBl,
+                private minionsBl: MinionsBl,
+                private timingsBl: TimingsBl,
+                private usersBl: UsersBl,
     ) {
         /** Use chai testing lib, to mock http requests */
         chai.use(chaiHttp);
