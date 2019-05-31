@@ -579,6 +579,32 @@ info:
     license:
         name: ISC
 paths:
+    '/auth/logout-sessions/{userId}':
+        post:
+            operationId: GetUser
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Logout from all activate sessions.'
+            tags:
+                - Authentication
+            security:
+                -
+                    adminAuth: []
+                -
+                    userAuth: []
+            parameters:
+                -
+                    in: path
+                    name: userId
+                    required: true
+                    type: string
     /auth/login:
         post:
             operationId: LoginDocumentation
@@ -899,35 +925,6 @@ paths:
             parameters:
                 -
                     description: 'The local server to generate for.'
-                    in: path
-                    name: localServerId
-                    required: true
-                    type: string
-    '/servers/local-users/{localServerId}':
-        get:
-            operationId: GetLocalServerUsers
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        type: array
-                        items:
-                            type: string
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: "Get all user names from the local server.\r\nUsed to allow admin select users that can access their local server via remote."
-            tags:
-                - Servers
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'The local server to get users from.'
                     in: path
                     name: localServerId
                     required: true

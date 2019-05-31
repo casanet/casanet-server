@@ -13,14 +13,18 @@ export const LoginLocalServerSchema: ObjectSchema = Joi.object().keys({
     localServerId: Joi.string().allow(''),
 }).required();
 
+const forwardAccountSchema: ObjectSchema = Joi.object().keys({
+    email: Joi.string().email().required(),
+});
+
+const registerAccountSchema: ObjectSchema = Joi.object().keys({
+    email: Joi.string().email().required(),
+    code: Joi.string().length(6).required(),
+});
+
 const initSchema = Joi.object().keys({
     macAddress: Joi.string().not('').length(12).required(),
     remoteAuthKey: Joi.string().not('').required(),
-});
-
-const localUsersSchema = Joi.object().keys({
-    users: Joi.array().items(Joi.string().email()).required(),
-    requestId: Joi.string().not('').required(),
 });
 
 const httpResponseSchema = Joi.object().keys({
@@ -41,19 +45,34 @@ const feedSchema = Joi.object().keys({
 });
 
 export const LocalMessageSchema: ObjectSchema = Joi.object().keys({
-    localMessagesType: Joi.valid('initialization', 'localUsers', 'httpResponse', 'ack', 'feed').required(),
+    localMessagesType:
+        Joi.valid('initialization',
+            'sendRegistrationCode',
+            'unregisterAccount',
+            'registerAccount',
+            'httpResponse',
+            'ack',
+            'feed').required(),
     message: Joi.alternatives()
         .when('localMessagesType', {
             is: 'initialization',
-            then: Joi.object().keys({ initialization : initSchema.required()}).required(),
+            then: Joi.object().keys({ initialization: initSchema.required() }).required(),
         })
         .when('localMessagesType', {
-            is: 'localUsers',
-            then: Joi.object().keys({ localUsers : localUsersSchema.required()}).required(),
+            is: 'sendRegistrationCode',
+            then: Joi.object().keys({ sendRegistrationCode: forwardAccountSchema.required() }).required(),
+        })
+        .when('localMessagesType', {
+            is: 'unregisterAccount',
+            then: Joi.object().keys({ unregisterAccount: forwardAccountSchema.required() }).required(),
+        })
+        .when('localMessagesType', {
+            is: 'registerAccount',
+            then: Joi.object().keys({ registerAccount: registerAccountSchema.required() }).required(),
         })
         .when('localMessagesType', {
             is: 'httpResponse',
-            then: Joi.object().keys({ httpResponse : httpResponseSchema.required()}).required(),
+            then: Joi.object().keys({ httpResponse: httpResponseSchema.required() }).required(),
         })
         .when('localMessagesType', {
             is: 'ack',
@@ -61,6 +80,6 @@ export const LocalMessageSchema: ObjectSchema = Joi.object().keys({
         })
         .when('localMessagesType', {
             is: 'feed',
-            then: Joi.object().keys({ feed : feedSchema.required()}).required(),
+            then: Joi.object().keys({ feed: feedSchema.required() }).required(),
         }),
 }).required();

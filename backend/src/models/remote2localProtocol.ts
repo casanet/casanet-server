@@ -8,11 +8,8 @@ export declare type RemoteMessagesType =
     'authenticatedSuccessfuly' |
     /** When local server rejected, baucuase auth fail. */
     'authenticationFail' |
-    /**
-     * When remote server needs all user names in local server
-     * (To allow remote admin select users that can access via remote)
-     */
-    'localUsers' |
+    /** Results of register/unregister user to forward from remove server */
+    'registerUserResults' |
     /** Remote server forwarding http request to local sever */
     'httpRequest' |
     /** When local ack message arrived to remote server */
@@ -43,8 +40,9 @@ export declare interface RemoteMessage {
     message: {
         authenticationFail?: ErrorResponse;
         httpRequest?: HttpRequest;
-        localUsers?: {
-            requestId: string;
+        registerUserResults?: {
+            user: string;
+            results?: ErrorResponse;
         }
     };
 }
@@ -53,8 +51,12 @@ export declare interface RemoteMessage {
 export declare type LocalMessagesType =
     /** Init connection and auth local server message */
     'initialization' |
-    /** Users names (only) in local server */
-    'localUsers' |
+    /** Request remote server to send registration code */
+    'sendRegistrationCode' |
+    /** Register account to allow forward HTTP requests from remote to local server */
+    'registerAccount' |
+    /** Remove account from local server valid account to forward from remote to local */
+    'unregisterAccount' |
     /** Http response with result for remote server request */
     'httpResponse' |
     /** Empty message to check if connection alive */
@@ -92,10 +94,16 @@ export declare interface LocalMessage {
             macAddress: string;
             remoteAuthKey: string;
         };
-        localUsers?: {
-            users: string[];
-            requestId: string;
+        sendRegistrationCode?: {
+            email: string;
         },
+        unregisterAccount?: {
+            email: string;
+        },
+        registerAccount?: {
+            email: string;
+            code: string;
+        }
         httpResponse?: HttpResponse;
         feed?: LocalServerFeed;
     };

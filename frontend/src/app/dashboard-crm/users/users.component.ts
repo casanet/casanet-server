@@ -22,7 +22,21 @@ export class UsersComponent implements OnInit, OnDestroy {
   users: User[] = [];
   usersSubscription: Subscription;
 
-  readonly usersColumns = ['position', 'email', 'displayName', 'ignoreTfa', 'sessionTimeOutMS', 'scope', 'save', 'password', 'deactivating', 'remove'];
+  readonly usersColumns =
+    [
+      'position',
+      'email',
+      'displayName',
+      'ignoreTfa',
+      'sessionTimeOutMS',
+      'scope',
+      'save',
+      'password',
+      'deactivating',
+      'register',
+      'unregister',
+      'remove'
+    ];
 
   constructor(
     public dialog: MatDialog,
@@ -142,6 +156,65 @@ export class UsersComponent implements OnInit, OnDestroy {
       password: swalResult.value
     });
     user['bsync'] = false;
+  }
+
+  public async registerUserToRemoteServer(user: User) {
+
+
+    const swalToContinueResult: void | SweetAlertResult = await swal({
+      title: `${this.translatePipe.transform('REGISTER_USER')}`,
+      text: `${this.translatePipe.transform('THE_AUTH_CODE_WILL_SEND_TO_ACCOUNT')} ${user.email}`,
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: this.translatePipe.transform('SEND'),
+      cancelButtonText: this.translatePipe.transform('CANCEL')
+    });
+
+    /**  Case user select 'cancel' cancel the registeration. */
+    if (swalToContinueResult && swalToContinueResult.dismiss) {
+      return;
+    }
+
+    /** request send user auth code */
+    await this.usersService.requestRegistrationCode(user);
+
+    /** Wait for user to enter the sent code */
+    const swalResult: void | SweetAlertResult = await swal({
+      title: `${this.translatePipe.transform('ENTER_THE_SENT_CODE')}`,
+      input: 'text',
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: this.translatePipe.transform('SUBMIT'),
+      cancelButtonText: this.translatePipe.transform('CANCEL')
+    });
+
+    /** Case user select 'cancel' cancel the  */
+    if (swalResult && swalResult.dismiss) {
+      return;
+    }
+
+    /** Send the register request with auth code */
+    await this.usersService.requestRegiterUser(user, swalResult.value);
+  }
+
+  public async removeUserFromTheRemoteServer(user: User) {
+
+    const swalResult: void | SweetAlertResult = await swal({
+      title: `${this.translatePipe.transform('SURE')}?`,
+      text: `${user.email} ${this.translatePipe.transform('WILL_REMOVE_FROM_THE_REMOTE_SERVER')}`,
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: 'red',
+      confirmButtonText: this.translatePipe.transform('REMOVE'),
+      cancelButtonText: this.translatePipe.transform('CANCEL')
+    });
+
+    // Case user select 'cancel' cancel the remove.
+    if (swalResult && swalResult.dismiss) {
+      return;
+    }
+
+    await this.usersService.removeUserFromRemote(user);
   }
 
   public async deleteUser(user: User) {

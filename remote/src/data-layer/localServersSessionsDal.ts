@@ -64,8 +64,9 @@ export class LocalServersSessionsDal {
     public async deleteLocalServerSession(localServerId: string): Promise<void> {
         const localServer = this.findLocalServerSession(localServerId);
 
+        /** Case there is no any session */
         if (!localServer) {
-            throw new Error('localServer session not exist');
+            return;
         }
 
         this.localServersSessions.splice(this.localServersSessions.indexOf(localServer), 1);
