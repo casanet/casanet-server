@@ -81,15 +81,4 @@ export class LocalServersController extends Controller {
         return await LocalServersSessionBlSingleton.generateLocalServerSession(localServerId);
     }
 
-    /**
-     * Get all user names from the local server.
-     * Used to allow admin select users that can access their local server via remote.
-     * @param localServerId The local server to get users from.
-     */
-    @Security('adminAuth')
-    @Response<ErrorResponse>(501, 'Server error')
-    @Get('local-users/{localServerId}')
-    public async getLocalServerUsers(localServerId: string): Promise<string[]> {
-        return await ChannelsBlSingleton.getLocalServerUsers(localServerId);
-    }
 }

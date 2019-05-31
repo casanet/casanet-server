@@ -12,8 +12,8 @@ import { logger } from '../../backend/src/utilities/logger';
 import { AdministrationAuthRouter } from './routers/administrationAuthRoute';
 import { FeedRouter } from './routers/feedRoute';
 import { ForwardAuthRouter } from './routers/forwardAuthRoute';
-import { ForwardingRouter } from './routers/forwardingsRoute';
 import { ForwardingIftttRouter } from './routers/forwardingsIftttRoute';
+import { ForwardingRouter } from './routers/forwardingsRoute';
 import { RegisterRoutes } from './routers/routes';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
@@ -54,7 +54,7 @@ class App {
 
         /** Route inner system */
         this.routes();
-        
+
         /** Finaly route API of casa and forward it as is to local server */
         this.forwardingToLocal();
 

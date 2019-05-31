@@ -102,4 +102,28 @@ export class UsersService {
       this.retriveUsers();
     }
   }
+
+  public async requestRegistrationCode(user: User) {
+    try {
+      await this.httpClient.post(`/API/users/forward-auth/${user.email}`, {}).toPromise();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
+  public async removeUserFromRemote(user: User) {
+    try {
+      await this.httpClient.delete(`/API/users/forward/${user.email}`, {}).toPromise();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
+  public async requestRegiterUser(user: User, code: string) {
+    try {
+      await this.httpClient.post(`/API/users/forward/${user.email}`, { code : code }).toPromise();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
 }

@@ -3,7 +3,7 @@
     <form>
       <ng-template matStepLabel>{{ 'ENTER_EMAIL' | translate}}</ng-template>
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="{{ 'ENTER_EMAIL' | translate}}" [formControl]="emailControl"
+        <input type="email" matInput placeholder="{{ 'ENTER_EMAIL' | translate}}" [formControl]="emailControl"
                      [errorStateMatcher]="matcher">
         <mat-error *ngIf="emailControl.hasError('email') && !emailControl.hasError('required')">
           {{ 'ENTER_VALID_EMAIL' | translate}}
@@ -72,7 +72,8 @@
     <form>
       <ng-template matStepLabel>{{ 'PRESS_PASSWORD' | translate}}</ng-template>
       <mat-form-field>
-        <input matInput type="password" placeholder="{{ 'PRESS_PASSWORD' | translate}}" minlength="6" maxlength="18" [formControl]="passwordControl" required>
+        <input matInput type="password" placeholder="{{ 'PRESS_PASSWORD' | translate}}" 
+        minlength="6" maxlength="18" (change)="checkPasswords()" [formControl]="passwordControl" required>
         <mat-hint>{{passwordControl.value.length}} / 18</mat-hint>
       </mat-form-field>
       <div>

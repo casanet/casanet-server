@@ -14,8 +14,6 @@ import { MinionsBl } from './minionsBl';
 import { MinionsBlSingleton } from './minionsBl';
 import { TimingsBl } from './timingsBl';
 import { TimingsBlSingleton } from './timingsBl';
-import { UsersBl } from './usersBl';
-import { UsersBlSingleton } from './usersBl';
 
 /**
  * Used to connect remote server via web socket, and let`s users acceess
@@ -23,7 +21,17 @@ import { UsersBlSingleton } from './usersBl';
 export class RemoteConnectionBl {
 
     private ACK_INTERVAL = moment.duration(20, 'seconds');
+    private REGISTER_REQUEST_TIMEOUT = moment.duration(20, 'seconds');
     private ackPongRecieved = true;
+
+    /** Hold register requests promis functions */
+    private registerAccountsPromisessMap: {
+        [key: string]: {
+            resolve: () => {},
+            reject: (errorResponse: ErrorResponse) => {},
+            timeout: NodeJS.Timeout,
+        },
+    } = {};
 
     /** Express router, used to create http requests from
      * remote server without actually open TCP connection.
@@ -41,12 +49,10 @@ export class RemoteConnectionBl {
      * @param remoteConnectionDal Inject the remote connection dal..
      * @param minionsBl Inject the minions bl instance to used minionsBl.
      * @param timingsBl Inject the timings bl instance to used timingsBl.
-     * @param usersBl Inject the user bl instance to used userBl.
      */
     constructor(private remoteConnectionDal: RemoteConnectionDal,
                 private minionsBl: MinionsBl,
                 private timingsBl: TimingsBl,
-                private usersBl: UsersBl,
     ) {
         /** Use chai testing lib, to mock http requests */
         chai.use(chaiHttp);
@@ -151,6 +157,107 @@ export class RemoteConnectionBl {
         await this.remoteConnectionDal.deleteRemoteSettings();
     }
 
+    /**
+     * Request from the remote server to send code to email befor register account request
+     * @param email user email account
+     */
+    public async requestSendUserRegisterCode(email: string) {
+        if (this.remoteConnectionStatus !== 'connectionOK') {
+            throw {
+                message: 'There is no connection to remote server',
+                responseCode: 6501,
+            } as ErrorResponse;
+        }
+
+        await this.sendMessage({
+            localMessagesType: 'sendRegistrationCode',
+            message: {
+                sendRegistrationCode: {
+                    email,
+                },
+            },
+        });
+    }
+
+    /**
+     * Remove account from local server valid account to forward from remote to local
+     * @param email user email account
+     */
+    public unregisterUserFromRemoteForwarding(email: string): Promise<void | ErrorResponse> {
+        if (this.remoteConnectionStatus !== 'connectionOK') {
+            throw {
+                message: 'There is no connection to remote server',
+                responseCode: 6501,
+            } as ErrorResponse;
+        }
+
+        return new Promise<void | ErrorResponse>(async (resolve, reject) => {
+            await this.sendMessage({
+                localMessagesType: 'unregisterAccount',
+                message: {
+                    unregisterAccount: {
+                        email,
+                    },
+                },
+            });
+
+            this.registerAccountsPromisessMap[email] = {
+                resolve: resolve as any,
+                reject: reject as any,
+                timeout: setTimeout(() => {
+                    reject({
+                        message: 'remote server timeout',
+                        responseCode: 12503,
+                    } as ErrorResponse);
+
+                }, this.REGISTER_REQUEST_TIMEOUT.asMilliseconds()),
+            };
+        });
+    }
+
+    /**
+     * Register account to allow forward HTTP requests from remote to local server
+     * @param email user email account
+     * @param code auth. code that sent by remote server to email.
+     */
+    public registerUserForRemoteForwarding(email: string, code: string): Promise<void | ErrorResponse> {
+
+        if (this.remoteConnectionStatus !== 'connectionOK') {
+            throw {
+                message: 'There is no connection to remote server',
+                responseCode: 6501,
+            } as ErrorResponse;
+        }
+
+        return new Promise<void | ErrorResponse>(async (resolve, reject) => {
+            await this.sendMessage({
+                localMessagesType: 'registerAccount',
+                message: {
+                    registerAccount: {
+                        email,
+                        code,
+                    },
+                },
+            });
+
+            this.registerAccountsPromisessMap[email] = {
+                resolve: resolve as any,
+                reject: reject as any,
+                timeout: setTimeout(() => {
+                    reject({
+                        message: 'remote server timeout',
+                        responseCode: 12503,
+                    } as ErrorResponse);
+
+                }, this.REGISTER_REQUEST_TIMEOUT.asMilliseconds()),
+            };
+        });
+    }
+
+    /**
+     * Send a message to remote server.
+     * @param localMessage message to send
+     */
     private sendMessage(localMessage: LocalMessage) {
         if (this.remoteConnectionStatus !== 'connectionOK' &&
             this.remoteConnectionStatus !== 'cantReachRemoteServer') {
@@ -198,7 +305,8 @@ export class RemoteConnectionBl {
                 case 'readyToInitialization': await this.onInitReady(); break;
                 case 'authenticationFail': await this.onAuthenticationFail(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
                 case 'authenticatedSuccessfuly': await this.onAuthenticatedSuccessfuly(); break;
-                case 'localUsers': await this.onUsersRequired(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
+                case 'registerUserResults':
+                    await this.onRegisterUserResults(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
                 case 'ackOk': await this.OnArkOk(); break;
                 case 'httpRequest': await this.onRemoteHttpRequest(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
             }
@@ -226,25 +334,29 @@ export class RemoteConnectionBl {
         this.remoteConnectionStatus = 'connectionOK';
     }
 
-    /** If remote server needs collection of users in local server, sent it */
-    private async onUsersRequired(usersRequest: { requestId: string; }) {
-        try {
-            const users = await this.usersBl.getUsers();
-            const usersEmail = users.map((user) => user.email);
+    private onRegisterUserResults(forwardUserResults: { user: string; results?: ErrorResponse; }) {
+        const { user, results } = forwardUserResults;
 
-            this.sendMessage({
-                localMessagesType: 'localUsers',
-                message: {
-                    localUsers: {
-                        requestId: usersRequest.requestId,
-                        users: usersEmail,
-                    },
-                },
-            });
-
-        } catch (error) {
-
+        if (!this.registerAccountsPromisessMap[user]) {
+            return;
         }
+
+        /** Get the request promise functions */
+        const requestPromises = this.registerAccountsPromisessMap[user];
+
+        /** Clear the timeout function */
+        clearTimeout(requestPromises.timeout);
+
+        /** If all ok, invoke the resolve function */
+        if (!results) {
+            requestPromises.resolve();
+        } else {
+            /** Else invoke the reject function with error */
+            requestPromises.reject(results);
+        }
+
+        /** remote user from request promises map. */
+        delete this.registerAccountsPromisessMap[user];
     }
 
     /** Handle auth passed messages from remote server */
@@ -348,5 +460,4 @@ export class RemoteConnectionBl {
 
 export const RemoteConnectionBlSingleton = new RemoteConnectionBl(RemoteConnectionDalSingleton,
     MinionsBlSingleton,
-    TimingsBlSingleton,
-    UsersBlSingleton);
+    TimingsBlSingleton);

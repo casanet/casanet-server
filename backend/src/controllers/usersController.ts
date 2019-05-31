@@ -1,8 +1,18 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
+import { RemoteConnectionBlSingleton } from '../business-layer/remoteConnectionBl';
 import { UsersBlSingleton } from '../business-layer/usersBl';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
+
+declare interface UserForwardAuth {
+    /**
+     * Generated code that sent to user email account
+     * @minLength 6
+     * @maxLength 6
+     */
+    code: string;
+}
 
 @Tags('Users')
 @Route('users')
@@ -128,5 +138,38 @@ export class UsersController extends Controller {
     @Post()
     public async createUser(@Body() user: User): Promise<void> {
         return await UsersBlSingleton.createUser(user);
+    }
+
+    /**
+     * Reqest registration code.
+     * @param userId User id/email to send code to.
+     */
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Post('forward-auth/{userId}')
+    public async requestUserForwarding(userId: string): Promise<void> {
+        await RemoteConnectionBlSingleton.requestSendUserRegisterCode(userId);
+    }
+
+    /**
+     *  Register account to allow forward HTTP requests from remote to local server.
+     * @param userId User id/email to register.
+     */
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Post('forward/{userId}')
+    public async requestUserForwardingAuth(userId: string, @Body() auth: UserForwardAuth): Promise<void> {
+        await RemoteConnectionBlSingleton.registerUserForRemoteForwarding(userId, auth.code);
+    }
+
+    /**
+     * Remove account from local server valid account to forward from remote to local
+     * @param userId User id/email to unregister.
+     */
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Delete('forward/{userId}')
+    public async removeUserForwarding(userId: string): Promise<void> {
+        await RemoteConnectionBlSingleton.unregisterUserFromRemoteForwarding(userId);
     }
 }

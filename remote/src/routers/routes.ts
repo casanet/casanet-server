@@ -210,6 +210,30 @@ const models: TsoaRoute.Models = {
 const validationService = new ValidationService(models);
 
 export function RegisterRoutes(app: express.Express) {
+    app.post('/API/auth/logout-sessions/:userId',
+        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AuthController();
+
+
+            const promise = controller.getUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
     app.post('/API/auth/login',
         function(request: any, response: any, next: any) {
             const args = {
@@ -570,29 +594,6 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.generateAuthKeyLocalServer.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/servers/local-users/:localServerId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                localServerId: { "in": "path", "name": "localServerId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new LocalServersController();
-
-
-            const promise = controller.getLocalServerUsers.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/channels',

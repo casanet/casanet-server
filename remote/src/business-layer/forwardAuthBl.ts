@@ -32,15 +32,20 @@ export class ForwardAuthBl {
      * Active session of request. call it when auth check success.
      * @param response express response to load with session key.
      * @param localServerId local server of authed user.
+     * @param authenticatedUser the user that session belong.
      * @param httpResponse http response message from local server. with session key.
      */
-    private async activeSession(response: express.Response, localServerId: string, httpResponse: HttpResponse): Promise<void> {
+    private async activeSession(
+        response: express.Response,
+        localServerId: string,
+        authenticatedUser: string,
+        httpResponse: HttpResponse): Promise<void> {
 
         /**
          * Save session,
          * used when user sending request to local server,so can check session *befor* sending.
          */
-        await this.forwardUsersSessionsBl.createNewSession(localServerId, httpResponse.httpSession.key);
+        await this.forwardUsersSessionsBl.createNewSession(localServerId, httpResponse.httpSession.key, authenticatedUser);
 
         /**
          * Finally load session on cookies response.
@@ -119,7 +124,7 @@ export class ForwardAuthBl {
 
         /** If local server auth this user success. active login in remote too. */
         if (localResponse.httpStatus === 200 && localResponse.httpSession) {
-            await this.activeSession(response, connectLocalServerId, localResponse);
+            await this.activeSession(response, connectLocalServerId, login.email, localResponse);
             return;
         }
 
@@ -169,7 +174,7 @@ export class ForwardAuthBl {
         });
 
         if (localResponse.httpStatus === 200 && localResponse.httpSession) {
-            await this.activeSession(response, connectLocalServerId, localResponse);
+            await this.activeSession(response, connectLocalServerId, login.email, localResponse);
             return;
         }
 

@@ -137,6 +137,34 @@ export class LocalServersBl {
     public async deleteLocalServer(localServerId: string): Promise<void> {
         return await this.localServersDal.deleteLocalServer(localServerId);
     }
+
+    /**
+     * Add email account to local server valid to forward collection.
+     * @param localServerId The local server to add the account to.
+     * @param email The email account to add.
+     */
+    public async addAccountForwardValid(localServerId: string, email: string) {
+        const localServer = await this.localServersDal.getLocalServer(localServerId);
+
+        if (localServer.validUsers.indexOf(email) === -1) {
+            localServer.validUsers.push(email);
+            this.localServersDal.updateLocalServer(localServer);
+        }
+    }
+
+    /**
+     * Remove email account to local server valid to forward collection.
+     * @param localServerId The local server to remove the account from.
+     * @param email The email account to remove.
+     */
+    public async removeAccountForwardValid(localServerId: string, email: string) {
+        const localServer = await this.localServersDal.getLocalServer(localServerId);
+
+        if (localServer.validUsers.indexOf(email) !== -1) {
+            localServer.validUsers.splice(localServer.validUsers.indexOf(email), 1);
+            this.localServersDal.updateLocalServer(localServer);
+        }
+    }
 }
 
 export const LocalServersBlSingleton = new LocalServersBl(LocalServersDalSingleton);

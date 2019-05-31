@@ -16,4 +16,6 @@ export declare interface ForwardUserSession {
     sessionKeyHash: string;
     /** local server to forward */
     localServerId: string;
+    /** generated for user */
+    authenticatedUser: string;
 }
