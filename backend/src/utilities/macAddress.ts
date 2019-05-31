@@ -17,6 +17,14 @@ export const GetMachinMacAddress = (): Promise<string> => {
             return;
         }
 
+        /** If MAC address passed by env var, just use it */
+        if (process.env.PHYSICAL_ADDRESS) {
+            machineMacAddress = process.env.PHYSICAL_ADDRESS;
+            logger.info(`Using '${machineMacAddress}' physical address, loadded from env var.`);
+            resolve(machineMacAddress);
+            return;
+        }
+
         /** Read the machine mac address */
         getMac.getMac((err: Error, rawMacAddress: string) => {
 

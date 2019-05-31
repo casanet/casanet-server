@@ -14,28 +14,21 @@ Then open the browser in `http://127.0.0.1:3000`.
 
 In `casanet.json` file you can edit the configuration of a few stuff.
 
-#### Password hash salt
-set `SALT_KEYS` env var for salt sessions hash. otherways the salt will generate randomly on runtime, and in next running, all sessions will be invalid. 
-
-#### Devices network 
-set `SUBNET_TO_SCAN` env var to specify the network to scan devices IP's in it. the format is `xxx.xxx.xxx`. 
-
-if not set, the default network is the first current machine IP subnet.  
 
 #### Default user:
-You can edit any property of the default user. 
+Can edit any property of the default user. 
 
 Except for the user account in the email. this will be always the mac address of the machine.
 (The reason is for security, the only owner of the machine should know the default username).
 
 #### HTTP/HTTPS server ports:
 You can edit port and HTTPS using.
-Also you can set it by environment variables:
+Also can set it by environment variables:
 * `HTTP_PORT`
 * `HTTPS_PORT`
 * `USE_HTTPS`
 
-HTTPS require `private.key` `certificate.crt` and `ca_bundle.crt` files to be in `$/.../backend/encryption/` directory.
+> HTTPS require `private.key` `certificate.crt` and `ca_bundle.crt` files to be in `$/.../backend/encryption/` directory.
 
 #### Requests limit:
 To block brute-force attacks there is a request limit per IP.
@@ -45,6 +38,18 @@ To allows timings based on sun events (such as turn on a light in the sunset) th
 It doesn't need to be the exact location but needs to be close enough.
 
 To get your home latitude and longitude you can use https://www.latlong.net/.
+
+#### Password hash salt
+set `SALT_KEYS` env var for salt sessions hash. otherways the salt will generate randomly on runtime, and in next running, all sessions will be invalid. 
+
+#### Specify devices network 
+set `SUBNET_TO_SCAN` env var to specify the network to scan devices IP's in it. the format is `xxx.xxx.xxx`. 
+
+if not set, the default network is the first current machine IP subnet.  
+
+#### Specify physical address 
+set `PHYSICAL_ADDRESS` env var to specify the physical (aka MAC) address to use.
+if not set, the address will be the real machine address.
 
 #### Two factor authentication (MFA):
 To Allows MFA protection the server needs access to the email account to send the code to user email before login is done.
