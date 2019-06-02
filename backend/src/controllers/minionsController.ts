@@ -1,10 +1,34 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
 import { ErrorResponse, IftttOnChanged, Minion, MinionStatus, SetMinionAutoTurnOff } from '../models/sharedInterfaces';
+import { DeepCopy } from '../utilities/deepCopy';
 
 @Tags('Minions')
 @Route('minions')
 export class MinionsController extends Controller {
+
+    /**
+     * NEVER let anyone get device API keys.
+     * @param minion minion to remove keys from.
+     */
+    private cleanUpMinionBeforRelease(minion: Minion): Minion {
+        const minionCopy = DeepCopy<Minion>(minion);
+        delete minionCopy.device.deviceId;
+        delete minionCopy.device.token;
+        return minionCopy;
+    }
+
+    /**
+     * NEVER let anyone get device API keys.
+     * @param minions minions to remove keys from.
+     */
+    private cleanUpMinionsBeforRelease(minions: Minion[]): Minion[] {
+        const minionsCopy: Minion[] = [];
+        for (const minion of minions) {
+            minionsCopy.push(this.cleanUpMinionBeforRelease(minion));
+        }
+        return minionsCopy;
+    }
 
     /**
      * Get all minions in the system.
@@ -15,7 +39,7 @@ export class MinionsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
     public async getMinions(): Promise<Minion[]> {
-        return await MinionsBlSingleton.getMinions();
+        return this.cleanUpMinionsBeforRelease(await MinionsBlSingleton.getMinions());
     }
 
     /**
@@ -26,7 +50,7 @@ export class MinionsController extends Controller {
     @Security('adminAuth')
     @Get('{minionId}')
     public async getMinion(minionId: string): Promise<Minion> {
-        return await MinionsBlSingleton.getMinionById(minionId);
+        return this.cleanUpMinionBeforRelease(await MinionsBlSingleton.getMinionById(minionId));
     }
 
     /**
