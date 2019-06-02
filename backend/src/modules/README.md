@@ -20,6 +20,12 @@ see [intraction with pics](https://getyeti.co/posts/how-to-control-yeelight-and-
 
 Then scan the local network by the casa-net server.
 
+### Xiaomi (Miio) devices:
+Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.xiaomi.smarthome).
+then you have to get the device token see [Obtain Mi Home device token](https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token.md). 
+
+Then scan the local network by the casa-net server.
+
 ### Tuya devies:
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.tuya.smart).
 Note that a lot of Chinese devices supported tuya API, see [tuyapi project](https://github.com/codetheweb/tuyapi).
