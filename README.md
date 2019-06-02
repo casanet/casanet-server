@@ -65,11 +65,12 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
 * Xiaomi Yeelight with temperature/brightness options.
 * Xiaomi Yeelight with RGBW option.
 * Tuya/SmartLife, with 3 (or less) gangs switch.
+* Xiaomi Mi Philips LED Ceiling Lamp.
+* Xiaomi Mi Robot Vacuum.
 * [IFTTT](https://ifttt.com/discover) Using [WebHooks](https://ifttt.com/maker_webhooks) API.
 
 ## Supported soon.
 * Kankun Smart Wifi Plug.
-* Xiaomi Philips LED Ceiling Lamp.
 * Itead Sonoff Wireless Smart Switch.
 
 ## Adding other devices support.
