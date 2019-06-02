@@ -206,7 +206,7 @@ export declare interface User {
 /**
  * Supported minions types.
  */
-export declare type MinionTypes = 'toggle' | 'switch' | 'roller' | 'airConditioning' | 'light' | 'temperatureLight' | 'colorLight';
+export declare type MinionTypes = 'toggle' | 'switch' | 'roller' | 'cleaner' | 'airConditioning' | 'light' | 'temperatureLight' | 'colorLight';
 
 /**
  * Supported timings types.
@@ -229,9 +229,9 @@ export declare type SunTriggerOptions = 'sunrise' | 'sunset';
 export declare type ACModeOptions = 'hot' | 'cold' | 'dry' | 'auto';
 
 /**
- * Valid AC fan strength.
+ * Valid fan strength.
  */
-export declare type ACFanStrengthOptions = 'low' | 'med' | 'high' | 'auto';
+export declare type FanStrengthOptions = 'low' | 'med' | 'high' | 'auto';
 
 /**
  * Switches option
@@ -242,6 +242,11 @@ export declare type SwitchOptions = 'on' | 'off';
  * Roller direction
  */
 export declare type RollerDirection = 'up' | 'down';
+
+/**
+ * Cleaner mode
+ */
+export declare type CleanerMode = 'dock' | 'clean';
 
 /**
  * A toggle value, the toggle is on way communicated device,
@@ -271,6 +276,17 @@ export declare interface Roller extends Switch {
 }
 
 /**
+ * A Cleaner (robot) stauts.
+ * Cleaner is a smart robot for cleaning home.
+ */
+export declare interface Cleaner extends Switch {
+    /** Cleaner mode */
+    mode: CleanerMode;
+    /** Suction strength */
+    fanSpeed: FanStrengthOptions;
+}
+
+/**
  * An AC status.
  */
 export declare interface AirConditioning extends Switch {
@@ -282,7 +298,7 @@ export declare interface AirConditioning extends Switch {
      */
     temperature: number;
     mode: ACModeOptions;
-    fanStrength: ACFanStrengthOptions;
+    fanStrength: FanStrengthOptions;
 }
 
 /**
@@ -428,6 +444,7 @@ export declare interface MinionStatus {
     toggle?: Toggle;
     switch?: Switch;
     roller?: Roller;
+    cleaner?: Cleaner;
     airConditioning?: AirConditioning;
     light?: Light;
     temperatureLight?: TemperatureLight;
