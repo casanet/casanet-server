@@ -29,7 +29,7 @@ export class CreateUserDialogComponent implements OnInit {
   emailControl: FormControl;
   displayNameControl: FormControl;
   ignoreTfaControl: FormControl;
-  sessionMsTimeoutControl: FormControl;
+  sessionHouresTimeoutControl: FormControl;
   passwordControl: FormControl;
   passwordSecControl: FormControl;
   scopeControl: FormControl;
@@ -42,19 +42,28 @@ export class CreateUserDialogComponent implements OnInit {
     this.emailControl = new FormControl('', [Validators.required, Validators.email]);
     this.displayNameControl = new FormControl('', [Validators.required]);
     this.ignoreTfaControl = new FormControl('', [Validators.required]);
-    this.sessionMsTimeoutControl = new FormControl('', [Validators.required]);
+    this.sessionHouresTimeoutControl = new FormControl('', [Validators.required]);
     this.passwordControl = new FormControl('', [Validators.required]);
-    this.passwordSecControl = new FormControl('', [
-      Validators.required,
-    ]);
+    this.passwordSecControl = new FormControl('', [Validators.required]);
     this.scopeControl = new FormControl('', [Validators.required]);
 
   }
 
-  checkPasswords() { // here we have the 'passwords' group
+  checkPassword() {
+
+    if (!this.passwordControl.value || this.passwordControl.value.length < 6 || this.passwordControl.value.length > 18) {
+      this.passwordControl.setErrors({ strlength: 'The Password length should be between 6 to 18' });
+    } else {
+      this.passwordControl.setErrors({ strlength: null });
+      this.passwordControl.updateValueAndValidity();
+    }
+  }
+
+  checkPasswordsMatch() {
 
     if (this.passwordSecControl.value === this.passwordControl.value) {
-      this.passwordSecControl.setErrors({ unsame : null});
+      this.passwordSecControl.setErrors({ unsame: null });
+      this.passwordSecControl.updateValueAndValidity();
     } else {
       this.passwordSecControl.setErrors({ unsame: 'The Password not match other' });
     }
@@ -73,7 +82,7 @@ export class CreateUserDialogComponent implements OnInit {
       ignoreTfa: this.ignoreTfaControl.value === 'allow',
       password: this.passwordControl.value,
       scope: this.scopeControl.value,
-      sessionTimeOutMS: this.sessionMsTimeoutControl.value
+      sessionTimeOutMS: this.sessionHouresTimeoutControl.value * 60 * 1000
     });
 
     this.dialogRef.close();

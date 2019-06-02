@@ -171,6 +171,8 @@
     "SETTING_REMOTE_SERVER": "Settings remote server...",
     "ALLOW_UNMFA_ACCESS": "Access without MFA",
     "SESSION_MS_TIMEOUT": "Session duration in ms",
+    "SESSION_HOURES_TIMEOUT": "Session duration in hours",
+    "PASSWORD_SHULD_BE_6_TO_18_LENGTH": "Password should be between 6 to 18 characters",
     "SCOPE": "Scope",
     "ADMIN": "Admin",
     "USER": "User",

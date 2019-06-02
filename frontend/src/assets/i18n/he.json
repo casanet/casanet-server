@@ -171,6 +171,8 @@
     "SETTING_REMOTE_SERVER": "מגדיר שרת מרוחק",
     "ALLOW_UNMFA_ACCESS": "גישה ללא אימות דו שלבי",
     "SESSION_MS_TIMEOUT": "אורך סשן במילישניות",
+    "SESSION_HOURES_TIMEOUT": "אורך סשן בשעות",
+    "PASSWORD_SHULD_BE_6_TO_18_LENGTH": "הסיסמה צריכה להיות בין 6 ל 18 תווים",
     "SCOPE": "הרשאות",
     "ADMIN": "מנהל",
     "USER": "משתמש",

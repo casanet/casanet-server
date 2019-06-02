@@ -1,4 +1,4 @@
-<mat-vertical-stepper [linear]="true" #stepper>
+<mat-horizontal-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="emailControl">
     <form>
       <ng-template matStepLabel>{{ 'ENTER_EMAIL' | translate}}</ng-template>
@@ -58,9 +58,9 @@
   </mat-step>
   <mat-step [stepControl]="sessionMsTimeoutControl">
     <form>
-      <ng-template matStepLabel>{{ 'SESSION_MS_TIMEOUT' | translate}}</ng-template>
+      <ng-template matStepLabel>{{ 'SESSION_HOURES_TIMEOUT' | translate}}</ng-template>
       <mat-form-field>
-        <input matInput type="number" min="1" [formControl]="sessionMsTimeoutControl" required>
+        <input matInput type="number" min="1" [formControl]="sessionHouresTimeoutControl" required>
             </mat-form-field>
         <div>
           <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
@@ -72,9 +72,11 @@
     <form>
       <ng-template matStepLabel>{{ 'PRESS_PASSWORD' | translate}}</ng-template>
       <mat-form-field>
-        <input matInput type="password" placeholder="{{ 'PRESS_PASSWORD' | translate}}" 
-        minlength="6" maxlength="18" (change)="checkPasswords()" [formControl]="passwordControl" required>
-        <mat-hint>{{passwordControl.value.length}} / 18</mat-hint>
+        <input matInput type="password" placeholder="{{ 'PRESS_PASSWORD' | translate}}" (change)="checkPassword()" [formControl]="passwordControl">
+        <mat-hint>{{ passwordControl.value.length }} / 18 </mat-hint>
+        <mat-error *ngIf="passwordControl.hasError('strlength')">
+          {{ 'PASSWORD_SHULD_BE_6_TO_18_LENGTH' | translate}}
+        </mat-error>
       </mat-form-field>
       <div>
         <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
@@ -86,8 +88,7 @@
     <form>
       <ng-template matStepLabel>{{ 'PRESS_PASSWORD_AGINE' | translate}}</ng-template>
       <mat-form-field>
-        <input matInput type="password" placeholder="{{ 'PRESS_PASSWORD_AGINE' | translate}}"
-                 minlength="6" maxlength="18" (change)="checkPasswords()" [formControl]="passwordSecControl" required>
+        <input matInput type="password" placeholder="{{ 'PRESS_PASSWORD_AGINE' | translate}}" (change)="checkPasswordsMatch()" [formControl]="passwordSecControl">
         <mat-hint>{{passwordControl.value.length}} / 18</mat-hint>
         <mat-error *ngIf="passwordSecControl.hasError('unsame')">
           {{ 'THE_PASSWORDS_NOT_SAME' | translate}}
@@ -108,4 +109,4 @@
       <button mat-button (click)="createUser()" cdkFocusInitial mat-raised-button>{{ 'CREATE' | translate}}</button>
     </div>
   </mat-step>
-</mat-vertical-stepper>
+</mat-horizontal-stepper>
