@@ -132,6 +132,11 @@ export class MinionsComponent implements OnInit, OnDestroy {
 					light: '#bf9f73',
 					dark: '#bf9f73'
 				};
+			case 'cleaner':
+				return {
+					light: '#4c5d73',
+					dark: '#4c5d73'
+				};
 			case 'airConditioning':
 				return {
 					light: '#5C6BC0',

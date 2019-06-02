@@ -102,6 +102,34 @@
                         </mat-button-toggle-group>
                     </div>
 
+                    <div *ngIf="minion.minionType === 'cleaner'">
+                        <mat-button-toggle-group>
+                            <mat-button-toggle matTooltip="{{ 'DOCK' | translate}}" matTooltipPosition="above"
+                                [checked]="minion.updateSet.cleaner.mode === 'dock'"
+                                (click)="minion.updateSet.cleaner.mode = 'dock'">
+                                <mat-icon>settings_input_hdmi</mat-icon>
+                            </mat-button-toggle>
+                            <mat-button-toggle matTooltip="{{ 'CLEAN' | translate}}" matTooltipPosition="above"
+                                [checked]="minion.updateSet.cleaner.mode === 'clean'"
+                                (click)="minion.updateSet.cleaner.mode = 'clean'">
+                                <mat-icon>bubble_chart</mat-icon>
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+
+                        <br>
+                        <br>
+
+                        <mat-form-field>
+                            <mat-select class="minion-text" placeholder="{{'FAN_SPEED' | translate}}"
+                                [(value)]="minion.updateSet.cleaner.fanSpeed">
+                                <mat-option value="med"> {{ 'MED' | translate}} </mat-option>
+                                <mat-option value="high"> {{ 'HIGH' | translate}} </mat-option>
+                                <mat-option value="low"> {{ 'LOW' | translate}} </mat-option>
+                                <mat-option value="auto"> {{ 'AUTO' | translate}} </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
                     <div *ngIf="minion.minionType === 'airConditioning'"
                         [style.background]="getMinionColor(minion).dark">
                         <mat-form-field>
