@@ -113,6 +113,33 @@ definitions:
             - status
             - direction
         type: object
+    Cleaner:
+        description: "A Cleaner (robot) stauts.\r\nCleaner is a smart robot for cleaning home."
+        properties:
+            status:
+                type: string
+                enum:
+                    - on
+                    - off
+            mode:
+                type: string
+                enum:
+                    - dock
+                    - clean
+                description: 'Cleaner mode'
+            fanSpeed:
+                type: string
+                enum:
+                    - low
+                    - med
+                    - high
+                    - auto
+                description: 'Suction strength'
+        required:
+            - status
+            - mode
+            - fanSpeed
+        type: object
     AirConditioning:
         description: 'An AC status.'
         properties:
@@ -248,6 +275,9 @@ definitions:
             roller:
                 $ref: '#/definitions/Roller'
                 x-nullable: true
+            cleaner:
+                $ref: '#/definitions/Cleaner'
+                x-nullable: true
             airConditioning:
                 $ref: '#/definitions/AirConditioning'
                 x-nullable: true
@@ -287,6 +317,7 @@ definitions:
                     - toggle
                     - switch
                     - roller
+                    - cleaner
                     - airConditioning
                     - light
                     - temperatureLight
@@ -508,6 +539,7 @@ definitions:
                     - toggle
                     - switch
                     - roller
+                    - cleaner
                     - airConditioning
                     - light
                     - temperatureLight

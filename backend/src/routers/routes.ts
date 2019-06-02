@@ -60,6 +60,13 @@ const models: TsoaRoute.Models = {
             "direction": { "dataType": "enum", "enums": ["up", "down"], "required": true },
         },
     },
+    "Cleaner": {
+        "properties": {
+            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+            "mode": { "dataType": "enum", "enums": ["dock", "clean"], "required": true },
+            "fanSpeed": { "dataType": "enum", "enums": ["low", "med", "high", "auto"], "required": true },
+        },
+    },
     "AirConditioning": {
         "properties": {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
@@ -96,6 +103,7 @@ const models: TsoaRoute.Models = {
             "toggle": { "ref": "Toggle" },
             "switch": { "ref": "Switch" },
             "roller": { "ref": "Roller" },
+            "cleaner": { "ref": "Cleaner" },
             "airConditioning": { "ref": "AirConditioning" },
             "light": { "ref": "Light" },
             "temperatureLight": { "ref": "TemperatureLight" },
@@ -109,7 +117,7 @@ const models: TsoaRoute.Models = {
             "device": { "ref": "MinionDevice", "required": true },
             "isProperlyCommunicated": { "dataType": "boolean" },
             "minionStatus": { "ref": "MinionStatus", "required": true },
-            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
         },
     },
@@ -181,7 +189,7 @@ const models: TsoaRoute.Models = {
             "minionsPerDevice": { "dataType": "double", "required": true },
             "isTokenRequierd": { "dataType": "boolean", "required": true },
             "isIdRequierd": { "dataType": "boolean", "required": true },
-            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "isRecordingSupported": { "dataType": "boolean", "required": true },
         },
     },
