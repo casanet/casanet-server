@@ -35,6 +35,15 @@ export class TuyaHandler extends BrandModuleBase {
             suppotedMinionType: 'switch',
             isRecordingSupported: false,
         },
+        {
+            brand: this.brandName,
+            isTokenRequierd: true,
+            isIdRequierd: true,
+            minionsPerDevice: 1,
+            model: 'curtain',
+            suppotedMinionType: 'roller',
+            isRecordingSupported: false,
+        },
     ];
 
     /**
@@ -79,11 +88,41 @@ export class TuyaHandler extends BrandModuleBase {
         /**
          * Registar to status changed event.
          */
-        tuyaDevice.on('data', (data) => {
+        tuyaDevice.on('data', async (data) => {
             logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} data arrived`);
 
             /** Case data arrived with garbage value */
             if (typeof data === 'string') {
+                return;
+            }
+
+            if (minionDevice.model === 'curtain') {
+                try {
+                    const rowStatus = await tuyaDevice.get();
+
+                    const minions = await this.retrieveMinions.pull();
+
+                    for (const minion of minions) {
+                        /**
+                         * Find the minions that used current pysical tuya device
+                         */
+                        if (minion.device.deviceId !== minionDevice.deviceId) {
+                            continue;
+                        }
+
+                        this.minionStatusChangedEvent.next({
+                            minionId: minion.minionId,
+                            status: {
+                                roller: {
+                                    status: rowStatus !== '3' ? 'on' : 'off',
+                                    direction: rowStatus === '1' ? 'up' : 'down',
+                                },
+                            },
+                        });
+                    }
+                } catch (error) {
+
+                }
                 return;
             }
             /**
@@ -186,6 +225,35 @@ export class TuyaHandler extends BrandModuleBase {
          */
         const tuyaDevice = this.getTuyaDevice(miniom.device);
 
+        if (miniom.device.model === 'curtain') {
+            try {
+                const rowStatus = await tuyaDevice.get();
+
+                return {
+                    roller: {
+                        status: rowStatus !== '3' ? 'on' : 'off',
+                        direction: rowStatus === '1' ? 'up' : 'down',
+                    },
+                };
+
+            } catch (err) {
+                logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+
+                if (typeof err === 'object' &&
+                    err.message === 'fffffffffffffff') {
+                    throw {
+                        responseCode: 9503,
+                        message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                    } as ErrorResponse;
+                }
+
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with tuya device fail',
+                } as ErrorResponse;
+            }
+        }
+
         const stausResult = await tuyaDevice.get({ schema: true })
             .catch((err: Error) => {
                 logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
@@ -240,6 +308,32 @@ export class TuyaHandler extends BrandModuleBase {
          * Get tuya device instance
          */
         const tuyaDevice = this.getTuyaDevice(miniom.device);
+
+        if (miniom.device.model === 'curtain') {
+
+            try {
+                await tuyaDevice.set({
+                    set: setStatus.roller.status === 'off' ? '3' : (setStatus.roller.direction === 'up' ? '1' : '2'),
+                });
+                return;
+            } catch (err) {
+
+                logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+
+                if (typeof err === 'object' &&
+                    err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                    throw {
+                        responseCode: 9503,
+                        message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                    } as ErrorResponse;
+                }
+
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with tuya device fail',
+                } as ErrorResponse;
+            }
+        }
 
         /**
          * Get current minion gang index.
