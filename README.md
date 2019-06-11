@@ -61,7 +61,7 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
 
 -  Orvibo (aka wiwo)
 
-	-  S20 (socket). [link]()
+	-  S20 (socket). [link](https://www.aliexpress.com/item/2016-New-Orvibo-Home-Automation-EU-U-UK-AU-Standard-Smart-Power-Travel-Socket-Plug-4G/32793333967.html)
 
 -  Broadlink
 
