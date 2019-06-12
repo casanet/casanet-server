@@ -689,6 +689,27 @@ definitions:
         required:
             - enableIntegration
         type: object
+    IftttRawActionTriggerd:
+        properties:
+            apiKey:
+                type: string
+                description: 'WebHooks API key'
+            localMac:
+                type: string
+                description: 'Allow remote-server to forward request to local server'
+                x-nullable: true
+            minionId:
+                type: string
+            setStatus:
+                type: string
+                enum:
+                    - on
+                    - off
+        required:
+            - apiKey
+            - minionId
+            - setStatus
+        type: object
     IftttActionTriggered:
         description: 'Ifttt trigger set status action'
         properties:
@@ -730,7 +751,7 @@ info:
 paths:
     '/auth/logout-sessions/{userId}':
         post:
-            operationId: GetUser
+            operationId: LogoutSessions
             produces:
                 - application/json
             responses:
@@ -2029,6 +2050,31 @@ paths:
                     required: true
                     schema:
                         $ref: '#/definitions/IftttIntegrationSettings'
+    /ifttt/trigger/minions/raw:
+        post:
+            operationId: TriggeredSomeAction
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Ifttt webhooks triggering casa-net action API.\r\nwhen all ditails in body only, to allow send all data ion one text line.\r\nExample to use: SMS trigger has only simple text that can pass to IFTTT activity,\r\nand by current request it is possible to control any minion by one single line of text. \r\nso fill the SMS text with JSON and by IFTTT set it to be the request body."
+            tags:
+                - Ifttt
+            security:
+                -
+                    iftttAuth: []
+            parameters:
+                -
+                    in: body
+                    name: iftttRawActionTriggerd
+                    required: true
+                    schema:
+                        $ref: '#/definitions/IftttRawActionTriggerd'
     '/ifttt/trigger/minions/{minionId}':
         post:
             operationId: TriggeredMinionAction

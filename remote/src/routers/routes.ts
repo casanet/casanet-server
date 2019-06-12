@@ -60,6 +60,13 @@ const models: TsoaRoute.Models = {
             "direction": { "dataType": "enum", "enums": ["up", "down"], "required": true },
         },
     },
+    "Cleaner": {
+        "properties": {
+            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+            "mode": { "dataType": "enum", "enums": ["dock", "clean"], "required": true },
+            "fanSpeed": { "dataType": "enum", "enums": ["low", "med", "high", "auto"], "required": true },
+        },
+    },
     "AirConditioning": {
         "properties": {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
@@ -96,6 +103,7 @@ const models: TsoaRoute.Models = {
             "toggle": { "ref": "Toggle" },
             "switch": { "ref": "Switch" },
             "roller": { "ref": "Roller" },
+            "cleaner": { "ref": "Cleaner" },
             "airConditioning": { "ref": "AirConditioning" },
             "light": { "ref": "Light" },
             "temperatureLight": { "ref": "TemperatureLight" },
@@ -109,7 +117,7 @@ const models: TsoaRoute.Models = {
             "device": { "ref": "MinionDevice", "required": true },
             "isProperlyCommunicated": { "dataType": "boolean" },
             "minionStatus": { "ref": "MinionStatus", "required": true },
-            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
         },
     },
@@ -224,6 +232,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -231,7 +240,7 @@ export function RegisterRoutes(app: express.Express) {
             const controller = new AuthController();
 
 
-            const promise = controller.getUser.apply(controller, validatedArgs as any);
+            const promise = controller.logoutSessions.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/auth/login',
@@ -247,6 +256,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -270,6 +280,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -292,6 +303,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -314,6 +326,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -336,6 +349,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -359,6 +373,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -382,6 +397,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -404,6 +420,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -426,6 +443,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -448,6 +466,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -470,6 +489,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -493,6 +513,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -516,6 +537,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -540,6 +562,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -563,6 +586,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -586,6 +610,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -607,6 +632,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -630,6 +656,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -652,6 +679,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -675,6 +703,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -699,6 +728,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -722,6 +752,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -745,6 +776,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -768,6 +800,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -791,6 +824,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -813,6 +847,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -834,6 +869,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }
@@ -855,6 +891,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                     responseCode: 1422,
+                    message: JSON.stringify(err.fields),
                 } as ErrorResponse);
                 return;
             }

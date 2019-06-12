@@ -639,3 +639,10 @@ export declare interface IftttActionTriggeredRequest {
 export declare interface IftttActionTriggered extends IftttActionTriggeredRequest {
     setStatus: SwitchOptions;
 }
+
+
+/** Ifttt trigger with all request data in one JSON struct. */
+export declare interface IftttRawActionTriggerd extends IftttActionTriggeredRequest {
+    minionId: string;
+    setStatus: SwitchOptions;
+}
