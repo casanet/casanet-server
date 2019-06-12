@@ -38,7 +38,7 @@ export class ChannelsBl {
      * Timeout for any http request.
      * (it long time bacuse of scaning network request that takes a while.)
      */
-    private httpRequestTimeout: moment.Duration = moment.duration(30, 'seconds');
+    private httpRequestTimeout: moment.Duration = moment.duration(60, 'seconds');
 
     /** Map all local servers ws channel by local server mac address */
     private localChannelsMap: { [key: string]: CasaWs } = {};
