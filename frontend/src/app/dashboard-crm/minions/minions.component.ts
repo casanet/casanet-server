@@ -49,6 +49,17 @@ export class MinionsComponent implements OnInit, OnDestroy {
 			this.minionsService.minionsFeed.subscribe((minions) => {
 				this.dataLoading = false;
 
+				/** Remove deleted minions */
+				this.minions = this.minions.filter((oldMinion) => {
+					for(const minion of minions){
+						if(minion.minionId === oldMinion.minionId){
+							return true;
+						}
+					}
+					return false;
+				});
+
+				/** Create the new minions and update the exists  */
 				for (const minion of minions) {
 					const existMinion = this.getExistMinion(minion.minionId);
 					if (!existMinion) {
