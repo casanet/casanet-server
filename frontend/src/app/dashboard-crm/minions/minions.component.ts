@@ -51,8 +51,8 @@ export class MinionsComponent implements OnInit, OnDestroy {
 
 				/** Remove deleted minions */
 				this.minions = this.minions.filter((oldMinion) => {
-					for(const minion of minions){
-						if(minion.minionId === oldMinion.minionId){
+					for (const minion of minions) {
+						if (minion.minionId === oldMinion.minionId) {
 							return true;
 						}
 					}
@@ -61,6 +61,12 @@ export class MinionsComponent implements OnInit, OnDestroy {
 
 				/** Create the new minions and update the exists  */
 				for (const minion of minions) {
+
+					/** If minion dont have status properties, ignore it  */
+					if (!minion.minionStatus[minion.minionType]) {
+						continue;
+					}
+
 					const existMinion = this.getExistMinion(minion.minionId);
 					if (!existMinion) {
 						// create update set.

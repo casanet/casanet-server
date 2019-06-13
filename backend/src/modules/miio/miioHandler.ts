@@ -41,26 +41,8 @@ export class MiioHandler extends BrandModuleBase {
         },
     ];
 
-    /**
-     * Map devices by mac address
-     */
-    private pysicalDevicesMap: { [key: string]: miio.device } = {};
-
     constructor() {
         super();
-    }
-
-    private async getMiioDevice(minionDevice: MinionDevice): Promise<miio.device> {
-
-        if (this.pysicalDevicesMap[minionDevice.pysicalDevice.mac]) {
-            return this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
-        }
-
-        const device = await miio.device({ address: minionDevice.pysicalDevice.ip, token: minionDevice.token });
-
-        this.pysicalDevicesMap[minionDevice.pysicalDevice.mac] = device;
-
-        return device;
     }
 
     private async getFanSpeed(device: miio.device): Promise<FanStrengthOptions> {
@@ -95,8 +77,10 @@ export class MiioHandler extends BrandModuleBase {
         await this.setFanSpeed(device, setStatus.fanSpeed);
 
         switch (setStatus.mode) {
-            case 'clean': await await device.call('app_start'); break;
-            case 'dock': await device.call('app_charge'); break;
+            case 'clean': await device.call('app_start'); break;
+            case 'dock':
+                await device.call('app_pause');
+                await device.call('app_charge'); break;
         }
     }
 
@@ -139,22 +123,28 @@ export class MiioHandler extends BrandModuleBase {
 
         try {
 
-            const device = await this.getMiioDevice(miniom.device);
+            const device = await miio.device({ address: miniom.device.pysicalDevice.ip, token: miniom.device.token });
+
+            let currentStatus: MinionStatus;
             switch (miniom.minionType) {
                 case 'cleaner':
-                    return {
+                    currentStatus = {
                         cleaner: await this.getVaccumStatus(device),
-                    };
+                    }; break;
                 case 'temperatureLight':
-                    return {
+                    currentStatus = {
                         temperatureLight: await this.getTempLightStatus(device),
-                    };
+                    }; break;
+                default:
+                    throw {
+                        responseCode: 8404,
+                        message: 'unknown minion model',
+                    } as ErrorResponse;
             }
 
-            throw {
-                responseCode: 8404,
-                message: 'unknown minion model',
-            } as ErrorResponse;
+            device.destroy();
+
+            return currentStatus;
 
         } catch (error) {
 
@@ -167,19 +157,21 @@ export class MiioHandler extends BrandModuleBase {
 
     public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
         try {
-            const device = await this.getMiioDevice(miniom.device);
+            const device = await miio.device({ address: miniom.device.pysicalDevice.ip, token: miniom.device.token });
 
             switch (miniom.minionType) {
                 case 'cleaner':
-                    return await this.setVaccumStatus(device, setStatus.cleaner);
+                    await this.setVaccumStatus(device, setStatus.cleaner); break;
                 case 'temperatureLight':
-                    return await this.setTempLightStatus(device, setStatus.temperatureLight);
+                    await this.setTempLightStatus(device, setStatus.temperatureLight); break;
+                default:
+                    throw {
+                        responseCode: 8404,
+                        message: 'unknown minion model',
+                    } as ErrorResponse;
             }
 
-            throw {
-                responseCode: 8404,
-                message: 'unknown minion model',
-            } as ErrorResponse;
+            device.destroy();
 
         } catch (error) {
 
@@ -205,9 +197,6 @@ export class MiioHandler extends BrandModuleBase {
     }
 
     public async refreshCommunication(): Promise<void> {
-        for (const miioDevice of Object.values(this.pysicalDevicesMap)) {
-            miioDevice.destroy();
-        }
-        this.pysicalDevicesMap = {};
+
     }
 }
