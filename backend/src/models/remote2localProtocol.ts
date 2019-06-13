@@ -10,6 +10,8 @@ export declare type RemoteMessagesType =
     'authenticationFail' |
     /** Results of register/unregister user to forward from remove server */
     'registerUserResults' |
+    /** Registered users of the certain local server  */
+    'registeredUsers' |
     /** Remote server forwarding http request to local sever */
     'httpRequest' |
     /** When local ack message arrived to remote server */
@@ -43,7 +45,8 @@ export declare interface RemoteMessage {
         registerUserResults?: {
             user: string;
             results?: ErrorResponse;
-        }
+        },
+        registeredUsers?: string[];
     };
 }
 
@@ -57,6 +60,8 @@ export declare type LocalMessagesType =
     'registerAccount' |
     /** Remove account from local server valid account to forward from remote to local */
     'unregisterAccount' |
+    /** Request all registered users for forwards of the current local server */
+    'registeredUsers' |
     /** Http response with result for remote server request */
     'httpResponse' |
     /** Empty message to check if connection alive */

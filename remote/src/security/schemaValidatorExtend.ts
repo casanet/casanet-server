@@ -50,6 +50,7 @@ export const LocalMessageSchema: ObjectSchema = Joi.object().keys({
             'sendRegistrationCode',
             'unregisterAccount',
             'registerAccount',
+            'registeredUsers',
             'httpResponse',
             'ack',
             'feed').required(),
@@ -71,6 +72,9 @@ export const LocalMessageSchema: ObjectSchema = Joi.object().keys({
             then: Joi.object().keys({ registerAccount: registerAccountSchema.required() }).required(),
         })
         .when('localMessagesType', {
+            is: 'registeredUsers',
+            then: emptyMessageSchema.required(),
+        }).when('localMessagesType', {
             is: 'httpResponse',
             then: Joi.object().keys({ httpResponse: httpResponseSchema.required() }).required(),
         })

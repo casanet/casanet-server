@@ -187,6 +187,22 @@ export class ChannelsBl {
     }
 
     /**
+     * Handle get registered users of the certain local server.
+     * @param wsChannel local server ws object that message arrived from.
+     */
+    private async handleGetLocalUsers(wsChannel: CasaWs) {
+
+        try {
+            /** Get local server based on local server mac */
+            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
+            
+            this.sendMessage(wsChannel, { remoteMessagesType : 'registeredUsers', message : { registeredUsers: localServer.validUsers } });
+        } catch (error) {
+
+        }
+    }
+
+    /**
      * Handle http response messages from local server.
      * @param httpResponse response data.
      */
@@ -430,6 +446,7 @@ export class ChannelsBl {
             case 'sendRegistrationCode': this.handleSendRegistrationCodeRequest(localMessage.message.sendRegistrationCode); break;
             case 'registerAccount': this.handleRegisterAccountRequest(wsChannel, localMessage.message.registerAccount); break;
             case 'unregisterAccount': this.handleUnregisterAccountRequest(wsChannel, localMessage.message.unregisterAccount); break;
+            case 'registeredUsers': await this.handleGetLocalUsers(wsChannel); break;
             case 'feed': await this.handleFeedUpdate(wsChannel, localMessage.message.feed); break;
         }
     }
