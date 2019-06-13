@@ -42,6 +42,11 @@
                 "type": "apiKey",
                 "name": "Cookie",
                 "in": "header"
+            },
+            "iftttAuth": {
+                "type": "apiKey",
+                "name": "Cookie",
+                "in": "header"
             }
         },
         "schemes": [

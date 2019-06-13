@@ -57,6 +57,7 @@ export function RegisterRoutes(app: express.Express) {
             } catch (err) {
                 response.status(422).send({
                         responseCode: 1422,
+                        message: JSON.stringify(err.fields),
                     } as ErrorResponse);
                 return;
             }

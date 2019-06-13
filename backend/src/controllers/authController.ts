@@ -42,7 +42,7 @@ export class AuthController extends Controller {
     @Security('userAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('/logout-sessions/{userId}')
-    public async getUser(userId: string, @Request() request: express.Request): Promise<void> {
+    public async logoutSessions(userId: string, @Request() request: express.Request): Promise<void> {
         const userSession = request.user as User;
         /**
          * Only admin can update other user.

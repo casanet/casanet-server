@@ -57,27 +57,54 @@ Make sure that the address in your home is public and redirect ports in home rou
 #### Method 2: Using casa remote server.
 The casa remote server is built for it, [casanet-remote](./remote/README.md) run on cloud service and to redirect API requests to the local server.
 
-## Supported Right now.
-* Orvibo wiwo - S20.
-* Broadlink SP3.
-* Broadlink RM mini 3 (As AC).
-* Broadlink RM Pro (As AC / RF toggle).
-* Xiaomi Yeelight with temperature/brightness options.
-* Xiaomi Yeelight with RGBW option.
-* Tuya/SmartLife, with 3 (or less) gangs switch.
-* Xiaomi Mi Philips LED Ceiling Lamp.
-* Xiaomi Mi Robot Vacuum.
-* [IFTTT](https://ifttt.com/discover) Using [WebHooks](https://ifttt.com/maker_webhooks) API.
+## Supported right now.
+
+-  Orvibo (aka wiwo)
+
+	-  S20 (socket). [link](https://www.aliexpress.com/item/2016-New-Orvibo-Home-Automation-EU-U-UK-AU-Standard-Smart-Power-Travel-Socket-Plug-4G/32793333967.html)
+
+-  Broadlink
+
+	-  SP3 (socket). [link](https://www.gearbest.com/smart-access-lock/pp_009282693865.html)
+	-  RM mini 3 (As AC). [link](https://www.gearbest.com/alarm-systems/pp_009753807797.html)
+	-  RM Pro (As AC / RF toggle). [link](https://www.gearbest.com/home-appliances-accessories/pp_009281768756.html)
+
+-  Yeelight
+
+	-  Light with temperature and brightness properties. [link](https://www.gearbest.com/round-ceiling-lights/pp_009555929473.html) and others.
+	-  Light with RGBW properties. [link](https://www.gearbest.com/smart-bulbs/pp_009329720794.html) and others.
+    
+-  Tuya (aka smart life)
+
+	-  Switch (3 or less gangs). [link](https://www.aliexpress.com/item/220V-EU-Standard-3-Gang-Control-LED-Indicate-TUYA-Smart-App-Light-Touch-Switch-work-with/32952608844.html) [link](https://www.aliexpress.com/item/WiFi-Smart-Boiler-Switch-Water-Heater-Smart-Life-Tuya-APP-Remote-Control-Amazon-Alexa-Echo-Google/32981607525.html) and others.
+	-  Curtain switch. [link](https://www.aliexpress.com/item/Tuya-Smart-Life-WiFi-Curtain-Switch-for-Electric-Motorized-Curtain-Blind-Roller-Shutter-Google-Home-Amazon/33006009742.html) and others.
+
+- Mi (aka xiaomi)
+    
+    -  Philips LED Ceiling Lamp. [link](https://www.gearbest.com/smart-ceiling-lights/pp_009933492211.html)
+	-  Robot Vacuum. [link](https://www.gearbest.com/robot-vacuum/pp_440546.html)
+
+- [IFTTT](https://ifttt.com/discover) (Using [WebHooks](https://ifttt.com/maker_webhooks) API).
+
+    - Toggle.
+    - Switch.
 
 ## Supported soon.
-* Kankun Smart Wifi Plug.
-* Itead Sonoff Wireless Smart Switch.
+
+- Kankun
+    
+    - Smart Wifi Plug.
+    
+* Sonoff (aka itead)
+    
+    - Basic.
+    - Wall switch.
 
 ## Adding other devices support.
 Yes, it is possible and will be welcome, see [modules](./backend/src/modules/README.md#-for-development-only-).
 
 ## Using scenario:
-- Buy new [supported](#supported-right-now) smart devices.
+- Buy new [supported](#supported-right-now) smart devices or use the `mock` brand.
 - [Connect it to local network](./backend/src/modules/README.md) via official app.
 - Scan the local network to find the new device. 
     ![Screenshot](./docs/screenshots/instructions/scan_devices.png)

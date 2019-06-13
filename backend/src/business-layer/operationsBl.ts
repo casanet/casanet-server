@@ -50,16 +50,27 @@ export class OperationsBl {
         const errors: OperationResult[] = [];
         for (const activity of operationActiviries) {
             logger.info(`Setting minion ${activity.minionId} a new status by operation activity...`);
-            await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus)
-                .catch((error: ErrorResponse) => {
-                    logger.warn(`Setting minion ${activity.minionId} a new status by operation activity data: ` +
-                        `${JSON.stringify(activity.minionStatus)} fail, ` +
-                        `${JSON.stringify(error)}`);
+
+            try {
+                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus)
+            } catch (error) {
+
+                logger.warn(`Setting minion ${activity.minionId} a new status by operation activity data: ` +
+                    `${JSON.stringify(activity.minionStatus)} fail, ` +
+                    `${JSON.stringify(error)}`);
+
+                logger.info(`Tring set status for  ${activity.minionId} agine...`);
+
+                try {
+                    await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+                } catch (error) {
+                    logger.warn(`The second try to set status for ${activity.minionId} fail too`);
                     errors.push({
                         minionId: activity.minionId,
                         error,
                     });
-                });
+                }
+            }
 
             /**
              * wait 1 sec between one minion to other, becuase of broadcasting mismatch in some brands communication protocol.

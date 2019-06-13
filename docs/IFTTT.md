@@ -66,8 +66,37 @@ For example sending phone notification, email alert, or any idea from wide IFTTT
         "setStatus": "on" 
       }
       ```
-      localMac field is required only if using remote-server. to get the local mac-address `GET` `/API/remote/machine-mac`.
+      the localMac field is required only if using remote-server. to get the local-mac-address login as admin, and in side-bar of settings click on `get the local MAC address` button.
      - ![Screenshot](./screenshots/ifttt/trigger-minion-request.PNG)
+
+### Turn on/off minion when IFTTT trigger invoked with all data in one line of text.
+It is used when the trigger gives only one text variable to pass to action.
+for example, SMS service allows passing the text message value to put it in webhooks request.
+
+1) Create a trigger to be invoked by any IFTTT trigger service.
+1) Select WebHooks as an action service.
+    - ![Screenshot](./screenshots/ifttt/select-action-service.PNG)
+1) Select make request action
+    - ![Screenshot](./screenshots/ifttt/choose-action.PNG)
+1) Set the HTTP request as following struct:
+    - URL: `http://[casa-net server or remote server host/ip]/API/ifttt/trigger/minions/raw.
+    - Method: `POST`.
+    - Content-TypeL `application/json`.
+    - Body: 
+      ```
+      { 
+        "localMac":"f4********83",
+        "apiKey": "hjg***Webhooks API key***kjh",
+        "minionId : "ac**ef",
+        "setStatus": "on" 
+      }
+      ```
+      the localMac field is required only if using remote-server. to get the local-mac-address login as admin, and in side-bar of settings click on `get the local MAC address` button.
+
+     - In the example here putting in the body the ingredient `text` of SMS trigger:
+        ![Screenshot](./screenshots/ifttt/trigger-minion-raw-request.PNG)
+     - The SMS text message should look like: 
+        ![Screenshot](./screenshots/ifttt/raw-text.PNG)
 
 ### Invoke operation when IFTTT trigger invoked.
 1) Create a trigger to be invoked by any IFTTT trigger service.
@@ -86,7 +115,7 @@ For example sending phone notification, email alert, or any idea from wide IFTTT
         "apiKey": "hjg***Webhooks API key***kjh"
       }
       ```
-      localMac field is required only if using remote-server. to get the local mac-address `GET` `/API/remote/machine-mac`.
+      the localMac field is required only if using remote-server. to get the local-mac-address login as admin, and in side-bar of settings click on `get the local MAC address` button.
      - ![Screenshot](./screenshots/ifttt/trigger-operation-request.PNG)
 
 That's it ;).
