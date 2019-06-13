@@ -1,4 +1,5 @@
 import * as  moment from 'moment';
+import * as  dgram from 'dgram';
 import * as Orvibo from 'node-orvibo-2';
 import {
     DeviceKind,
@@ -33,18 +34,42 @@ export class OrviboHandler extends BrandModuleBase {
     constructor() {
         super();
 
-        try {
-            this.initOrviboCommunication();
-        } catch (error) {
-            this.orviboCommunication = undefined;
-            logger.error('Fail to init orvibo communication');
-        }
+        this.initOrviboCommunication();
+    }
+
+    /**
+     * Check if UDP port binded to other application.
+     * @param port port to check.
+     */
+    private checkPortAvailability(port: number): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const socket = dgram.createSocket('udp4');
+
+            socket.on('error', (e) => {
+                reject(e);
+            });
+
+            socket.bind(port, () => {
+                socket.close();
+                resolve();
+            });
+        });
     }
 
     /** Init connection (UDP socket) for orvibo,
      * and listen to broadcasts messags in LAN
      */
-    private initOrviboCommunication() {
+    private async initOrviboCommunication() {
+        try {
+            await this.checkPortAvailability(10000);
+            await this.checkPortAvailability(9999);
+            await this.checkPortAvailability(48899);
+        } catch (error) {
+            this.orviboCommunication = undefined;
+            logger.error('Fail to init orvibo communication');
+            return;
+        }
+
         /** Create the orvibo protocol instance */
         this.orviboCommunication = new Orvibo();
 
