@@ -12,6 +12,7 @@ import { AutoTimeoutDialogComponent } from './dialogs/auto-timeout-dialog/auto-t
 import { CreateMinionDialogComponent } from './dialogs/create-minion-dialog/create-minion-dialog.component';
 import { CreateOperationDialogComponent } from './dialogs/create-operation-dialog/create-operation-dialog.component';
 import { CreateActivityDialogComponent } from './dialogs/create-activity-dialog/create-activity-dialog.component';
+import { ManageRegisteredUsersComponent } from './dialogs/manage-registared-users-dialog/manage-registared-users-dialog.component';
 import { CreateTimingDialogComponent } from './dialogs/create-timing-dialog/create-timing-dialog.component';
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -60,6 +61,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CreateActivityDialogComponent,
     CreateTimingDialogComponent,
     CreateUserDialogComponent,
+    ManageRegisteredUsersComponent,
   ],
   exports: [
   ],
@@ -115,7 +117,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CreateOperationDialogComponent,
     CreateActivityDialogComponent,
     CreateTimingDialogComponent,
-    CreateUserDialogComponent
+    CreateUserDialogComponent,
+    ManageRegisteredUsersComponent
   ]
 })
 export class AppModule { }

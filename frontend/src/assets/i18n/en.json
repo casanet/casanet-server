@@ -202,6 +202,7 @@
     "DOCK": "Dock",
     "CLEAN": "Clean",
     "FAN_SPEED" : "Suction strength",
+    "REGISTERED_USERS" : "Registered users",
     "notConfigured": "Remote server not configured",
     "cantReachRemoteServer": "Remote server offline",
     "authorizationFail": "Local server fail to authenticate",

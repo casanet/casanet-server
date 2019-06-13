@@ -3,9 +3,11 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SettingsService } from '../../services/settings.service';
 import { RemoteConnectionStatus, RemoteSettings, User } from '../../../../../backend/src/models/sharedInterfaces';
 import swal, { SweetAlertResult } from 'sweetalert2';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { TranslateService } from '../../translate.service';
+import { ManageRegisteredUsersComponent } from '../../dialogs/manage-registared-users-dialog/manage-registared-users-dialog.component';
 import { TranslatePipe } from '../../translate.pipe';
 
 @Component({
@@ -29,6 +31,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     constructor(private settingsService: SettingsService,
         private authService: AuthService,
+        public dialog: MatDialog,
         private translateService: TranslateService) {
 
         this.translatePipe = new TranslatePipe(this.translateService);
@@ -100,6 +103,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
             html: mac,
             confirmButtonText: 'OK'
         });
+    }
+
+    public showRegisteredUsers() {
+        this.dialog.open(ManageRegisteredUsersComponent, {
+			data: {}
+		});
     }
 
     public async setRemoteServer() {

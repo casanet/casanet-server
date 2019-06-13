@@ -202,6 +202,7 @@
     "DOCK": "עגינה",
     "CLEAN": "ניקוי",
     "FAN_SPEED" : "מהירות שאיבה",
+    "REGISTERED_USERS" : "משתמשים רשומים",
     "notConfigured": "לא הוגדר שרת מרוחק",
     "cantReachRemoteServer": "שרת מרוחק לא נגיש",
     "authorizationFail": "אימות מול שרת מרוחק נכשל",
