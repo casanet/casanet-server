@@ -214,7 +214,7 @@ export class UsersComponent implements OnInit, OnDestroy {
       return;
     }
 
-    await this.usersService.removeUserFromRemote(user);
+    await this.usersService.removeUserFromRemote(user.email);
   }
 
   public async deleteUser(user: User) {
@@ -235,7 +235,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
 
     user['dsync'] = true;
-    await this.usersService.deleteUser(user);
+    await this.usersService.deleteUser(user.email);
     user['dsync'] = false;
   }
 

@@ -62,9 +62,9 @@ export class UsersService {
     }
   }
 
-  public async deleteUser(user: User) {
+  public async deleteUser(user: string) {
     try {
-      await this.httpClient.delete(`/API/users/${user.email}`).toPromise();
+      await this.httpClient.delete(`/API/users/${user}`).toPromise();
       this.loadUsers();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -111,9 +111,9 @@ export class UsersService {
     }
   }
 
-  public async removeUserFromRemote(user: User) {
+  public async removeUserFromRemote(user: string) {
     try {
-      await this.httpClient.delete(`/API/users/forward/${user.email}`, {}).toPromise();
+      await this.httpClient.delete(`/API/users/forward/${user}`, {}).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -124,6 +124,15 @@ export class UsersService {
       await this.httpClient.post(`/API/users/forward/${user.email}`, { code : code }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
+  public async getRegisteredUsers() : Promise<string[]> {
+    try {
+      return await this.httpClient.get<string[]>(`/API/users/forward`).toPromise();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+      return [];
     }
   }
 }
