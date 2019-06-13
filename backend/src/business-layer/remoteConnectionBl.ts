@@ -21,7 +21,7 @@ import { TimingsBlSingleton } from './timingsBl';
 export class RemoteConnectionBl {
 
     private ACK_INTERVAL = moment.duration(20, 'seconds');
-    private REGISTER_REQUEST_TIMEOUT = moment.duration(20, 'seconds');
+    private REMOTE_REQUEST_TIMEOUT = moment.duration(20, 'seconds');
     private ackPongRecieved = true;
 
     /** Hold register requests promis functions */
@@ -32,6 +32,13 @@ export class RemoteConnectionBl {
             timeout: NodeJS.Timeout,
         },
     } = {};
+
+    /** Hold get register users requests promis */
+    private requestRegisteredUsersPromisess: {
+        resolve: (registeredUsers: string[]) => {},
+        reject: (errorResponse: ErrorResponse) => {},
+        timeout: NodeJS.Timeout,
+    };
 
     /** Express router, used to create http requests from
      * remote server without actually open TCP connection.
@@ -51,8 +58,8 @@ export class RemoteConnectionBl {
      * @param timingsBl Inject the timings bl instance to used timingsBl.
      */
     constructor(private remoteConnectionDal: RemoteConnectionDal,
-                private minionsBl: MinionsBl,
-                private timingsBl: TimingsBl,
+        private minionsBl: MinionsBl,
+        private timingsBl: TimingsBl,
     ) {
         /** Use chai testing lib, to mock http requests */
         chai.use(chaiHttp);
@@ -210,7 +217,7 @@ export class RemoteConnectionBl {
                         responseCode: 12503,
                     } as ErrorResponse);
 
-                }, this.REGISTER_REQUEST_TIMEOUT.asMilliseconds()),
+                }, this.REMOTE_REQUEST_TIMEOUT.asMilliseconds()),
             };
         });
     }
@@ -249,7 +256,39 @@ export class RemoteConnectionBl {
                         responseCode: 12503,
                     } as ErrorResponse);
 
-                }, this.REGISTER_REQUEST_TIMEOUT.asMilliseconds()),
+                }, this.REMOTE_REQUEST_TIMEOUT.asMilliseconds()),
+            };
+        });
+    }
+
+    /**
+     * Get registered users of current local server from the remote server.
+     */
+    public getRegisteredUsersForRemoteForwarding(): Promise<string[]> {
+
+        if (this.remoteConnectionStatus !== 'connectionOK') {
+            throw {
+                message: 'There is no connection to remote server',
+                responseCode: 6501,
+            } as ErrorResponse;
+        }
+
+        return new Promise<string[]>(async (resolve, reject) => {
+            await this.sendMessage({
+                localMessagesType: 'registeredUsers',
+                message: {},
+            });
+
+            this.requestRegisteredUsersPromisess = {
+                resolve: resolve as any,
+                reject: reject as any,
+                timeout: setTimeout(() => {
+                    reject({
+                        message: 'remote server timeout',
+                        responseCode: 12503,
+                    } as ErrorResponse);
+
+                }, this.REMOTE_REQUEST_TIMEOUT.asMilliseconds()),
             };
         });
     }
@@ -307,6 +346,7 @@ export class RemoteConnectionBl {
                 case 'authenticatedSuccessfuly': await this.onAuthenticatedSuccessfuly(); break;
                 case 'registerUserResults':
                     await this.onRegisterUserResults(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
+                case 'registeredUsers' : await this.onRegisteredUsersDataArrived(remoteMessage.message[remoteMessage.remoteMessagesType]);
                 case 'ackOk': await this.OnArkOk(); break;
                 case 'httpRequest': await this.onRemoteHttpRequest(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
             }
@@ -357,6 +397,21 @@ export class RemoteConnectionBl {
 
         /** remote user from request promises map. */
         delete this.registerAccountsPromisessMap[user];
+    }
+
+    private onRegisteredUsersDataArrived(registeredUsers: string[]) {
+
+        if (!this.requestRegisteredUsersPromisess) {
+            return;
+        }
+
+        /** Clear the timeout function */
+        clearTimeout(this.requestRegisteredUsersPromisess.timeout);
+
+        this.requestRegisteredUsersPromisess.resolve(registeredUsers);
+
+        /** Throw promisses away. */
+        this.requestRegisteredUsersPromisess = undefined;
     }
 
     /** Handle auth passed messages from remote server */

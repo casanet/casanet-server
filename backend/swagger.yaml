@@ -1657,6 +1657,109 @@ paths:
                 -
                     userAuth: []
             parameters: []
+    '/users/forward-auth/{userId}':
+        post:
+            operationId: RequestUserForwarding
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Reqest registration code.'
+            tags:
+                - Users
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'User id/email to send code to.'
+                    in: path
+                    name: userId
+                    required: true
+                    type: string
+    /users/forward:
+        get:
+            operationId: GetRegisteredUsers
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: array
+                        items:
+                            type: string
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get registered users for forwarding from remote to local.'
+            tags:
+                - Users
+            security:
+                -
+                    adminAuth: []
+            parameters: []
+    '/users/forward/{userId}':
+        post:
+            operationId: RequestUserForwardingAuth
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Register account to allow forward HTTP requests from remote to local server.'
+            tags:
+                - Users
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'User id/email to register.'
+                    in: path
+                    name: userId
+                    required: true
+                    type: string
+                -
+                    in: body
+                    name: auth
+                    required: true
+                    schema:
+                        $ref: '#/definitions/UserForwardAuth'
+        delete:
+            operationId: RemoveUserForwarding
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Remove account from local server valid account to forward from remote to local'
+            tags:
+                - Users
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'User id/email to unregister.'
+                    in: path
+                    name: userId
+                    required: true
+                    type: string
     /users:
         get:
             operationId: GetUsers
@@ -1788,86 +1891,6 @@ paths:
             parameters:
                 -
                     description: 'User id.'
-                    in: path
-                    name: userId
-                    required: true
-                    type: string
-    '/users/forward-auth/{userId}':
-        post:
-            operationId: RequestUserForwarding
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Reqest registration code.'
-            tags:
-                - Users
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'User id/email to send code to.'
-                    in: path
-                    name: userId
-                    required: true
-                    type: string
-    '/users/forward/{userId}':
-        post:
-            operationId: RequestUserForwardingAuth
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Register account to allow forward HTTP requests from remote to local server.'
-            tags:
-                - Users
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'User id/email to register.'
-                    in: path
-                    name: userId
-                    required: true
-                    type: string
-                -
-                    in: body
-                    name: auth
-                    required: true
-                    schema:
-                        $ref: '#/definitions/UserForwardAuth'
-        delete:
-            operationId: RemoveUserForwarding
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Remove account from local server valid account to forward from remote to local'
-            tags:
-                - Users
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'User id/email to unregister.'
                     in: path
                     name: userId
                     required: true
