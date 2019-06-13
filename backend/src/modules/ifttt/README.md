@@ -33,8 +33,16 @@ but this project made to be totally in users hands and control. so using webhook
     - ![Screenshot](../../../../docs/screenshots/ifttt/choose-webhooks-service.PNG)
 1) Choose the sebhooks trigger. 
     - ![Screenshot](../../../../docs/screenshots/ifttt/choose-webhooks-trigger.PNG)
-1) In event name put the copied `inner-id` and on/off operation divided by `-`, And press `create trigger`.
-    > Example here is for `on` operation, the `off` operation is just the same, but instead of 'on' put 'off'. 
+1) In event name put the copied `inner-id` and the properties divided by `-`, 
+    - for 'toggle' and 'switch': `[inner-id]-[status]`.
+    - for 'airConditioning' : `[inner-id]-[status]-[mode]-[fanStrength]-[temperature]`.
+    - for 'light' : `[inner-id]-[status]-[brightness]`.
+    - for 'temperatureLight' : `[inner-id]-[status]-[brightness]-[temperature]`.
+    - for 'colorLight' : `[inner-id]-[status]-[brightness]-[temperature]-[red]-[green]-[blue]`.
+    - for 'roller' : `[inner-id]-[status]-[direction]`.
+
+    then press `create trigger`.
+    > Example for possible trigger name: `abc123-on` for a 'switch', `123abs-on-cold-med-21` for 'airConditioning', and the full optianl properties of minions status see in swagger the struct of 'MinionStatus'. 
     - ![Screenshot](../../../../docs/screenshots/ifttt/put-interface-trigger-name.PNG)
 1) Press on `+that` button and select the Ifttt service and the action that turn the device on.
 1) Create the same trigger for `off` operation.
