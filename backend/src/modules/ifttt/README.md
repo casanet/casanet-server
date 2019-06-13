@@ -42,7 +42,7 @@ but this project made to be totally in users hands and control. so using webhook
     - for 'roller' : `[inner-id]-[status]-[direction]`.
 
     then press `create trigger`.
-    > Example for possible trigger name: `abc123-on` for a 'switch', `123abs-on-cold-med-21` for 'airConditioning', and the full optianl properties of minions status see in swagger the struct of 'MinionStatus'. 
+    > Example for possible trigger name: `abc123-on` for a 'switch', `123abs-on-cold-med-21` for 'airConditioning', for the full options of the properties of minions status see in swagger the struct of the 'MinionStatus'. 
     - ![Screenshot](../../../../docs/screenshots/ifttt/put-interface-trigger-name.PNG)
 1) Press on `+that` button and select the Ifttt service and the action that turn the device on.
 1) Create the same trigger for `off` operation.
