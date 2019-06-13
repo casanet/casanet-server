@@ -690,6 +690,7 @@ definitions:
             - enableIntegration
         type: object
     IftttRawActionTriggerd:
+        description: 'Ifttt trigger with all request data in one JSON struct.'
         properties:
             apiKey:
                 type: string
@@ -2062,7 +2063,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Ifttt webhooks triggering casa-net action API.\r\nwhen all ditails in body only, to allow send all data ion one text line.\r\nExample to use: SMS trigger has only simple text that can pass to IFTTT activity,\r\nand by current request it is possible to control any minion by one single line of text. \r\nso fill the SMS text with JSON and by IFTTT set it to be the request body."
+            description: "Ifttt webhooks triggering casa-net action API.\r\nwhen all details in body only, to allow send all data ion one text line.\r\nExample to use: SMS trigger has only simple text that can pass to IFTTT activity,\r\nand by current request, it is possible to control any minion by one single line of text. \r\nso fill the SMS text with JSON and by IFTTT set it to be the request body."
             tags:
                 - Ifttt
             security:

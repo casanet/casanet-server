@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as express from 'express';
-import { AuthController } from '../../../backend/src/controllers/authController';
+import { AuthBlSingleton } from '../../../backend/src/business-layer/authBl';
 import { ErrorResponse, Login, User } from '../../../backend/src/models/sharedInterfaces';
 import { SystemAuthScopes } from '../../../backend/src/security/authentication';
 import { expressAuthentication } from '../../../backend/src/security/authentication';
@@ -8,11 +8,6 @@ import { LoginSchema, RequestSchemaValidator } from '../../../backend/src/securi
 
 /** Route login/logout to remote server administation. */
 export class AdministrationAuthRouter {
-
-    private authController: AuthController;
-    constructor() {
-        this.authController = new AuthController();
-    }
 
     public routes(app: express.Express): void {
 
@@ -27,7 +22,7 @@ export class AdministrationAuthRouter {
                 }
 
                 try {
-                    const apiError: ErrorResponse = await this.authController.login(req, res, loginData);
+                    const apiError: ErrorResponse = await AuthBlSingleton.login(res, loginData);
                     /** Case error is planned (and not some inner error that was thrown from somewhere) return it to client. */
                     res.send(apiError);
                 } catch (error) {
@@ -47,7 +42,7 @@ export class AdministrationAuthRouter {
                 }
 
                 try {
-                    const apiError: ErrorResponse = await this.authController.loginTfa(req, res, loginData);
+                    const apiError: ErrorResponse = await AuthBlSingleton.loginTfa(res, loginData);
                     /** Case error is planned (and not some inner error that was thrown from somewhere) return it to client. */
                     res.send(apiError);
                 } catch (error) {
@@ -73,7 +68,7 @@ export class AdministrationAuthRouter {
                     return;
                 }
 
-                this.authController.logout(req, res)
+                AuthBlSingleton.logout(req.cookies.session, res)
                     .then(() => {
                         res.send();
                     })

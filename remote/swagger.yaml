@@ -2,31 +2,6 @@ basePath: /API
 consumes:
     - application/json
 definitions:
-    ErrorResponse:
-        description: 'Error response.'
-        properties:
-            responseCode:
-                type: number
-                format: double
-                description: 'error code in system.'
-            message:
-                type: string
-                description: 'Readble message.'
-                x-nullable: true
-        required:
-            - responseCode
-        type: object
-    Login:
-        description: 'Login schema model.'
-        properties:
-            email:
-                type: string
-            password:
-                type: string
-        required:
-            - email
-            - password
-        type: object
     LocalNetworkDevice:
         description: 'Represents any physical device in a local network.'
         properties:
@@ -112,6 +87,33 @@ definitions:
         required:
             - status
             - direction
+        type: object
+    Cleaner:
+        description: "A Cleaner (robot) stauts.\r\nCleaner is a smart robot for cleaning home."
+        properties:
+            status:
+                type: string
+                enum:
+                    - on
+                    - off
+            mode:
+                type: string
+                enum:
+                    - dock
+                    - clean
+                description: 'Cleaner mode'
+            fanSpeed:
+                type: string
+                enum:
+                    - low
+                    - med
+                    - high
+                    - auto
+                description: 'Suction strength'
+        required:
+            - status
+            - mode
+            - fanSpeed
         type: object
     AirConditioning:
         description: 'An AC status.'
@@ -248,6 +250,9 @@ definitions:
             roller:
                 $ref: '#/definitions/Roller'
                 x-nullable: true
+            cleaner:
+                $ref: '#/definitions/Cleaner'
+                x-nullable: true
             airConditioning:
                 $ref: '#/definitions/AirConditioning'
                 x-nullable: true
@@ -287,6 +292,7 @@ definitions:
                     - toggle
                     - switch
                     - roller
+                    - cleaner
                     - airConditioning
                     - light
                     - temperatureLight
@@ -317,6 +323,20 @@ definitions:
         required:
             - event
             - minion
+        type: object
+    ErrorResponse:
+        description: 'Error response.'
+        properties:
+            responseCode:
+                type: number
+                format: double
+                description: 'error code in system.'
+            message:
+                type: string
+                description: 'Readble message.'
+                x-nullable: true
+        required:
+            - responseCode
         type: object
     DailySunTrigger:
         description: 'Daily timing based on sun triggers.'
@@ -538,6 +558,17 @@ definitions:
             - macAddress
             - validUsers
         type: object
+    Login:
+        description: 'Login schema model.'
+        properties:
+            email:
+                type: string
+            password:
+                type: string
+        required:
+            - email
+            - password
+        type: object
     User:
         description: 'Represents a user in the system.'
         properties:
@@ -579,32 +610,48 @@ info:
     license:
         name: ISC
 paths:
-    '/auth/logout-sessions/{userId}':
-        post:
-            operationId: GetUser
+    /feed/minions:
+        get:
+            operationId: GetMinionsFeed
             produces:
                 - application/json
             responses:
-                '204':
-                    description: 'No content'
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/MinionFeed'
                 '501':
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Logout from all activate sessions.'
+            description: "Local server minions feed.\r\nwhen minion status changed, minion created etc."
             tags:
-                - Authentication
+                - Feeds
             security:
                 -
-                    adminAuth: []
+                    userAuth: []
+            parameters: []
+    /feed/timings:
+        get:
+            operationId: GetTimingFeed
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/TimingFeed'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Local server timing feed.\r\nwhen timing activated."
+            tags:
+                - Feeds
+            security:
                 -
                     userAuth: []
-            parameters:
-                -
-                    in: path
-                    name: userId
-                    required: true
-                    type: string
+            parameters: []
     /auth/login:
         post:
             operationId: LoginDocumentation
@@ -697,48 +744,6 @@ paths:
                     userAuth: []
                 -
                     adminAuth: []
-            parameters: []
-    /feed/minions:
-        get:
-            operationId: GetMinionsFeed
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        $ref: '#/definitions/MinionFeed'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: "Local server minions feed.\r\nwhen minion status changed, minion created etc."
-            tags:
-                - Feeds
-            security:
-                -
-                    userAuth: []
-            parameters: []
-    /feed/timings:
-        get:
-            operationId: GetTimingFeed
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        $ref: '#/definitions/TimingFeed'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: "Local server timing feed.\r\nwhen timing activated."
-            tags:
-                - Feeds
-            security:
-                -
-                    userAuth: []
             parameters: []
     '/API/ifttt/trigger/**/*':
         post:
@@ -929,20 +934,88 @@ paths:
                     name: localServerId
                     required: true
                     type: string
-    /channels:
-        get:
-            operationId: ConnectToRemoteViaWsDocumentation
+    /administration/auth/login:
+        post:
+            operationId: AdministrationLoginDocumentation
             produces:
                 - application/json
             responses:
-                '200':
-                    description: Ok
+                '201':
+                    description: '2-fatore code sent'
+                '204':
+                    description: 'No content'
+                '403':
+                    description: 'Auth fail'
                     schema:
-                        type: object
-            description: 'Web-sockets path, used for the local server to connect remote server.'
+                        $ref: '#/definitions/ErrorResponse'
+                '422':
+                    description: 'Invalid schema'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Login to the administration system.'
             tags:
-                - Channels
+                - Administration
             security: []
+            parameters:
+                -
+                    in: body
+                    name: login
+                    required: true
+                    schema:
+                        $ref: '#/definitions/Login'
+    /administration/auth/login/tfa:
+        post:
+            operationId: AdministrationLoginTfaDocumentation
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '403':
+                    description: 'Auth fail'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '422':
+                    description: 'Invalid schema'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: '2-step verification login to the administration system.'
+            tags:
+                - Administration
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: login
+                    required: true
+                    schema:
+                        $ref: '#/definitions/Login'
+    /administration/auth/logout:
+        post:
+            operationId: AdministrationLogoutDocumentation
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Logout manually from the administration system.'
+            tags:
+                - Administration
+            security:
+                -
+                    adminAuth: []
             parameters: []
     /administration/users/profile:
         get:
@@ -1093,88 +1166,22 @@ paths:
                     name: adminId
                     required: true
                     type: string
-    /administration/auth/login:
-        post:
-            operationId: AdministrationLoginDocumentation
+    '/management/**/*':
+        get:
+            operationId: GetManagementsAssets
             produces:
                 - application/json
             responses:
-                '201':
-                    description: '2-fatore code sent'
-                '204':
-                    description: 'No content'
-                '403':
-                    description: 'Auth fail'
+                '200':
+                    description: Ok
                     schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '422':
-                    description: 'Invalid schema'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Login to the administration system.'
+                        type: object
+                '404':
+                    description: 'Page not found'
+            description: 'Get public assets for casa-net remote management client side.'
             tags:
-                - Administration
+                - Public
             security: []
-            parameters:
-                -
-                    in: body
-                    name: login
-                    required: true
-                    schema:
-                        $ref: '#/definitions/Login'
-    /administration/auth/login/tfa:
-        post:
-            operationId: AdministrationLoginTfaDocumentation
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '403':
-                    description: 'Auth fail'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '422':
-                    description: 'Invalid schema'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: '2-step verification login to the administration system.'
-            tags:
-                - Administration
-            security: []
-            parameters:
-                -
-                    in: body
-                    name: login
-                    required: true
-                    schema:
-                        $ref: '#/definitions/Login'
-    /administration/auth/logout:
-        post:
-            operationId: AdministrationLogoutDocumentation
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Logout manually from the administration system.'
-            tags:
-                - Administration
-            security:
-                -
-                    adminAuth: []
             parameters: []
     '/static/**/*':
         get:
@@ -1193,9 +1200,9 @@ paths:
                 - Public
             security: []
             parameters: []
-    '/management/**/*':
+    /channels:
         get:
-            operationId: GetManagementsAssets
+            operationId: ConnectToRemoteViaWsDocumentation
             produces:
                 - application/json
             responses:
@@ -1203,11 +1210,9 @@ paths:
                     description: Ok
                     schema:
                         type: object
-                '404':
-                    description: 'Page not found'
-            description: 'Get public assets for casa-net remote management client side.'
+            description: 'Web-sockets path, used for the local server to connect remote server.'
             tags:
-                - Public
+                - Channels
             security: []
             parameters: []
 produces:
@@ -1219,6 +1224,10 @@ securityDefinitions:
         name: Cookie
         in: header
     adminAuth:
+        type: apiKey
+        name: Cookie
+        in: header
+    iftttAuth:
         type: apiKey
         name: Cookie
         in: header
