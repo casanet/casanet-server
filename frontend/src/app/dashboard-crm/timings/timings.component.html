@@ -25,9 +25,9 @@
                 </button>
 
                 <mat-menu #timingMenu="matMenu">
-                    <button mat-menu-item disabled>
-                                <mat-icon>edit</mat-icon>
-                                <span>{{ 'EDIT' | translate}}</span>
+                    <button mat-menu-item (click)=selectOtherOperation(timing)>
+                                <mat-icon>play_circle_filled</mat-icon>
+                                <span>{{ 'REPLACE_OPERATION' | translate}}</span>
                     </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item style="color: salmon;" (click)="deleteTiming(timing)">

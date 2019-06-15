@@ -203,6 +203,8 @@
     "CLEAN": "Clean",
     "FAN_SPEED" : "Suction strength",
     "REGISTERED_USERS" : "Registered users",
+    "REPLACE_OPERATION" : "Replace oeration",
+    "CURRENT_OPERATION" : "Currnet operatin",
     "notConfigured": "Remote server not configured",
     "cantReachRemoteServer": "Remote server offline",
     "authorizationFail": "Local server fail to authenticate",

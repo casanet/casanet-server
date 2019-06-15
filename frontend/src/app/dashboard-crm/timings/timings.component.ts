@@ -99,7 +99,7 @@ export class TimingsComponent implements OnInit, OnDestroy {
     timing['sync'] = true;
 
     await this.timingsService.editTimings({
-      isActive : setActive,
+      isActive: setActive,
       timingId,
       timingName,
       timingProperties,
@@ -125,6 +125,55 @@ export class TimingsComponent implements OnInit, OnDestroy {
     });
 
     timing['sync'] = false;
+  }
+
+  public async selectOtherOperation(timing: Timing) {
+
+    const operations = await this.operationService.operationFeed.value;
+
+    /** REduce all operation to on key paie value when key is id and vale is name. for the form select  */
+    const selectOptions = operations.reduce((kpv, operation) => {
+      kpv[operation.operationId] = operation.operationName;
+      return kpv;
+    }, {});
+
+    const currOperaion = this.operationService.getOperation(timing.triggerOperationId);
+    const currOperationName =
+      currOperaion
+        ? currOperaion.operationName
+        : '--';
+
+    const swalResult: void | SweetAlertResult = await swal({
+      title: `${this.translatePipe.transform('REPLACE_OPERATION')}`,
+      text: `${this.translatePipe.transform('CURRENT_OPERATION')}: ${currOperationName}`,
+      input: 'select',
+      inputOptions: selectOptions,
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: this.translatePipe.transform('SUBMIT'),
+      cancelButtonText: this.translatePipe.transform('CANCEL')
+    });
+
+    // Case user select 'cancel' cancel the delete.
+    if (swalResult && swalResult.dismiss) {
+      return;
+    }
+
+    const { isActive, timingId, timingProperties, timingName, timingType } = timing;
+    timing['sync'] = true;
+
+    await this.timingsService.editTimings({
+      isActive,
+      timingId,
+      timingName,
+      timingProperties,
+      timingType,
+      triggerOperationId : swalResult.value
+    });
+
+    timing['sync'] = false;
+
+    await this.refreshData();
   }
 
   public async deleteTiming(timing: Timing) {

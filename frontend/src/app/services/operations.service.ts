@@ -12,7 +12,7 @@ export class OperationService {
 
   private isOperationsRetrived = false;
 
-  public operations: Operation[] = [];
+  private operations: Operation[] = [];
   public operationFeed: BehaviorSubject<Operation[]> = new BehaviorSubject<Operation[]>(this.operations);
 
   constructor(private toastrAndErrorsService: ToasterAndErrorsService,
