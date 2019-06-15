@@ -79,7 +79,7 @@ for example, SMS service allows passing the text message value to put it in webh
 1) Select make request action
     - ![Screenshot](./screenshots/ifttt/choose-action.PNG)
 1) Set the HTTP request as following struct:
-    - URL: `http://[casa-net server or remote server host/ip]/API/ifttt/trigger/minions/raw.
+    - URL: `http://[casa-net server or remote server host/ip]/API/ifttt/trigger/minions/raw`.
     - Method: `POST`.
     - Content-TypeL `application/json`.
     - Body: 
