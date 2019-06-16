@@ -29,7 +29,9 @@ This structure enables the creation of a separate server and a collection of mod
 ![Screenshot](./docs/screenshots/devices.PNG)
 
 Minimal page (only 5 kb of resources should be transferred !!!) for old phones or very slow networks.
-![Screenshot](./docs/screenshots/light-dashboard.jpg)
+<img src="./docs/screenshots/light-dashboard.jpg" alt="Kitten"
+	title="A cute kitten" width="300" height="600" />
+
 
 Link to the minimal page exist in the settings 'light version' section, or just navigate to `[server-ip/host]/static/light-app/index.html`.
 
