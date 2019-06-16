@@ -27,6 +27,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
     userProfile: User = {} as unknown as User;
     userProfileSubscription: Subscription;
 
+    currentVersion: string;
+
     private translatePipe: TranslatePipe;
 
     constructor(private settingsService: SettingsService,
@@ -48,6 +50,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
             });
         this.loadRemoteHostName();
         this.loadIftttIntegration();
+        this.loadCurrentVersionName();
     }
 
     ngOnInit() {
@@ -58,6 +61,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.userProfileSubscription.unsubscribe();
     }
 
+    private async loadCurrentVersionName() {
+        this.currentVersion = await this.settingsService.getCurrentVersion();
+    }
     private async loadRemoteHostName() {
         this.remoteHostname = await this.settingsService.getRemoteHostname();
     }
@@ -107,8 +113,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     public showRegisteredUsers() {
         this.dialog.open(ManageRegisteredUsersComponent, {
-			data: {}
-		});
+            data: {}
+        });
     }
 
     public async setRemoteServer() {
@@ -220,6 +226,34 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 await this.loadIftttIntegration();
                 swal.resumeTimer();
             },
+        });
+    }
+
+    /** Versioning */
+    public async updateVertionToLast() {
+        const swalResult: void | SweetAlertResult = await swal({
+            type: 'question',
+            title: this.translatePipe.transform('UPDATE_TO_THE_LAST_VERSION'),
+            showLoaderOnConfirm: true,
+            confirmButtonText: this.translatePipe.transform('UPDATE'),
+            cancelButtonText: this.translatePipe.transform('CANCEL'),
+            showCancelButton: true,
+            allowOutsideClick: () => !swal.isLoading(),
+            preConfirm: async () => {
+                return await this.settingsService.updateToLastVersion();
+            },
+        });
+
+        if (!swalResult.value || swalResult.dismiss) {
+            return;
+        }
+
+        await this.loadCurrentVersionName();
+        await swal({
+            type: 'success',
+            title: `${this.translatePipe.transform('SUCCESSFULLY_UPDATED_TO')} ${this.currentVersion}`,
+            text: this.translatePipe.transform('RESTART_REQUIRED_FOR_THE_VERSION_UPDATE_COMPLETE'),
+            confirmButtonText: 'OK'
         });
     }
 

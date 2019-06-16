@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { RemoteConnectionStatus, RemoteSettings, IftttIntegrationSettings } from '../../../../backend/src/models/sharedInterfaces';
-import { Delay } from '../../../../backend/src/utilities/sleep';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
@@ -119,6 +118,24 @@ export class SettingsService {
       await this.httpClient.put('/API/remote', remoteSettings).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
+  public async getCurrentVersion(): Promise<string> {
+    try {
+      return await this.httpClient.get<string>('/API/version').toPromise();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
+  public async updateToLastVersion(): Promise<boolean> {
+    try {
+      await this.httpClient.put('/API/version/latest', {}).toPromise();
+      return true;
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+      return false;
     }
   }
 
