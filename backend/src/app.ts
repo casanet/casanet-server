@@ -25,6 +25,7 @@ import './controllers/remoteConnectionController';
 import './controllers/staticAssetsController';
 import './controllers/timingsController';
 import './controllers/usersController';
+import './controllers/versionsController';
 
 // also import other moduls that not imported in other place.
 import './business-layer/timeoutBl';

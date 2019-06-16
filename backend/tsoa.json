@@ -44,6 +44,10 @@
             {
                 "name": "Public",
                 "description": "Static files/assets for client side"
+            },
+            {
+                "name": "Version",
+                "description": "Manage Versioning of application, get current vertion, update to lastes etc."
             }
         ],
         "name": "CASAnet - API",

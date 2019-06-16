@@ -11,6 +11,7 @@ import { UsersController } from './../controllers/usersController';
 import { RemoteConnectionController } from './../controllers/remoteConnectionController';
 import { StaticAssetsController } from './../controllers/staticAssetsController';
 import { IftttController } from './../controllers/iftttController';
+import { VersionsController } from './../controllers/versionsController';
 import { expressAuthentication } from './../security/authentication';
 import * as express from 'express';
 import { ErrorResponse, User } from '../../../backend/src/models/sharedInterfaces';
@@ -1536,6 +1537,52 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.triggeredOperationAction.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.put('/API/version/latest',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new VersionsController();
+
+
+            const promise = controller.updateVersion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/version',
+        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new VersionsController();
+
+
+            const promise = controller.getCurrentVersion.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 
