@@ -3,30 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // @ts-ignore
 /* tslint:disable */
 const tsoa_1 = require("tsoa");
-const authController_1 = require("./../../../backend/src/controllers/authController");
 const feedController_1 = require("./../controllers/feedController");
 const forwardAuthController_1 = require("./../controllers/forwardAuthController");
 const forwardingController_1 = require("./../controllers/forwardingController");
 const localServersController_1 = require("./../controllers/localServersController");
-const channelsController_1 = require("./../controllers/channelsController");
-const administrationUsersController_1 = require("./../controllers/administrationUsersController");
 const administrationAuthController_1 = require("./../controllers/administrationAuthController");
-const staticAssetsController_1 = require("./../controllers/staticAssetsController");
+const administrationUsersController_1 = require("./../controllers/administrationUsersController");
 const managementAssetsController_1 = require("./../controllers/managementAssetsController");
+const staticAssetsController_1 = require("./../controllers/staticAssetsController");
+const channelsController_1 = require("./../controllers/channelsController");
 const authenticationExtend_1 = require("./../security/authenticationExtend");
 const models = {
-    "ErrorResponse": {
-        "properties": {
-            "responseCode": { "dataType": "double", "required": true },
-            "message": { "dataType": "string" },
-        },
-    },
-    "Login": {
-        "properties": {
-            "email": { "dataType": "string", "required": true },
-            "password": { "dataType": "string", "required": true },
-        },
-    },
     "LocalNetworkDevice": {
         "properties": {
             "name": { "dataType": "string" },
@@ -58,6 +45,13 @@ const models = {
         "properties": {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
             "direction": { "dataType": "enum", "enums": ["up", "down"], "required": true },
+        },
+    },
+    "Cleaner": {
+        "properties": {
+            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+            "mode": { "dataType": "enum", "enums": ["dock", "clean"], "required": true },
+            "fanSpeed": { "dataType": "enum", "enums": ["low", "med", "high", "auto"], "required": true },
         },
     },
     "AirConditioning": {
@@ -96,6 +90,7 @@ const models = {
             "toggle": { "ref": "Toggle" },
             "switch": { "ref": "Switch" },
             "roller": { "ref": "Roller" },
+            "cleaner": { "ref": "Cleaner" },
             "airConditioning": { "ref": "AirConditioning" },
             "light": { "ref": "Light" },
             "temperatureLight": { "ref": "TemperatureLight" },
@@ -109,7 +104,7 @@ const models = {
             "device": { "ref": "MinionDevice", "required": true },
             "isProperlyCommunicated": { "dataType": "boolean" },
             "minionStatus": { "ref": "MinionStatus", "required": true },
-            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
         },
     },
@@ -117,6 +112,12 @@ const models = {
         "properties": {
             "event": { "dataType": "enum", "enums": ["created", "update", "removed"], "required": true },
             "minion": { "ref": "Minion", "required": true },
+        },
+    },
+    "ErrorResponse": {
+        "properties": {
+            "responseCode": { "dataType": "double", "required": true },
+            "message": { "dataType": "string" },
         },
     },
     "DailySunTrigger": {
@@ -196,6 +197,12 @@ const models = {
             "connectionStatus": { "dataType": "boolean" },
         },
     },
+    "Login": {
+        "properties": {
+            "email": { "dataType": "string", "required": true },
+            "password": { "dataType": "string", "required": true },
+        },
+    },
     "User": {
         "properties": {
             "displayName": { "dataType": "string" },
@@ -209,60 +216,6 @@ const models = {
 };
 const validationService = new tsoa_1.ValidationService(models);
 function RegisterRoutes(app) {
-    app.post('/API/auth/login', function (request, response, next) {
-        const args = {
-            request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new authController_1.AuthController();
-        const promise = controller.loginDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.post('/API/auth/login/tfa', function (request, response, next) {
-        const args = {
-            request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new authController_1.AuthController();
-        const promise = controller.loginTfaDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.post('/API/auth/logout', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {
-        const args = {};
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new authController_1.AuthController();
-        const promise = controller.logoutDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
     app.get('/API/feed/minions', authenticateMiddleware([{ "userAuth": [] }]), function (request, response, next) {
         const args = {};
         let validatedArgs = [];
@@ -272,6 +225,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -288,6 +242,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -307,6 +262,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -326,6 +282,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -342,6 +299,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -358,6 +316,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -374,6 +333,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -390,6 +350,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -408,6 +369,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -426,6 +388,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -445,6 +408,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -463,6 +427,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -481,152 +446,12 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
         const controller = new localServersController_1.LocalServersController();
         const promise = controller.generateAuthKeyLocalServer.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.get('/API/servers/local-users/:localServerId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            localServerId: { "in": "path", "name": "localServerId", "required": true, "dataType": "string" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new localServersController_1.LocalServersController();
-        const promise = controller.getLocalServerUsers.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.get('/API/channels', function (request, response, next) {
-        const args = {};
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new channelsController_1.ChannelsController();
-        const promise = controller.connectToRemoteViaWsDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.get('/API/administration/users/profile', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
-        const promise = controller.getProfile.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.get('/API/administration/users', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {};
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
-        const promise = controller.getUsers.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.get('/API/administration/users/:adminId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
-        const promise = controller.getUser.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.put('/API/administration/users/:adminId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
-            user: { "in": "body", "name": "user", "required": true, "ref": "User" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
-        const promise = controller.setUser.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.delete('/API/administration/users/:adminId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
-        const promise = controller.deleteUser.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.post('/API/administration/users', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            user: { "in": "body", "name": "user", "required": true, "ref": "User" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-            });
-            return;
-        }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
-        const promise = controller.createUser.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.post('/API/administration/auth/login', function (request, response, next) {
@@ -641,6 +466,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -660,6 +486,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -676,6 +503,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -683,7 +511,26 @@ function RegisterRoutes(app) {
         const promise = controller.administrationLogoutDocumentation.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
-    app.get('/API/static/**/*', function (request, response, next) {
+    app.get('/API/administration/users/profile', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const promise = controller.getProfile.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/administration/users', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
         const args = {};
         let validatedArgs = [];
         try {
@@ -692,11 +539,89 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
-        const controller = new staticAssetsController_1.StaticsAssetsController();
-        const promise = controller.getStaticsAssets.apply(controller, validatedArgs);
+        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const promise = controller.getUsers.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/administration/users/:adminId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const promise = controller.getUser.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.put('/API/administration/users/:adminId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
+            user: { "in": "body", "name": "user", "required": true, "ref": "User" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const promise = controller.setUser.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.delete('/API/administration/users/:adminId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const promise = controller.deleteUser.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/administration/users', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            user: { "in": "body", "name": "user", "required": true, "ref": "User" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const promise = controller.createUser.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.get('/API/management/**/*', function (request, response, next) {
@@ -708,11 +633,46 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
         const controller = new managementAssetsController_1.ManagementsAssetsController();
         const promise = controller.getManagementsAssets.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/static/**/*', function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new staticAssetsController_1.StaticsAssetsController();
+        const promise = controller.getStaticsAssets.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/channels', function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new channelsController_1.ChannelsController();
+        const promise = controller.connectToRemoteViaWsDocumentation.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     function authenticateMiddleware(security = []) {

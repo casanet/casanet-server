@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const networkList2 = require("network-list2");
+const isOnline = require("is-online");
+const ip = require("ip");
 const logger_1 = require("./logger");
 const config_1 = require("../config");
 /**
@@ -8,11 +10,15 @@ const config_1 = require("../config");
  */
 exports.LocalNetworkReader = () => {
     logger_1.logger.info('Scanning network devices...');
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const ops = {};
+        /** Ceck if internet connection is online, otherways dont try to get vendor name. */
+        const isInternetOnline = await isOnline();
         if (config_1.Configuration.scanSubnet) {
             ops.ip = config_1.Configuration.scanSubnet;
+            ops.vendor = isInternetOnline;
         }
+        ;
         networkList2.scan(ops, (err, netTableArray) => {
             logger_1.logger.info('Scanning network devices done.');
             if (err) {
@@ -22,6 +28,12 @@ exports.LocalNetworkReader = () => {
                 return;
             }
             const devices = [];
+            /** Add current mechine info to table (without the MAC address!!!)*/
+            devices.push({
+                mac: '------------',
+                ip: ip.address(),
+                vendor: 'casa-net server',
+            });
             for (const localDevice of netTableArray) {
                 if (localDevice.alive && localDevice.mac) {
                     devices.push({

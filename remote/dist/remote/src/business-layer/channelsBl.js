@@ -1,13 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const cryptoJs = require("crypto-js");
+const momoent = require("moment");
 const moment = require("moment");
 const randomstring = require("randomstring");
 const rxjs_1 = require("rxjs");
+const config_1 = require("../../../backend/src/config");
 const logger_1 = require("../../../backend/src/utilities/logger");
+const mailSender_1 = require("../../../backend/src/utilities/mailSender");
+const forwardUserSessionsBl_1 = require("./forwardUserSessionsBl");
 const localServersBl_1 = require("./localServersBl");
 const localServersSessionsBl_1 = require("./localServersSessionsBl");
-const config_1 = require("../../../backend/src/config");
 /**
  * Manage all local servers ws I/O messages.
  * The main goal is to allow used ws protocol as req/res architecture.
@@ -20,16 +23,15 @@ class ChannelsBl {
      * @param localServersBl local servers bl injection.
      * @param localServersSessionsBl local server bl sessions injection.
      */
-    constructor(localServersBl, localServersSessionsBl) {
+    constructor(localServersBl, localServersSessionsBl, forwardUsersSessionsBl) {
         this.localServersBl = localServersBl;
         this.localServersSessionsBl = localServersSessionsBl;
+        this.forwardUsersSessionsBl = forwardUsersSessionsBl;
         /**
          * Timeout for any http request.
          * (it long time bacuse of scaning network request that takes a while.)
          */
-        this.httpRequestTimeout = moment.duration(1, 'minutes');
-        /** Timeout for getting local server users collection. */
-        this.usersRequestTimeout = moment.duration(10, 'seconds');
+        this.httpRequestTimeout = moment.duration(60, 'seconds');
         /** Map all local servers ws channel by local server mac address */
         this.localChannelsMap = {};
         /**
@@ -38,10 +40,9 @@ class ChannelsBl {
          */
         this.sentHttpRequestsMap = {};
         /**
-         * Hold each *localUsers* request promise reject/resolve methods.
-         * until message will arrive from local server with response for current request.
+         * Register generated code map to account with creation timestamp.
          */
-        this.sentUsersRequestsMap = {};
+        this.forwardUserReqAuth = {};
         /** Feed of local servers feeds. */
         this.localServersFeed = new rxjs_1.BehaviorSubject(undefined);
         /** Invoke requests timeout activation. */
@@ -65,13 +66,6 @@ class ChannelsBl {
                         httpSession: undefined,
                         httpStatus: 501,
                     });
-                }
-            }
-            // Iterate all get users requests.
-            for (const [key, value] of Object.entries(this.sentUsersRequestsMap)) {
-                if (now.getTime() - value.timeStamped.getTime() > this.usersRequestTimeout.asMilliseconds()) {
-                    value.forwardPromise.reject({ responseCode: 8503, message: 'local server timeout' });
-                    delete this.sentUsersRequestsMap[key];
                 }
             }
         }, moment.duration(10, 'seconds').asMilliseconds());
@@ -146,6 +140,19 @@ class ChannelsBl {
         }
     }
     /**
+     * Handle get registered users of the certain local server.
+     * @param wsChannel local server ws object that message arrived from.
+     */
+    async handleGetLocalUsers(wsChannel) {
+        try {
+            /** Get local server based on local server mac */
+            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
+            this.sendMessage(wsChannel, { remoteMessagesType: 'registeredUsers', message: { registeredUsers: localServer.validUsers } });
+        }
+        catch (error) {
+        }
+    }
+    /**
      * Handle http response messages from local server.
      * @param httpResponse response data.
      */
@@ -163,21 +170,107 @@ class ChannelsBl {
         sentRequest.forwardPromise.resolve(httpResponse);
     }
     /**
-     * Handle local server users message arrived from local server.
-     * @param localUsersResponse
+     * Send register authentication code to email account.
+     * @param userForwardRequest email account to send for.
      */
-    handleUsersResponse(localUsersResponse) {
-        /** Get request promise methods */
-        const sentRequest = this.sentUsersRequestsMap[localUsersResponse.requestId];
-        /** If timeout activation delete it. there is nothing else to do. */
-        if (!sentRequest) {
-            /** Too late... */
+    async handleSendRegistrationCodeRequest(userForwardRequest) {
+        const { email } = userForwardRequest;
+        /** Generate random MFA key. */
+        const code = randomstring.generate({
+            charset: 'numeric',
+            length: 6,
+        });
+        try {
+            await mailSender_1.SendMail(email, code);
+            this.forwardUserReqAuth[email] = {
+                code,
+                timestamp: new Date().getTime(),
+            };
+        }
+        catch (error) {
+            logger_1.logger.warn(`Sent auth user account for local server forwarding fail ${JSON.stringify(error)}`);
+        }
+    }
+    /**
+     * Register account to allow forward HTTP requests from remote to local server
+     * @param wsChannel The local server ws channel to add account for.
+     * @param userForwardRequest The request data
+     */
+    async handleRegisterAccountRequest(wsChannel, userForwardRequest) {
+        const { email, code } = userForwardRequest;
+        if (this.forwardUserReqAuth[email] &&
+            this.forwardUserReqAuth[email].code === code &&
+            new Date().getTime() - this.forwardUserReqAuth[email].timestamp < momoent.duration(5, 'minutes').asMilliseconds()) {
+            delete this.forwardUserReqAuth[email];
+            try {
+                const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
+                await this.localServersBl.addAccountForwardValid(localServer.localServerId, email);
+                this.sendMessage(wsChannel, {
+                    remoteMessagesType: 'registerUserResults',
+                    message: {
+                        registerUserResults: {
+                            user: email,
+                        },
+                    },
+                });
+            }
+            catch (error) {
+                this.sendMessage(wsChannel, {
+                    remoteMessagesType: 'registerUserResults',
+                    message: {
+                        registerUserResults: {
+                            user: email,
+                            results: error,
+                        },
+                    },
+                });
+            }
             return;
         }
-        /** Remove request promise from map */
-        delete this.sentHttpRequestsMap[localUsersResponse.requestId];
-        /** Activate promise resolve method with response as is. */
-        sentRequest.forwardPromise.resolve(localUsersResponse.users);
+        this.sendMessage(wsChannel, {
+            remoteMessagesType: 'registerUserResults',
+            message: {
+                registerUserResults: {
+                    user: email,
+                    results: {
+                        message: 'user or code invalied',
+                        responseCode: 6403,
+                    },
+                },
+            },
+        });
+    }
+    /**
+     * Remove account from local server valid account to forward from remote to local
+     * @param wsChannel The local server ws channel to remove from.
+     * @param userForwardRequest The account to remove.
+     */
+    async handleUnregisterAccountRequest(wsChannel, userForwardRequest) {
+        const { email } = userForwardRequest;
+        try {
+            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
+            await this.localServersBl.removeAccountForwardValid(localServer.localServerId, email);
+            await this.forwardUsersSessionsBl.deleteUserSessions(email);
+            this.sendMessage(wsChannel, {
+                remoteMessagesType: 'registerUserResults',
+                message: {
+                    registerUserResults: {
+                        user: email,
+                    },
+                },
+            });
+        }
+        catch (error) {
+            this.sendMessage(wsChannel, {
+                remoteMessagesType: 'registerUserResults',
+                message: {
+                    registerUserResults: {
+                        user: email,
+                        results: error,
+                    },
+                },
+            });
+        }
     }
     /** Send http request to local server over ws channel. */
     async sendHttpViaChannelsByMac(localMac, httpRequest) {
@@ -235,45 +328,6 @@ class ChannelsBl {
         });
     }
     /**
-     * Request all local server users names.
-     * See comments on sendHttpViaChannels function, it`s same.
-     *
-     * @param localServerId local server to get users from.
-     */
-    async getLocalServerUsers(localServerId) {
-        /** Try getting require local server  */
-        const localServer = await this.localServersBl.getlocalServersById(localServerId);
-        /**
-         * See comments on sendHttpViaChannels function, it`s same.
-         */
-        return new Promise((resolveUsersReq, rejectUsersReq) => {
-            const localServeChannel = this.localChannelsMap[localServer.macAddress];
-            if (!localServeChannel) {
-                rejectUsersReq({
-                    responseCode: 4501,
-                    message: 'There is no connection to local server.',
-                });
-                return;
-            }
-            const reqId = randomstring.generate(16);
-            this.sentUsersRequestsMap[reqId] = {
-                timeStamped: new Date(),
-                forwardPromise: {
-                    reject: rejectUsersReq,
-                    resolve: resolveUsersReq,
-                },
-            };
-            this.sendMessage(localServeChannel, {
-                remoteMessagesType: 'localUsers',
-                message: {
-                    localUsers: {
-                        requestId: reqId,
-                    },
-                },
-            });
-        });
-    }
-    /**
      * On ws just opend.
      * @param wsChannel local server incomming ws.
      */
@@ -314,8 +368,17 @@ class ChannelsBl {
             case 'ack':
                 this.sendMessage(wsChannel, { remoteMessagesType: 'ackOk', message: {} });
                 break;
-            case 'localUsers':
-                this.handleUsersResponse(localMessage.message.localUsers);
+            case 'sendRegistrationCode':
+                this.handleSendRegistrationCodeRequest(localMessage.message.sendRegistrationCode);
+                break;
+            case 'registerAccount':
+                this.handleRegisterAccountRequest(wsChannel, localMessage.message.registerAccount);
+                break;
+            case 'unregisterAccount':
+                this.handleUnregisterAccountRequest(wsChannel, localMessage.message.unregisterAccount);
+                break;
+            case 'registeredUsers':
+                await this.handleGetLocalUsers(wsChannel);
                 break;
             case 'feed':
                 await this.handleFeedUpdate(wsChannel, localMessage.message.feed);
@@ -355,5 +418,5 @@ class ChannelsBl {
     }
 }
 exports.ChannelsBl = ChannelsBl;
-exports.ChannelsBlSingleton = new ChannelsBl(localServersBl_1.LocalServersBlSingleton, localServersSessionsBl_1.LocalServersSessionBlSingleton);
+exports.ChannelsBlSingleton = new ChannelsBl(localServersBl_1.LocalServersBlSingleton, localServersSessionsBl_1.LocalServersSessionBlSingleton, forwardUserSessionsBl_1.ForwardUsersSessionsBlSingleton);
 //# sourceMappingURL=channelsBl.js.map

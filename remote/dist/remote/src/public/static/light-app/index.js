@@ -6,6 +6,12 @@ let accessFail = () => {
     window.location.href = "/static/#/login";
 }
 
+let getMinionsFail = (msg) => {
+    if (confirm(`GET MINIONS FAIL: \n${msg},\n\n\nPress "OK" to retry`)) {
+        patchMinions();
+    }
+}
+
 /**
  * Generate buttons of each minion.
  * @param {*} minions Minions array
@@ -53,13 +59,18 @@ let patchMinions = () => {
     // compatible with IE7+, Firefox, Chrome, Opera, Safari
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.onload = () => {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+
+        if (xmlhttp.readyState === 4 && xmlhttp.status == 200) {
             generateMinions(JSON.parse(xmlhttp.responseText));
+            return;
         }
 
         if (xmlhttp.status === 401 || xmlhttp.status === 403) {
             accessFail();
+            return;
         }
+
+        getMinionsFail(xmlhttp.responseText);
     }
     xmlhttp.open("GET", '/API/minions', true);
     xmlhttp.send();

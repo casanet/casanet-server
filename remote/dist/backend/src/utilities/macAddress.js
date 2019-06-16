@@ -15,6 +15,13 @@ exports.GetMachinMacAddress = () => {
             resolve(machineMacAddress);
             return;
         }
+        /** If MAC address passed by env var, just use it */
+        if (process.env.PHYSICAL_ADDRESS) {
+            machineMacAddress = process.env.PHYSICAL_ADDRESS;
+            logger_1.logger.info(`Using '${machineMacAddress}' physical address, loadded from env var.`);
+            resolve(machineMacAddress);
+            return;
+        }
         /** Read the machine mac address */
         getMac.getMac((err, rawMacAddress) => {
             if (err) {

@@ -1,8 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv = require("dotenv");
+const fs_1 = require("fs");
 const fse = require("fs-extra");
 const randomstring = require("randomstring");
 const logger_1 = require("./utilities/logger");
+// load environment variable from .env file
+if (fs_1.existsSync('.env')) {
+    dotenv.config();
+}
 /**
  * Read process env vars
  */

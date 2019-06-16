@@ -11,13 +11,16 @@ exports.LoginLocalServerSchema = Joi.object().keys({
     password: Joi.string().not('').required(),
     localServerId: Joi.string().allow(''),
 }).required();
+const forwardAccountSchema = Joi.object().keys({
+    email: Joi.string().email().required(),
+});
+const registerAccountSchema = Joi.object().keys({
+    email: Joi.string().email().required(),
+    code: Joi.string().length(6).required(),
+});
 const initSchema = Joi.object().keys({
     macAddress: Joi.string().not('').length(12).required(),
     remoteAuthKey: Joi.string().not('').required(),
-});
-const localUsersSchema = Joi.object().keys({
-    users: Joi.array().items(Joi.string().email()).required(),
-    requestId: Joi.string().not('').required(),
 });
 const httpResponseSchema = Joi.object().keys({
     requestId: Joi.string().not('').required(),
@@ -34,17 +37,28 @@ const feedSchema = Joi.object().keys({
     feedContent: Joi.any().required(),
 });
 exports.LocalMessageSchema = Joi.object().keys({
-    localMessagesType: Joi.valid('initialization', 'localUsers', 'httpResponse', 'ack', 'feed').required(),
+    localMessagesType: Joi.valid('initialization', 'sendRegistrationCode', 'unregisterAccount', 'registerAccount', 'registeredUsers', 'httpResponse', 'ack', 'feed').required(),
     message: Joi.alternatives()
         .when('localMessagesType', {
         is: 'initialization',
         then: Joi.object().keys({ initialization: initSchema.required() }).required(),
     })
         .when('localMessagesType', {
-        is: 'localUsers',
-        then: Joi.object().keys({ localUsers: localUsersSchema.required() }).required(),
+        is: 'sendRegistrationCode',
+        then: Joi.object().keys({ sendRegistrationCode: forwardAccountSchema.required() }).required(),
     })
         .when('localMessagesType', {
+        is: 'unregisterAccount',
+        then: Joi.object().keys({ unregisterAccount: forwardAccountSchema.required() }).required(),
+    })
+        .when('localMessagesType', {
+        is: 'registerAccount',
+        then: Joi.object().keys({ registerAccount: registerAccountSchema.required() }).required(),
+    })
+        .when('localMessagesType', {
+        is: 'registeredUsers',
+        then: emptyMessageSchema.required(),
+    }).when('localMessagesType', {
         is: 'httpResponse',
         then: Joi.object().keys({ httpResponse: httpResponseSchema.required() }).required(),
     })

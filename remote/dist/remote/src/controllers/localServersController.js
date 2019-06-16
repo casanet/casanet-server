@@ -10,7 +10,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
-const channelsBl_1 = require("../business-layer/channelsBl");
 const localServersBl_1 = require("../business-layer/localServersBl");
 const localServersSessionsBl_1 = require("../business-layer/localServersSessionsBl");
 let LocalServersController = class LocalServersController extends tsoa_1.Controller {
@@ -61,14 +60,6 @@ let LocalServersController = class LocalServersController extends tsoa_1.Control
     async generateAuthKeyLocalServer(localServerId) {
         return await localServersSessionsBl_1.LocalServersSessionBlSingleton.generateLocalServerSession(localServerId);
     }
-    /**
-     * Get all user names from the local server.
-     * Used to allow admin select users that can access their local server via remote.
-     * @param localServerId The local server to get users from.
-     */
-    async getLocalServerUsers(localServerId) {
-        return await channelsBl_1.ChannelsBlSingleton.getLocalServerUsers(localServerId);
-    }
 };
 __decorate([
     tsoa_1.Security('adminAuth'),
@@ -102,11 +93,6 @@ __decorate([
     tsoa_1.Response(501, 'Server error'),
     tsoa_1.Post('auth/{localServerId}')
 ], LocalServersController.prototype, "generateAuthKeyLocalServer", null);
-__decorate([
-    tsoa_1.Security('adminAuth'),
-    tsoa_1.Response(501, 'Server error'),
-    tsoa_1.Get('local-users/{localServerId}')
-], LocalServersController.prototype, "getLocalServerUsers", null);
 LocalServersController = __decorate([
     tsoa_1.Tags('Servers'),
     tsoa_1.Route('servers')

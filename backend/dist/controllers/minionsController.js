@@ -11,20 +11,42 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
 const minionsBl_1 = require("../business-layer/minionsBl");
+const deepCopy_1 = require("../utilities/deepCopy");
 let MinionsController = class MinionsController extends tsoa_1.Controller {
+    /**
+     * NEVER let anyone get device API keys.
+     * @param minion minion to remove keys from.
+     */
+    cleanUpMinionBeforRelease(minion) {
+        const minionCopy = deepCopy_1.DeepCopy(minion);
+        delete minionCopy.device.deviceId;
+        delete minionCopy.device.token;
+        return minionCopy;
+    }
+    /**
+     * NEVER let anyone get device API keys.
+     * @param minions minions to remove keys from.
+     */
+    cleanUpMinionsBeforRelease(minions) {
+        const minionsCopy = [];
+        for (const minion of minions) {
+            minionsCopy.push(this.cleanUpMinionBeforRelease(minion));
+        }
+        return minionsCopy;
+    }
     /**
      * Get all minions in the system.
      * @returns Minions array.
      */
     async getMinions() {
-        return await minionsBl_1.MinionsBlSingleton.getMinions();
+        return this.cleanUpMinionsBeforRelease(await minionsBl_1.MinionsBlSingleton.getMinions());
     }
     /**
      * Get minion by id.
      * @returns Minion.
      */
     async getMinion(minionId) {
-        return await minionsBl_1.MinionsBlSingleton.getMinionById(minionId);
+        return this.cleanUpMinionBeforRelease(await minionsBl_1.MinionsBlSingleton.getMinionById(minionId));
     }
     /**
      * Update minion status.

@@ -11,6 +11,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
 const authBl_1 = require("../business-layer/authBl");
+const sessionsBl_1 = require("../business-layer/sessionsBl");
+const usersBl_1 = require("../business-layer/usersBl");
 /**
  * Because that express response object needs in auth logic (to write cookies)
  * The TSOA routing is for documentation only.
@@ -35,6 +37,23 @@ let AuthController = class AuthController extends tsoa_1.Controller {
     async logout(request, response) {
         await authBl_1.AuthBlSingleton.logout(request.cookies.session, response);
     }
+    /**
+     * Logout from all activate sessions.
+     */
+    async logoutSessions(userId, request) {
+        const userSession = request.user;
+        /**
+         * Only admin can update other user.
+         */
+        if (userSession.scope !== 'adminAuth' && userSession.email !== userId) {
+            throw {
+                responseCode: 4403,
+                message: 'user not allowed to logout for other users',
+            };
+        }
+        const user = await usersBl_1.UsersBlSingleton.getUser(userId);
+        await sessionsBl_1.SessionsBlSingleton.deleteUserSessions(user);
+    }
     //////////////////////////////////////////////////
     /////// SWAGGER DOCUMENTATION ONLY METHODS ///////
     //////////////////////////////////////////////////
@@ -57,6 +76,13 @@ let AuthController = class AuthController extends tsoa_1.Controller {
         throw new Error('Request never should be here. it is a documentation only route.');
     }
 };
+__decorate([
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Post('/logout-sessions/{userId}'),
+    __param(1, tsoa_1.Request())
+], AuthController.prototype, "logoutSessions", null);
 __decorate([
     tsoa_1.Response(201, '2-fatore code sent'),
     tsoa_1.Response(501, 'Server error'),

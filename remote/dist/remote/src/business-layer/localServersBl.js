@@ -120,6 +120,30 @@ class LocalServersBl {
     async deleteLocalServer(localServerId) {
         return await this.localServersDal.deleteLocalServer(localServerId);
     }
+    /**
+     * Add email account to local server valid to forward collection.
+     * @param localServerId The local server to add the account to.
+     * @param email The email account to add.
+     */
+    async addAccountForwardValid(localServerId, email) {
+        const localServer = await this.localServersDal.getLocalServer(localServerId);
+        if (localServer.validUsers.indexOf(email) === -1) {
+            localServer.validUsers.push(email);
+            this.localServersDal.updateLocalServer(localServer);
+        }
+    }
+    /**
+     * Remove email account to local server valid to forward collection.
+     * @param localServerId The local server to remove the account from.
+     * @param email The email account to remove.
+     */
+    async removeAccountForwardValid(localServerId, email) {
+        const localServer = await this.localServersDal.getLocalServer(localServerId);
+        if (localServer.validUsers.indexOf(email) !== -1) {
+            localServer.validUsers.splice(localServer.validUsers.indexOf(email), 1);
+            this.localServersDal.updateLocalServer(localServer);
+        }
+    }
 }
 exports.LocalServersBl = LocalServersBl;
 exports.LocalServersBlSingleton = new LocalServersBl(localServersDal_1.LocalServersDalSingleton);

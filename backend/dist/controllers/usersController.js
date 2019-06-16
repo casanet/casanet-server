@@ -10,6 +10,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
+const remoteConnectionBl_1 = require("../business-layer/remoteConnectionBl");
 const usersBl_1 = require("../business-layer/usersBl");
 const deepCopy_1 = require("../utilities/deepCopy");
 let UsersController = class UsersController extends tsoa_1.Controller {
@@ -54,6 +55,33 @@ let UsersController = class UsersController extends tsoa_1.Controller {
     async getProfile(request) {
         const userSession = request.user;
         return this.cleanUpUserBeforRelease(await usersBl_1.UsersBlSingleton.getUser(userSession.email));
+    }
+    /**
+     * Reqest registration code.
+     * @param userId User id/email to send code to.
+     */
+    async requestUserForwarding(userId) {
+        await remoteConnectionBl_1.RemoteConnectionBlSingleton.requestSendUserRegisterCode(userId);
+    }
+    /**
+     * Get registered users for forwarding from remote to local.
+     */
+    async getRegisteredUsers() {
+        return await remoteConnectionBl_1.RemoteConnectionBlSingleton.getRegisteredUsersForRemoteForwarding();
+    }
+    /**
+     *  Register account to allow forward HTTP requests from remote to local server.
+     * @param userId User id/email to register.
+     */
+    async requestUserForwardingAuth(userId, auth) {
+        await remoteConnectionBl_1.RemoteConnectionBlSingleton.registerUserForRemoteForwarding(userId, auth.code);
+    }
+    /**
+     * Remove account from local server valid account to forward from remote to local
+     * @param userId User id/email to unregister.
+     */
+    async removeUserForwarding(userId) {
+        await remoteConnectionBl_1.RemoteConnectionBlSingleton.unregisterUserFromRemoteForwarding(userId);
     }
     /**
      * Get all users in the system.
@@ -110,6 +138,27 @@ __decorate([
     tsoa_1.Get('profile'),
     __param(0, tsoa_1.Request())
 ], UsersController.prototype, "getProfile", null);
+__decorate([
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Post('forward-auth/{userId}')
+], UsersController.prototype, "requestUserForwarding", null);
+__decorate([
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Get('forward')
+], UsersController.prototype, "getRegisteredUsers", null);
+__decorate([
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Post('forward/{userId}'),
+    __param(1, tsoa_1.Body())
+], UsersController.prototype, "requestUserForwardingAuth", null);
+__decorate([
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Delete('forward/{userId}')
+], UsersController.prototype, "removeUserForwarding", null);
 __decorate([
     tsoa_1.Security('adminAuth'),
     tsoa_1.Response(501, 'Server error'),

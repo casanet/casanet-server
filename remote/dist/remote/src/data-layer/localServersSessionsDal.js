@@ -50,8 +50,9 @@ class LocalServersSessionsDal {
      */
     async deleteLocalServerSession(localServerId) {
         const localServer = this.findLocalServerSession(localServerId);
+        /** Case there is no any session */
         if (!localServer) {
-            throw new Error('localServer session not exist');
+            return;
         }
         this.localServersSessions.splice(this.localServersSessions.indexOf(localServer), 1);
         await this.dataIo.setData(this.localServersSessions)

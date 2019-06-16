@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
+const dgram = require("dgram");
 const Orvibo = require("node-orvibo-2");
 const logger_1 = require("../../utilities/logger");
 const sleep_1 = require("../../utilities/sleep");
@@ -20,18 +21,38 @@ class OrviboHandler extends brandModuleBase_1.BrandModuleBase {
                 isRecordingSupported: false,
             },
         ];
-        try {
-            this.initOrviboCommunication();
-        }
-        catch (error) {
-            this.orviboCommunication = undefined;
-            logger_1.logger.error('Fail to init orvibo communication');
-        }
+        this.initOrviboCommunication();
+    }
+    /**
+     * Check if UDP port binded to other application.
+     * @param port port to check.
+     */
+    checkPortAvailability(port) {
+        return new Promise((resolve, reject) => {
+            const socket = dgram.createSocket('udp4');
+            socket.on('error', (e) => {
+                reject(e);
+            });
+            socket.bind(port, () => {
+                socket.close();
+                resolve();
+            });
+        });
     }
     /** Init connection (UDP socket) for orvibo,
      * and listen to broadcasts messags in LAN
      */
-    initOrviboCommunication() {
+    async initOrviboCommunication() {
+        try {
+            await this.checkPortAvailability(10000);
+            await this.checkPortAvailability(9999);
+            await this.checkPortAvailability(48899);
+        }
+        catch (error) {
+            this.orviboCommunication = undefined;
+            logger_1.logger.error('Fail to init orvibo communication');
+            return;
+        }
         /** Create the orvibo protocol instance */
         this.orviboCommunication = new Orvibo();
         /** open the needs UDP channel */

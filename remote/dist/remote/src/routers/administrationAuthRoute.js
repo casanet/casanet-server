@@ -1,14 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const authController_1 = require("../../../backend/src/controllers/authController");
+const authBl_1 = require("../../../backend/src/business-layer/authBl");
 const authentication_1 = require("../../../backend/src/security/authentication");
 const authentication_2 = require("../../../backend/src/security/authentication");
 const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
 /** Route login/logout to remote server administation. */
 class AdministrationAuthRouter {
-    constructor() {
-        this.authController = new authController_1.AuthController();
-    }
     routes(app) {
         app.route('/API/administration/auth/login')
             .post(async (req, res) => {
@@ -21,7 +18,7 @@ class AdministrationAuthRouter {
                 return;
             }
             try {
-                const apiError = await this.authController.login(req, res, loginData);
+                const apiError = await authBl_1.AuthBlSingleton.login(res, loginData);
                 /** Case error is planned (and not some inner error that was thrown from somewhere) return it to client. */
                 res.send(apiError);
             }
@@ -41,7 +38,7 @@ class AdministrationAuthRouter {
                 return;
             }
             try {
-                const apiError = await this.authController.loginTfa(req, res, loginData);
+                const apiError = await authBl_1.AuthBlSingleton.loginTfa(res, loginData);
                 /** Case error is planned (and not some inner error that was thrown from somewhere) return it to client. */
                 res.send(apiError);
             }
@@ -64,7 +61,7 @@ class AdministrationAuthRouter {
                 res.status(403).send();
                 return;
             }
-            this.authController.logout(req, res)
+            authBl_1.AuthBlSingleton.logout(req.cookies.session, res)
                 .then(() => {
                 res.send();
             })

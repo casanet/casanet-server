@@ -9,7 +9,6 @@ const logger_1 = require("../utilities/logger");
 const macAddress_1 = require("../utilities/macAddress");
 const minionsBl_1 = require("./minionsBl");
 const timingsBl_1 = require("./timingsBl");
-const usersBl_1 = require("./usersBl");
 /**
  * Used to connect remote server via web socket, and let`s users acceess
  */
@@ -19,17 +18,18 @@ class RemoteConnectionBl {
      * @param remoteConnectionDal Inject the remote connection dal..
      * @param minionsBl Inject the minions bl instance to used minionsBl.
      * @param timingsBl Inject the timings bl instance to used timingsBl.
-     * @param usersBl Inject the user bl instance to used userBl.
      */
-    constructor(remoteConnectionDal, minionsBl, timingsBl, usersBl) {
+    constructor(remoteConnectionDal, minionsBl, timingsBl) {
         this.remoteConnectionDal = remoteConnectionDal;
         this.minionsBl = minionsBl;
         this.timingsBl = timingsBl;
-        this.usersBl = usersBl;
         this.ACK_INTERVAL = moment.duration(20, 'seconds');
+        this.REMOTE_REQUEST_TIMEOUT = moment.duration(20, 'seconds');
         this.ackPongRecieved = true;
+        /** Hold register requests promis functions */
+        this.registerAccountsPromisessMap = {};
         /** Hold the remote connection status */
-        this.remoteConnectionStatus = 'notConfigured';
+        this.remoteConnectionStatus = 'cantReachRemoteServer';
         /** Use chai testing lib, to mock http requests */
         chai.use(chaiHttp);
         /** Connect to remote server */
@@ -122,6 +122,123 @@ class RemoteConnectionBl {
         this.remoteConnectionStatus = 'notConfigured';
         await this.remoteConnectionDal.deleteRemoteSettings();
     }
+    /**
+     * Request from the remote server to send code to email befor register account request
+     * @param email user email account
+     */
+    async requestSendUserRegisterCode(email) {
+        if (this.remoteConnectionStatus !== 'connectionOK') {
+            throw {
+                message: 'There is no connection to remote server',
+                responseCode: 6501,
+            };
+        }
+        await this.sendMessage({
+            localMessagesType: 'sendRegistrationCode',
+            message: {
+                sendRegistrationCode: {
+                    email,
+                },
+            },
+        });
+    }
+    /**
+     * Remove account from local server valid account to forward from remote to local
+     * @param email user email account
+     */
+    unregisterUserFromRemoteForwarding(email) {
+        if (this.remoteConnectionStatus !== 'connectionOK') {
+            throw {
+                message: 'There is no connection to remote server',
+                responseCode: 6501,
+            };
+        }
+        return new Promise(async (resolve, reject) => {
+            await this.sendMessage({
+                localMessagesType: 'unregisterAccount',
+                message: {
+                    unregisterAccount: {
+                        email,
+                    },
+                },
+            });
+            this.registerAccountsPromisessMap[email] = {
+                resolve: resolve,
+                reject: reject,
+                timeout: setTimeout(() => {
+                    reject({
+                        message: 'remote server timeout',
+                        responseCode: 12503,
+                    });
+                }, this.REMOTE_REQUEST_TIMEOUT.asMilliseconds()),
+            };
+        });
+    }
+    /**
+     * Register account to allow forward HTTP requests from remote to local server
+     * @param email user email account
+     * @param code auth. code that sent by remote server to email.
+     */
+    registerUserForRemoteForwarding(email, code) {
+        if (this.remoteConnectionStatus !== 'connectionOK') {
+            throw {
+                message: 'There is no connection to remote server',
+                responseCode: 6501,
+            };
+        }
+        return new Promise(async (resolve, reject) => {
+            await this.sendMessage({
+                localMessagesType: 'registerAccount',
+                message: {
+                    registerAccount: {
+                        email,
+                        code,
+                    },
+                },
+            });
+            this.registerAccountsPromisessMap[email] = {
+                resolve: resolve,
+                reject: reject,
+                timeout: setTimeout(() => {
+                    reject({
+                        message: 'remote server timeout',
+                        responseCode: 12503,
+                    });
+                }, this.REMOTE_REQUEST_TIMEOUT.asMilliseconds()),
+            };
+        });
+    }
+    /**
+     * Get registered users of current local server from the remote server.
+     */
+    getRegisteredUsersForRemoteForwarding() {
+        if (this.remoteConnectionStatus !== 'connectionOK') {
+            throw {
+                message: 'There is no connection to remote server',
+                responseCode: 6501,
+            };
+        }
+        return new Promise(async (resolve, reject) => {
+            await this.sendMessage({
+                localMessagesType: 'registeredUsers',
+                message: {},
+            });
+            this.requestRegisteredUsersPromisess = {
+                resolve: resolve,
+                reject: reject,
+                timeout: setTimeout(() => {
+                    reject({
+                        message: 'remote server timeout',
+                        responseCode: 12503,
+                    });
+                }, this.REMOTE_REQUEST_TIMEOUT.asMilliseconds()),
+            };
+        });
+    }
+    /**
+     * Send a message to remote server.
+     * @param localMessage message to send
+     */
     sendMessage(localMessage) {
         if (this.remoteConnectionStatus !== 'connectionOK' &&
             this.remoteConnectionStatus !== 'cantReachRemoteServer') {
@@ -172,8 +289,11 @@ class RemoteConnectionBl {
                 case 'authenticatedSuccessfuly':
                     await this.onAuthenticatedSuccessfuly();
                     break;
-                case 'localUsers':
-                    await this.onUsersRequired(remoteMessage.message[remoteMessage.remoteMessagesType]);
+                case 'registerUserResults':
+                    await this.onRegisterUserResults(remoteMessage.message[remoteMessage.remoteMessagesType]);
+                    break;
+                case 'registeredUsers':
+                    await this.onRegisteredUsersDataArrived(remoteMessage.message[remoteMessage.remoteMessagesType]);
                     break;
                 case 'ackOk':
                     await this.OnArkOk();
@@ -201,23 +321,35 @@ class RemoteConnectionBl {
         this.ackPongRecieved = true;
         this.remoteConnectionStatus = 'connectionOK';
     }
-    /** If remote server needs collection of users in local server, sent it */
-    async onUsersRequired(usersRequest) {
-        try {
-            const users = await this.usersBl.getUsers();
-            const usersEmail = users.map((user) => user.email);
-            this.sendMessage({
-                localMessagesType: 'localUsers',
-                message: {
-                    localUsers: {
-                        requestId: usersRequest.requestId,
-                        users: usersEmail,
-                    },
-                },
-            });
+    onRegisterUserResults(forwardUserResults) {
+        const { user, results } = forwardUserResults;
+        if (!this.registerAccountsPromisessMap[user]) {
+            return;
         }
-        catch (error) {
+        /** Get the request promise functions */
+        const requestPromises = this.registerAccountsPromisessMap[user];
+        /** Clear the timeout function */
+        clearTimeout(requestPromises.timeout);
+        /** If all ok, invoke the resolve function */
+        if (!results) {
+            requestPromises.resolve();
         }
+        else {
+            /** Else invoke the reject function with error */
+            requestPromises.reject(results);
+        }
+        /** remote user from request promises map. */
+        delete this.registerAccountsPromisessMap[user];
+    }
+    onRegisteredUsersDataArrived(registeredUsers) {
+        if (!this.requestRegisteredUsersPromisess) {
+            return;
+        }
+        /** Clear the timeout function */
+        clearTimeout(this.requestRegisteredUsersPromisess.timeout);
+        this.requestRegisteredUsersPromisess.resolve(registeredUsers);
+        /** Throw promisses away. */
+        this.requestRegisteredUsersPromisess = undefined;
     }
     /** Handle auth passed messages from remote server */
     async onAuthenticatedSuccessfuly() {
@@ -321,5 +453,5 @@ class RemoteConnectionBl {
     }
 }
 exports.RemoteConnectionBl = RemoteConnectionBl;
-exports.RemoteConnectionBlSingleton = new RemoteConnectionBl(remoteConnectionDal_1.RemoteConnectionDalSingleton, minionsBl_1.MinionsBlSingleton, timingsBl_1.TimingsBlSingleton, usersBl_1.UsersBlSingleton);
+exports.RemoteConnectionBlSingleton = new RemoteConnectionBl(remoteConnectionDal_1.RemoteConnectionDalSingleton, minionsBl_1.MinionsBlSingleton, timingsBl_1.TimingsBlSingleton);
 //# sourceMappingURL=remoteConnectionBl.js.map

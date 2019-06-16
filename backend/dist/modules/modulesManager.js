@@ -7,6 +7,7 @@ const rxjs_1 = require("rxjs");
 ///////////////////////////////////////////////////////////////////////////////
 const broadlinkHandler_1 = require("./broadlink/broadlinkHandler");
 const iftttHandler_1 = require("./ifttt/iftttHandler");
+const miioHandler_1 = require("./miio/miioHandler");
 const mockHandler_1 = require("./mock/mockHandler");
 const orviboHandler_1 = require("./orvibo/orviboHandler");
 const tuyaHandler_1 = require("./tuya/tuyaHandler");
@@ -50,6 +51,7 @@ class ModulesManager {
         this.initHandler(new yeelightHandler_1.YeelightHandler());
         this.initHandler(new orviboHandler_1.OrviboHandler());
         this.initHandler(new iftttHandler_1.IftttHandler());
+        this.initHandler(new miioHandler_1.MiioHandler());
     }
     /**
      * Hold the hendler instance and registar to minions status changed.

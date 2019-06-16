@@ -26,6 +26,21 @@ let IftttController = class IftttController extends tsoa_1.Controller {
         await iftttIntegrationBl_1.IftttIntegrationBlSingleton.setIftttIntergrationSettings(iftttIntegrationSettings);
     }
     /**
+     * Ifttt webhooks triggering casa-net action API.
+     * when all details in body only, to allow send all data ion one text line.
+     * Example to use: SMS trigger has only simple text that can pass to IFTTT activity,
+     * and by current request, it is possible to control any minion by one single line of text.
+     * so fill the SMS text with JSON and by IFTTT set it to be the request body.
+     * @param iftttActionTriggered status to and minion to set.
+     */
+    async triggeredSomeAction(iftttRawActionTriggerd) {
+        const { apiKey, minionId, setStatus } = iftttRawActionTriggerd;
+        await iftttIntegrationBl_1.IftttIntegrationBlSingleton.triggeredMinionAction(minionId, {
+            apiKey,
+            setStatus,
+        });
+    }
+    /**
      * Ifttt webhooks triggering casa-net *minion* action API.
      * @param minionId minion to set status.
      * @param iftttActionTriggered status to set.
@@ -54,6 +69,12 @@ __decorate([
     tsoa_1.Put('/settings'),
     __param(0, tsoa_1.Body())
 ], IftttController.prototype, "setIftttIntegrationSettings", null);
+__decorate([
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Security('iftttAuth'),
+    tsoa_1.Post('/trigger/minions/raw/'),
+    __param(0, tsoa_1.Body())
+], IftttController.prototype, "triggeredSomeAction", null);
 __decorate([
     tsoa_1.Response(501, 'Server error'),
     tsoa_1.Security('iftttAuth'),

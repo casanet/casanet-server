@@ -13,6 +13,7 @@ const usersController_1 = require("./../controllers/usersController");
 const remoteConnectionController_1 = require("./../controllers/remoteConnectionController");
 const staticAssetsController_1 = require("./../controllers/staticAssetsController");
 const iftttController_1 = require("./../controllers/iftttController");
+const versionsController_1 = require("./../controllers/versionsController");
 const authentication_1 = require("./../security/authentication");
 const models = {
     "ErrorResponse": {
@@ -60,6 +61,13 @@ const models = {
             "direction": { "dataType": "enum", "enums": ["up", "down"], "required": true },
         },
     },
+    "Cleaner": {
+        "properties": {
+            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+            "mode": { "dataType": "enum", "enums": ["dock", "clean"], "required": true },
+            "fanSpeed": { "dataType": "enum", "enums": ["low", "med", "high", "auto"], "required": true },
+        },
+    },
     "AirConditioning": {
         "properties": {
             "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
@@ -96,6 +104,7 @@ const models = {
             "toggle": { "ref": "Toggle" },
             "switch": { "ref": "Switch" },
             "roller": { "ref": "Roller" },
+            "cleaner": { "ref": "Cleaner" },
             "airConditioning": { "ref": "AirConditioning" },
             "light": { "ref": "Light" },
             "temperatureLight": { "ref": "TemperatureLight" },
@@ -109,7 +118,7 @@ const models = {
             "device": { "ref": "MinionDevice", "required": true },
             "isProperlyCommunicated": { "dataType": "boolean" },
             "minionStatus": { "ref": "MinionStatus", "required": true },
-            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
         },
     },
@@ -181,7 +190,7 @@ const models = {
             "minionsPerDevice": { "dataType": "double", "required": true },
             "isTokenRequierd": { "dataType": "boolean", "required": true },
             "isIdRequierd": { "dataType": "boolean", "required": true },
-            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "isRecordingSupported": { "dataType": "boolean", "required": true },
         },
     },
@@ -220,6 +229,11 @@ const models = {
             "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },
         },
     },
+    "UserForwardAuth": {
+        "properties": {
+            "code": { "dataType": "string", "required": true, "validators": { "minLength": { "value": 6 }, "maxLength": { "value": 6 } } },
+        },
+    },
     "RemoteSettings": {
         "properties": {
             "host": { "dataType": "string", "required": true },
@@ -230,6 +244,14 @@ const models = {
         "properties": {
             "apiKey": { "dataType": "string" },
             "enableIntegration": { "dataType": "boolean", "required": true },
+        },
+    },
+    "IftttRawActionTriggerd": {
+        "properties": {
+            "apiKey": { "dataType": "string", "required": true },
+            "localMac": { "dataType": "string" },
+            "minionId": { "dataType": "string", "required": true },
+            "setStatus": { "dataType": "enum", "enums": ["on", "off"], "required": true },
         },
     },
     "IftttActionTriggered": {
@@ -248,6 +270,26 @@ const models = {
 };
 const validationService = new tsoa_1.ValidationService(models);
 function RegisterRoutes(app) {
+    app.post('/API/auth/logout-sessions/:userId', authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]), function (request, response, next) {
+        const args = {
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
+            request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new authController_1.AuthController();
+        const promise = controller.logoutSessions.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
     app.post('/API/auth/login', function (request, response, next) {
         const args = {
             request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
@@ -260,6 +302,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -279,6 +322,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -295,6 +339,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -311,6 +356,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -327,6 +373,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -343,6 +390,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -359,6 +407,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -378,6 +427,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -394,6 +444,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -410,6 +461,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -428,6 +480,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -447,6 +500,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -466,6 +520,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -485,6 +540,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -504,6 +560,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -522,6 +579,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -538,6 +596,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -556,6 +615,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -574,6 +634,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -593,6 +654,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -609,6 +671,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -627,6 +690,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -646,6 +710,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -664,6 +729,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -682,6 +748,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -700,6 +767,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -716,6 +784,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -734,6 +803,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -753,6 +823,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -771,6 +842,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -789,6 +861,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -807,11 +880,87 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
         const controller = new usersController_1.UsersController();
         const promise = controller.getProfile.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/users/forward-auth/:userId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new usersController_1.UsersController();
+        const promise = controller.requestUserForwarding.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/users/forward', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new usersController_1.UsersController();
+        const promise = controller.getRegisteredUsers.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/users/forward/:userId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
+            auth: { "in": "body", "name": "auth", "required": true, "ref": "UserForwardAuth" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new usersController_1.UsersController();
+        const promise = controller.requestUserForwardingAuth.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.delete('/API/users/forward/:userId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new usersController_1.UsersController();
+        const promise = controller.removeUserForwarding.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.get('/API/users', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
@@ -823,6 +972,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -842,6 +992,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -862,6 +1013,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -881,6 +1033,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -899,6 +1052,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -915,6 +1069,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -931,6 +1086,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -947,6 +1103,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -965,6 +1122,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -981,6 +1139,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -997,6 +1156,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -1013,6 +1173,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -1031,11 +1192,31 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
         const controller = new iftttController_1.IftttController();
         const promise = controller.setIftttIntegrationSettings.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/ifttt/trigger/minions/raw', authenticateMiddleware([{ "iftttAuth": [] }]), function (request, response, next) {
+        const args = {
+            iftttRawActionTriggerd: { "in": "body", "name": "iftttRawActionTriggerd", "required": true, "ref": "IftttRawActionTriggerd" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new iftttController_1.IftttController();
+        const promise = controller.triggeredSomeAction.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.post('/API/ifttt/trigger/minions/:minionId', authenticateMiddleware([{ "iftttAuth": [] }]), function (request, response, next) {
@@ -1050,6 +1231,7 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
@@ -1069,11 +1251,46 @@ function RegisterRoutes(app) {
         catch (err) {
             response.status(422).send({
                 responseCode: 1422,
+                message: JSON.stringify(err.fields),
             });
             return;
         }
         const controller = new iftttController_1.IftttController();
         const promise = controller.triggeredOperationAction.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.put('/API/version/latest', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new versionsController_1.VersionsController();
+        const promise = controller.updateVersion.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/version', authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new versionsController_1.VersionsController();
+        const promise = controller.getCurrentVersion.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     function authenticateMiddleware(security = []) {

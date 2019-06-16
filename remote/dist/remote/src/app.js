@@ -14,8 +14,8 @@ const logger_1 = require("../../backend/src/utilities/logger");
 const administrationAuthRoute_1 = require("./routers/administrationAuthRoute");
 const feedRoute_1 = require("./routers/feedRoute");
 const forwardAuthRoute_1 = require("./routers/forwardAuthRoute");
-const forwardingsRoute_1 = require("./routers/forwardingsRoute");
 const forwardingsIftttRoute_1 = require("./routers/forwardingsIftttRoute");
+const forwardingsRoute_1 = require("./routers/forwardingsRoute");
 const routes_1 = require("./routers/routes");
 // controllers need to be referenced in order to get crawled by the TSOA generator
 require("./controllers/administrationAuthController");
