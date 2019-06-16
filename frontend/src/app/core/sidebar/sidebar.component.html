@@ -82,3 +82,16 @@
         </button>
     </div>
 </div>
+
+<div class="settings-viewer-wrapper">
+    <div class="settings-viewer-title">
+        <div class="settings-viewer-title-spacer">
+            <b>{{ 'VERSION' | translate }}   </b>
+            <i dir="ltr">{{ currentVersion }}</i>
+        </div>
+        <button mat-icon-button matTooltipPosition="below" matTooltip="{{'UPDATE_TO_THE_LAST_VERSION' | translate}}"
+                [disabled]="userProfile.scope !== 'adminAuth'" (click)="updateVertionToLast()">
+            <mat-icon>system_update</mat-icon>
+        </button>
+    </div>
+</div>
