@@ -52,7 +52,7 @@ export class OperationsBl {
             logger.info(`Setting minion ${activity.minionId} a new status by operation activity...`);
 
             try {
-                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus)
+                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
             } catch (error) {
 
                 logger.warn(`Setting minion ${activity.minionId} a new status by operation activity data: ` +

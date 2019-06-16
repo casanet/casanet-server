@@ -58,8 +58,8 @@ export class RemoteConnectionBl {
      * @param timingsBl Inject the timings bl instance to used timingsBl.
      */
     constructor(private remoteConnectionDal: RemoteConnectionDal,
-        private minionsBl: MinionsBl,
-        private timingsBl: TimingsBl,
+                private minionsBl: MinionsBl,
+                private timingsBl: TimingsBl,
     ) {
         /** Use chai testing lib, to mock http requests */
         chai.use(chaiHttp);
@@ -346,7 +346,8 @@ export class RemoteConnectionBl {
                 case 'authenticatedSuccessfuly': await this.onAuthenticatedSuccessfuly(); break;
                 case 'registerUserResults':
                     await this.onRegisterUserResults(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
-                case 'registeredUsers' : await this.onRegisteredUsersDataArrived(remoteMessage.message[remoteMessage.remoteMessagesType]);
+                case 'registeredUsers':
+                    await this.onRegisteredUsersDataArrived(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
                 case 'ackOk': await this.OnArkOk(); break;
                 case 'httpRequest': await this.onRemoteHttpRequest(remoteMessage.message[remoteMessage.remoteMessagesType]); break;
             }
