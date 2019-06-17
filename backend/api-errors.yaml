@@ -43,6 +43,7 @@
 - { 6501 : 'There is no connection to remote server'}
 - { 7501 : 'Pulling last changes from remote repo fail'}
 - { 8501 : 'Installing last dependencies fail'}
+- { 9501 : 'Get current version fail'}
 
 
 - { 1503 : 'Connection to device fail.'}

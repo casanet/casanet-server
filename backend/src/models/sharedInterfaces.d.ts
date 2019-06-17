@@ -646,3 +646,19 @@ export declare interface IftttRawActionTriggerd extends IftttActionTriggeredRequ
     minionId: string;
     setStatus: SwitchOptions;
 }
+
+/** Update version results */
+export declare interface UpdateResults {
+    /** Application already in the latest version  */
+    alreadyUpToDate: boolean;
+}
+
+/** Version info */
+export declare interface VersionInfo {
+    /** Latest version (Git Tag) name */
+    version: string;
+    /** Current local master/HEAD commit hash */
+    commintHash: string;
+    /** Time stamp of HEAD commint in UTC format */
+    timestamp: number;
+}

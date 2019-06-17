@@ -71,14 +71,10 @@
 
 <div class="settings-viewer-wrapper">
     <div class="settings-viewer-title">
-        <div class="settings-viewer-title-spacer"> {{ 'LIGHT_VERSION' | translate }}</div>
-        <button mat-icon-button matTooltipPosition="below">
-            <mat-icon>healing</mat-icon>
-        </button>
-    </div>
-    <div class="settings-viewer-body form-container">
-        <button mat-stroked-button onclick="window.location.href='/static/light-app/index.html'">
-            {{ 'REDIRECT_TO_THE_LIGHT_VERSION' | translate }}
+        <div class="settings-viewer-title-spacer"> {{ 'REDIRECT_TO_THE_LIGHT_VERSION' | translate }}</div>
+        <button mat-icon-button matTooltipPosition="below" onclick="window.open('/static/light-app/index.html')"
+            matTooltip="{{'REDIRECT_TO_THE_LIGHT_VERSION' | translate}}">
+            <mat-icon>reply</mat-icon>
         </button>
     </div>
 </div>
@@ -86,11 +82,19 @@
 <div class="settings-viewer-wrapper">
     <div class="settings-viewer-title">
         <div class="settings-viewer-title-spacer">
-            <b>{{ 'VERSION' | translate }}   </b>
-            <i dir="ltr">{{ currentVersion }}</i>
+            <table style="margin: auto; text-align: right">
+                <tr>
+                    <td><b>{{ 'VERSION' | translate }} </b></td>
+                    <td><i dir="ltr">{{ currentVersionName }}</i></td>
+                </tr>
+                <tr>
+                    <td><b>{{ 'RELEASE_DATE' | translate }} </b></td>
+                    <td><i>{{ currentVersionReleaseDate }}</i></td>
+                </tr>
+            </table>
         </div>
         <button mat-icon-button matTooltipPosition="below" matTooltip="{{'UPDATE_TO_THE_LAST_VERSION' | translate}}"
-                [disabled]="userProfile.scope !== 'adminAuth'" (click)="updateVertionToLast()">
+            [disabled]="userProfile.scope !== 'adminAuth'" (click)="updateVertionToLast()">
             <mat-icon>system_update</mat-icon>
         </button>
     </div>

@@ -24,6 +24,9 @@ export class OperationService {
   private async loadOperations() {
     try {
       const operations = await this.httpClient.get<Operation[]>('/API/operations').toPromise();
+      operations.sort((itemA, itemB) => {
+        return itemA.operationName < itemB.operationName ? -1 : 1;
+      });
       this.operations = operations;
       this.operationFeed.next(this.operations);
     } catch (error) {

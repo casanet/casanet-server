@@ -1,6 +1,6 @@
 import { exec } from 'child-process-promise';
 import * as simplegit from 'simple-git/promise';
-import { ErrorResponse } from '../models/sharedInterfaces';
+import { ErrorResponse, UpdateResults, VersionInfo } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
 export class VersionsBl {
@@ -16,7 +16,7 @@ export class VersionsBl {
      * Step 1: pull changes from remote repo.
      * Step 2: install the new dependencies update via npm.
      */
-    public async updateToLastVersion() {
+    public async updateToLastVersion(): Promise<UpdateResults> {
         /** Get last update from git repo */
         try {
             const pullResults = await this.git.pull('origin', 'master', { '--rebase': 'false' });
@@ -25,7 +25,9 @@ export class VersionsBl {
 
             /** If thers is no any change just return. */
             if (pullResults.summary.changes === 0) {
-                return;
+                return {
+                    alreadyUpToDate: true,
+                };
             }
 
             /** Fetch new tags if exist in remote. */
@@ -52,21 +54,34 @@ export class VersionsBl {
                 message: 'Installing last dependencies fail',
             } as ErrorResponse;
         }
+
+        return {
+            alreadyUpToDate: false,
+        };
     }
 
     /**
      * Get current *localy* version.
-     * @returns Current version (Git latest tag + commit hash).
+     * @returns Current version.
      */
-    public async getCurrentVersion(): Promise<string> {
+    public async getCurrentVersion(): Promise<VersionInfo> {
         try {
             const tags = await this.git.tags();
-
             const commintHash = await this.git.revparse(['--short', 'HEAD']);
-            return `${tags.latest} (${commintHash})`;
+            const rawTimestamp = await this.git.show(['-s', '--format=%ct']);
+
+            const timestamp = parseInt(rawTimestamp) * 1000;
+            return {
+                version: tags.latest,
+                commintHash,
+                timestamp,
+            };
         } catch (error) {
             logger.warn(`Getting latast version (tag) fail ${error.message}`);
-            return 'unknown';
+            throw {
+                responseCode: 9501,
+                message: 'Get current version fail',
+            } as ErrorResponse;
         }
     }
 }

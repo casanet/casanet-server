@@ -125,7 +125,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   private onLoginSuccess() {
     this.router.navigate(['/']);
     this.snackBar.open(this.translatePipe.transform('LOGIN_SUCCESSFULLY'), this.translatePipe.transform('SUBMIT'), {
-      duration: 20000,
+      duration: 2000,
     });
 
     this.minionsService.retriveData();
@@ -142,7 +142,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     if (err.status === 403 || err.status === 401) {
       this.snackBar.open(this.translatePipe.transform('CONNECTED_FAIL'), this.translatePipe.transform('SUBMIT'), {
-        duration: 20000,
+        duration: 2000,
       });
       return;
     }

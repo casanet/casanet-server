@@ -267,6 +267,18 @@ const models = {
             "localMac": { "dataType": "string" },
         },
     },
+    "UpdateResults": {
+        "properties": {
+            "alreadyUpToDate": { "dataType": "boolean", "required": true },
+        },
+    },
+    "VersionInfo": {
+        "properties": {
+            "version": { "dataType": "string", "required": true },
+            "commintHash": { "dataType": "string", "required": true },
+            "timestamp": { "dataType": "double", "required": true },
+        },
+    },
 };
 const validationService = new tsoa_1.ValidationService(models);
 function RegisterRoutes(app) {

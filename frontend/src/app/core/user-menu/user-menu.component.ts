@@ -73,11 +73,11 @@ export class UserMenuComponent implements OnInit {
 			this.usersService.cleanUp();
 
 			this.snackBar.open(this.translatePipe.transform('LOGOUT_SUCCESSFULLY'), this.translatePipe.transform('SUBMIT'), {
-				duration: 20000,
+				duration: 2000,
 			});
 		}).catch((() => {
 			this.snackBar.open(this.translatePipe.transform('LOGOUT_FAIL'), this.translatePipe.transform('SUBMIT'), {
-				duration: 20000,
+				duration: 2000,
 			});
 		}).bind(this));
 	}

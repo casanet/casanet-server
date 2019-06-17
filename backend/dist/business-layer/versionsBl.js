@@ -19,8 +19,12 @@ class VersionsBl {
             logger_1.logger.info(`pull last version pulld ${pullResults.summary.changes} changes`);
             /** If thers is no any change just return. */
             if (pullResults.summary.changes === 0) {
-                return;
+                return {
+                    alreadyUpToDate: true,
+                };
             }
+            /** Fetch new tags if exist in remote. */
+            await this.git.fetch(['--tags', '--force']);
         }
         catch (error) {
             logger_1.logger.warn(`Pulling last change from remote repo fail ${error.message}`);
@@ -41,22 +45,32 @@ class VersionsBl {
                 message: 'Installing last dependencies fail',
             };
         }
+        return {
+            alreadyUpToDate: false,
+        };
     }
     /**
      * Get current *localy* version.
-     * @returns Current version (Git latest tag + commit hash).
+     * @returns Current version.
      */
     async getCurrentVersion() {
         try {
             const tags = await this.git.tags();
-            await this.git.fetch(['--tags', '--force']);
-            const tagsb = await this.git.tags();
             const commintHash = await this.git.revparse(['--short', 'HEAD']);
-            return `${tags.latest} (${commintHash})`;
+            const rawTimestamp = await this.git.show(['-s', '--format=%ct']);
+            const timestamp = parseInt(rawTimestamp) * 1000;
+            return {
+                version: tags.latest,
+                commintHash,
+                timestamp,
+            };
         }
         catch (error) {
             logger_1.logger.warn(`Getting latast version (tag) fail ${error.message}`);
-            return 'unknown';
+            throw {
+                responseCode: 9501,
+                message: 'Get current version fail',
+            };
         }
     }
 }

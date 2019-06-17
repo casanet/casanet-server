@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SettingsService } from '../../services/settings.service';
-import { RemoteConnectionStatus, RemoteSettings, User } from '../../../../../backend/src/models/sharedInterfaces';
+import { RemoteConnectionStatus, RemoteSettings, User, UpdateResults, VersionInfo } from '../../../../../backend/src/models/sharedInterfaces';
 import swal, { SweetAlertResult } from 'sweetalert2';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subscription } from 'rxjs';
@@ -27,7 +27,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     userProfile: User = {} as unknown as User;
     userProfileSubscription: Subscription;
 
-    currentVersion: string;
+    currentVersionName: string;
+    currentVersionReleaseDate: string;
+
 
     private translatePipe: TranslatePipe;
 
@@ -50,7 +52,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
             });
         this.loadRemoteHostName();
         this.loadIftttIntegration();
-        this.loadCurrentVersionName();
+        this.loadCurrentVersion();
     }
 
     ngOnInit() {
@@ -61,8 +63,16 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.userProfileSubscription.unsubscribe();
     }
 
-    private async loadCurrentVersionName() {
-        this.currentVersion = await this.settingsService.getCurrentVersion();
+    private async loadCurrentVersion() {
+        try {
+            const currVersion = await this.settingsService.getCurrentVersion();
+            this.currentVersionName = `${currVersion.version} (${currVersion.commintHash})`;
+            this.currentVersionReleaseDate = new Date(currVersion.timestamp).toLocaleDateString();
+        } catch (error) {
+            this.currentVersionName = 'unknown';
+            this.currentVersionReleaseDate = 'unknown';
+        }
+
     }
     private async loadRemoteHostName() {
         this.remoteHostname = await this.settingsService.getRemoteHostname();
@@ -240,7 +250,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
             showCancelButton: true,
             allowOutsideClick: () => !swal.isLoading(),
             preConfirm: async () => {
-                return await this.settingsService.updateToLastVersion();
+                try {
+                    return await this.settingsService.updateToLastVersion();
+                } catch (error) {
+                    return false;
+                }
             },
         });
 
@@ -248,10 +262,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
             return;
         }
 
-        await this.loadCurrentVersionName();
+        const updateResults: UpdateResults = swalResult.value;
+
+        if (updateResults.alreadyUpToDate) {
+            await swal({
+                type: 'info',
+                title: `${this.translatePipe.transform('SYSTEM_ALREADY_UP_TO_DATE')}`,
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+
+        await this.loadCurrentVersion();
         await swal({
             type: 'success',
-            title: `${this.translatePipe.transform('SUCCESSFULLY_UPDATED_TO')} ${this.currentVersion}`,
+            title: `${this.translatePipe.transform('SUCCESSFULLY_UPDATED_TO')} ${this.currentVersionName}`,
             text: this.translatePipe.transform('RESTART_REQUIRED_FOR_THE_VERSION_UPDATE_COMPLETE'),
             confirmButtonText: 'OK'
         });

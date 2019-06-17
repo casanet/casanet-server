@@ -13,11 +13,11 @@ let VersionsController = class VersionsController extends tsoa_1.Controller {
      * Update CASA-net application to the latest version (Restart required for the version update complete).
      */
     async updateVersion() {
-        await versionsBl_1.VersionsBlSingleton.updateToLastVersion();
+        return await versionsBl_1.VersionsBlSingleton.updateToLastVersion();
     }
     /**
      * Get current version.
-     * @returns Current version (Git latest tag + commit hash).
+     * @returns Current version.
      */
     async getCurrentVersion() {
         return await versionsBl_1.VersionsBlSingleton.getCurrentVersion();

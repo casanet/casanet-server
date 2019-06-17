@@ -26,6 +26,9 @@ export class TimingsService {
   private async loadTimings() {
     try {
       const timings = await this.httpClient.get<Timing[]>('/API/timings').toPromise();
+      timings.sort((itemA, itemB) => {
+        return itemA.timingName < itemB.timingName ? -1 : 1;
+      });
       this.timings = timings;
       this.timingsFeed.next(this.timings);
 
