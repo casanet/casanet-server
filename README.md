@@ -1,6 +1,3 @@
-> The version 1 of the project placed in [here](https://github.com/haimkastner/Home-IoT-Server/tree/archive-v1), maintaining for security and fatal bugs fixes only.
----
-
 ![Screenshot](./docs/images/logo-wide.png)
 
 Let's create a smart home, without giving anyone access to our house 😊.
@@ -29,8 +26,8 @@ This structure enables the creation of a separate server and a collection of mod
 ![Screenshot](./docs/screenshots/devices.PNG)
 
 Minimal page (only 5 kb of resources should be transferred !!!) for old phones or very slow networks.
-<img src="./docs/screenshots/light-dashboard.jpg" alt="Kitten"
-	title="A cute kitten" width="300" height="600" />
+<img src="./docs/screenshots/light-dashboard.jpg" alt="lite-dashboard"
+	title="lite-dashboard screenshot" width="300" height="600" />
 
 
 Link to the minimal page exist in the settings 'light version' section, or just navigate to `[server-ip/host]/static/light-app/index.html`.
@@ -159,4 +156,8 @@ For any suggestion or help feel free to contact me.
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
 
-Shared with  ❤️  by kastnet.
+Shared with 	❤️ 	by kastnet.
+
+---
+> The version 1 of the project placed in [here](https://github.com/haimkastner/Home-IoT-Server/tree/archive-v1), maintaining for security and fatal bugs fixes only.
+---
