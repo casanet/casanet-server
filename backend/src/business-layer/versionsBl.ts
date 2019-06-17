@@ -28,6 +28,9 @@ export class VersionsBl {
                 return;
             }
 
+            /** Fetch new tags if exist in remote. */
+            await this.git.fetch(['--tags', '--force']);
+
         } catch (error) {
             logger.warn(`Pulling last change from remote repo fail ${error.message}`);
             throw {

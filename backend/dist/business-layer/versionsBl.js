@@ -49,6 +49,8 @@ class VersionsBl {
     async getCurrentVersion() {
         try {
             const tags = await this.git.tags();
+            await this.git.fetch(['--tags', '--force']);
+            const tagsb = await this.git.tags();
             const commintHash = await this.git.revparse(['--short', 'HEAD']);
             return `${tags.latest} (${commintHash})`;
         }
