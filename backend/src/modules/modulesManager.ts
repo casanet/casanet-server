@@ -11,6 +11,7 @@ import { IftttHandler } from './ifttt/iftttHandler';
 import { MiioHandler } from './miio/miioHandler';
 import { MockHandler } from './mock/mockHandler';
 import { OrviboHandler } from './orvibo/orviboHandler';
+import { TasmotaHandler } from './tasmota/tasmotaHandler';
 import { TuyaHandler } from './tuya/tuyaHandler';
 import { YeelightHandler } from './yeelight/yeelightHandler';
 
@@ -59,6 +60,7 @@ export class ModulesManager {
         ////////////////////////////////////////////////////////////////////////
         this.initHandler(new MockHandler());
         this.initHandler(new TuyaHandler());
+        this.initHandler(new TasmotaHandler());
         this.initHandler(new BroadlinkHandler());
         this.initHandler(new YeelightHandler());
         this.initHandler(new OrviboHandler());
