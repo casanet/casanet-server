@@ -10,6 +10,7 @@ const iftttHandler_1 = require("./ifttt/iftttHandler");
 const miioHandler_1 = require("./miio/miioHandler");
 const mockHandler_1 = require("./mock/mockHandler");
 const orviboHandler_1 = require("./orvibo/orviboHandler");
+const tasmotaHandler_1 = require("./tasmota/tasmotaHandler");
 const tuyaHandler_1 = require("./tuya/tuyaHandler");
 const yeelightHandler_1 = require("./yeelight/yeelightHandler");
 class ModulesManager {
@@ -47,6 +48,7 @@ class ModulesManager {
         ////////////////////////////////////////////////////////////////////////
         this.initHandler(new mockHandler_1.MockHandler());
         this.initHandler(new tuyaHandler_1.TuyaHandler());
+        this.initHandler(new tasmotaHandler_1.TasmotaHandler());
         this.initHandler(new broadlinkHandler_1.BroadlinkHandler());
         this.initHandler(new yeelightHandler_1.YeelightHandler());
         this.initHandler(new orviboHandler_1.OrviboHandler());
