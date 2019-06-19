@@ -26,6 +26,14 @@ then you have to get the device token see [Obtain Mi Home device token](https://
 
 Then scan the local network by the casa-net server.
 
+### Tasmota devices:
+
+Tasmota is a great open-source firmware for ESP8266 based boards. see the project [here](https://github.com/arendst/Sonoff-Tasmota).
+ 
+After flashing and configure the device to connect to the local home wifi (there are many tutorials, for me [thats](https://www.youtube.com/watch?v=pVPPiYAo8NI) worked). 
+
+Then scan the local network by the casa-net server.
+
 ### Tuya devies:
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.tuya.smart).
 Note that a lot of Chinese devices supported tuya API, see [tuyapi project](https://github.com/codetheweb/tuyapi).
