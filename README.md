@@ -83,6 +83,10 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
     -  Philips LED Ceiling Lamp. [link](https://www.gearbest.com/smart-ceiling-lights/pp_009933492211.html)
 	-  Robot Vacuum. [link](https://www.gearbest.com/robot-vacuum/pp_440546.html)
 
+- Tasmota (ESP8266 based)
+    
+    - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363))
+
 - [IFTTT](https://ifttt.com/discover) (Using [WebHooks](https://ifttt.com/maker_webhooks) API).
 
     - Toggle.
