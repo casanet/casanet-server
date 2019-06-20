@@ -30,9 +30,11 @@ Then scan the local network by the casa-net server.
 
 Tasmota is a great open-source firmware for ESP8266 based boards. see the project [here](https://github.com/arendst/Sonoff-Tasmota).
  
-After flashing and configure the device to connect to the local home wifi (there are many tutorials, for me [thats](https://www.youtube.com/watch?v=pVPPiYAo8NI) worked). 
+After flashing and configure the device to connect to the local home wifi (there are many tutorials, for me [thats](https://www.youtube.com/watch?v=pVPPiYAo8NI) worked).
 
 Then scan the local network by the casa-net server.
+
+> This module using the HTTP API of Tasmota. and assuming that there is no username/password required.
 
 ### Tuya devies:
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.tuya.smart).
