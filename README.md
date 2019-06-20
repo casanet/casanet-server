@@ -83,7 +83,7 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
     -  Philips LED Ceiling Lamp. [link](https://www.gearbest.com/smart-ceiling-lights/pp_009933492211.html)
 	-  Robot Vacuum. [link](https://www.gearbest.com/robot-vacuum/pp_440546.html)
 
-- Tasmota (ESP8266 based)
+- Tasmota
     
     - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363))
 
@@ -92,16 +92,21 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
     - Toggle.
     - Switch.
 
+- Mock (for testing only)
+    
+    -  Toggle demo.
+    -  Switch demo
+    -  Air-conditioning demo.
+    -  Light demo.
+    -  Temperature light demo.
+    -  Color light demo.
+    -  Roller demo.
+    
 ## Supported soon.
 
 - Kankun
     
     - Smart Wifi Plug.
-    
-* Sonoff (aka itead)
-    
-    - Basic.
-    - Wall switch.
 
 ## Adding other devices support.
 Yes, it is possible and will be welcome, see [modules](./backend/src/modules/README.md#-for-development-only-).
