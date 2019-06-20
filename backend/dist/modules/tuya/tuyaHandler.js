@@ -44,11 +44,22 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
                 suppotedMinionType: 'roller',
                 isRecordingSupported: false,
             },
+            {
+                brand: this.brandName,
+                isTokenRequierd: true,
+                isIdRequierd: true,
+                minionsPerDevice: 1,
+                model: 'curtain v3.3',
+                suppotedMinionType: 'roller',
+                isRecordingSupported: false,
+            },
         ];
         /**
          * Map devices by mac address
          */
         this.pysicalDevicesMap = {};
+        /** Cache last status, to ignore unnececary updates.  */
+        this.devicesStatusCache = {};
     }
     /**
      * Create new tuya communication device api.
@@ -63,6 +74,7 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
             id: minionDevice.deviceId,
             key: minionDevice.token,
             ip: minionDevice.pysicalDevice.ip,
+            version: minionDevice.model.indexOf('v3.3') !== -1 ? 3.3 : undefined,
             persistentConnection: true,
         });
         /**
@@ -81,12 +93,18 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
          * Registar to status changed event.
          */
         tuyaDevice.on('data', async (data) => {
-            logger_1.logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} data arrived`);
             /** Case data arrived with garbage value */
             if (typeof data === 'string') {
                 return;
             }
-            if (minionDevice.model === 'curtain') {
+            /** If data same as cached, abort. */
+            if (this.devicesStatusCache[minionDevice.pysicalDevice.mac] === JSON.stringify(data)) {
+                return;
+            }
+            /** Save data as last status cache. */
+            this.devicesStatusCache[minionDevice.pysicalDevice.mac] = JSON.stringify(data);
+            logger_1.logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} data arrived`);
+            if (minionDevice.model.indexOf('curtain') !== -1) {
                 try {
                     const rowStatus = await tuyaDevice.get();
                     const minions = await this.retrieveMinions.pull();
@@ -97,12 +115,21 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
                         if (minion.device.deviceId !== minionDevice.deviceId) {
                             continue;
                         }
+                        const status = rowStatus !== '3' ? 'on' : 'off';
+                        const direction = rowStatus === '1' ? 'up' : 'down';
+                        /**
+                         * If value not changed.
+                         */
+                        if (minion.minionStatus.roller.status === status &&
+                            minion.minionStatus.roller.direction === direction) {
+                            continue;
+                        }
                         this.minionStatusChangedEvent.next({
                             minionId: minion.minionId,
                             status: {
                                 roller: {
-                                    status: rowStatus !== '3' ? 'on' : 'off',
-                                    direction: rowStatus === '1' ? 'up' : 'down',
+                                    status,
+                                    direction,
                                 },
                             },
                         });
@@ -201,7 +228,7 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
          * Get tuya device instance
          */
         const tuyaDevice = this.getTuyaDevice(miniom.device);
-        if (miniom.device.model === 'curtain') {
+        if (miniom.device.model.indexOf('curtain') !== -1) {
             try {
                 const rowStatus = await tuyaDevice.get();
                 return {
@@ -274,7 +301,7 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
          * Get tuya device instance
          */
         const tuyaDevice = this.getTuyaDevice(miniom.device);
-        if (miniom.device.model === 'curtain') {
+        if (miniom.device.model.indexOf('curtain') !== -1) {
             try {
                 await tuyaDevice.set({
                     set: setStatus.roller.status === 'off' ? '3' : (setStatus.roller.direction === 'up' ? '1' : '2'),

@@ -55,7 +55,7 @@
     "simple-git": "^1.115.0",
     "suncalc": "^1.8.0",
     "tsoa": "^2.3.81",
-    "tuyapi": "^3.2.3",
+    "tuyapi": "^5.1.1",
     "yeelight-awesome": "^1.0.12"
   },
   "devDependencies": {
