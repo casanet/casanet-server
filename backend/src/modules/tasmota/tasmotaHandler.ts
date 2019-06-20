@@ -9,7 +9,7 @@ import { BrandModuleBase } from '../brandModuleBase';
 
 export class TasmotaHandler extends BrandModuleBase {
 
-    public readonly brandName: string = 'tosmota';
+    public readonly brandName: string = 'tasmota';
 
     public readonly devices: DeviceKind[] = [
         {
