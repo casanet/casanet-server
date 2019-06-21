@@ -56,7 +56,7 @@ To use it:
 1) in tasmota web interface set the broker ip. (note that if not set other broker to casanet, the broker is the casanet server ip).
 1) in tasmota web interface change the topic name to `sonoff/[minionId]`. 
     - for example:
-        ![Screenshot](../../../../screenshots/mqtt/tasmota-confign.JPG)
+        ![Screenshot](../../../../docs/screenshots/mqtt/tasmota-config.JPG)
         
 
 ## Implement converter
