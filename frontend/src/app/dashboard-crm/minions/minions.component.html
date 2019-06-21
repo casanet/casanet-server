@@ -6,7 +6,7 @@
             [ngClass]="minion.minionType !== 'toggle' && !minion.sync && minion.keyup && !minion.other_keyup ? 'minion-card' : ''"
             style="max-width: 500px !important" [style.background]="getMinionColor(minion).dark">
             <div *ngIf="minion.recordMode" style="margin: 10px">
-                <button *ngIf="minion.minionType !== 'toggle'" mat-mini-fab color="warn" [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
+                <button *ngIf="minion.minionType !== 'toggle' && minion.minionType !== 'roller'"  mat-mini-fab color="warn" [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
                     [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'" matTooltip="{{ ('PRESS_TO_RECORD') | translate}}"
                     matTooltipPosition="above" [disabled]="minion.recording" (click)="recordCommand(minion)">
                     <div *ngIf="minion.recording" style="margin: 2.5px">
@@ -17,6 +17,14 @@
                 <button *ngIf="minion.minionType === 'toggle'" mat-mini-fab color="warn" [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
                     [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'" matTooltip="{{ ('GENERATE_COMMANDS') | translate}}"
                     matTooltipPosition="above" [disabled]="minion.recording" (click)="generateToggleCommands(minion)">
+                    <div *ngIf="minion.recording" style="margin: 2.5px">
+                        <mat-spinner color="warn" strokeWidth="3" diameter="20"></mat-spinner>
+                    </div>
+                    <mat-icon *ngIf="!minion.recording">money</mat-icon>
+                </button>
+                <button *ngIf="minion.minionType === 'roller'" mat-mini-fab color="warn" [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
+                    [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'" matTooltip="{{ ('GENERATE_COMMANDS') | translate}}"
+                    matTooltipPosition="above" [disabled]="minion.recording" (click)="generateRollerCommands(minion)">
                     <div *ngIf="minion.recording" style="margin: 2.5px">
                         <mat-spinner color="warn" strokeWidth="3" diameter="20"></mat-spinner>
                     </div>

@@ -224,6 +224,16 @@ export class MinionsComponent implements OnInit, OnDestroy {
 		minion['recording'] = false;
 	}
 
+	public async generateRollerCommands(minion: Minion) {
+		minion['recording'] = true;
+
+		await this.minionsService.generateCommand(minion, { roller: { status: 'on' , direction : 'up' } });
+		await this.minionsService.generateCommand(minion, { roller: { status: 'on' , direction : 'down' } });
+		await this.minionsService.generateCommand(minion, { roller: { status: 'off' , direction : 'down' } });
+
+		minion['recording'] = false;
+	}
+
 	public async showDeviceInfo(minion: Minion) {
 		const swalResult: void | SweetAlertResult = await swal({
 			type: 'info',
