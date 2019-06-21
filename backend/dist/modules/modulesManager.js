@@ -9,6 +9,7 @@ const broadlinkHandler_1 = require("./broadlink/broadlinkHandler");
 const iftttHandler_1 = require("./ifttt/iftttHandler");
 const miioHandler_1 = require("./miio/miioHandler");
 const mockHandler_1 = require("./mock/mockHandler");
+const mqttHandler_1 = require("./mqtt/mqttHandler");
 const orviboHandler_1 = require("./orvibo/orviboHandler");
 const tasmotaHandler_1 = require("./tasmota/tasmotaHandler");
 const tuyaHandler_1 = require("./tuya/tuyaHandler");
@@ -54,6 +55,7 @@ class ModulesManager {
         this.initHandler(new orviboHandler_1.OrviboHandler());
         this.initHandler(new iftttHandler_1.IftttHandler());
         this.initHandler(new miioHandler_1.MiioHandler());
+        this.initHandler(new mqttHandler_1.MqttHandler());
     }
     /**
      * Hold the hendler instance and registar to minions status changed.

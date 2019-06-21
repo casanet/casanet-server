@@ -10,6 +10,7 @@ import { BroadlinkHandler } from './broadlink/broadlinkHandler';
 import { IftttHandler } from './ifttt/iftttHandler';
 import { MiioHandler } from './miio/miioHandler';
 import { MockHandler } from './mock/mockHandler';
+import { MqttHandler } from './mqtt/mqttHandler';
 import { OrviboHandler } from './orvibo/orviboHandler';
 import { TasmotaHandler } from './tasmota/tasmotaHandler';
 import { TuyaHandler } from './tuya/tuyaHandler';
@@ -66,6 +67,7 @@ export class ModulesManager {
         this.initHandler(new OrviboHandler());
         this.initHandler(new IftttHandler());
         this.initHandler(new MiioHandler());
+        this.initHandler(new MqttHandler());
 
     }
 
