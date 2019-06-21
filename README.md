@@ -91,7 +91,16 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
 
     - Toggle.
     - Switch.
-
+    
+- [MQTT](http://mqtt.org/) module. [module use documentation](./backend/src/modules/mqtt/README.md).
+    -  Toggle.
+    -  Switch.
+    -  Air-conditioning.
+    -  Light
+    -  Temperature.
+    -  Color.
+    -  Roller.
+    
 - Mock (for testing only)
     
     -  Toggle demo.
