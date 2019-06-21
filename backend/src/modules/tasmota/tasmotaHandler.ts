@@ -34,7 +34,7 @@ export class TasmotaHandler extends BrandModuleBase {
             return {
                 switch: {
                     status,
-                }
+                },
             };
         } catch (error) {
             logger.warn(`Sent Tosmota command ${miniom.minionId} fail, ${JSON.stringify(error.message)}`);

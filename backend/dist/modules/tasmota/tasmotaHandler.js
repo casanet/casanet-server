@@ -6,7 +6,7 @@ const brandModuleBase_1 = require("../brandModuleBase");
 class TasmotaHandler extends brandModuleBase_1.BrandModuleBase {
     constructor() {
         super();
-        this.brandName = 'tosmota';
+        this.brandName = 'tasmota';
         this.devices = [
             {
                 brand: this.brandName,
@@ -26,7 +26,7 @@ class TasmotaHandler extends brandModuleBase_1.BrandModuleBase {
             return {
                 switch: {
                     status,
-                }
+                },
             };
         }
         catch (error) {
