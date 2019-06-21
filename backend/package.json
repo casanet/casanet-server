@@ -15,6 +15,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "async-mqtt": "^2.3.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
@@ -41,6 +42,7 @@
     "log4js": "^3.0.6",
     "miio": "^0.15.6",
     "moment": "^2.23.0",
+    "mosca": "^2.8.3",
     "network-list2": "^1.0.2",
     "node-orvibo-2": "^1.1.2",
     "node-yeelight-wifi": "^0.1.2",
@@ -71,6 +73,7 @@
     "@types/joi": "^14.3.2",
     "@types/mocha": "^5.2.6",
     "@types/moment": "^2.13.0",
+    "@types/mosca": "^2.8.1",
     "@types/node": "^10.12.10",
     "@types/nodemailer": "^4.6.6",
     "@types/randomstring": "^1.1.6",
