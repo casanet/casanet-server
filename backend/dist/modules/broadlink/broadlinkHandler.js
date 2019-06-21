@@ -40,6 +40,15 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
                 suppotedMinionType: 'toggle',
                 isRecordingSupported: true,
             },
+            {
+                brand: this.brandName,
+                isTokenRequierd: false,
+                isIdRequierd: false,
+                minionsPerDevice: -1,
+                model: 'RM Pro as RF roller',
+                suppotedMinionType: 'roller',
+                isRecordingSupported: true,
+            },
         ];
         const cache = super.getCacheDataSync();
         if (cache) {
@@ -196,6 +205,36 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
         const hexCommandCode = setStatus.toggle.status === 'on'
             ? minionCache.toggleCommands.on
             : minionCache.toggleCommands.off;
+        if (!hexCommandCode) {
+            throw {
+                responseCode: 4503,
+                message: 'there is no availble command. record a on off commands set.',
+            };
+        }
+        await this.sendBeamCommand(broadlink, hexCommandCode);
+        minionCache.lastStatus = setStatus;
+        this.updateCache();
+    }
+    async setRFRollerStatus(miniom, setStatus) {
+        const broadlink = await this.getBroadlinkInstance(miniom);
+        const minionCache = this.getOrCreateMinionCache(miniom);
+        if (!minionCache.rollerCommands) {
+            throw {
+                responseCode: 4503,
+                message: 'there is no availble command. record a roller commands set.',
+            };
+        }
+        const hexCommandCode = setStatus.roller.status === 'off'
+            ? minionCache.rollerCommands.off
+            : setStatus.roller.direction === 'up'
+                ? minionCache.rollerCommands.up
+                : minionCache.rollerCommands.down;
+        if (!hexCommandCode) {
+            throw {
+                responseCode: 4503,
+                message: 'there is no availble command. record a roller commands set.',
+            };
+        }
         await this.sendBeamCommand(broadlink, hexCommandCode);
         minionCache.lastStatus = setStatus;
         this.updateCache();
@@ -266,7 +305,7 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
         }
         this.updateCache();
     }
-    async generateRFCommand(miniom, statusToRecordFor) {
+    async generateToggleRFCommand(miniom, statusToRecordFor) {
         const generatedCode = BroadlinkCodeGeneration.generate('RF433');
         const minionCache = this.getOrCreateMinionCache(miniom);
         if (!minionCache.toggleCommands) {
@@ -283,6 +322,27 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
         }
         this.updateCache();
     }
+    async generateRollerRFCommand(miniom, statusToRecordFor) {
+        const generatedCode = BroadlinkCodeGeneration.generate('RF433');
+        const minionCache = this.getOrCreateMinionCache(miniom);
+        if (!minionCache.rollerCommands) {
+            minionCache.rollerCommands = {
+                down: undefined,
+                up: undefined,
+                off: undefined,
+            };
+        }
+        if (statusToRecordFor.roller.status === 'off') {
+            minionCache.rollerCommands.off = generatedCode;
+        }
+        else if (statusToRecordFor.roller.direction === 'up') {
+            minionCache.rollerCommands.up = generatedCode;
+        }
+        else {
+            minionCache.rollerCommands.down = generatedCode;
+        }
+        this.updateCache();
+    }
     async recordRFToggleCommands(miniom, statusToRecordFor) {
         // TODO: swap and then record.
         throw {
@@ -295,8 +355,8 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
             case 'SP2':
                 return await this.getSP2Status(miniom);
             case 'RM Pro as RF toggle':
-                return await this.getCachedStatus(miniom);
             case 'RM3 / RM Pro as IR AC':
+            case 'RM Pro as RF roller':
                 return await this.getCachedStatus(miniom);
         }
         throw {
@@ -312,6 +372,8 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
                 return await this.setRFToggleStatus(miniom, setStatus);
             case 'RM3 / RM Pro as IR AC':
                 return await this.setIRACStatus(miniom, setStatus);
+            case 'RM Pro as RF roller':
+                return await this.setRFRollerStatus(miniom, setStatus);
         }
         throw {
             responseCode: 8404,
@@ -333,7 +395,9 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
     async generateCommand(miniom, statusToRecordFor) {
         switch (miniom.device.model) {
             case 'RM Pro as RF toggle':
-                return await this.generateRFCommand(miniom, statusToRecordFor);
+                return await this.generateToggleRFCommand(miniom, statusToRecordFor);
+            case 'RM Pro as RF roller':
+                return await this.generateRollerRFCommand(miniom, statusToRecordFor);
         }
         throw {
             responseCode: 8404,
