@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import { Duration } from 'moment';
-import { AirConditioning, DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
+import { AirConditioning, DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions } from '../../models/sharedInterfaces';
 import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 
@@ -29,6 +29,11 @@ interface Cache {
     acCommands?: {
         off: string;
         statusCommands: AirConditioningCommand[];
+    };
+    rollerCommands?: {
+        off: string;
+        up: string;
+        down: string;
     };
 }
 
@@ -64,6 +69,15 @@ export class BroadlinkHandler extends BrandModuleBase {
             minionsPerDevice: -1,
             model: 'RM Pro as RF toggle',
             suppotedMinionType: 'toggle',
+            isRecordingSupported: true,
+        },
+        {
+            brand: this.brandName,
+            isTokenRequierd: false,
+            isIdRequierd: false,
+            minionsPerDevice: -1,
+            model: 'RM Pro as RF roller',
+            suppotedMinionType: 'roller',
             isRecordingSupported: true,
         },
     ];
@@ -251,6 +265,44 @@ export class BroadlinkHandler extends BrandModuleBase {
             ? minionCache.toggleCommands.on
             : minionCache.toggleCommands.off;
 
+        if (!hexCommandCode) {
+            throw {
+                responseCode: 4503,
+                message: 'there is no availble command. record a on off commands set.',
+            } as ErrorResponse;
+        }
+        await this.sendBeamCommand(broadlink, hexCommandCode);
+
+        minionCache.lastStatus = setStatus;
+        this.updateCache();
+    }
+
+    private async setRFRollerStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+
+        const broadlink = await this.getBroadlinkInstance(miniom) as BroadlinkAPI;
+
+        const minionCache = this.getOrCreateMinionCache(miniom);
+
+        if (!minionCache.rollerCommands) {
+            throw {
+                responseCode: 4503,
+                message: 'there is no availble command. record a roller commands set.',
+            } as ErrorResponse;
+        }
+
+        const hexCommandCode = setStatus.roller.status === 'off'
+            ? minionCache.rollerCommands.off
+            : setStatus.roller.direction === 'up'
+                ? minionCache.rollerCommands.up
+                : minionCache.rollerCommands.down;
+
+        if (!hexCommandCode) {
+            throw {
+                responseCode: 4503,
+                message: 'there is no availble command. record a roller commands set.',
+            } as ErrorResponse;
+        }
+
         await this.sendBeamCommand(broadlink, hexCommandCode);
 
         minionCache.lastStatus = setStatus;
@@ -341,7 +393,7 @@ export class BroadlinkHandler extends BrandModuleBase {
         this.updateCache();
     }
 
-    private async generateRFCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+    private async generateToggleRFCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
 
         const generatedCode = BroadlinkCodeGeneration.generate('RF433');
 
@@ -363,6 +415,31 @@ export class BroadlinkHandler extends BrandModuleBase {
         this.updateCache();
     }
 
+    private async generateRollerRFCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+
+        const generatedCode = BroadlinkCodeGeneration.generate('RF433');
+
+        const minionCache = this.getOrCreateMinionCache(miniom);
+
+        if (!minionCache.rollerCommands) {
+            minionCache.rollerCommands = {
+                down: undefined,
+                up: undefined,
+                off: undefined,
+            };
+        }
+
+        if (statusToRecordFor.roller.status === 'off') {
+            minionCache.rollerCommands.off = generatedCode;
+        } else if (statusToRecordFor.roller.direction === 'up') {
+            minionCache.rollerCommands.up = generatedCode;
+        } else {
+            minionCache.rollerCommands.down = generatedCode;
+        }
+
+        this.updateCache();
+    }
+
     private async recordRFToggleCommands(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
         // TODO: swap and then record.
         throw {
@@ -376,8 +453,8 @@ export class BroadlinkHandler extends BrandModuleBase {
             case 'SP2':
                 return await this.getSP2Status(miniom);
             case 'RM Pro as RF toggle':
-                return await this.getCachedStatus(miniom);
             case 'RM3 / RM Pro as IR AC':
+            case 'RM Pro as RF roller':
                 return await this.getCachedStatus(miniom);
         }
         throw {
@@ -394,6 +471,8 @@ export class BroadlinkHandler extends BrandModuleBase {
                 return await this.setRFToggleStatus(miniom, setStatus);
             case 'RM3 / RM Pro as IR AC':
                 return await this.setIRACStatus(miniom, setStatus);
+            case 'RM Pro as RF roller':
+                return await this.setRFRollerStatus(miniom, setStatus);
         }
         throw {
             responseCode: 8404,
@@ -417,7 +496,9 @@ export class BroadlinkHandler extends BrandModuleBase {
     public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
         switch (miniom.device.model) {
             case 'RM Pro as RF toggle':
-                return await this.generateRFCommand(miniom, statusToRecordFor);
+                return await this.generateToggleRFCommand(miniom, statusToRecordFor);
+            case 'RM Pro as RF roller':
+                return await this.generateRollerRFCommand(miniom, statusToRecordFor);
         }
         throw {
             responseCode: 8404,
