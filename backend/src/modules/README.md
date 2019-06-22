@@ -36,6 +36,12 @@ Then scan the local network by the casa-net server.
 
 > This module using the HTTP API of Tasmota. and assuming that there is no username/password required.
 
+### MQTT devices:
+
+MQTT is a great open-source iot publish subscribe system.
+ 
+For the integration guide see [MQTT module](./mqtt/README.md)
+
 ### Tuya devies:
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.tuya.smart).
 Note that a lot of Chinese devices supported tuya API, see [tuyapi project](https://github.com/codetheweb/tuyapi).
