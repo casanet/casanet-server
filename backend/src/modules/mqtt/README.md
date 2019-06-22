@@ -29,7 +29,7 @@ For example (Filling only the current minion device type):
 ```
 
 ### MQTT module publishing
-The MQTT module publish to the topic `set/casanet/[minionId]`, to set the minion a new status. 
+The MQTT module publish to the topic `set/casanet/[minionId]`, to set the minion a new status.
 For example `set/casanet/yg56rf`.
 
 The body of message is a minion status to set (see swagger aapi for the stractur).
@@ -41,6 +41,8 @@ For example (It filling only the current minion device type):
         }
     }
 ```
+
+And also MQTT module publish to the topic  `set/casanet/[minionId]` to get the current status (with empty body).
 
 ### MQTT converter
 If the device MQTT client not allowing to match the above topic/data. 
@@ -63,7 +65,8 @@ To use it:
 It should be very simple.
 1) create converter file, go to `mqtt-converters` directory and copy the `tasmotaConverter.ts` and change the file name (to `xxxConverter.ts`) and the class name `XxxxConverter`.
 1) in the `subscribeDeviceTopic` data member set the topic to subscribe.
-1) in the `convertToDevice` method implement the convertion from minion id and status to device set status topic/data.
-1) in the `convertToCasanet` method implement the convertion form the new device status message to minion id and new minion status struct.
+1) in the `convertSetStatusToDevice` method implement the convertion from casanet set minion status to device set status topic/data request.
+1) in the `convertStatusRequestToDevice` method implement the convertion from casanet get minion status to device get current status topic/data request.
+1) in the `convertStatusToCasanet` method implement the convertion form the device current status message to casanet minion id and minion status struct.
 1) in the `mqtt/mqttHandler.ts` (line ~145) add an instance of the `XxxConverter` class to converters collection.
 1) fill free for help or opening implementations PR ;)

@@ -189,7 +189,8 @@ export class MqttHandler extends BrandModuleBase {
     }
 
     public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
-        /** Current there is no option to 'ask' other mqtt client to get his status, only by updates. */
+        await this.mqttClient.publish(`get/casanet/${miniom.minionId}`, '');
+        /** Current there is no option to 'ask' and wait for respone, only to send request and the update will arrive by status topic. */
         return miniom.minionStatus;
     }
 

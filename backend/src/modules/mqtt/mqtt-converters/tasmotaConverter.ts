@@ -9,14 +9,21 @@ export class TasmotaConverter extends MqttConverterBase {
      */
     protected subscribeDeviceTopic = 'stat/sonoff/+/POWER';
 
-    public async convertToDevice(minionId: string, setStatus: MinionStatus): Promise<MqttMessage> {
+    public async convertSetStatusToDevice(minionId: string, setStatus: MinionStatus): Promise<MqttMessage> {
         return {
             topic: `cmnd/sonoff/${minionId}/POWER`,
             data: setStatus.switch.status.toUpperCase(),
         };
     }
 
-    public async convertToCasanet(topic: string, data: string): Promise<ParsedMqttMessage> {
+    public async convertStatusRequestToDevice(minionId: string): Promise<MqttMessage> {
+        return {
+            topic: `cmnd/sonoff/${minionId}/POWER`,
+            data: '',
+        };
+    }
+
+    public async convertStatusToCasanet(topic: string, data: string): Promise<ParsedMqttMessage> {
         const topics = topic.split('/');
         const minionId = topics[2];
 
