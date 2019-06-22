@@ -1,10 +1,10 @@
-import * as networkList2 from 'network-list2';
-import * as isOnline from 'is-online';
 import * as ip from 'ip';
+import * as isOnline from 'is-online';
+import * as networkList2 from 'network-list2';
+import { Configuration } from '../config';
 import { LocalNetworkDevice } from '../models/sharedInterfaces';
 import { logger } from './logger';
 import { GetMachinMacAddress } from './macAddress';
-import { Configuration } from '../config';
 
 /**
  * Get the all local network devices.
@@ -21,7 +21,7 @@ export const LocalNetworkReader = (): Promise<LocalNetworkDevice[]> => {
         if (Configuration.scanSubnet) {
             ops.ip = Configuration.scanSubnet;
             ops.vendor = isInternetOnline;
-        };
+        }
 
         networkList2.scan(ops, (err: any, netTableArray: any[]) => {
             logger.info('Scanning network devices done.');
@@ -34,7 +34,7 @@ export const LocalNetworkReader = (): Promise<LocalNetworkDevice[]> => {
 
             const devices: LocalNetworkDevice[] = [];
 
-            /** Add current mechine info to table (without the MAC address!!!)*/
+            /** Add current mechine info to table (without the MAC address!!!) */
             devices.push({
                 mac: '------------',
                 ip: ip.address(),

@@ -1,5 +1,5 @@
-import * as  moment from 'moment';
 import * as  dgram from 'dgram';
+import * as  moment from 'moment';
 import * as Orvibo from 'node-orvibo-2';
 import {
     DeviceKind,

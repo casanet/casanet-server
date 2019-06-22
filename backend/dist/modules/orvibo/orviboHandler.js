@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const moment = require("moment");
 const dgram = require("dgram");
+const moment = require("moment");
 const Orvibo = require("node-orvibo-2");
 const logger_1 = require("../../utilities/logger");
 const sleep_1 = require("../../utilities/sleep");

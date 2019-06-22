@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const networkList2 = require("network-list2");
-const isOnline = require("is-online");
 const ip = require("ip");
-const logger_1 = require("./logger");
+const isOnline = require("is-online");
+const networkList2 = require("network-list2");
 const config_1 = require("../config");
+const logger_1 = require("./logger");
 /**
  * Get the all local network devices.
  */
@@ -18,7 +18,6 @@ exports.LocalNetworkReader = () => {
             ops.ip = config_1.Configuration.scanSubnet;
             ops.vendor = isInternetOnline;
         }
-        ;
         networkList2.scan(ops, (err, netTableArray) => {
             logger_1.logger.info('Scanning network devices done.');
             if (err) {
@@ -28,7 +27,7 @@ exports.LocalNetworkReader = () => {
                 return;
             }
             const devices = [];
-            /** Add current mechine info to table (without the MAC address!!!)*/
+            /** Add current mechine info to table (without the MAC address!!!) */
             devices.push({
                 mac: '------------',
                 ip: ip.address(),

@@ -44,15 +44,6 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
                 suppotedMinionType: 'roller',
                 isRecordingSupported: false,
             },
-            {
-                brand: this.brandName,
-                isTokenRequierd: true,
-                isIdRequierd: true,
-                minionsPerDevice: 1,
-                model: 'curtain v3.3',
-                suppotedMinionType: 'roller',
-                isRecordingSupported: false,
-            },
         ];
         /**
          * Map devices by mac address
@@ -66,31 +57,22 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
      * and also listen to data arrived from device.
      * @param minionDevice minion device property to create for.
      */
-    createTuyaDevice(minionDevice) {
+    async createTuyaDevice(minionDevice) {
         /**
          * Create tuya device.
          */
         const tuyaDevice = new Tuyapi({
             id: minionDevice.deviceId,
             key: minionDevice.token,
-            ip: minionDevice.pysicalDevice.ip,
-            version: minionDevice.model.indexOf('v3.3') !== -1 ? 3.3 : undefined,
             persistentConnection: true,
         });
+        await tuyaDevice.find();
         /**
-         * Registar to connected event.
+         * Establish connection
          */
-        tuyaDevice.on('connected', () => {
-            logger_1.logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} connected`);
-        });
+        await tuyaDevice.connect();
         /**
-         * Registar to disconnected event.
-         */
-        tuyaDevice.on('disconnected', () => {
-            logger_1.logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} disconnected`);
-        });
-        /**
-         * Registar to status changed event.
+         * Subscribe to status changed event.
          */
         tuyaDevice.on('data', async (data) => {
             /** Case data arrived with garbage value */
@@ -117,13 +99,6 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
                         }
                         const status = rowStatus !== '3' ? 'on' : 'off';
                         const direction = rowStatus === '1' ? 'up' : 'down';
-                        /**
-                         * If value not changed.
-                         */
-                        if (minion.minionStatus.roller.status === status &&
-                            minion.minionStatus.roller.direction === direction) {
-                            continue;
-                        }
                         this.minionStatusChangedEvent.next({
                             minionId: minion.minionId,
                             status: {
@@ -201,12 +176,8 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
          * Registar to error event.
          */
         tuyaDevice.on('error', (err) => {
-            logger_1.logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${err}`);
+            // logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${err}`);
         });
-        /**
-         * Establish connection
-         */
-        tuyaDevice.connect();
         /**
          * Save the device API in map. to allow instance useing.
          */
@@ -217,9 +188,9 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
      * @param minionDevice The minion device property. to get tuya instance for.
      * @returns tuya device API instance
      */
-    getTuyaDevice(minionDevice) {
+    async getTuyaDevice(minionDevice) {
         if (!(minionDevice.pysicalDevice.mac in this.pysicalDevicesMap)) {
-            this.createTuyaDevice(minionDevice);
+            await this.createTuyaDevice(minionDevice);
         }
         return this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
     }
@@ -227,7 +198,7 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
         /**
          * Get tuya device instance
          */
-        const tuyaDevice = this.getTuyaDevice(miniom.device);
+        const tuyaDevice = await this.getTuyaDevice(miniom.device);
         if (miniom.device.model.indexOf('curtain') !== -1) {
             try {
                 const rowStatus = await tuyaDevice.get();
@@ -300,7 +271,7 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
         /**
          * Get tuya device instance
          */
-        const tuyaDevice = this.getTuyaDevice(miniom.device);
+        const tuyaDevice = await this.getTuyaDevice(miniom.device);
         if (miniom.device.model.indexOf('curtain') !== -1) {
             try {
                 await tuyaDevice.set({
