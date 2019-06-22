@@ -5,8 +5,8 @@ const logger_1 = require("../../utilities/logger");
 const brandModuleBase_1 = require("../brandModuleBase");
 const tasmotaConverter_1 = require("./mqtt-converters/tasmotaConverter");
 const mqttBroker_1 = require("./mqttBroker");
-const mqttBrokerIp = process.env.MQTT_BROKER_IP;
-const mqttBrokerPort = process.env.MQTT_BROKER_PORT;
+const mqttBrokerUri = process.env.MQTT_BROKER_URI;
+const mqttInternalBrokerPort = process.env.MQTT_INTERNAL_BROKER_PORT;
 class MqttHandler extends brandModuleBase_1.BrandModuleBase {
     constructor() {
         super();
@@ -89,32 +89,33 @@ class MqttHandler extends brandModuleBase_1.BrandModuleBase {
         this.mqttConverters.push(new tasmotaConverter_1.TasmotaConverter());
         /** Init converters */
         for (const mqttConverter of this.mqttConverters) {
-            await mqttConverter.initClient(this.brokerIp, this.brokerPort);
+            await mqttConverter.initClient(this.brokerUri);
         }
     }
     /** Load broker (or init new one if not configurate one) */
     async loadMqttBroker() {
-        /** Get broker port */
-        this.brokerPort = mqttBrokerPort
-            ? parseInt(mqttBrokerPort, 10)
-            : 1883;
-        /** If there is broker save his ip */
-        if (mqttBrokerIp) {
-            this.brokerIp = mqttBrokerIp;
+        /** If there is broker set by env vars */
+        if (mqttBrokerUri) {
+            this.brokerUri = mqttBrokerUri;
             /** Then load casanet client */
             await this.loadMqttClient();
             return;
         }
         logger_1.logger.info(`There is no MQTT_BROKER_IP env var, invokeing internal mqtt broker.`);
         this.mqttBroker = new mqttBroker_1.MqttBroker();
+        /** Get broker port */
+        const internalBrokerPort = mqttInternalBrokerPort
+            ? parseInt(mqttInternalBrokerPort, 10)
+            : 1883;
         /** Invoke the internal broker and keep the ip */
-        this.brokerIp = await this.mqttBroker.invokeBroker(this.brokerPort);
+        const internalBrokerIp = await this.mqttBroker.invokeBroker(internalBrokerPort);
+        this.brokerUri = `mqtt://${internalBrokerIp}:${internalBrokerPort}`;
         /** Then load casanet client */
         await this.loadMqttClient();
     }
     /** Load mqtt client */
     async loadMqttClient() {
-        this.mqttClient = mqttapi.connect(`tcp://${this.brokerIp}:${this.brokerPort}`);
+        this.mqttClient = mqttapi.connect(this.brokerUri);
         this.mqttClient.on('connect', async () => {
             /** Subscribe to topic that sent to casanet */
             await this.mqttClient.subscribe(`stat/casanet/#`);
@@ -158,8 +159,7 @@ class MqttHandler extends brandModuleBase_1.BrandModuleBase {
     }
     async getStatus(miniom) {
         await this.mqttClient.publish(`get/casanet/${miniom.minionId}`, '');
-        // await this.mqttClient.publish('cmnd/sonoff/ukT2gE/POWER', '');
-        /** Current there is no option to 'ask' other mqtt client to get his status, only by updates. */
+        /** Current there is no option to 'ask' and wait for respone, only to send request and the update will arrive by status topic. */
         return miniom.minionStatus;
     }
     async setStatus(miniom, setStatus) {

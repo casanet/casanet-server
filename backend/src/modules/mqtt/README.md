@@ -5,11 +5,12 @@ The [MQTT](http://mqtt.org/) protocol design for IOT devices, and it is very eas
 ## Implementation
 The MQTT module is an MQTT client that subscribe to devices statuses updates and publish set/get status requests.
 
-## Connect module to MQTT broker
+## Connect module to an MQTT broker
 MQTT system is several clients that connect to one broker.
 
-To tell the module the broker IP/port set the `MQTT_BROKER_IP` `MQTT_BROKER_PORT` env vars.
-If IP not configuration, it's OK, the module will invoke broker internally and all MQTT clients (include MQTT module) should connect to it.
+To connect the module to an exists broker set the `MQTT_BROKER_URI` env var (for example `mqtt://192.168.1.10:1883`).
+To run internal broker empty the `MQTT_BROKER_URI` env var.
+The default internal broker port is 1883 to change it sets `MQTT_INTERNAL_BROKER_PORT` env var.
 
 ## MQTT messages publish/subscribe structure
 
