@@ -14,8 +14,8 @@ class MqttConverterBase {
     /**
      * Init the converter mqtt client.
      */
-    async initClient(brokerIp, brokerPort) {
-        this.mqttClient = mqttapi.connect(`tcp://${brokerIp}:${brokerPort}`);
+    async initClient(brokerUri) {
+        this.mqttClient = mqttapi.connect(brokerUri);
         this.mqttClient.on('connect', async () => {
             /** Subscribe to casanet topics */
             await this.mqttClient.subscribe(this.casanetSetTopic);

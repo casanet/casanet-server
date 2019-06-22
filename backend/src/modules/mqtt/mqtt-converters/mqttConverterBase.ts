@@ -36,8 +36,8 @@ export abstract class MqttConverterBase {
     /**
      * Init the converter mqtt client.
      */
-    public async initClient(brokerIp: string, brokerPort: number): Promise<MqttConverterBase> {
-        this.mqttClient = mqttapi.connect(`tcp://${brokerIp}:${brokerPort}`);
+    public async initClient(brokerUri: string): Promise<MqttConverterBase> {
+        this.mqttClient = mqttapi.connect(brokerUri);
 
         this.mqttClient.on('connect', async () => {
 
