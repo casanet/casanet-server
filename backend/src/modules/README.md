@@ -38,9 +38,9 @@ Then scan the local network by the casa-net server.
 
 ### MQTT devices:
 
-MQTT is a great open-source iot publish subscribe system.
+MQTT is a great open-source publish-subscribe system for IOT devices.
  
-For the integration guide see [MQTT module](./mqtt/README.md)
+For integration guide see [MQTT module](./mqtt/README.md)
 
 ### Tuya devies:
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.tuya.smart).
