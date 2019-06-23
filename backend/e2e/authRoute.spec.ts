@@ -1,6 +1,7 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import chaiHttp = require('chai-http');
+import * as moment from 'moment';
 import app from '../src/App';
 import { Login } from '../src/models/sharedInterfaces';
 import { validAdminPlainPassword, validSystemAdmin , validSystemUser , validUserPlainPassword } from './prepareRoutesSpecTests.spec';
@@ -24,7 +25,7 @@ describe('Authentication routing API', () => {
                     expect(res).cookie('session');
                     done();
                 });
-        });
+        }).timeout(moment.duration(15, 'seconds').asMilliseconds());
 
         it('it should respond 40x as status code', (done) => {
             const loginSchema: Login = {

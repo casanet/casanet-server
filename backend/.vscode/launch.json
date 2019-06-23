@@ -37,6 +37,28 @@
         "--colors",
         "--recursive",
         "${workspaceFolder}/test/**/*.spec.ts",
+      ],
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Mocha e2e",
+      "preLaunchTask": "npm: test",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "env": {
+        "NODE_ENV": "test",
+        "TEST_LONG_SPECS": "true"
+      },
+      "args": [
+        "--require",
+        "ts-node/register",
+        "-u",
+        "tdd",
+        "--timeout",
+        "999999",
+        "--colors",
+        "--recursive",
         "${workspaceFolder}/e2e/**/*.spec.ts"
       ],
       "internalConsoleOptions": "openOnSessionStart"

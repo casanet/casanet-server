@@ -1,5 +1,6 @@
 import { PullBehavior } from 'pull-behavior';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import { Configuration } from '../config';
 import { DeviceKind, ErrorResponse, Minion, MinionDevice, MinionStatus } from '../models/sharedInterfaces';
 import { BrandModuleBase } from './brandModuleBase';
 
@@ -48,6 +49,13 @@ export class ModulesManager {
     public retrieveMinions: PullBehavior<Minion[]> = new PullBehavior<Minion[]>();
 
     constructor() {
+
+        /** Currently, do not coverage modules, only 'mock' for other tests. */
+        if (Configuration.runningMode === 'test') {
+            this.initHandler(new MockHandler());
+            return;
+        }
+
         this.initHandlers();
     }
 

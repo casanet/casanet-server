@@ -20,8 +20,7 @@ const usersBlMock = new UsersBl(new UsersDalMock() as unknown as UsersDal);
 
 const remoteConnectionBl = new RemoteConnectionBl(new RemoteConnectionDalMock() as unknown as RemoteConnectionDal,
     minionBlMock as unknown as MinionsBl,
-    new TimingsBlMock() as unknown as TimingsBl,
-    usersBlMock as unknown as UsersBl);
+    new TimingsBlMock() as unknown as TimingsBl);
 
 // remoteConnectionBl.setRemoteSettings({
 //     host: '127.0.0.1:4112',

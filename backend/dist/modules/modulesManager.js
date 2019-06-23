@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const pull_behavior_1 = require("pull-behavior");
 const rxjs_1 = require("rxjs");
+const config_1 = require("../config");
 ///////////////////////////////////////////////////////////////////////////////
 //////////////// TO EXTEND: Place here handler reference //////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,6 +29,11 @@ class ModulesManager {
          * Allows to retrieve minions array. (used as proxy for all moduls).
          */
         this.retrieveMinions = new pull_behavior_1.PullBehavior();
+        /** Currently do not test modules, only mock for testes. */
+        if (config_1.Configuration.runningMode === 'test') {
+            this.initHandler(new mockHandler_1.MockHandler());
+            return;
+        }
         this.initHandlers();
     }
     /**

@@ -11,7 +11,8 @@
   "scripts": {
     "jscopy": "copyfiles -u 1 src/**/*.js dist",
     "build": "tsoa routes && tsoa swagger && tsc && npm run jscopy",
-    "test": "del-cli data/test -f && npm run prepare && cross-env NODE_ENV=test mocha --require ts-node/register test/**/*.spec.ts e2e/**/*.spec.ts"
+    "test": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --require ts-node/register test/**/*.spec.ts",
+    "e2e": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --require ts-node/register e2e/**/*.spec.ts"
   },
   "license": "ISC",
   "dependencies": {
@@ -54,7 +55,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "rxjs": "^6.3.3",
-    "simple-git": "^1.115.0",
+    "simple-git": "^1.116.0",
     "suncalc": "^1.8.0",
     "tsoa": "^2.3.81",
     "tuyapi": "^5.1.1",
