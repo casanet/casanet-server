@@ -113,9 +113,6 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
     
 ## Supported soon.
 
-- Kankun
-    
-    - Smart Wifi Plug.
 
 ## Adding other devices support.
 Yes, it is possible and will be welcome, see [modules](./backend/src/modules/README.md#-for-development-only-).
