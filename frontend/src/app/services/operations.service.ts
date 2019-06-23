@@ -51,6 +51,15 @@ export class OperationService {
     }
   }
 
+  public async editOperation(operation: Operation) {
+    try {
+      await this.httpClient.put(`/API/operations/${operation.operationId}`, operation).toPromise();
+      this.loadOperations();
+    } catch (error) {
+      this.toastrAndErrorsService.OnHttpError(error);
+    }
+  }
+
   public async deleteOperation(operation: Operation) {
     try {
       await this.httpClient.delete(`/API/operations/${operation.operationId}`).toPromise();

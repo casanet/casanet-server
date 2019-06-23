@@ -80,6 +80,10 @@
                         <span *ngIf="!minion.recordMode">{{ 'ENTER_RECORD_OR_GENERATE_MODE' | translate}}</span>
                         <span *ngIf="minion.recordMode">{{ 'EXIT_RECORD_OR_GENERATE_MODE' | translate}}</span>
                     </button>
+                    <button mat-menu-item (click)="renameMinion(minion)">
+                        <mat-icon>format_italic</mat-icon>
+                        <span>{{ 'RENAME' | translate}}</span>
+                    </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item style="color: salmon;" (click)="deleteMinion(minion)">
                         <mat-icon style="color: salmon;">delete_forever</mat-icon>

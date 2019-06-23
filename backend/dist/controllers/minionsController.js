@@ -50,11 +50,19 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
     }
     /**
      * Update minion status.
-     * @param minionId Minon id.
+     * @param minionId Minion id.
      * @param setStatus Minion status to set.
      */
     async setMinion(minionId, setStatus) {
         return await minionsBl_1.MinionsBlSingleton.setMinionStatus(minionId, setStatus);
+    }
+    /**
+     * Update minion name.
+     * @param minionId Minion id.
+     * @param name Minion new name to set.
+     */
+    async renameMinion(minionId, minionRename) {
+        return await minionsBl_1.MinionsBlSingleton.renameMinion(minionId, minionRename.name);
     }
     /**
      * Update minion auto turns off timeout.
@@ -137,6 +145,13 @@ __decorate([
     tsoa_1.Put('{minionId}'),
     __param(1, tsoa_1.Body())
 ], MinionsController.prototype, "setMinion", null);
+__decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Put('rename/{minionId}'),
+    __param(1, tsoa_1.Body())
+], MinionsController.prototype, "renameMinion", null);
 __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),

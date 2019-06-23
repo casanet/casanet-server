@@ -272,6 +272,34 @@ class MinionsBl {
         await this.readMinionStatus(minioin);
     }
     /**
+     * Rename minion.
+     * @param minionId minion id.
+     * @param nameToSet the new name to set.
+     */
+    async renameMinion(minionId, nameToSet) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        minion.name = nameToSet;
+        try {
+            await this.minionsDal.renameMinion(minionId, nameToSet);
+        }
+        catch (error) {
+            logger_1.logger.warn(`Fail to update minion ${minionId} with new name ${error.message}`);
+        }
+        /**
+         * Send minions feed update.
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
+    /**
      * Set minon status
      * @param minionId minion to set new status to.
      * @param minionStatus the status to set.

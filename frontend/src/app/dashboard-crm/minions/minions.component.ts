@@ -77,6 +77,7 @@ export class MinionsComponent implements OnInit, OnDestroy {
 
 					/** Set all possible changes to current minion properties */
 					existMinion.isProperlyCommunicated = minion.isProperlyCommunicated;
+					existMinion.name = minion.name;
 					existMinion.minionAutoTurnOffMS = minion.minionAutoTurnOffMS;
 					existMinion.device = minion.device;
 					existMinion.minionStatus = minion.minionStatus;
@@ -195,6 +196,29 @@ export class MinionsComponent implements OnInit, OnDestroy {
 		await this.setStatus(minion, minion.minionStatus);
 	}
 
+	public async renameMinion(minion: Minion) {
+
+		const swalResult: void | SweetAlertResult = await swal({
+			title: `${this.translatePipe.transform('SET_A_NEW_NAME')}`,
+			text: `${this.translatePipe.transform('CURRENT_NAME')}: ${minion.name}`,
+			input: 'text',
+			showConfirmButton: true,
+			showCancelButton: true,
+			confirmButtonText: this.translatePipe.transform('SUBMIT'),
+			cancelButtonText: this.translatePipe.transform('CANCEL')
+		});
+
+		// Case user select 'cancel' cancel the delete.
+		if (swalResult && swalResult.dismiss) {
+			return;
+		}
+
+		minion['sync'] = true;
+
+		await this.minionsService.renameMinion(minion, swalResult.value);
+
+		minion['sync'] = false;
+	}
 	public async setStatus(minion: Minion, setStatus: MinionStatus) {
 		if (minion['recordMode']) {
 			return;
@@ -227,9 +251,9 @@ export class MinionsComponent implements OnInit, OnDestroy {
 	public async generateRollerCommands(minion: Minion) {
 		minion['recording'] = true;
 
-		await this.minionsService.generateCommand(minion, { roller: { status: 'on' , direction : 'up' } });
-		await this.minionsService.generateCommand(minion, { roller: { status: 'on' , direction : 'down' } });
-		await this.minionsService.generateCommand(minion, { roller: { status: 'off' , direction : 'down' } });
+		await this.minionsService.generateCommand(minion, { roller: { status: 'on', direction: 'up' } });
+		await this.minionsService.generateCommand(minion, { roller: { status: 'on', direction: 'down' } });
+		await this.minionsService.generateCommand(minion, { roller: { status: 'off', direction: 'down' } });
 
 		minion['recording'] = false;
 	}

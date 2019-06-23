@@ -29,6 +29,10 @@
                                 <mat-icon>play_circle_filled</mat-icon>
                                 <span>{{ 'REPLACE_OPERATION' | translate}}</span>
                     </button>
+                    <button mat-menu-item (click)="renameTiming(timing)">
+                        <mat-icon>format_italic</mat-icon>
+                        <span>{{ 'RENAME' | translate}}</span>
+                    </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item style="color: salmon;" (click)="deleteTiming(timing)">
                         <mat-icon style="color: salmon;">delete_forever</mat-icon>

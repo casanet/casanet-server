@@ -235,6 +235,14 @@ export class MinionsService {
 		}
 	}
 
+	public async renameMinion(minion: Minion, newName: number) {
+		try {
+			await this.httpClient.put(`/API/minions/rename/${minion.minionId}`, { name : newName }).toPromise();
+		} catch (error) {
+			this.toastrAndErrorsService.OnHttpError(error);
+		}
+	}
+
 	public async refreshData() {
 		await this.loadMinions();
 	}

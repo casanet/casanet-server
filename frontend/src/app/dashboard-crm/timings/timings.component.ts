@@ -110,6 +110,38 @@ export class TimingsComponent implements OnInit, OnDestroy {
     timing['sync'] = false;
   }
 
+  public async renameTiming(timing: Timing) {
+
+    const swalResult: void | SweetAlertResult = await swal({
+      title: `${this.translatePipe.transform('SET_A_NEW_NAME')}`,
+      text: `${this.translatePipe.transform('CURRENT_NAME')}: ${timing.timingName}`,
+      input: 'text',
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: this.translatePipe.transform('SUBMIT'),
+      cancelButtonText: this.translatePipe.transform('CANCEL')
+    });
+
+    // Case user select 'cancel' cancel the delete.
+    if (swalResult && swalResult.dismiss) {
+      return;
+    }
+
+    const { timingId, timingProperties, timingType, triggerOperationId, isActive } = timing;
+    timing['sync'] = true;
+
+    await this.timingsService.editTimings({
+      isActive,
+      timingId,
+      timingName : swalResult.value,
+      timingProperties,
+      timingType,
+      triggerOperationId
+    });
+
+    timing['sync'] = false;
+  }
+
   public async editTiming(timing: Timing) {
 
     const { isActive, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
@@ -168,7 +200,7 @@ export class TimingsComponent implements OnInit, OnDestroy {
       timingName,
       timingProperties,
       timingType,
-      triggerOperationId : swalResult.value
+      triggerOperationId: swalResult.value
     });
 
     timing['sync'] = false;

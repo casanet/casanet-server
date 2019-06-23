@@ -131,6 +131,34 @@ export class OperationsComponent implements OnInit, OnDestroy {
     operation['sync'] = false;
   }
 
+  public async renameOperation(operation: Operation) {
+
+    const swalResult: void | SweetAlertResult = await swal({
+      title: `${this.translatePipe.transform('SET_A_NEW_NAME')}`,
+      text: `${this.translatePipe.transform('CURRENT_NAME')}: ${operation.operationName}`,
+      input: 'text',
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: this.translatePipe.transform('SUBMIT'),
+      cancelButtonText: this.translatePipe.transform('CANCEL')
+    });
+
+    // Case user select 'cancel' cancel the delete.
+    if (swalResult && swalResult.dismiss) {
+      return;
+    }
+
+    const { operationId, activities } = operation;
+    operation['sync'] = true;
+
+    await this.operationService.editOperation({
+      operationId,
+      activities,
+      operationName: swalResult.value,
+    });
+
+    operation['sync'] = false;
+  }
   public async deleteOperation(operation: Operation) {
     const swalResult: void | SweetAlertResult = await swal({
       type: 'warning',

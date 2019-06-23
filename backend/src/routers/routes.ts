@@ -194,6 +194,11 @@ const models: TsoaRoute.Models = {
             "isRecordingSupported": { "dataType": "boolean", "required": true },
         },
     },
+    "MinionRename": {
+        "properties": {
+            "name": { "dataType": "string", "required": true },
+        },
+    },
     "SetMinionAutoTurnOff": {
         "properties": {
             "setAutoTurnOffMS": { "dataType": "double", "required": true },
@@ -589,6 +594,31 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.setMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.put('/API/minions/rename/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+                minionRename: { "in": "body", "name": "minionRename", "required": true, "ref": "MinionRename" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.renameMinion.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/minions/timeout/:minionId',

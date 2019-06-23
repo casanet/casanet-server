@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as moment from 'moment';
 import { MinionsDalSingleton } from '../src/data-layer/minionsDal';
-import { ErrorResponse, Minion, MinionStatus, SetMinionAutoTurnOff, Switch } from '../src/models/sharedInterfaces';
+import { ErrorResponse, Minion, MinionRename, MinionStatus, SetMinionAutoTurnOff } from '../src/models/sharedInterfaces';
 import { validUserAgent } from './prepareRoutesSpecTests.spec';
 
 const minioinMock: Minion = {
@@ -149,14 +149,29 @@ describe('Minions routing API', () => {
         });
     });
 
+    describe('/PUT minions/rename/{minionId}', () => {
+        it('it should change the minion name successfully', async () => {
+            const minionUpdate: MinionRename = {
+                name: 'other name',
+            };
+            const response = await validUserAgent.put('/API/minions/rename/m1').send(minionUpdate);
+
+            expect(response.statusType).eql(2);
+
+            const getResponse = await validUserAgent.get('/API/minions/m1').send();
+
+            expect(getResponse.body).to.have.property('name').eq('other name');
+        });
+    });
+
     describe('/POST minions/commands/record/{minionId}', () => {
         it('it should respond 20x as status code', (done) => {
             const minionStatus: MinionStatus = {
-                airConditioning : {
+                airConditioning: {
                     fanStrength: 'high',
-                    mode : 'auto',
-                    status : 'on',
-                    temperature : 21,
+                    mode: 'auto',
+                    status: 'on',
+                    temperature: 21,
                 },
             };
             validUserAgent.post('/API/minions/commands/record/m2')
@@ -171,11 +186,11 @@ describe('Minions routing API', () => {
     describe('/POST minions/commands/generate/{minionId}', () => {
         it('it should respond 20x as status code', (done) => {
             const minionStatus: MinionStatus = {
-                airConditioning : {
+                airConditioning: {
                     fanStrength: 'high',
-                    mode : 'auto',
-                    status : 'on',
-                    temperature : 21,
+                    mode: 'auto',
+                    status: 'on',
+                    temperature: 21,
                 },
             };
             validUserAgent.post('/API/minions/commands/generate/m2')

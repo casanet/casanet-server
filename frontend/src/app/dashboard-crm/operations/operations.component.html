@@ -24,6 +24,10 @@
                         <mat-icon>edit</mat-icon>
                         <span>{{ 'EDIT' | translate}}</span>
                     </button>
+                    <button mat-menu-item (click)="renameOperation(operation)">
+                        <mat-icon>format_italic</mat-icon>
+                        <span>{{ 'RENAME' | translate}}</span>
+                    </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item style="color: salmon;" (click)="deleteOperation(operation)">
                         <mat-icon style="color: salmon;">delete_forever</mat-icon>

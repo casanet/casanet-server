@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
-import { ErrorResponse, IftttOnChanged, Minion, MinionStatus, SetMinionAutoTurnOff } from '../models/sharedInterfaces';
+import { ErrorResponse, IftttOnChanged, Minion, MinionRename, MinionStatus, SetMinionAutoTurnOff } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
 
 @Tags('Minions')
@@ -55,7 +55,7 @@ export class MinionsController extends Controller {
 
     /**
      * Update minion status.
-     * @param minionId Minon id.
+     * @param minionId Minion id.
      * @param setStatus Minion status to set.
      */
     @Security('userAuth')
@@ -64,6 +64,19 @@ export class MinionsController extends Controller {
     @Put('{minionId}')
     public async setMinion(minionId: string, @Body() setStatus: MinionStatus): Promise<void> {
         return await MinionsBlSingleton.setMinionStatus(minionId, setStatus);
+    }
+
+    /**
+     * Update minion name.
+     * @param minionId Minion id.
+     * @param name Minion new name to set.
+     */
+    @Security('userAuth')
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Put('rename/{minionId}')
+    public async renameMinion(minionId: string, @Body() minionRename: MinionRename): Promise<void> {
+        return await MinionsBlSingleton.renameMinion(minionId, minionRename.name);
     }
 
     /**

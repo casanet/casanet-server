@@ -320,6 +320,38 @@ export class MinionsBl {
     }
 
     /**
+     * Rename minion.
+     * @param minionId minion id.
+     * @param nameToSet the new name to set.
+     */
+    public async renameMinion(minionId: string, nameToSet: string): Promise<void> {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            } as ErrorResponse;
+        }
+
+        minion.name = nameToSet;
+
+        try {
+            await this.minionsDal.renameMinion(minionId, nameToSet);
+        } catch (error) {
+            logger.warn(`Fail to update minion ${minionId} with new name ${error.message}`);
+
+        }
+
+        /**
+         * Send minions feed update.
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
+
+    /**
      * Set minon status
      * @param minionId minion to set new status to.
      * @param minionStatus the status to set.

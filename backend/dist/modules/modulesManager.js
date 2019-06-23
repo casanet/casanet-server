@@ -29,7 +29,7 @@ class ModulesManager {
          * Allows to retrieve minions array. (used as proxy for all moduls).
          */
         this.retrieveMinions = new pull_behavior_1.PullBehavior();
-        /** Currently do not test modules, only mock for testes. */
+        /** Currently, do not coverage modules, only 'mock' for other tests. */
         if (config_1.Configuration.runningMode === 'test') {
             this.initHandler(new mockHandler_1.MockHandler());
             return;
