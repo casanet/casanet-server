@@ -148,7 +148,7 @@ class MqttHandler extends brandModuleBase_1.BrandModuleBase {
                     });
                     return;
                 }
-                logger_1.logger.debug(`Fil to update minion ${minionId} from mqttt message, minion not exist`);
+                logger_1.logger.debug(`Fail to update minion ${minionId} from mqttt message, minion not exist`);
             }
             catch (error) {
                 logger_1.logger.warn(`Parsing mqtt message for ${topic}:${payload.toString()} fail ${JSON.stringify(error)}`);

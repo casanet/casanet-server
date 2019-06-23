@@ -68,10 +68,6 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
         });
         await tuyaDevice.find();
         /**
-         * Establish connection
-         */
-        await tuyaDevice.connect();
-        /**
          * Subscribe to status changed event.
          */
         tuyaDevice.on('data', async (data) => {
@@ -173,11 +169,15 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
             });
         });
         /**
-         * Registar to error event.
+         * Subscribe to error event.
          */
         tuyaDevice.on('error', (err) => {
-            // logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${err}`);
+            logger_1.logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${err}`);
         });
+        /**
+         * Establish connection
+         */
+        await tuyaDevice.connect();
         /**
          * Save the device API in map. to allow instance useing.
          */
