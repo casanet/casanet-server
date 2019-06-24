@@ -168,6 +168,19 @@ See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 
 For any suggestion or help feel free to contact me.
 
+## Casanet image
+Although there is no way to run the server in a docker container because the app should scan the real local network.
+I made a Linux image for several devices.
+- [Orange Pi One H3 512MB](https://1drv.ms/u/s!AkCfoHMx_LhRrZMxfN_eyA8gHbeALg?e=uHbjTV) based `Armbian_5.83` `Debian_stretch`.
+- [Orange Pi Zero H2 512MB](https://1drv.ms/u/s!AkCfoHMx_LhRrZMw26D8_EBF7Arayw?e=oQn15w) based `Armbian_5.83` `Debian_stretch`.
+- [Orange Pi Zero H2 512MB](https://1drv.ms/u/s!AkCfoHMx_LhRrZMvMbCzaCZabZIoEg?e=n67UiJ) based `Armbian_5.83` `Debian_stretch`. 
+	- (With hotspot SSID:`CASANET` pass: `casanet-is-the-best?`.
+
+Username: `root` \ `casanet` Password: `casa-net`.
+
+All configured to run the server on boot in port 80. 
+
+
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
 
