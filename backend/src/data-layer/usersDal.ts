@@ -6,7 +6,7 @@ import { logger } from '../utilities/logger';
 import { GetMachinMacAddress } from '../utilities/macAddress';
 import { DataIO } from './dataIO';
 
-const USERS_FILE_NAME = 'users.json';
+const USERS_FILE_NAME = 'users';
 
 export class UsersDal {
 
@@ -153,4 +153,4 @@ export class UsersDal {
     }
 }
 
-export const UsersDalSingleton = new UsersDal(new DataIO(USERS_FILE_NAME));
+export const UsersDalSingleton = new UsersDal(new DataIO(USERS_FILE_NAME, true));

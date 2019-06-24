@@ -2,7 +2,7 @@ import { IDataIO } from '../models/backendInterfaces';
 import { LocalNetworkDevice, User } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
-const DEVICES_FILE_NAME = 'devices.json';
+const DEVICES_FILE_NAME = 'devices';
 
 /**
  * Used only to save devices name map to mac address. not any other use.

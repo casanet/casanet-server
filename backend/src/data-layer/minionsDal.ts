@@ -2,7 +2,7 @@ import { IDataIO } from '../models/backendInterfaces';
 import { ErrorResponse, Minion } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
-const MINIONS_FILE_NAME = 'minions.json';
+const MINIONS_FILE_NAME = 'minions';
 
 export class MinionsDal {
 

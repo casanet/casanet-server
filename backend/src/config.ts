@@ -1,13 +1,12 @@
 import * as dotenv from 'dotenv';
 import { existsSync } from 'fs';
 import * as fse from 'fs-extra';
-import * as randomstring from 'randomstring';
 import { Config, RunningMode } from './models/backendInterfaces';
 import { logger } from './utilities/logger';
 
 // load environment variable from .env file
 if (existsSync('.env')) {
-  dotenv.config();
+    dotenv.config();
 }
 
 /**
@@ -21,6 +20,7 @@ const rawTfaSmtpServer = process.env.TFA_SMTP_SERVER;
 const rawTfaUserName = process.env.TFA_USER_NAME;
 const rawTfaUserKey = process.env.TFA_USER_KEY;
 const rawSaltKeys = process.env.SALT_KEYS;
+const rawEncryptPass = process.env.ENCRYPT_PASS;
 const rawSubnetToScan = process.env.SUBNET_TO_SCAN;
 
 /**
@@ -81,12 +81,19 @@ if (rawTfaSmtpServer && rawTfaUserName && rawTfaUserKey) {
     };
 }
 
+if (!rawEncryptPass) {
+    logger.fatal('There is no ENCRYPT_PASS env var, generating random you must have it, exit...');
+    process.exit();
+}
+
 if (!rawSaltKeys) {
-    logger.warn('There is no SALT_KEYS env var, generating random');
+    logger.fatal('There is no SALT_KEYS env var, exit..');
+    process.exit();
 }
 
 configuration.keysHandling = {
-    saltHash: rawSaltKeys || randomstring.generate(64),
+    dataPasswprd: rawEncryptPass,
+    saltHash: rawSaltKeys,
     bcryptSaltRounds: 12,
 };
 

@@ -2,7 +2,7 @@ import { IDataIO } from '../models/backendInterfaces';
 import { ErrorResponse, Timing } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
-const TIMINGS_FILE_NAME = 'timings.json';
+const TIMINGS_FILE_NAME = 'timings';
 
 export class TimingsDal {
 

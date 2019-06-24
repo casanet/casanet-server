@@ -3,7 +3,7 @@ import { IDataIO } from '../models/backendInterfaces';
 import { ErrorResponse, RemoteSettings, User } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
-const REMOTE_CONN_FILE_NAME = 'remoteConnection.json';
+const REMOTE_CONN_FILE_NAME = 'remoteConnection';
 
 export class RemoteConnectionDal {
 
@@ -54,4 +54,4 @@ export class RemoteConnectionDal {
     }
 }
 
-export const RemoteConnectionDalSingleton = new RemoteConnectionDal(new DataIO(REMOTE_CONN_FILE_NAME));
+export const RemoteConnectionDalSingleton = new RemoteConnectionDal(new DataIO(REMOTE_CONN_FILE_NAME, true));

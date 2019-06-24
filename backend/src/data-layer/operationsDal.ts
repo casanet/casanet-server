@@ -2,7 +2,7 @@ import { IDataIO } from '../models/backendInterfaces';
 import { ErrorResponse, Operation } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
-const OPERATIONS_FILE_NAME = 'operations.json';
+const OPERATIONS_FILE_NAME = 'operations';
 
 export class OperationsDal {
 

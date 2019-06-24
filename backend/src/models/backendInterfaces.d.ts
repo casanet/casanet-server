@@ -59,6 +59,8 @@ export declare interface Config {
         longitude: number;
     };
     keysHandling: {
+        /** encrypt data password */
+        dataPasswprd: string;
         /** Salt keys by. */
         saltHash: string;
         /** Bcrypt salt rounds */

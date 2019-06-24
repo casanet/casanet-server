@@ -2,7 +2,7 @@ import { IDataIO } from '../models/backendInterfaces';
 import { IftttIntegrationSettings } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
-const IFTTT_INTEG_FILE_NAME = 'iftttIntegration.json';
+const IFTTT_INTEG_FILE_NAME = 'iftttIntegration';
 
 export class IftttIntergrationDal {
 
@@ -64,4 +64,4 @@ export class IftttIntergrationDal {
     }
 }
 
-export const IftttIntergrationDalSingleton = new IftttIntergrationDal(new DataIO(IFTTT_INTEG_FILE_NAME));
+export const IftttIntergrationDalSingleton = new IftttIntergrationDal(new DataIO(IFTTT_INTEG_FILE_NAME, true));

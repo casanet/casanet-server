@@ -1,7 +1,7 @@
 import { IDataIO, Session } from '../models/backendInterfaces';
 import { DataIO } from './dataIO';
 
-const SESSION_FILE_NAME = 'sessions.json';
+const SESSION_FILE_NAME = 'sessions';
 
 export class SessionsDal {
 
