@@ -79,11 +79,6 @@ export class MinionsBl {
         await this.loadMinionsLocalDeviceData(localDevices);
 
         /**
-         * Finally get all minions status.
-         */
-        await this.readMinionsStatus();
-
-        /**
          * Let`s modules retrieve updated minions array.
          */
         ModulesManagerSingltone.retrieveMinions.setPullMethod(async (): Promise<Minion[]> => {
@@ -118,6 +113,11 @@ export class MinionsBl {
         this.devicesBl.devicesUpdate.subscribe((localsDevices: LocalNetworkDevice[]) => {
             this.loadMinionsLocalDeviceData(localsDevices);
         });
+
+        /**
+         * Finally, after all, get minions status.
+         */
+        await this.readMinionsStatus();
     }
 
     /**
