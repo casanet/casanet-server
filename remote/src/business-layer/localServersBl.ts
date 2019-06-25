@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import * as randomstring from 'randomstring';
 import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
 import { logger } from '../../../backend/src/utilities/logger';
-import { LocalServersDal, LocalServersDalSingleton } from '../data-layer/localServersDal';
+import { LocalServersDal, LocalServersDalSingleton } from '../data/localServersDal';
 import { LocalServer, LocalServerInfo } from '../models/sharedInterfaces';
 
 export class LocalServersBl {

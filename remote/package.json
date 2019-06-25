@@ -9,10 +9,13 @@
   "description": "IoT server for local home network - Remote server",
   "main": "dist/remote/src/index.js",
   "scripts": {
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "migrate": "npm run typeorm -- migration:run",
+    "migrate:revert": "npm run typeorm -- migration:revert",
+    "start_not_ready": "node dist/index.js",
     "jscopy": "copyfiles -u 1 src/**/*.js dist",
-    "prepare": "tsoa routes && tsoa swagger && tsc && npm run jscopy",
-    "test": "del-cli data/test -f && npm run prepare && cross-env NODE_ENV=test mocha --require ts-node/register test/**/*.spec.ts e2e/**/*.spec.ts",
-    "build": "npm run prepare"
+    "build": "tsoa routes && tsoa swagger && tsc && npm run jscopy",
+    "test": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --require ts-node/register test/**/*.spec.ts e2e/**/*.spec.ts"
   },
   "license": "ISC",
   "dependencies": {
@@ -41,20 +44,22 @@
     "moment": "^2.23.0",
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
+    "pg": "^7.11.0",
     "randomstring": "^1.1.5",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "rxjs": "^6.3.3",
     "tsoa": "^2.3.8",
+    "typeorm": "^0.2.18",
     "ws": "^6.1.4"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
-    "@types/express-ws": "^3.0.0",
     "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.7",
     "@types/crypto-js": "^3.1.43",
     "@types/express": "^4.16.0",
+    "@types/express-ws": "^3.0.0",
     "@types/fs-extra": "^5.0.5",
     "@types/joi": "^14.3.2",
     "@types/mocha": "^5.2.6",

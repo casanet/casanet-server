@@ -36,6 +36,35 @@ Simple diagram:
 ### Configuration:
 See [server configure](../backend/README.md#configure-server).
 
+
+### Configure database
+
+
+Install locally:
+
+Define local variable named DATABASE_URL of the form `postgres://user:pass@localhost:5432/casanet_db`
+
+1. Create Database and User:
+
+   ```bash
+   $ psql postgres
+   CREATE ROLE casanet WITH LOGIN PASSWORD 'yourpass';
+   ALTER ROLE casanet CREATEDB;
+
+   $ psql postgres -U casanet
+   CREATE DATABASE casanet_db;
+   GRANT ALL PRIVILEGES ON DATABASE casanet_db TO casanet;
+   ```
+   
+2. Run migrations to create tables:
+
+   ```bash
+   npm run migrate
+
+   # to revert the last migration
+   npm run migrate:revert
+   ```
+
 ## Pair local server with remote server:
 1) In local server login as admin and get machine mac address. 
 1) In remote server login to management as admin and create a new local server (POST /servers).

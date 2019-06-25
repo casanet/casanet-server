@@ -2,7 +2,7 @@ import * as cryptoJs from 'crypto-js';
 import { Request, Response } from 'express';
 import { Configuration } from '../../../backend/src/config';
 import { DeepCopy } from '../../../backend/src/utilities/deepCopy';
-import { ForwardUsersSessionsDal, ForwardUsersSessionsDalSingleton } from '../data-layer/forwardUsersSessionDal';
+import { ForwardUsersSessionsDal, ForwardUsersSessionsDalSingleton } from '../data/forwardUsersSessionDal';
 import { ForwardUserSession } from '../models/remoteInterfaces';
 
 export class ForwardUsersSessionsBl {

@@ -2,7 +2,7 @@ import * as cryptoJs from 'crypto-js';
 import { Request, Response } from 'express';
 import * as randomstring from 'randomstring';
 import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
-import { LocalServersSessionsDal, LocalServersSessionsDalSingleton } from '../data-layer/localServersSessionsDal';
+import { LocalServersSessionsDal, LocalServersSessionsDalSingleton } from '../data/localServersSessionsDal';
 import { LocalServerSession } from '../models/remoteInterfaces';
 import { LocalServersBl, LocalServersBlSingleton } from './localServersBl';
 import { Configuration } from '../../../backend/src/config';
