@@ -195,8 +195,8 @@ export class ChannelsBl {
         try {
             /** Get local server based on local server mac */
             const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
-            
-            this.sendMessage(wsChannel, { remoteMessagesType : 'registeredUsers', message : { registeredUsers: localServer.validUsers } });
+
+            this.sendMessage(wsChannel, { remoteMessagesType: 'registeredUsers', message: { registeredUsers: localServer.validUsers } });
         } catch (error) {
 
         }
