@@ -6,10 +6,10 @@ export class FirstVersion1561480877835 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {
-    await queryRunner.dropTable('servers_sessions', true, true);
+    await queryRunner.dropTable('admins', true, true);
     await queryRunner.dropTable('forwards_sessions', true, true);
+    await queryRunner.dropTable('servers_sessions', true, true);
     await queryRunner.dropTable('servers', true, true);
-    await queryRunner.dropTable('users', true, true);
   }
 
   private async _createTables(queryRunner: QueryRunner) {
@@ -50,6 +50,7 @@ export class FirstVersion1561480877835 implements MigrationInterface {
             type: 'varchar',
             length: '12',
             isNullable: false,
+            isPrimary: true,
           },
           {
             name: 'hashed_key',
@@ -73,7 +74,7 @@ export class FirstVersion1561480877835 implements MigrationInterface {
 
     await queryRunner.createTable(
       new Table({
-        name: 'forward_sessions',
+        name: 'forwards_sessions',
         columns: [
           {
             name: 'server',
@@ -86,6 +87,7 @@ export class FirstVersion1561480877835 implements MigrationInterface {
             type: 'varchar',
             length: '256',
             isNullable: false,
+            isPrimary: true,
           },
           {
             name: 'local_user',
@@ -109,7 +111,7 @@ export class FirstVersion1561480877835 implements MigrationInterface {
 
     await queryRunner.createTable(
       new Table({
-        name: 'users',
+        name: 'admins',
         columns: [
           {
             name: 'email',
@@ -122,11 +124,6 @@ export class FirstVersion1561480877835 implements MigrationInterface {
             name: 'display_name',
             type: 'varchar',
             length: '30',
-            isNullable: false,
-          },
-          {
-            name: 'session_time_out_ms',
-            type: 'int',
             isNullable: false,
           },
           {

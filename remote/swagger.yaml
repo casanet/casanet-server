@@ -503,6 +503,40 @@ definitions:
             - timing
             - results
         type: object
+    Login:
+        description: 'Login schema model.'
+        properties:
+            email:
+                type: string
+            password:
+                type: string
+        required:
+            - email
+            - password
+        type: object
+    LocalServer:
+        description: 'Represents a local server in the system.'
+        properties:
+            macAddress:
+                type: string
+                description: 'The local machine mac address should be unique.'
+            displayName:
+                type: string
+                description: 'Display name'
+            validUsers:
+                type: array
+                items:
+                    type: string
+                description: 'Users from the local server that can access via remote server.'
+            connectionStatus:
+                type: boolean
+                description: 'Connection with local server status.'
+                x-nullable: true
+        required:
+            - macAddress
+            - displayName
+            - validUsers
+        type: object
     LocalServerInfo:
         description: 'Info about a local server.'
         properties:
@@ -531,77 +565,23 @@ definitions:
             - email
             - password
         type: object
-    LocalServer:
+    RemoteAdmin:
         description: 'Represents a local server in the system.'
         properties:
-            localServerId:
+            email:
                 type: string
-                description: 'Local server id'
             displayName:
                 type: string
                 description: 'Display name'
-            macAddress:
-                type: string
-                description: 'The local machine mac address should be unique.'
-            validUsers:
-                type: array
-                items:
-                    type: string
-                description: 'Users from the local server that can access via remote server.'
-            connectionStatus:
-                type: boolean
-                description: 'Connection with local server status.'
-                x-nullable: true
-        required:
-            - localServerId
-            - displayName
-            - macAddress
-            - validUsers
-        type: object
-    Login:
-        description: 'Login schema model.'
-        properties:
-            email:
-                type: string
             password:
                 type: string
-        required:
-            - email
-            - password
-        type: object
-    User:
-        description: 'Represents a user in the system.'
-        properties:
-            displayName:
-                type: string
-                description: Name
-                x-nullable: true
-            email:
-                type: string
-                description: 'User email'
-            sessionTimeOutMS:
-                type: number
-                format: double
-                description: 'The time duration for a session in milliseconds (1/1000 from second).'
-            password:
-                type: string
-                description: 'User password.'
-                x-nullable: true
             ignoreTfa:
                 type: boolean
-                description: 'Ignore 2-step verification on login or not.'
-            scope:
-                type: string
-                enum:
-                    - adminAuth
-                    - userAuth
-                    - iftttAuth
-                description: 'User scopes.'
         required:
             - email
-            - sessionTimeOutMS
+            - displayName
+            - password
             - ignoreTfa
-            - scope
         type: object
 info:
     title: 'CASAnet - remote server API'
@@ -629,7 +609,7 @@ paths:
                 - Feeds
             security:
                 -
-                    userAuth: []
+                    forwardAuth: []
             parameters: []
     /feed/timings:
         get:
@@ -650,290 +630,8 @@ paths:
                 - Feeds
             security:
                 -
-                    userAuth: []
+                    forwardAuth: []
             parameters: []
-    /auth/login:
-        post:
-            operationId: LoginDocumentation
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        type: object
-                '201':
-                    description: '2-fatore code sent'
-                '210':
-                    description: 'select local server to connect to'
-                    schema:
-                        type: array
-                        items:
-                            $ref: '#/definitions/LocalServerInfo'
-                '403':
-                    description: 'Auth fail'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '422':
-                    description: 'Invalid schema'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: "Login to local server via remote server channel.\r\nIf users exists in more then one local server, it returns status code 210 and the available user servers to select."
-            tags:
-                - Authentication
-            security: []
-            parameters:
-                -
-                    in: body
-                    name: login
-                    required: true
-                    schema:
-                        $ref: '#/definitions/LoginLocalServer'
-    /auth/login/tfa:
-        post:
-            operationId: LoginTfaDocumentation
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '403':
-                    description: 'Auth fail'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '422':
-                    description: 'Invalid schema'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: '2-step verification login to local server via remote server channel.'
-            tags:
-                - Authentication
-            security: []
-            parameters:
-                -
-                    in: body
-                    name: login
-                    required: true
-                    schema:
-                        $ref: '#/definitions/LoginLocalServer'
-    /auth/logout:
-        post:
-            operationId: LogoutDocumentation
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Logout manually from remote and local server systems.'
-            tags:
-                - Authentication
-            security:
-                -
-                    userAuth: []
-                -
-                    adminAuth: []
-            parameters: []
-    '/API/ifttt/trigger/**/*':
-        post:
-            operationId: ApiForwardingIftttDocumentation
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        type: object
-            description: 'Forward each /API/ifttt/trigger/** path to the local server to handle it AS IS.'
-            tags:
-                - Forwarding
-            security:
-                -
-                    iftttAuth: []
-            parameters: []
-    '/API/**/*':
-        get:
-            operationId: ApiForwardingDocumentation
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        type: object
-            description: 'Forward each /API/** path to the local server to handle it AS IS.'
-            tags:
-                - Forwarding
-            security:
-                -
-                    userAuth: []
-            parameters: []
-    /servers:
-        get:
-            operationId: GetLocalServers
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        type: array
-                        items:
-                            $ref: '#/definitions/LocalServer'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Get local servers in the system.'
-            tags:
-                - Servers
-            security:
-                -
-                    adminAuth: []
-            parameters: []
-        post:
-            operationId: AddLocalServer
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Add a new local server to the system.'
-            tags:
-                - Servers
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    in: body
-                    name: localServer
-                    required: true
-                    schema:
-                        $ref: '#/definitions/LocalServer'
-    '/servers/{localServerId}':
-        get:
-            operationId: GetLocalServer
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        $ref: '#/definitions/LocalServer'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Get local server by its id.'
-            tags:
-                - Servers
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    in: path
-                    name: localServerId
-                    required: true
-                    type: string
-        put:
-            operationId: UpdateLocalServer
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Update local server properties.'
-            tags:
-                - Servers
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'local server to update.'
-                    in: path
-                    name: localServerId
-                    required: true
-                    type: string
-                -
-                    description: 'new properties object to set.'
-                    in: body
-                    name: localServer
-                    required: true
-                    schema:
-                        $ref: '#/definitions/LocalServer'
-        delete:
-            operationId: DeleteLocalServer
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Remove local server from the system.'
-            tags:
-                - Servers
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'local server to remove.'
-                    in: path
-                    name: localServerId
-                    required: true
-                    type: string
-    '/servers/auth/{localServerId}':
-        post:
-            operationId: GenerateAuthKeyLocalServer
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        type: string
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: "Generate a new authentication key for the local server.\r\n(delete current key if exist).\r\n\r\nKEEP GENERATED KEY PRIVATE AND SECURE,\r\nPUT IT IN YOUR LOCAL SERVER AND NEVER SHOW IT TO ANYBODY!!!"
-            tags:
-                - Servers
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'The local server to generate for.'
-                    in: path
-                    name: localServerId
-                    required: true
-                    type: string
     /administration/auth/login:
         post:
             operationId: AdministrationLoginDocumentation
@@ -1017,7 +715,284 @@ paths:
                 -
                     adminAuth: []
             parameters: []
-    /administration/users/profile:
+    '/API/ifttt/trigger/**/*':
+        post:
+            operationId: ApiForwardingIftttDocumentation
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: object
+            description: 'Forward each /API/ifttt/trigger/** path to the local server to handle it AS IS.'
+            tags:
+                - Forwarding
+            security:
+                -
+                    iftttAuth: []
+            parameters: []
+    '/API/**/*':
+        get:
+            operationId: ApiForwardingDocumentation
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: object
+            description: 'Forward each /API/** path to the local server to handle it AS IS.'
+            tags:
+                - Forwarding
+            security:
+                -
+                    forwardAuth: []
+            parameters: []
+    /servers:
+        get:
+            operationId: GetServers
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/LocalServer'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get local servers in the system.'
+            tags:
+                - Servers
+            security:
+                -
+                    adminAuth: []
+            parameters: []
+        post:
+            operationId: CreateServer
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Add a new local server to the system.'
+            tags:
+                - Servers
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    in: body
+                    name: server
+                    required: true
+                    schema:
+                        $ref: '#/definitions/LocalServer'
+    '/servers/{serverId}':
+        get:
+            operationId: GetServer
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/LocalServer'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get local server by its id.'
+            tags:
+                - Servers
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    in: path
+                    name: serverId
+                    required: true
+                    type: string
+        put:
+            operationId: UpdateLocalServer
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Update local server properties.'
+            tags:
+                - Servers
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    in: path
+                    name: serverId
+                    required: true
+                    type: string
+                -
+                    in: body
+                    name: server
+                    required: true
+                    schema:
+                        $ref: '#/definitions/LocalServer'
+        delete:
+            operationId: DeleteLocalServer
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Remove local server from the system.'
+            tags:
+                - Servers
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    in: path
+                    name: serverId
+                    required: true
+                    type: string
+    '/servers/auth/{serverId}':
+        post:
+            operationId: GenerateAuthKeyLocalServer
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: string
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Generate a new authentication key for the local server.\r\n(delete current key if exist).\r\n\r\nKEEP GENERATED KEY PRIVATE AND SECURE,\r\nPUT IT IN YOUR LOCAL SERVER AND NEVER SHOW IT TO ANYBODY!!!"
+            tags:
+                - Servers
+            security:
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'The local server to generate for.'
+                    in: path
+                    name: serverId
+                    required: true
+                    type: string
+    /auth/login:
+        post:
+            operationId: Login
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: object
+                '201':
+                    description: '2-fatore code sent'
+                '210':
+                    description: 'select local server to connect to'
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/LocalServerInfo'
+                '403':
+                    description: 'Auth fail'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '422':
+                    description: 'Invalid schema'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Login to local server via remote server channel.\r\nIf users exists in more then one local server, it returns status code 210 and the available user servers to select."
+            tags:
+                - Authentication
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: login
+                    required: true
+                    schema:
+                        $ref: '#/definitions/LoginLocalServer'
+    /auth/login/tfa:
+        post:
+            operationId: LoginTfa
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '403':
+                    description: 'Auth fail'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '422':
+                    description: 'Invalid schema'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: '2-step verification login to local server via remote server channel.'
+            tags:
+                - Authentication
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: login
+                    required: true
+                    schema:
+                        $ref: '#/definitions/LoginLocalServer'
+    /auth/logout:
+        post:
+            operationId: Logout
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Logout manually from remote and local server systems.'
+            tags:
+                - Authentication
+            security:
+                -
+                    forwardAuth: []
+            parameters: []
+    /admins/profile:
         get:
             operationId: GetProfile
             produces:
@@ -1026,19 +1001,19 @@ paths:
                 '200':
                     description: Ok
                     schema:
-                        $ref: '#/definitions/User'
+                        $ref: '#/definitions/RemoteAdmin'
                 '501':
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
             description: 'Get admin profile.'
             tags:
-                - Administration
+                - Admins
             security:
                 -
                     adminAuth: []
             parameters: []
-    /administration/users:
+    /admins:
         get:
             operationId: GetUsers
             produces:
@@ -1049,14 +1024,14 @@ paths:
                     schema:
                         type: array
                         items:
-                            $ref: '#/definitions/User'
+                            $ref: '#/definitions/RemoteAdmin'
                 '501':
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
             description: 'Get all admin users in the administraion system.'
             tags:
-                - Administration
+                - Admins
             security:
                 -
                     adminAuth: []
@@ -1074,7 +1049,7 @@ paths:
                         $ref: '#/definitions/ErrorResponse'
             description: 'Creates a new administraion user.'
             tags:
-                - Administration
+                - Admins
             security:
                 -
                     adminAuth: []
@@ -1085,8 +1060,8 @@ paths:
                     name: user
                     required: true
                     schema:
-                        $ref: '#/definitions/User'
-    '/administration/users/{adminId}':
+                        $ref: '#/definitions/RemoteAdmin'
+    '/admins/{userId}':
         get:
             operationId: GetUser
             produces:
@@ -1095,21 +1070,21 @@ paths:
                 '200':
                     description: Ok
                     schema:
-                        $ref: '#/definitions/User'
+                        $ref: '#/definitions/RemoteAdmin'
                 '501':
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
             description: 'Get administraion user by id.'
             tags:
-                - Administration
+                - Admins
             security:
                 -
                     adminAuth: []
             parameters:
                 -
                     in: path
-                    name: adminId
+                    name: userId
                     required: true
                     type: string
         put:
@@ -1125,15 +1100,14 @@ paths:
                         $ref: '#/definitions/ErrorResponse'
             description: 'Update administraion user properties.'
             tags:
-                - Administration
+                - Admins
             security:
                 -
                     adminAuth: []
             parameters:
                 -
-                    description: 'User id.'
                     in: path
-                    name: adminId
+                    name: userId
                     required: true
                     type: string
                 -
@@ -1141,7 +1115,7 @@ paths:
                     name: user
                     required: true
                     schema:
-                        $ref: '#/definitions/User'
+                        $ref: '#/definitions/RemoteAdmin'
         delete:
             operationId: DeleteUser
             produces:
@@ -1155,15 +1129,14 @@ paths:
                         $ref: '#/definitions/ErrorResponse'
             description: 'Delete admin user from the administraion system.'
             tags:
-                - Administration
+                - Admins
             security:
                 -
                     adminAuth: []
             parameters:
                 -
-                    description: 'User id.'
                     in: path
-                    name: adminId
+                    name: userId
                     required: true
                     type: string
     '/management/**/*':
@@ -1219,11 +1192,11 @@ produces:
     - application/json
 swagger: '2.0'
 securityDefinitions:
-    userAuth:
+    adminAuth:
         type: apiKey
         name: Cookie
         in: header
-    adminAuth:
+    forwardAuth:
         type: apiKey
         name: Cookie
         in: header
@@ -1238,7 +1211,10 @@ tags:
         description: 'Manage authentication to/from local server via remote server channel, such as login logout etc.'
     -
         name: Administration
-        description: 'Manage remote server authentication and users.'
+        description: 'Manage remote server authentication authentication.'
+    -
+        name: Admins
+        description: 'Manage remote server authentication users.'
     -
         name: Servers
         description: 'Manage local casa-net servers connected to remote server.'

@@ -1,6 +1,12 @@
 import { Login } from '../../../backend/src/models/sharedInterfaces'
 
 /**
+ * Scopes of authentication, right know in our system there are only 3 scopes.
+ * admin and user. any API route protect by one of them.
+ */
+export declare type AuthScopes = 'forwardAuth' | 'adminAuth' | 'iftttAuth';
+
+/**
  * Info about a local server.
  */
 export declare interface LocalServerInfo {

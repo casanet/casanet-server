@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws';
-import { ChannelsController } from '../controllers/channelsController';
+import { ChannelsController } from '../controllers/channels-controller';
 
 export class ChannelsRouter {
 

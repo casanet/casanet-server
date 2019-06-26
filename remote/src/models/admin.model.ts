@@ -1,22 +1,19 @@
 import * as bcrypt from 'bcryptjs';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 /**
  * Represents a local server in the system.
  */
-@Entity({ name: 'users' })
-export class User {
-    @Column({ name: 'email', type: 'varchar', length: 100, nullable: false })
+@Entity({ name: 'admins' })
+export class RemoteAdmin {
+    @PrimaryColumn({ name: 'email', type: 'varchar', length: 100, nullable: false })
     public email: string;
 
     /** Display name */
     @Column({ name: 'display_name', type: 'varchar', length: 30, nullable: true })
     public displayName: string;
 
-    @Column({ name: 'session_time_out_ms', type: 'int', nullable: false })
-    public sessionTimeoutMs: number;
-
-    @Column({ name: 'password', type: 'varchar', length: 256, nullable: false })
+    @Column({ name: 'password', type: 'varchar', length: 256, nullable: false, select: false })
     public password: string;
 
     @Column({ name: 'ignore_tfa', type: 'boolean', nullable: false })

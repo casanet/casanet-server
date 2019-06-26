@@ -1,15 +1,16 @@
 import { Request, Response } from 'express';
 import * as express from 'express';
 import { ErrorResponse, IftttOnChanged, RemoteConnectionStatus } from '../../../backend/src/models/sharedInterfaces';
-import { SystemAuthScopes } from '../../../backend/src/security/authentication';
 import { RequestSchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { logger } from '../../../backend/src/utilities/logger';
-import { ForwardUsersSessionsBlSingleton } from '../business-layer/forwardUserSessionsBl';
-import { ForwardingController } from '../controllers/forwardingController';
-import { ForwardUserSession } from '../models/remoteInterfaces';
-import { expressAuthentication } from '../security/authenticationExtend';
-import { IftttOnChangedSchema } from '../security/schemaValidatorExtend';
-import { LocalServersController } from '../controllers/localServersController';
+import { ForwardingController } from '../controllers/forwarding-controller';
+import { ForwardSession } from '../models';
+import { expressAuthentication, SystemAuthScopes } from '../security/authentication';
+import { IftttOnChangedSchema } from '../security/schemaValidator';
+import { LocalServersController } from '../controllers/local-servers-controller';
+import { ChannelsBlSingleton } from '../logic';
+import { deleteForwardSession } from '../data-access';
+import { Configuration } from '../../../backend/src/config';
 
 export class ForwardingRouter {
 
@@ -23,7 +24,7 @@ export class ForwardingRouter {
 
             try {
                 /** Forward request as is and wait for request. */
-                const response = await this.forwardingController.forwardHttpReqByMac(iftttOnChanged.localMac,
+                const response = await this.forwardingController.forwardHttpReq(iftttOnChanged.localMac,
                     {
                         requestId: undefined,
                         httpPath: req.originalUrl,
@@ -47,20 +48,17 @@ export class ForwardingRouter {
          */
         app.get('/API/remote/status', async (req: Request, res: Response) => {
             try {
-                let forwardUserSession: ForwardUserSession;
+                let forwardUserSession: ForwardSession;
                 try {
                     /** Make sure, and get valid forward session */
                     forwardUserSession =
-                        await expressAuthentication(req, [SystemAuthScopes.userScope]) as ForwardUserSession;
+                        await expressAuthentication(req, [SystemAuthScopes.forwardScope]) as ForwardSession;
                 } catch (error) {
                     res.status(401).send({ responseCode: 4001 } as ErrorResponse);
                     return;
                 }
 
-                const localServer =
-                    await this.localServersController.getLocalServer(forwardUserSession.localServerId);
-
-                const remoteServerStatus: RemoteConnectionStatus = localServer.connectionStatus
+                const remoteServerStatus: RemoteConnectionStatus = await ChannelsBlSingleton.connectionStatus(forwardUserSession.server.macAddress)
                     ? 'connectionOK'
                     : 'localServerDisconnected';
 
@@ -76,18 +74,18 @@ export class ForwardingRouter {
          */
         app.use('/API/*', async (req: Request, res: Response) => {
             try {
-                let forwardUserSession: ForwardUserSession;
+                let forwardUserSession: ForwardSession;
                 try {
                     /** Make sure, and get valid forward session */
                     forwardUserSession =
-                        await expressAuthentication(req, [SystemAuthScopes.userScope]) as ForwardUserSession;
+                        await expressAuthentication(req, [SystemAuthScopes.forwardScope]) as ForwardSession;
                 } catch (error) {
                     res.status(401).send({ responseCode: 4001 } as ErrorResponse);
                     return;
                 }
 
                 /** Forward request as is and wait for request. */
-                const response = await this.forwardingController.forwardHttpReq(forwardUserSession.localServerId,
+                const response = await this.forwardingController.forwardHttpReq(forwardUserSession.server.macAddress,
                     {
                         requestId: undefined,
                         httpPath: req.originalUrl,
@@ -98,7 +96,7 @@ export class ForwardingRouter {
 
                 /** If status is 403, delete forward session too. */
                 if (response.httpStatus === 403) {
-                    try { await ForwardUsersSessionsBlSingleton.deleteSession(forwardUserSession); } catch (error) { }
+                    try { await deleteForwardSession(forwardUserSession.hashedKey); } catch (error) { }
                 }
 
                 /** Set status and data and send response back */

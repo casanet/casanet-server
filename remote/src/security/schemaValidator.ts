@@ -1,13 +1,30 @@
 import * as Joi from 'joi';
 import { ObjectSchema } from 'joi';
 
+export const userSchema:ObjectSchema = Joi.object().keys({
+    email: Joi.string().email().required(),
+    displayName: Joi.string().allow('').max(30).required(),
+    ignoreTfa: Joi.boolean().required(),
+}).required();
+
+export const serverSchema:ObjectSchema = Joi.object().keys({
+    macAddress: Joi.string().not('').length(12).required(),
+    displayName: Joi.string().allow('').max(30).required(),
+    validUsers: Joi.array().items(Joi.string().email()).required(),
+}).required();
+
+export const IftttAuthRequestSchema: ObjectSchema = Joi.object().keys({
+    localMac: Joi.string().not('').length(12).required(),
+    apiKey: Joi.string().not('').required(),
+}).required();
+
 export const IftttOnChangedSchema: ObjectSchema = Joi.object().keys({
-    localMac: Joi.string().not('').required(),
+    localMac: Joi.string().not('').length(12).required(),
     deviceId: Joi.string().not('').required(),
     newStatus: Joi.string().allow('on', 'off').required(),
 }).required();
 
-export const LoginLocalServerSchema: ObjectSchema = Joi.object().keys({
+export const LoginSchema: ObjectSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().not('').required(),
     localServerId: Joi.string().allow(''),

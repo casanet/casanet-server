@@ -11,7 +11,11 @@
             },
             {
                 "name": "Administration",
-                "description": "Manage remote server authentication and users."
+                "description": "Manage remote server authentication authentication."
+            },
+            {
+                "name": "Admins",
+                "description": "Manage remote server authentication users."
             },
             {
                 "name": "Servers",
@@ -33,12 +37,12 @@
         "name": "CASAnet - remote server API",
         "description": "Remote server for forwarding requests to locals home network. hosted in [GitHub repo](https://github.com/haimkastner/Home-IoT-Server).",
         "securityDefinitions": {
-            "userAuth": {
+            "adminAuth": {
                 "type": "apiKey",
                 "name": "Cookie",
                 "in": "header"
             },
-            "adminAuth": {
+            "forwardAuth": {
                 "type": "apiKey",
                 "name": "Cookie",
                 "in": "header"
@@ -60,6 +64,6 @@
         "entryFile": "./src/index.ts",
         "routesDir": "./src/routers",
         "middlewareTemplate": "../backend/src/routers/expressRoutesTemplate.ts.tsoa",
-        "authenticationModule": "./src/security/authenticationExtend.ts"
+        "authenticationModule": "./src/security/authentication.ts"
     }
 }
