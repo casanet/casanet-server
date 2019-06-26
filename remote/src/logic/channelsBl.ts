@@ -9,10 +9,7 @@ import { HttpRequest, HttpResponse, LocalMessage, LocalServerFeed, RemoteMessage
 import { ErrorResponse, MinionFeed, TimingFeed } from '../../../backend/src/models/sharedInterfaces';
 import { logger } from '../../../backend/src/utilities/logger';
 import { SendMail } from '../../../backend/src/utilities/mailSender';
-import { LocalServer } from '../models/sharedInterfaces';
-import { ForwardUsersSessionsBl, ForwardUsersSessionsBlSingleton } from './forwardUserSessionsBl';
-import { LocalServersBl, LocalServersBlSingleton } from './localServersBl';
-import { LocalServersSessionBlSingleton, LocalServersSessionsBl } from './localServersSessionsBl';
+import { getServer, getServerSession, checkSession, updateServer } from '../data-access';
 
 /**
  * Extend ws to allow hold uniqe id to each authenticated local server ws channel.
@@ -71,14 +68,7 @@ export class ChannelsBl {
     /** Feed of local servers feeds. */
     public localServersFeed = new BehaviorSubject<{ localServerId: string, localServerFeed: LocalServerFeed }>(undefined);
 
-    /**
-     * Init channels bl. using dependecy injection pattern to allow units testings.
-     * @param localServersBl local servers bl injection.
-     * @param localServersSessionsBl local server bl sessions injection.
-     */
-    constructor(private localServersBl: LocalServersBl,
-                private localServersSessionsBl: LocalServersSessionsBl,
-                private forwardUsersSessionsBl: ForwardUsersSessionsBl) {
+    constructor() {
         /** Invoke requests timeout activation. */
         this.setTimeoutRequestsActivation();
     }
@@ -117,14 +107,9 @@ export class ChannelsBl {
 
         try {
             /** Get the local server based on cert mac address. */
-            const localServer = await this.localServersBl.getlocalServersByMac(certAuth.macAddress);
-            /** Get local server session based on local server id.  */
-            const localServerSession = await this.localServersSessionsBl.getlocalServerSession(localServer.localServerId);
+            const localServer = await getServer(certAuth.macAddress);
 
-            /** Check if hash of local server cert key is same as session hash key  */
-            if (cryptoJs.SHA512(certAuth.remoteAuthKey + Configuration.keysHandling.saltHash).toString() !== localServerSession.keyHash) {
-                throw new Error('key not match');
-            }
+            await checkSession(localServer, cryptoJs.SHA512(certAuth.remoteAuthKey + Configuration.keysHandling.saltHash).toString());
 
             /** If there is other channel from same local server */
             if (this.localChannelsMap[certAuth.macAddress]) {
@@ -149,7 +134,8 @@ export class ChannelsBl {
             /** Send local server authenticatedSuccessfuly message. */
             this.sendMessage(wsChannel, { remoteMessagesType: 'authenticatedSuccessfuly', message: {} });
 
-            this.localServersBl.setLocalServerConnectionStatus(localServer.localServerId, true);
+            /** Make sure thast map hold only active servers */
+            // this.localServersBl.setLocalServerConnectionStatus(localServer.localServerId, true);
         } catch (error) {
             /** send generic auth fail message */
             this.sendMessage(wsChannel, {
@@ -177,10 +163,8 @@ export class ChannelsBl {
     private async handleFeedUpdate(wsChannel: CasaWs, localServerFeed: LocalServerFeed) {
 
         try {
-            /** Get local server based on local server mac */
-            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
             /** Send feed */
-            this.localServersFeed.next({ localServerId: localServer.localServerId, localServerFeed });
+            this.localServersFeed.next({ localServerId: wsChannel.machineMac, localServerFeed });
         } catch (error) {
 
         }
@@ -194,7 +178,7 @@ export class ChannelsBl {
 
         try {
             /** Get local server based on local server mac */
-            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
+            const localServer = await getServer(wsChannel.machineMac);
 
             this.sendMessage(wsChannel, { remoteMessagesType: 'registeredUsers', message: { registeredUsers: localServer.validUsers } });
         } catch (error) {
@@ -265,8 +249,11 @@ export class ChannelsBl {
             delete this.forwardUserReqAuth[email];
 
             try {
-                const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
-                await this.localServersBl.addAccountForwardValid(localServer.localServerId, email);
+                const localServer = await getServer(wsChannel.machineMac);
+                if (localServer.validUsers.indexOf(email) === -1) {
+                    localServer.validUsers.push(email);
+                    await updateServer(localServer);
+                }
 
                 this.sendMessage(wsChannel, {
                     remoteMessagesType: 'registerUserResults',
@@ -282,7 +269,9 @@ export class ChannelsBl {
                     message: {
                         registerUserResults: {
                             user: email,
-                            results: error,
+                            results: {
+                                responseCode: 5001,
+                            },
                         },
                     },
                 });
@@ -315,9 +304,12 @@ export class ChannelsBl {
         const { email } = userForwardRequest;
 
         try {
-            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
-            await this.localServersBl.removeAccountForwardValid(localServer.localServerId, email);
-            await this.forwardUsersSessionsBl.deleteUserSessions(email);
+            const localServer = await getServer(wsChannel.machineMac);
+            if (localServer.validUsers.indexOf(email) !== -1) {
+                localServer.validUsers.splice(localServer.validUsers.indexOf(email), 1);
+                await updateServer(localServer);
+            }
+
             this.sendMessage(wsChannel, {
                 remoteMessagesType: 'registerUserResults',
                 message: {
@@ -332,17 +324,13 @@ export class ChannelsBl {
                 message: {
                     registerUserResults: {
                         user: email,
-                        results: error,
+                        results: {
+                            responseCode: 5001,
+                        },
                     },
                 },
             });
         }
-    }
-
-    /** Send http request to local server over ws channel. */
-    public async sendHttpViaChannelsByMac(localMac: string, httpRequest: HttpRequest): Promise<HttpResponse> {
-        const localServer = await this.localServersBl.getlocalServersByMac(localMac);
-        return await this.sendHttpViaChannels(localServer.localServerId, httpRequest);
     }
 
     /**
@@ -353,16 +341,13 @@ export class ChannelsBl {
      */
     public async sendHttpViaChannels(localServerId: string, httpRequest: HttpRequest): Promise<HttpResponse> {
 
-        /** Try getting require local server  */
-        const localServer = await this.localServersBl.getlocalServersById(localServerId);
-
         /**
          * Create promise to allow hold resolve/reject in map and wait for local server response.
          * (like we already know, ws is message based and not req/res based).
          */
         return new Promise<HttpResponse>((resolveHttpReq, rejectHttpReq) => {
             /** Get correct local server ws channel */
-            const localServeChannel = this.localChannelsMap[localServer.macAddress];
+            const localServeChannel = this.localChannelsMap[localServerId];
 
             /** If channel not exist, mean there is no communication with local server. */
             if (!localServeChannel) {
@@ -430,15 +415,6 @@ export class ChannelsBl {
             return;
         }
 
-        /** Make sure local server session is valid. */
-        try {
-            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
-            await this.localServersSessionsBl.getlocalServerSession(localServer.localServerId);
-        } catch (error) {
-            logger.debug(`aborting local server message handling, there is no vaild session.`);
-            return;
-        }
-
         /** Route message to correct handler. */
         switch (localMessage.localMessagesType) {
             case 'httpResponse': this.handleHttpResponse(localMessage.message.httpResponse); break;
@@ -463,15 +439,33 @@ export class ChannelsBl {
 
         /** Remove it from channel map. */
         delete this.localChannelsMap[wsChannel.machineMac];
+    }
 
-        /** Try to set local server status to be off. */
-        try {
-            /** Get the local server based on cert mac address. */
-            const localServer = await this.localServersBl.getlocalServersByMac(wsChannel.machineMac);
-            this.localServersBl.setLocalServerConnectionStatus(localServer.localServerId, false);
-        } catch (error) {
+    /**
+     * Disconnect local server channel.
+     * @param macAddress local server physical address
+     */
+    public async disconnectLocalServer(macAddress: string) {
 
+        const localServerConnection = this.localChannelsMap[macAddress];
+
+        /** If channel not passed auth, just return */
+        if (!localServerConnection) {
+            return;
         }
+
+        localServerConnection.close();
+
+        /** Remove it from channel map. */
+        delete this.localChannelsMap[macAddress];
+    }
+
+    /**
+     * Get channel connection status. 
+     * @param macAddress local server physical address
+     */
+    public async connectionStatus(macAddress: string) : Promise<boolean> {
+        return macAddress in this.localChannelsMap;
     }
 
     /**
@@ -484,4 +478,4 @@ export class ChannelsBl {
     }
 }
 
-export const ChannelsBlSingleton = new ChannelsBl(LocalServersBlSingleton, LocalServersSessionBlSingleton, ForwardUsersSessionsBlSingleton);
+export const ChannelsBlSingleton = new ChannelsBl();

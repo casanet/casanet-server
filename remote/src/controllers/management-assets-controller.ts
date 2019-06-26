@@ -1,7 +1,4 @@
-import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
-import { LocalServer } from '../models/sharedInterfaces';
 
 @Tags('Public')
 @Route('management')

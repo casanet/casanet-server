@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as SseStream from 'express-sse';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse, MinionFeed, TimingFeed } from '../../../backend/src/models/sharedInterfaces';
-import { ChannelsBlSingleton } from '../business-layer/channelsBl';
+import { ChannelsBlSingleton } from '../logic/channelsBl';
 /**
  * Because that swagger not fully support SSE.
  * Use the TSOA routing is for documentation only.
@@ -94,7 +94,7 @@ export class FeedController extends Controller {
      * Local server minions feed.
      * when minion status changed, minion created etc.
      */
-    @Security('userAuth')
+    @Security('forwardAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('minions')
     public async getMinionsFeed(): Promise<MinionFeed> {
@@ -105,7 +105,7 @@ export class FeedController extends Controller {
      * Local server timing feed.
      * when timing activated.
      */
-    @Security('userAuth')
+    @Security('forwardAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('timings')
     public async getTimingFeed(): Promise<TimingFeed> {

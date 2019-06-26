@@ -1,11 +1,10 @@
-import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import * as ws from 'ws';
 import { LocalMessage } from '../../../backend/src/models/remote2localProtocol';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { logger } from '../../../backend/src/utilities/logger';
-import { CasaWs, ChannelsBlSingleton } from '../business-layer/channelsBl';
-import { LocalMessageSchema } from '../security/schemaValidatorExtend';
+import { CasaWs, ChannelsBlSingleton } from '../logic/channelsBl';
+import { LocalMessageSchema } from '../security/schemaValidator';
 
 @Tags('Channels')
 @Route('channels')

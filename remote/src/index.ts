@@ -7,6 +7,7 @@ import { Configuration } from '../../backend/src/config';
 import { logger } from '../../backend/src/utilities/logger';
 import app from './app';
 import { ChannelsRouter } from './routers/channelsRoute';
+import { createConnection } from 'typeorm';
 
 logger.info('casa-net remote server app starting...');
 
@@ -41,3 +42,15 @@ if (Configuration.http.useHttps) {
 const wss = new WebSocket.Server({ server });
 const channelsRouter = new ChannelsRouter();
 channelsRouter.IncomingWsChannels(wss);
+
+
+(async () => {
+    try {
+        await createConnection();
+        logger.info('successfully connected to DB.');
+    } catch (error) {
+        logger.fatal('DB connection failed, exiting...', error);
+        process.exit();
+    }
+})();
+

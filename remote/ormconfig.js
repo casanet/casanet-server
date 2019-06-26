@@ -12,7 +12,7 @@ function isMigrationCommand() {
 module.exports = {
   type: 'postgres',
   url: DATABASE_URL,
-  entities: ['dist/models/**/*.js'],
+  entities: ['dist/remote/src/models/**/*.js'],
   synchronize: false,
   logging: false,
   migrations: isMigrationCommand() ? ['src/migrations/**/*.ts'] : [],

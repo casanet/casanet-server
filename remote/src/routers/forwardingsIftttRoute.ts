@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import * as express from 'express';
 import { ErrorResponse, IftttActionTriggeredRequest } from '../../../backend/src/models/sharedInterfaces';
 import { logger } from '../../../backend/src/utilities/logger';
-import { ForwardingController } from '../controllers/forwardingController';
+import { ForwardingController } from '../controllers/forwarding-controller';
 
 export class ForwardingIftttRouter {
 
@@ -22,7 +22,7 @@ export class ForwardingIftttRouter {
 
             try {
                 /** Forward request as is and wait for request. */
-                const response = await this.forwardingController.forwardHttpReqByMac(iftttTriggerRequest.localMac,
+                const response = await this.forwardingController.forwardHttpReq(iftttTriggerRequest.localMac,
                     {
                         requestId: undefined,
                         httpPath: req.originalUrl,

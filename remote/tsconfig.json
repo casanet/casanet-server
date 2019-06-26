@@ -5,11 +5,11 @@
     "outDir": "dist",
     "sourceMap": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
   },
   "files": [
     "./node_modules/@types/mocha/index.d.ts",
     "../backend/src/models/backendInterfaces.d.ts",
-    "./src/models/remoteInterfaces.d.ts"
   ],
   "include": [
     "src/**/*"

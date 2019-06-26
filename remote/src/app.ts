@@ -9,26 +9,22 @@ import * as helmet from 'helmet';
 import * as path from 'path';
 import { Configuration } from '../../backend/src/config';
 import { logger } from '../../backend/src/utilities/logger';
-import { AdministrationAuthRouter } from './routers/administrationAuthRoute';
 import { FeedRouter } from './routers/feedRoute';
-import { ForwardAuthRouter } from './routers/forwardAuthRoute';
 import { ForwardingIftttRouter } from './routers/forwardingsIftttRoute';
 import { ForwardingRouter } from './routers/forwardingsRoute';
 import { RegisterRoutes } from './routers/routes';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
-import './controllers/administrationAuthController';
-import './controllers/administrationUsersController';
-import './controllers/feedController';
-import './controllers/forwardAuthController';
-import './controllers/localServersController';
-import './controllers/managementAssetsController';
-import './controllers/staticAssetsController';
+import './controllers/administration-auth-controller';
+import './controllers/administration-admins-controller';
+import './controllers/feed-controller';
+import './controllers/forward-auth-controller';
+import './controllers/local-servers-controller';
+import './controllers/management-assets-controller';
+import './controllers/static-assets-controller';
 
 class App {
     public express: express.Express;
-    private forwardAuthRouter: ForwardAuthRouter = new ForwardAuthRouter();
-    private administrationAuthRouter: AdministrationAuthRouter = new AdministrationAuthRouter();
     private feedRouter: FeedRouter = new FeedRouter();
     private forwardingRouter: ForwardingRouter = new ForwardingRouter();
     private forwardingIftttRouter: ForwardingIftttRouter = new ForwardingIftttRouter();
@@ -88,12 +84,6 @@ class App {
      * Route requests to API.
      */
     private routes(): void {
-
-        /** Route authentication API */
-        this.forwardAuthRouter.routes(this.express);
-
-        /** Route management auth API */
-        this.administrationAuthRouter.routes(this.express);
 
         /** Route local systems system feed */
         this.feedRouter.routes(this.express);
