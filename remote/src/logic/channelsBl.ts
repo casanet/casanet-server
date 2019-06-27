@@ -9,7 +9,7 @@ import { HttpRequest, HttpResponse, LocalMessage, LocalServerFeed, RemoteMessage
 import { ErrorResponse, MinionFeed, TimingFeed } from '../../../backend/src/models/sharedInterfaces';
 import { logger } from '../../../backend/src/utilities/logger';
 import { SendMail } from '../../../backend/src/utilities/mailSender';
-import { getServer, getServerSession, checkSession, updateServer } from '../data-access';
+import { getServer, checkSession, updateServer } from '../data-access';
 
 /**
  * Extend ws to allow hold uniqe id to each authenticated local server ws channel.

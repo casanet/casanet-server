@@ -1,7 +1,8 @@
-import { getConnection } from 'typeorm';
+import { getConnection, Any } from 'typeorm';
 
 import { LocalServer } from '../models';
 import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
+import { any } from 'joi';
 
 export const getServers = async (): Promise<LocalServer[]> => {
   const serversRepository = getConnection().getRepository(LocalServer);
@@ -19,13 +20,10 @@ export const getServer = async (macAddress: string): Promise<LocalServer> => {
 
 export const getServersByUser = async (user: string): Promise<LocalServer[]> => {
   const serversRepository = getConnection().getRepository(LocalServer);
-  return await serversRepository.find({
-    where: {
-      validUsers: {
-        value: user,
-      }
-    }
-  });
+  return await serversRepository
+    .createQueryBuilder('server')
+    .where(':user =ANY(server.valid_users)', { user })
+    .getMany();
 };
 
 export const updateServer = async (server: LocalServer): Promise<void> => {
@@ -38,15 +36,8 @@ export const updateServer = async (server: LocalServer): Promise<void> => {
 };
 
 export const createServer = async (server: LocalServer): Promise<void> => {
-  if (await getServer(server.macAddress)) {
-    throw {
-      responseCode: 5001,
-      message: 'local server with given mac address already exsit',
-    } as ErrorResponse;
-  }
-
   const serversRepository = getConnection().getRepository(LocalServer);
-  await serversRepository.save(new LocalServer(server));
+  await serversRepository.insert(new LocalServer(server));
 };
 
 export const deleteServer = async (macAddress: string): Promise<void> => {

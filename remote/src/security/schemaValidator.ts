@@ -1,9 +1,17 @@
 import * as Joi from 'joi';
 import { ObjectSchema } from 'joi';
 
-export const userSchema:ObjectSchema = Joi.object().keys({
+export const createUserSchema:ObjectSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     displayName: Joi.string().allow('').max(30).required(),
+    password: Joi.string().not('').min(8).required(),
+    ignoreTfa: Joi.boolean().required(),
+}).required();
+
+export const updateUserSchema:ObjectSchema = Joi.object().keys({
+    email: Joi.string().email().required(),
+    displayName: Joi.string().allow('').max(30).required(),
+    password: Joi.string().allow(''),
     ignoreTfa: Joi.boolean().required(),
 }).required();
 

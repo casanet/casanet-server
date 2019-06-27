@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcryptjs';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, PrimaryColumn, BeforeUpdate } from 'typeorm';
 
 /**
  * Represents a local server in the system.
@@ -14,13 +14,26 @@ export class RemoteAdmin {
     public displayName: string;
 
     @Column({ name: 'password', type: 'varchar', length: 256, nullable: false, select: false })
-    public password: string;
+    public password?: string;
 
     @Column({ name: 'ignore_tfa', type: 'boolean', nullable: false })
     public ignoreTfa: boolean;
 
+    constructor(private remoteAdmin?: Partial<RemoteAdmin>) {
+        if (remoteAdmin) {
+            Object.assign(this, remoteAdmin);
+        }
+    }
+
     @BeforeInsert()
     beforeInsert() {
         this.password = bcrypt.hashSync(this.password, 12);
+    }
+
+    @BeforeUpdate()
+    beforeUpdate() {
+        if(this.password){
+            this.beforeInsert();
+        }
     }
 }

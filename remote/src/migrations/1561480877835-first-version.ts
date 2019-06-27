@@ -32,8 +32,9 @@ export class FirstVersion1561480877835 implements MigrationInterface {
           },
           {
             name: 'valid_users',
-            type: 'varchar[]',
+            type: 'varchar',
             isNullable: false,
+            isArray: true,
           },
         ],
         uniques: [{ columnNames: ['physical_address'] }],
@@ -96,7 +97,6 @@ export class FirstVersion1561480877835 implements MigrationInterface {
             isNullable: false,
           },
         ],
-        uniques: [{ columnNames: ['server'] }],
         foreignKeys: [
           {
             columnNames: ['server'],

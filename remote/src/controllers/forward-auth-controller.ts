@@ -26,15 +26,16 @@ export class ForwardAuthController extends Controller {
         * used when user sending request to local server,so can check session *befor* sending.
         */
         /** Never save plain text key. */
-        const hashedKey = cryptoJs.SHA512(httpResponse.httpSession + Configuration.keysHandling.saltHash).toString();
+        const hashedKey = cryptoJs.SHA512(httpResponse.httpSession.key + Configuration.keysHandling.saltHash).toString();
+
         await createForwardSession({
             hashedKey,
             localUser,
             server: await getServer(localServerMacAddress),
         });
 
-
-        this.setHeader('SetCookie', `session=${httpResponse.httpSession}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        this.setHeader('Set-Cookie', `session=${httpResponse.httpSession.key}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        this.setStatus(200);
     }
     /**
      * Login to local server via remote server channel.
@@ -62,6 +63,11 @@ export class ForwardAuthController extends Controller {
         if (login.localServerId) {
             connectLocalServerId = login.localServerId;
         } else {
+            try {
+                const r = await getServersByUser(login.email);
+            } catch (error) {
+                console.log(error);
+            }
             /** Get all local server that user is mention as valid users */
             const userLocalServersInfo = await getServersByUser(login.email);
             /** If there is not any local server that user is mantion in it. throw it out.  */
@@ -220,6 +226,6 @@ export class ForwardAuthController extends Controller {
         await deleteForwardSession(forwardSession.hashedKey);
 
         /** Send clean session by response to client browser. */
-        this.setHeader('SetCookie', `session=0;`);
+        this.setHeader('Set-Cookie', `session=0;`);
     }
 }

@@ -39,25 +39,14 @@ export const checkUserAccess = async (login: Login): Promise<RemoteAdmin> => {
   return comparePasswords ? userAccount : null;
 };
 
-export const updateUser = async (user: RemoteAdmin): Promise<void> => {
-  const { email, displayName, ignoreTfa } = user;
+export const updateUser = async (admin: RemoteAdmin): Promise<void> => {
   const usersRepository = getConnection().getRepository(RemoteAdmin);
-  await usersRepository.update(email, {
-    displayName,
-    ignoreTfa,
-  });
+  await usersRepository.save(new RemoteAdmin(admin));
 };
 
-export const updateUserPassword = async (email: string, password: string): Promise<void> => {
+export const createUser = async (admin: RemoteAdmin): Promise<void> => {
   const usersRepository = getConnection().getRepository(RemoteAdmin);
-  await usersRepository.update(email, {
-    password,
-  });
-};
-
-export const createUser = async (user: RemoteAdmin): Promise<void> => {
-  const usersRepository = getConnection().getRepository(RemoteAdmin);
-  await usersRepository.create(user);
+  await usersRepository.insert(new RemoteAdmin(admin));
 };
 
 export const deleteUser = async (email: string): Promise<void> => {
