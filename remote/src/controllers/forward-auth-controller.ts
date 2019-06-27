@@ -10,7 +10,7 @@ import { Configuration } from '../../../backend/src/config';
 import { HttpResponse } from '../../../backend/src/models/remote2localProtocol';
 import { RequestSchemaValidator, SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { LoginSchema } from '../security/schemaValidator';
-
+import { forwardCache } from '../security/authentication';
 /**
  * Because that express response object needs in auth logic (to write cookies)
  * The TSOA routing is for documentation only.
@@ -28,11 +28,14 @@ export class ForwardAuthController extends Controller {
         /** Never save plain text key. */
         const hashedKey = cryptoJs.SHA512(httpResponse.httpSession.key + Configuration.keysHandling.saltHash).toString();
 
-        await createForwardSession({
+        const forwardSession: ForwardSession = {
             hashedKey,
             localUser,
             server: await getServer(localServerMacAddress),
-        });
+        }
+        await createForwardSession(forwardSession);
+
+        forwardCache.set(httpResponse.httpSession.key, forwardSession);
 
         this.setHeader('Set-Cookie', `session=${httpResponse.httpSession.key}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
         this.setStatus(200);
@@ -212,6 +215,7 @@ export class ForwardAuthController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post('logout')
     public async logout(@Request() request: express.Request): Promise<void> {
+        // TODO: extract cookie.
         const forwardSession: ForwardSession = request.body;
         /** Send logut request to local server via sw channel */
         const localResponse = await ChannelsBlSingleton.sendHttpViaChannels(forwardSession.server.macAddress, {
@@ -224,6 +228,9 @@ export class ForwardAuthController extends Controller {
 
         /** And in any case remove session from remote server cache. */
         await deleteForwardSession(forwardSession.hashedKey);
+
+        // Clean forward cache
+        // forwardCache.set(, undefined);
 
         /** Send clean session by response to client browser. */
         this.setHeader('Set-Cookie', `session=0;`);
