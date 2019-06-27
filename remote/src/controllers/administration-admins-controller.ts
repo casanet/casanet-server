@@ -4,7 +4,7 @@ import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
 import { getServersByUser, getUser, getUsers, updateUser, deleteUser, createUser } from '../data-access';
 import { RemoteAdmin } from '../models';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
-import { userSchema } from '../security/schemaValidator';
+import { createUserSchema, updateUserSchema } from '../security/schemaValidator';
 
 @Tags('Admins')
 @Route('admins')
@@ -53,13 +53,18 @@ export class AdministrationUsersController extends Controller {
     @Put('{userId}')
     public async setUser(userId: string, @Body() user: RemoteAdmin): Promise<void> {
         try {
-            user = await SchemaValidator(user, userSchema);
+            user = await SchemaValidator(user, updateUserSchema);
         } catch (err) {
             this.setStatus(422);
             return;
         }
         user.email = userId;
-        return await updateUser(user);
+        try {
+            await updateUser(user);
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     /**
@@ -82,7 +87,7 @@ export class AdministrationUsersController extends Controller {
     @Post()
     public async createUser(@Body() user: RemoteAdmin): Promise<void> {
         try {
-            user = await SchemaValidator(user, userSchema);
+            user = await SchemaValidator(user, createUserSchema);
         } catch (err) {
             this.setStatus(422);
             return;

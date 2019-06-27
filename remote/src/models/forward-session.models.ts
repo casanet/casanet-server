@@ -5,8 +5,8 @@ import { LocalServer } from '.';
  */
 @Entity({ name: 'forwards_sessions' })
 export class ForwardSession {
-    @OneToOne((type) => LocalServer)
-    @JoinColumn({ name: 'server'})
+    @OneToOne(type => LocalServer)
+    @JoinColumn({ name: 'server', referencedColumnName: 'macAddress' })
     public server: LocalServer;
 
     @PrimaryColumn({ name: 'hashed_key', type: 'varchar', length: 256, nullable: false })

@@ -56,7 +56,7 @@ export class AdministrationAuthController extends Controller {
     @Response<ErrorResponse>(403, 'Auth fail')
     @Response<ErrorResponse>(422, 'Invalid schema')
     @Post('login')
-    public async administrationLoginDocumentation(@Request() request: express.Request, @Body() login: Login): Promise<void> {
+    public async administrationLogin(@Request() request: express.Request, @Body() login: Login): Promise<void> {
         try {
             login = await SchemaValidator(login, LoginSchema);
         } catch (err) {
@@ -116,7 +116,7 @@ export class AdministrationAuthController extends Controller {
     @Response<ErrorResponse>(403, 'Auth fail')
     @Response<ErrorResponse>(422, 'Invalid schema')
     @Post('login/tfa')
-    public async administrationLoginTfaDocumentation(@Request() request: express.Request, @Body() login: Login): Promise<void> {
+    public async administrationLoginTfa(@Request() request: express.Request, @Body() login: Login): Promise<void> {
         try {
             login = await SchemaValidator(login, LoginSchema);
         } catch (err) {
@@ -155,7 +155,7 @@ export class AdministrationAuthController extends Controller {
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('logout')
-    public async administrationLogoutDocumentation(): Promise<void> {
+    public async administrationLogout(): Promise<void> {
         /** Currently there is not blacklist of invalid tokens */
 
         /** Send clean session by response to client browser. */

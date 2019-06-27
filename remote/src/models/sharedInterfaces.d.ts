@@ -1,10 +1,19 @@
 import { Login } from '../../../backend/src/models/sharedInterfaces'
+import { LocalServer } from './local-server.model';
 
 /**
  * Scopes of authentication, right know in our system there are only 3 scopes.
  * admin and user. any API route protect by one of them.
  */
 export declare type AuthScopes = 'forwardAuth' | 'adminAuth' | 'iftttAuth';
+
+/**
+ * Info about local server status
+ */
+export declare interface LocalServerStatus extends LocalServer {
+    /** Is local server connected */
+    connectionStatus: boolean;
+}
 
 /**
  * Info about a local server.

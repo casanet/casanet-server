@@ -63,5 +63,11 @@ export const expressAuthentication = async (request: express.Request, scopes: st
 
 
     /** Handle Forward requests */
-    return await getForwardSession(cryptoJs.SHA512(request.cookies.session + Configuration.keysHandling.saltHash).toString());
+    const session = await getForwardSession(cryptoJs.SHA512(request.cookies.session + Configuration.keysHandling.saltHash).toString());
+    if(session){
+        return session;
+    }
+    throw {
+        responseCode: 1403,
+    } as ErrorResponse;
 };

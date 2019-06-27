@@ -39,15 +39,17 @@ if (Configuration.http.useHttps) {
     }
 }
 
-const wss = new WebSocket.Server({ server });
-const channelsRouter = new ChannelsRouter();
-channelsRouter.IncomingWsChannels(wss);
-
-
 (async () => {
     try {
         await createConnection();
         logger.info('successfully connected to DB.');
+
+        const wss = new WebSocket.Server({ server });
+        const channelsRouter = new ChannelsRouter();
+        channelsRouter.IncomingWsChannels(wss);
+
+        logger.info('listening to WS channels...');
+
     } catch (error) {
         logger.fatal('DB connection failed, exiting...', error);
         process.exit();

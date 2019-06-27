@@ -8,6 +8,7 @@ import { Configuration } from '../../../backend/src/config';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { serverSchema } from '../security/schemaValidator';
 import { ChannelsBlSingleton } from '../logic';
+import { LocalServerStatus } from '../models/sharedInterfaces';
 
 @Tags('Servers')
 @Route('servers')
@@ -19,18 +20,12 @@ export class LocalServersController extends Controller {
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get()
-    public async getServers(): Promise<LocalServer[]> {
-        return await getServers();
-    }
-
-    /**
-     * Get local server by its id.
-     */
-    @Security('adminAuth')
-    @Response<ErrorResponse>(501, 'Server error')
-    @Get('{serverId}')
-    public async getServer(serverId: string): Promise<LocalServer> {
-        return await getServer(serverId);
+    public async getServers(): Promise<LocalServerStatus[]> {
+        const servers = await getServers() as LocalServerStatus[];
+        for (const server of servers) {
+            server.connectionStatus = await ChannelsBlSingleton.connectionStatus(server.macAddress);
+        }
+        return servers;
     }
 
     /**

@@ -181,6 +181,14 @@ const models: TsoaRoute.Models = {
             "password": { "dataType": "string", "required": true },
         },
     },
+    "LocalServerStatus": {
+        "properties": {
+            "macAddress": { "dataType": "string", "required": true },
+            "displayName": { "dataType": "string", "required": true },
+            "validUsers": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
+            "connectionStatus": { "dataType": "boolean", "required": true },
+        },
+    },
     "LocalServer": {
         "properties": {
             "macAddress": { "dataType": "string", "required": true },
@@ -205,7 +213,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "email": { "dataType": "string", "required": true },
             "displayName": { "dataType": "string", "required": true },
-            "password": { "dataType": "string", "required": true },
+            "password": { "dataType": "string" },
             "ignoreTfa": { "dataType": "boolean", "required": true },
         },
     },
@@ -280,7 +288,7 @@ export function RegisterRoutes(app: express.Express) {
             const controller = new AdministrationAuthController();
 
 
-            const promise = controller.administrationLoginDocumentation.apply(controller, validatedArgs as any);
+            const promise = controller.administrationLogin.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/administration/auth/login/tfa',
@@ -304,7 +312,7 @@ export function RegisterRoutes(app: express.Express) {
             const controller = new AdministrationAuthController();
 
 
-            const promise = controller.administrationLoginTfaDocumentation.apply(controller, validatedArgs as any);
+            const promise = controller.administrationLoginTfa.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/administration/auth/logout',
@@ -327,7 +335,7 @@ export function RegisterRoutes(app: express.Express) {
             const controller = new AdministrationAuthController();
 
 
-            const promise = controller.administrationLogoutDocumentation.apply(controller, validatedArgs as any);
+            const promise = controller.administrationLogout.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/API/ifttt/trigger/**/*',
@@ -397,30 +405,6 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.getServers.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/servers/:serverId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                serverId: { "in": "path", "name": "serverId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new LocalServersController();
-
-
-            const promise = controller.getServer.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/servers',
