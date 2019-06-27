@@ -7,10 +7,10 @@ import { AuthScopes } from '../models/sharedInterfaces';
 import { jwtSecret } from '../controllers/administration-auth-controller';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { IftttAuthRequestSchema } from './schemaValidator';
-import { getForwardSession } from '../data-access';
+import { getForwardSession, checkSession } from '../data-access';
 import * as cryptoJs from 'crypto-js';
 import { Configuration } from '../../../backend/src/config';
-
+import { Cache } from '../logic'
 /**
  * System auth scopes, shown in swagger doc as 2 kinds of security definitions.
  */
@@ -23,6 +23,11 @@ export const SystemAuthScopes: {
     adminScope: 'adminAuth',
     iftttScope: 'iftttAuth',
 };
+
+export const forwardCache = new Cache(
+    +process.env.FORWARD_CACHE_TTL || 60 * 60 * 2,
+    +process.env.FORWARD_CACHE_CHECK_PERIOD || 60 * 60
+);
 
 /**
  * Cert Authentication middelwhere API.
@@ -61,12 +66,19 @@ export const expressAuthentication = async (request: express.Request, scopes: st
         return payload['email'];
     }
 
+    const cachedSession = await forwardCache.get(request.cookies.session);
+    if(cachedSession && cachedSession !== 'block'){
+        return cachedSession as ForwardSession;
+    }
 
     /** Handle Forward requests */
     const session = await getForwardSession(cryptoJs.SHA512(request.cookies.session + Configuration.keysHandling.saltHash).toString());
-    if(session){
+    if (session) {
+        await forwardCache.set(request.cookies.session, session);
         return session;
     }
+    await forwardCache.set(request.cookies.session, 'block');
+
     throw {
         responseCode: 1403,
     } as ErrorResponse;
