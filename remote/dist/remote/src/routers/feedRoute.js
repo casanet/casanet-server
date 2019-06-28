@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const authentication_1 = require("../../../backend/src/security/authentication");
-const feedController_1 = require("../controllers/feedController");
-const authenticationExtend_1 = require("../security/authenticationExtend");
+const feed_controller_1 = require("../controllers/feed-controller");
+const authentication_1 = require("../security/authentication");
 class FeedRouter {
     constructor() {
-        this.feedController = new feedController_1.FeedController();
+        this.feedController = new feed_controller_1.FeedController();
     }
     routes(app) {
         app.get('/API/feed/minions', async (request, response) => {
@@ -13,11 +12,11 @@ class FeedRouter {
                 /**
                  * Make sure it is valid local server user with valid session.
                  */
-                const forwardUserSession = await authenticationExtend_1.expressAuthentication(request, [authentication_1.SystemAuthScopes.userScope]);
-                this.feedController.initMinionsFeed(forwardUserSession.localServerId, request, response);
+                const forwardUserSession = await authentication_1.expressAuthentication(request, [authentication_1.SystemAuthScopes.forwardScope]);
+                this.feedController.initMinionsFeed(forwardUserSession.server, request, response);
             }
             catch (error) {
-                response.status(403).send();
+                response.status(401).send();
             }
         });
         app.get('/API/feed/timings', async (request, response) => {
@@ -25,11 +24,11 @@ class FeedRouter {
                 /**
                  * Make sure it is valid local server user with valid session.
                  */
-                const forwardUserSession = await authenticationExtend_1.expressAuthentication(request, [authentication_1.SystemAuthScopes.userScope]);
-                this.feedController.initTimingsFeed(forwardUserSession.localServerId, request, response);
+                const forwardUserSession = await authentication_1.expressAuthentication(request, [authentication_1.SystemAuthScopes.forwardScope]);
+                this.feedController.initTimingsFeed(forwardUserSession.server, request, response);
             }
             catch (error) {
-                response.status(403).send();
+                response.status(401).send();
             }
         });
     }

@@ -3,16 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // @ts-ignore
 /* tslint:disable */
 const tsoa_1 = require("tsoa");
-const feedController_1 = require("./../controllers/feedController");
-const forwardAuthController_1 = require("./../controllers/forwardAuthController");
-const forwardingController_1 = require("./../controllers/forwardingController");
-const localServersController_1 = require("./../controllers/localServersController");
-const administrationAuthController_1 = require("./../controllers/administrationAuthController");
-const administrationUsersController_1 = require("./../controllers/administrationUsersController");
-const managementAssetsController_1 = require("./../controllers/managementAssetsController");
-const staticAssetsController_1 = require("./../controllers/staticAssetsController");
-const channelsController_1 = require("./../controllers/channelsController");
-const authenticationExtend_1 = require("./../security/authenticationExtend");
+const feed_controller_1 = require("./../controllers/feed-controller");
+const forwarding_controller_1 = require("./../controllers/forwarding-controller");
+const local_servers_controller_1 = require("./../controllers/local-servers-controller");
+const administration_auth_controller_1 = require("./../controllers/administration-auth-controller");
+const forward_auth_controller_1 = require("./../controllers/forward-auth-controller");
+const administration_admins_controller_1 = require("./../controllers/administration-admins-controller");
+const management_assets_controller_1 = require("./../controllers/management-assets-controller");
+const static_assets_controller_1 = require("./../controllers/static-assets-controller");
+const channels_controller_1 = require("./../controllers/channels-controller");
+const authentication_1 = require("./../security/authentication");
 const models = {
     "LocalNetworkDevice": {
         "properties": {
@@ -175,6 +175,27 @@ const models = {
             "results": { "dataType": "array", "array": { "ref": "OperationResult" }, "required": true },
         },
     },
+    "LocalServerStatus": {
+        "properties": {
+            "macAddress": { "dataType": "string", "required": true },
+            "displayName": { "dataType": "string", "required": true },
+            "validUsers": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
+            "connectionStatus": { "dataType": "boolean", "required": true },
+        },
+    },
+    "LocalServer": {
+        "properties": {
+            "macAddress": { "dataType": "string", "required": true },
+            "displayName": { "dataType": "string", "required": true },
+            "validUsers": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
+        },
+    },
+    "Login": {
+        "properties": {
+            "email": { "dataType": "string", "required": true },
+            "password": { "dataType": "string", "required": true },
+        },
+    },
     "LocalServerInfo": {
         "properties": {
             "localServerId": { "dataType": "string", "required": true },
@@ -188,35 +209,18 @@ const models = {
             "localServerId": { "dataType": "string" },
         },
     },
-    "LocalServer": {
+    "RemoteAdmin": {
         "properties": {
-            "localServerId": { "dataType": "string", "required": true },
+            "email": { "dataType": "string", "required": true },
             "displayName": { "dataType": "string", "required": true },
-            "macAddress": { "dataType": "string", "required": true },
-            "validUsers": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
-            "connectionStatus": { "dataType": "boolean" },
-        },
-    },
-    "Login": {
-        "properties": {
-            "email": { "dataType": "string", "required": true },
-            "password": { "dataType": "string", "required": true },
-        },
-    },
-    "User": {
-        "properties": {
-            "displayName": { "dataType": "string" },
-            "email": { "dataType": "string", "required": true },
-            "sessionTimeOutMS": { "dataType": "double", "required": true },
             "password": { "dataType": "string" },
             "ignoreTfa": { "dataType": "boolean", "required": true },
-            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },
         },
     },
 };
 const validationService = new tsoa_1.ValidationService(models);
 function RegisterRoutes(app) {
-    app.get('/API/feed/minions', authenticateMiddleware([{ "userAuth": [] }]), function (request, response, next) {
+    app.get('/API/feed/minions', authenticateMiddleware([{ "forwardAuth": [] }]), function (request, response, next) {
         const args = {};
         let validatedArgs = [];
         try {
@@ -229,11 +233,11 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new feedController_1.FeedController();
+        const controller = new feed_controller_1.FeedController();
         const promise = controller.getMinionsFeed.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
-    app.get('/API/feed/timings', authenticateMiddleware([{ "userAuth": [] }]), function (request, response, next) {
+    app.get('/API/feed/timings', authenticateMiddleware([{ "forwardAuth": [] }]), function (request, response, next) {
         const args = {};
         let validatedArgs = [];
         try {
@@ -246,8 +250,191 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new feedController_1.FeedController();
+        const controller = new feed_controller_1.FeedController();
         const promise = controller.getTimingFeed.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/API/ifttt/trigger/**/*', authenticateMiddleware([{ "iftttAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new forwarding_controller_1.ForwardingController();
+        const promise = controller.apiForwardingIftttDocumentation.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/API/**/*', authenticateMiddleware([{ "forwardAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new forwarding_controller_1.ForwardingController();
+        const promise = controller.apiForwardingDocumentation.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/servers', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new local_servers_controller_1.LocalServersController();
+        const promise = controller.getServers.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/servers', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            server: { "in": "body", "name": "server", "required": true, "ref": "LocalServer" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new local_servers_controller_1.LocalServersController();
+        const promise = controller.createServer.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.put('/API/servers/:serverId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            serverId: { "in": "path", "name": "serverId", "required": true, "dataType": "string" },
+            server: { "in": "body", "name": "server", "required": true, "ref": "LocalServer" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new local_servers_controller_1.LocalServersController();
+        const promise = controller.updateLocalServer.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.delete('/API/servers/:serverId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            serverId: { "in": "path", "name": "serverId", "required": true, "dataType": "string" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new local_servers_controller_1.LocalServersController();
+        const promise = controller.deleteLocalServer.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/servers/auth/:serverId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            serverId: { "in": "path", "name": "serverId", "required": true, "dataType": "string" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new local_servers_controller_1.LocalServersController();
+        const promise = controller.generateAuthKeyLocalServer.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/administration/auth/login', function (request, response, next) {
+        const args = {
+            login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new administration_auth_controller_1.AdministrationAuthController();
+        const promise = controller.administrationLogin.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/administration/auth/login/tfa', function (request, response, next) {
+        const args = {
+            login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new administration_auth_controller_1.AdministrationAuthController();
+        const promise = controller.administrationLoginTfa.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.post('/API/administration/auth/logout', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new administration_auth_controller_1.AdministrationAuthController();
+        const promise = controller.administrationLogout.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.post('/API/auth/login', function (request, response, next) {
@@ -266,8 +453,8 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new forwardAuthController_1.ForwardAuthController();
-        const promise = controller.loginDocumentation.apply(controller, validatedArgs);
+        const controller = new forward_auth_controller_1.ForwardAuthController();
+        const promise = controller.login.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.post('/API/auth/login/tfa', function (request, response, next) {
@@ -286,232 +473,11 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new forwardAuthController_1.ForwardAuthController();
-        const promise = controller.loginTfaDocumentation.apply(controller, validatedArgs);
+        const controller = new forward_auth_controller_1.ForwardAuthController();
+        const promise = controller.loginTfa.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
-    app.post('/API/auth/logout', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {
-        const args = {};
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new forwardAuthController_1.ForwardAuthController();
-        const promise = controller.logoutDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.post('/API/API/ifttt/trigger/**/*', authenticateMiddleware([{ "iftttAuth": [] }]), function (request, response, next) {
-        const args = {};
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new forwardingController_1.ForwardingController();
-        const promise = controller.apiForwardingIftttDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.get('/API/API/**/*', authenticateMiddleware([{ "userAuth": [] }]), function (request, response, next) {
-        const args = {};
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new forwardingController_1.ForwardingController();
-        const promise = controller.apiForwardingDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.get('/API/servers', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {};
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new localServersController_1.LocalServersController();
-        const promise = controller.getLocalServers.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.get('/API/servers/:localServerId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            localServerId: { "in": "path", "name": "localServerId", "required": true, "dataType": "string" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new localServersController_1.LocalServersController();
-        const promise = controller.getLocalServer.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.post('/API/servers', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            localServer: { "in": "body", "name": "localServer", "required": true, "ref": "LocalServer" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new localServersController_1.LocalServersController();
-        const promise = controller.addLocalServer.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.put('/API/servers/:localServerId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            localServerId: { "in": "path", "name": "localServerId", "required": true, "dataType": "string" },
-            localServer: { "in": "body", "name": "localServer", "required": true, "ref": "LocalServer" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new localServersController_1.LocalServersController();
-        const promise = controller.updateLocalServer.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.delete('/API/servers/:localServerId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            localServerId: { "in": "path", "name": "localServerId", "required": true, "dataType": "string" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new localServersController_1.LocalServersController();
-        const promise = controller.deleteLocalServer.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.post('/API/servers/auth/:localServerId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {
-            localServerId: { "in": "path", "name": "localServerId", "required": true, "dataType": "string" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new localServersController_1.LocalServersController();
-        const promise = controller.generateAuthKeyLocalServer.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.post('/API/administration/auth/login', function (request, response, next) {
-        const args = {
-            request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new administrationAuthController_1.AdministrationAuthController();
-        const promise = controller.administrationLoginDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.post('/API/administration/auth/login/tfa', function (request, response, next) {
-        const args = {
-            request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
-        };
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new administrationAuthController_1.AdministrationAuthController();
-        const promise = controller.administrationLoginTfaDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.post('/API/administration/auth/logout', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
-        const args = {};
-        let validatedArgs = [];
-        try {
-            validatedArgs = getValidatedArgs(args, request);
-        }
-        catch (err) {
-            response.status(422).send({
-                responseCode: 1422,
-                message: JSON.stringify(err.fields),
-            });
-            return;
-        }
-        const controller = new administrationAuthController_1.AdministrationAuthController();
-        const promise = controller.administrationLogoutDocumentation.apply(controller, validatedArgs);
-        promiseHandler(controller, promise, response, next);
-    });
-    app.get('/API/administration/users/profile', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+    app.post('/API/auth/logout', authenticateMiddleware([{ "forwardAuth": [] }]), function (request, response, next) {
         const args = {
             request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
         };
@@ -526,11 +492,30 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const controller = new forward_auth_controller_1.ForwardAuthController();
+        const promise = controller.logout.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/admins/profile', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new administration_admins_controller_1.AdministrationUsersController();
         const promise = controller.getProfile.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
-    app.get('/API/administration/users', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+    app.get('/API/admins', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
         const args = {};
         let validatedArgs = [];
         try {
@@ -543,13 +528,13 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const controller = new administration_admins_controller_1.AdministrationUsersController();
         const promise = controller.getUsers.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
-    app.get('/API/administration/users/:adminId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+    app.get('/API/admins/:userId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
         const args = {
-            adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
         };
         let validatedArgs = [];
         try {
@@ -562,14 +547,14 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const controller = new administration_admins_controller_1.AdministrationUsersController();
         const promise = controller.getUser.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
-    app.put('/API/administration/users/:adminId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+    app.put('/API/admins/:userId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
         const args = {
-            adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
-            user: { "in": "body", "name": "user", "required": true, "ref": "User" },
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
+            user: { "in": "body", "name": "user", "required": true, "ref": "RemoteAdmin" },
         };
         let validatedArgs = [];
         try {
@@ -582,13 +567,13 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const controller = new administration_admins_controller_1.AdministrationUsersController();
         const promise = controller.setUser.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
-    app.delete('/API/administration/users/:adminId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+    app.delete('/API/admins/:userId', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
         const args = {
-            adminId: { "in": "path", "name": "adminId", "required": true, "dataType": "string" },
+            userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
         };
         let validatedArgs = [];
         try {
@@ -601,13 +586,13 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const controller = new administration_admins_controller_1.AdministrationUsersController();
         const promise = controller.deleteUser.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
-    app.post('/API/administration/users', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+    app.post('/API/admins', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
         const args = {
-            user: { "in": "body", "name": "user", "required": true, "ref": "User" },
+            admin: { "in": "body", "name": "admin", "required": true, "ref": "RemoteAdmin" },
         };
         let validatedArgs = [];
         try {
@@ -620,7 +605,7 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new administrationUsersController_1.AdministrationUsersController();
+        const controller = new administration_admins_controller_1.AdministrationUsersController();
         const promise = controller.createUser.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
@@ -637,7 +622,7 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new managementAssetsController_1.ManagementsAssetsController();
+        const controller = new management_assets_controller_1.ManagementsAssetsController();
         const promise = controller.getManagementsAssets.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
@@ -654,7 +639,7 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new staticAssetsController_1.StaticsAssetsController();
+        const controller = new static_assets_controller_1.StaticsAssetsController();
         const promise = controller.getStaticsAssets.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
@@ -671,7 +656,7 @@ function RegisterRoutes(app) {
             });
             return;
         }
-        const controller = new channelsController_1.ChannelsController();
+        const controller = new channels_controller_1.ChannelsController();
         const promise = controller.connectToRemoteViaWsDocumentation.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
@@ -694,7 +679,7 @@ function RegisterRoutes(app) {
             }
             catch (error) {
             }
-            authenticationExtend_1.expressAuthentication(request, scopes)
+            authentication_1.expressAuthentication(request, scopes)
                 .then(succeed)
                 .catch(fail);
         };

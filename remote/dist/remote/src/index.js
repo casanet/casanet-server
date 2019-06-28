@@ -9,6 +9,7 @@ const config_1 = require("../../backend/src/config");
 const logger_1 = require("../../backend/src/utilities/logger");
 const app_1 = require("./app");
 const channelsRoute_1 = require("./routers/channelsRoute");
+const typeorm_1 = require("typeorm");
 logger_1.logger.info('casa-net remote server app starting...');
 // Start HTTP application
 let server = http.createServer(app_1.default).listen(config_1.Configuration.http.httpPort, () => {
@@ -35,7 +36,18 @@ if (config_1.Configuration.http.useHttps) {
         process.exit();
     }
 }
-const wss = new WebSocket.Server({ server });
-const channelsRouter = new channelsRoute_1.ChannelsRouter();
-channelsRouter.IncomingWsChannels(wss);
+(async () => {
+    try {
+        await typeorm_1.createConnection();
+        logger_1.logger.info('successfully connected to DB.');
+        const wss = new WebSocket.Server({ server });
+        const channelsRouter = new channelsRoute_1.ChannelsRouter();
+        channelsRouter.IncomingWsChannels(wss);
+        logger_1.logger.info('listening to WS channels...');
+    }
+    catch (error) {
+        logger_1.logger.fatal('DB connection failed, exiting...', error);
+        process.exit();
+    }
+})();
 //# sourceMappingURL=index.js.map

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const channelsController_1 = require("../controllers/channelsController");
+const channels_controller_1 = require("../controllers/channels-controller");
 class ChannelsRouter {
     constructor() {
-        this.channelsController = new channelsController_1.ChannelsController();
+        this.channelsController = new channels_controller_1.ChannelsController();
     }
     /**
      * Route incoming ws connections.

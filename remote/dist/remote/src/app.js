@@ -11,24 +11,20 @@ const helmet = require("helmet");
 const path = require("path");
 const config_1 = require("../../backend/src/config");
 const logger_1 = require("../../backend/src/utilities/logger");
-const administrationAuthRoute_1 = require("./routers/administrationAuthRoute");
 const feedRoute_1 = require("./routers/feedRoute");
-const forwardAuthRoute_1 = require("./routers/forwardAuthRoute");
 const forwardingsIftttRoute_1 = require("./routers/forwardingsIftttRoute");
 const forwardingsRoute_1 = require("./routers/forwardingsRoute");
 const routes_1 = require("./routers/routes");
 // controllers need to be referenced in order to get crawled by the TSOA generator
-require("./controllers/administrationAuthController");
-require("./controllers/administrationUsersController");
-require("./controllers/feedController");
-require("./controllers/forwardAuthController");
-require("./controllers/localServersController");
-require("./controllers/managementAssetsController");
-require("./controllers/staticAssetsController");
+require("./controllers/administration-auth-controller");
+require("./controllers/administration-admins-controller");
+require("./controllers/feed-controller");
+require("./controllers/forward-auth-controller");
+require("./controllers/local-servers-controller");
+require("./controllers/management-assets-controller");
+require("./controllers/static-assets-controller");
 class App {
     constructor() {
-        this.forwardAuthRouter = new forwardAuthRoute_1.ForwardAuthRouter();
-        this.administrationAuthRouter = new administrationAuthRoute_1.AdministrationAuthRouter();
         this.feedRouter = new feedRoute_1.FeedRouter();
         this.forwardingRouter = new forwardingsRoute_1.ForwardingRouter();
         this.forwardingIftttRouter = new forwardingsIftttRoute_1.ForwardingIftttRouter();
@@ -73,10 +69,6 @@ class App {
      * Route requests to API.
      */
     routes() {
-        /** Route authentication API */
-        this.forwardAuthRouter.routes(this.express);
-        /** Route management auth API */
-        this.administrationAuthRouter.routes(this.express);
         /** Route local systems system feed */
         this.feedRouter.routes(this.express);
         /** Use generated routers (by TSOA) */
