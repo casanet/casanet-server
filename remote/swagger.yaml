@@ -503,16 +503,28 @@ definitions:
             - timing
             - results
         type: object
-    Login:
-        description: 'Login schema model.'
+    LocalServerStatus:
+        description: 'Info about local server status'
         properties:
-            email:
+            macAddress:
                 type: string
-            password:
+                description: 'The local machine mac address should be unique.'
+            displayName:
                 type: string
+                description: 'Display name'
+            validUsers:
+                type: array
+                items:
+                    type: string
+                description: 'Users from the local server that can access via remote server.'
+            connectionStatus:
+                type: boolean
+                description: 'Is local server connected'
         required:
-            - email
-            - password
+            - macAddress
+            - displayName
+            - validUsers
+            - connectionStatus
         type: object
     LocalServer:
         description: 'Represents a local server in the system.'
@@ -528,14 +540,21 @@ definitions:
                 items:
                     type: string
                 description: 'Users from the local server that can access via remote server.'
-            connectionStatus:
-                type: boolean
-                description: 'Connection with local server status.'
-                x-nullable: true
         required:
             - macAddress
             - displayName
             - validUsers
+        type: object
+    Login:
+        description: 'Login schema model.'
+        properties:
+            email:
+                type: string
+            password:
+                type: string
+        required:
+            - email
+            - password
         type: object
     LocalServerInfo:
         description: 'Info about a local server.'
@@ -575,12 +594,12 @@ definitions:
                 description: 'Display name'
             password:
                 type: string
+                x-nullable: true
             ignoreTfa:
                 type: boolean
         required:
             - email
             - displayName
-            - password
             - ignoreTfa
         type: object
 info:
@@ -632,89 +651,6 @@ paths:
                 -
                     forwardAuth: []
             parameters: []
-    /administration/auth/login:
-        post:
-            operationId: AdministrationLoginDocumentation
-            produces:
-                - application/json
-            responses:
-                '201':
-                    description: '2-fatore code sent'
-                '204':
-                    description: 'No content'
-                '403':
-                    description: 'Auth fail'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '422':
-                    description: 'Invalid schema'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Login to the administration system.'
-            tags:
-                - Administration
-            security: []
-            parameters:
-                -
-                    in: body
-                    name: login
-                    required: true
-                    schema:
-                        $ref: '#/definitions/Login'
-    /administration/auth/login/tfa:
-        post:
-            operationId: AdministrationLoginTfaDocumentation
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '403':
-                    description: 'Auth fail'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '422':
-                    description: 'Invalid schema'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: '2-step verification login to the administration system.'
-            tags:
-                - Administration
-            security: []
-            parameters:
-                -
-                    in: body
-                    name: login
-                    required: true
-                    schema:
-                        $ref: '#/definitions/Login'
-    /administration/auth/logout:
-        post:
-            operationId: AdministrationLogoutDocumentation
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Logout manually from the administration system.'
-            tags:
-                - Administration
-            security:
-                -
-                    adminAuth: []
-            parameters: []
     '/API/ifttt/trigger/**/*':
         post:
             operationId: ApiForwardingIftttDocumentation
@@ -760,7 +696,7 @@ paths:
                     schema:
                         type: array
                         items:
-                            $ref: '#/definitions/LocalServer'
+                            $ref: '#/definitions/LocalServerStatus'
                 '501':
                     description: 'Server error'
                     schema:
@@ -797,31 +733,6 @@ paths:
                     schema:
                         $ref: '#/definitions/LocalServer'
     '/servers/{serverId}':
-        get:
-            operationId: GetServer
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        $ref: '#/definitions/LocalServer'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Get local server by its id.'
-            tags:
-                - Servers
-            security:
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    in: path
-                    name: serverId
-                    required: true
-                    type: string
         put:
             operationId: UpdateLocalServer
             produces:
@@ -841,6 +752,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
+                    description: 'local server physical address.'
                     in: path
                     name: serverId
                     required: true
@@ -870,6 +782,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
+                    description: 'local server physical address.'
                     in: path
                     name: serverId
                     required: true
@@ -896,11 +809,94 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'The local server to generate for.'
+                    description: 'local server physical address to generate for.'
                     in: path
                     name: serverId
                     required: true
                     type: string
+    /administration/auth/login:
+        post:
+            operationId: AdministrationLogin
+            produces:
+                - application/json
+            responses:
+                '201':
+                    description: '2-fatore code sent'
+                '204':
+                    description: 'No content'
+                '403':
+                    description: 'Auth fail'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '422':
+                    description: 'Invalid schema'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Login to the administration system.'
+            tags:
+                - Administration
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: login
+                    required: true
+                    schema:
+                        $ref: '#/definitions/Login'
+    /administration/auth/login/tfa:
+        post:
+            operationId: AdministrationLoginTfa
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '403':
+                    description: 'Auth fail'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '422':
+                    description: 'Invalid schema'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: '2-step verification login to the administration system.'
+            tags:
+                - Administration
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: login
+                    required: true
+                    schema:
+                        $ref: '#/definitions/Login'
+    /administration/auth/logout:
+        post:
+            operationId: AdministrationLogout
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Logout manually from the administration system.'
+            tags:
+                - Administration
+            security:
+                -
+                    adminAuth: []
+            parameters: []
     /auth/login:
         post:
             operationId: Login
@@ -1047,7 +1043,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Creates a new administraion user.'
+            description: 'Creates a new administraion admin.'
             tags:
                 - Admins
             security:
@@ -1055,9 +1051,9 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'The new administraion to create.'
+                    description: 'The new admin to create.'
                     in: body
-                    name: user
+                    name: admin
                     required: true
                     schema:
                         $ref: '#/definitions/RemoteAdmin'
@@ -1075,7 +1071,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get administraion user by id.'
+            description: 'Get admin by email.'
             tags:
                 - Admins
             security:
@@ -1098,7 +1094,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Update administraion user properties.'
+            description: 'Update administraion admin properties.'
             tags:
                 - Admins
             security:

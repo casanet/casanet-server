@@ -1,23 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const authentication_1 = require("../../../backend/src/security/authentication");
 const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
-const forwardUserSessionsBl_1 = require("../business-layer/forwardUserSessionsBl");
-const forwardingController_1 = require("../controllers/forwardingController");
-const authenticationExtend_1 = require("../security/authenticationExtend");
-const schemaValidatorExtend_1 = require("../security/schemaValidatorExtend");
-const localServersController_1 = require("../controllers/localServersController");
+const forwarding_controller_1 = require("../controllers/forwarding-controller");
+const authentication_1 = require("../security/authentication");
+const schemaValidator_2 = require("../security/schemaValidator");
+const local_servers_controller_1 = require("../controllers/local-servers-controller");
+const logic_1 = require("../logic");
 class ForwardingRouter {
     constructor() {
-        this.forwardingController = new forwardingController_1.ForwardingController();
-        this.localServersController = new localServersController_1.LocalServersController();
+        this.forwardingController = new forwarding_controller_1.ForwardingController();
+        this.localServersController = new local_servers_controller_1.LocalServersController();
     }
     forwardRouter(app) {
         app.put('/API/minions/:minionId/ifttt', async (req, res) => {
-            const iftttOnChanged = await schemaValidator_1.RequestSchemaValidator(req, schemaValidatorExtend_1.IftttOnChangedSchema);
+            const iftttOnChanged = await schemaValidator_1.RequestSchemaValidator(req, schemaValidator_2.IftttOnChangedSchema);
             try {
                 /** Forward request as is and wait for request. */
-                const response = await this.forwardingController.forwardHttpReqByMac(iftttOnChanged.localMac, {
+                const response = await this.forwardingController.forwardHttpReq(iftttOnChanged.localMac, {
                     requestId: undefined,
                     httpPath: req.originalUrl,
                     httpMethod: req.method.toUpperCase(),
@@ -42,14 +41,13 @@ class ForwardingRouter {
                 try {
                     /** Make sure, and get valid forward session */
                     forwardUserSession =
-                        await authenticationExtend_1.expressAuthentication(req, [authentication_1.SystemAuthScopes.userScope]);
+                        await authentication_1.expressAuthentication(req, [authentication_1.SystemAuthScopes.forwardScope]);
                 }
                 catch (error) {
                     res.status(401).send({ responseCode: 4001 });
                     return;
                 }
-                const localServer = await this.localServersController.getLocalServer(forwardUserSession.localServerId);
-                const remoteServerStatus = localServer.connectionStatus
+                const remoteServerStatus = await logic_1.ChannelsSingleton.connectionStatus(forwardUserSession.server)
                     ? 'connectionOK'
                     : 'localServerDisconnected';
                 res.json(remoteServerStatus);
@@ -67,26 +65,22 @@ class ForwardingRouter {
                 try {
                     /** Make sure, and get valid forward session */
                     forwardUserSession =
-                        await authenticationExtend_1.expressAuthentication(req, [authentication_1.SystemAuthScopes.userScope]);
+                        await authentication_1.expressAuthentication(req, [authentication_1.SystemAuthScopes.forwardScope]);
                 }
                 catch (error) {
                     res.status(401).send({ responseCode: 4001 });
                     return;
                 }
                 /** Forward request as is and wait for request. */
-                const response = await this.forwardingController.forwardHttpReq(forwardUserSession.localServerId, {
+                const response = await this.forwardingController.forwardHttpReq(forwardUserSession.server, {
                     requestId: undefined,
                     httpPath: req.originalUrl,
                     httpMethod: req.method.toUpperCase(),
                     httpBody: req.body,
-                    httpSession: req.cookies.session,
+                    httpSession: forwardUserSession.session,
                 });
-                /** If status is 403, delete forward session too. */
+                /** If status is 403, add it to token black list too. */
                 if (response.httpStatus === 403) {
-                    try {
-                        await forwardUserSessionsBl_1.ForwardUsersSessionsBlSingleton.deleteSession(forwardUserSession);
-                    }
-                    catch (error) { }
                 }
                 /** Set status and data and send response back */
                 res.statusCode = response.httpStatus;

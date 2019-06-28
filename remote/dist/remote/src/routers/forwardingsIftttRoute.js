@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = require("../../../backend/src/utilities/logger");
-const forwardingController_1 = require("../controllers/forwardingController");
+const forwarding_controller_1 = require("../controllers/forwarding-controller");
 class ForwardingIftttRouter {
     constructor() {
-        this.forwardingController = new forwardingController_1.ForwardingController();
+        this.forwardingController = new forwarding_controller_1.ForwardingController();
     }
     forwardRouter(app) {
         /** Handle all ifttt triggers requests */
@@ -17,7 +17,7 @@ class ForwardingIftttRouter {
             }
             try {
                 /** Forward request as is and wait for request. */
-                const response = await this.forwardingController.forwardHttpReqByMac(iftttTriggerRequest.localMac, {
+                const response = await this.forwardingController.forwardHttpReq(iftttTriggerRequest.localMac, {
                     requestId: undefined,
                     httpPath: req.originalUrl,
                     httpMethod: req.method.toUpperCase(),
