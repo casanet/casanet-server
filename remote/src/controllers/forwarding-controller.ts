@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { HttpRequest, HttpResponse, LocalMessage } from '../../../backend/src/models/remote2localProtocol';
-import { ChannelsBlSingleton } from '../logic/channelsBl';
+import { ChannelsSingleton } from '../logic/channels';
 
 @Tags('Forwarding')
 @Route('API')
@@ -10,7 +10,7 @@ export class ForwardingController extends Controller {
      * Forward each request to local server to handle it, as is.
      */
     public async forwardHttpReq(localServerId: string, httpRequest: HttpRequest): Promise<HttpResponse> {
-        return await ChannelsBlSingleton.sendHttpViaChannels(localServerId, httpRequest);
+        return await ChannelsSingleton.sendHttpViaChannels(localServerId, httpRequest);
     }
 
     //////////////////////////////////////////////////

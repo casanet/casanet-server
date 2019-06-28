@@ -1,8 +1,7 @@
-import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse, Login } from '../../../backend/src/models/sharedInterfaces';
 import { SchemaValidator, LoginSchema } from '../../../backend/src/security/schemaValidator';
-import { getUsers, checkUserAccess } from '../data-access';
+import { checkAdminAccess } from '../data-access';
 import { RemoteAdmin } from '../models';
 import { Configuration } from '../../../backend/src/config';
 import { logger } from '../../../backend/src/utilities/logger';
@@ -10,13 +9,9 @@ import * as randomstring from 'randomstring';
 import { SendMail } from '../../../backend/src/utilities/mailSender';
 import * as jwt from 'jsonwebtoken';
 import * as momoent from 'moment';
+import { jwtSecret } from '../security/authentication';
 
-export const jwtSecret = process.env.JWT_SECRET;
-const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '2 days';
-if (!jwtSecret) {
-    console.error('You must set the jwt secret!');
-    process.exit();
-}
+const jwtExpiresIn = process.env.ADMIN_JWT_EXPIRES_IN || '2 days';
 
 declare interface TfaData {
     generatedKey: string;
@@ -25,27 +20,24 @@ declare interface TfaData {
 
 const tfaLogins: { [key: string]: TfaData } = {};
 
-
 /**
- * Because that express response object needs in auth logic (to write cookies)
- * The TSOA routing is for documentation only.
- * and one day i will extends TSOA lib to support response in parameter inject like request object.
+ * Manage admins authentication in system.
  */
 @Tags('Administration')
 @Route('/administration/auth')
 export class AdministrationAuthController extends Controller {
 
-    private async activeSession(user: RemoteAdmin): Promise<void> {
+    private async activeSession(admin: RemoteAdmin): Promise<void> {
 
         const token = jwt.sign(
-            { email: user.email },
+            { email: admin.email },
             jwtSecret,
             { expiresIn: jwtExpiresIn }
         );
         /**
          * Finally load session on cookies response.
          */
-        this.setHeader('Set-Cookie', `session=${token}; Max-Age=${2 * 24 * 60 * 60 * 1000}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        this.setHeader('Set-Cookie', `session=${token}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
     }
 
     /**
@@ -56,7 +48,7 @@ export class AdministrationAuthController extends Controller {
     @Response<ErrorResponse>(403, 'Auth fail')
     @Response<ErrorResponse>(422, 'Invalid schema')
     @Post('login')
-    public async administrationLogin(@Request() request: express.Request, @Body() login: Login): Promise<void> {
+    public async administrationLogin(@Body() login: Login): Promise<void> {
         try {
             login = await SchemaValidator(login, LoginSchema);
         } catch (err) {
@@ -64,16 +56,16 @@ export class AdministrationAuthController extends Controller {
             return err.error.message;
         }
 
-        const user = await checkUserAccess(login);
+        const admin = await checkAdminAccess(login);
 
-        if (!user) {
+        if (!admin) {
             this.setStatus(401);
             return;
         }
 
         /** Case user not require MFA, the login prossess done. */
-        if (user.ignoreTfa) {
-            return await this.activeSession(user);
+        if (admin.ignoreTfa) {
+            return await this.activeSession(admin);
         }
 
         /** Case user require MFA but email account not properly sets, send error message about it. */
@@ -91,7 +83,7 @@ export class AdministrationAuthController extends Controller {
 
         try {
             /** Try to send MFA key to user email. */
-            await SendMail(user.email, tfaKey);
+            await SendMail(admin.email, tfaKey);
         } catch (error) {
             /** Case sending fail leet hime know it. */
             logger.error(`Mail API problem, ${error.message}`);
@@ -100,7 +92,7 @@ export class AdministrationAuthController extends Controller {
         }
 
         /** Map generated key to user. */
-        tfaLogins[user.email] = {
+        tfaLogins[admin.email] = {
             generatedKey: tfaKey,
             timeStamp: new Date(),
         };
@@ -116,7 +108,7 @@ export class AdministrationAuthController extends Controller {
     @Response<ErrorResponse>(403, 'Auth fail')
     @Response<ErrorResponse>(422, 'Invalid schema')
     @Post('login/tfa')
-    public async administrationLoginTfa(@Request() request: express.Request, @Body() login: Login): Promise<void> {
+    public async administrationLoginTfa(@Body() login: Login): Promise<void> {
         try {
             login = await SchemaValidator(login, LoginSchema);
         } catch (err) {
@@ -134,19 +126,18 @@ export class AdministrationAuthController extends Controller {
             tfaData.generatedKey === login.password &&
             new Date().getTime() - tfaData.timeStamp.getTime() < momoent.duration(5, 'minutes').asMilliseconds()) {
             delete tfaLogins[login.email];
-            const user = await checkUserAccess(login);
+            const admin = await checkAdminAccess(login);
 
-            if (!user) {
+            if (!admin) {
                 this.setStatus(401);
-            } else {
-                await this.activeSession(user);
+                return;
             }
-            return;
+
+            return await this.activeSession(admin);
         }
 
         /** Any other case, return generic error. */
         this.setStatus(401);
-        return;
     }
 
     /**
@@ -156,9 +147,9 @@ export class AdministrationAuthController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post('logout')
     public async administrationLogout(): Promise<void> {
-        /** Currently there is not blacklist of invalid tokens */
+        /** Currently there is no blacklist of invalid tokens */
 
         /** Send clean session by response to client browser. */
-        this.setHeader('SetCookie', `session=0;`);
+        this.setHeader('Set-Cookie', `session=0;`);
     }
 }

@@ -3,7 +3,7 @@ import * as ws from 'ws';
 import { LocalMessage } from '../../../backend/src/models/remote2localProtocol';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { logger } from '../../../backend/src/utilities/logger';
-import { CasaWs, ChannelsBlSingleton } from '../logic/channelsBl';
+import { CasaWs, ChannelsSingleton } from '../logic/channels';
 import { LocalMessageSchema } from '../security/schemaValidator';
 
 @Tags('Channels')
@@ -19,14 +19,15 @@ export class ChannelsController extends Controller {
         wsChannels.on('message', async (msg) => {
             try {
                 const localMessage: LocalMessage = await SchemaValidator(JSON.parse(msg as string), LocalMessageSchema);
-                ChannelsBlSingleton.onWsMessage(wsChannels as CasaWs, localMessage);
+                ChannelsSingleton.onWsMessage(wsChannels as CasaWs, localMessage);
             } catch (error) {
-                logger.debug('message parse fail.');
+                logger.debug('ws message parse fail.');
             }
         });
 
         wsChannels.on('close', () => {
-            ChannelsBlSingleton.onWsClose(wsChannels as CasaWs);
+            ChannelsSingleton.onWsClose(wsChannels as CasaWs);
+            logger.debug(`web secket closed`);
         });
 
         wsChannels.on('error', (err: Error) => {
@@ -34,7 +35,7 @@ export class ChannelsController extends Controller {
         });
 
         /** Tell BL about new ws channel */
-        ChannelsBlSingleton.onWsOpen(wsChannels);
+        ChannelsSingleton.onWsOpen(wsChannels);
     }
 
     //////////////////////////////////////////////////

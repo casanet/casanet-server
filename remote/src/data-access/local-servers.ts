@@ -1,8 +1,6 @@
 import { getConnection, Any } from 'typeorm';
 
 import { LocalServer } from '../models';
-import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
-import { any } from 'joi';
 
 export const getServers = async (): Promise<LocalServer[]> => {
   const serversRepository = getConnection().getRepository(LocalServer);
@@ -18,7 +16,7 @@ export const getServer = async (macAddress: string): Promise<LocalServer> => {
   });
 };
 
-export const getServersByUser = async (user: string): Promise<LocalServer[]> => {
+export const getServersByForwardUser = async (user: string): Promise<LocalServer[]> => {
   const serversRepository = getConnection().getRepository(LocalServer);
   return await serversRepository
     .createQueryBuilder('server')

@@ -29,13 +29,13 @@ export interface CasaWs extends ws {
  * So when user send HTTP request it will forward to local server via ws and
  * returns response, evan thet ws is messages architecture based.
  */
-export class ChannelsBl {
+export class Channels {
 
     /**
      * Timeout for any http request.
      * (it long time bacuse of scaning network request that takes a while.)
      */
-    private httpRequestTimeout: moment.Duration = moment.duration(60, 'seconds');
+    private httpRequestTimeout: moment.Duration = moment.duration(2, 'minutes');
 
     /** Map all local servers ws channel by local server mac address */
     private localChannelsMap: { [key: string]: CasaWs } = {};
@@ -117,7 +117,7 @@ export class ChannelsBl {
                 this.localChannelsMap[certAuth.macAddress].machineMac = null;
 
                 /** Need to test the behavior of local server when closing old connection manualy  */
-                this.localChannelsMap[certAuth.macAddress].close();
+                try { this.localChannelsMap[certAuth.macAddress].close(); } catch (err) { };
 
                 delete this.localChannelsMap[certAuth.macAddress];
             }
@@ -134,9 +134,11 @@ export class ChannelsBl {
             /** Send local server authenticatedSuccessfuly message. */
             this.sendMessage(wsChannel, { remoteMessagesType: 'authenticatedSuccessfuly', message: {} });
 
-            /** Make sure thast map hold only active servers */
-            // this.localServersBl.setLocalServerConnectionStatus(localServer.localServerId, true);
+            logger.info(`Local server ${localServer.displayName} connected succefully`);
         } catch (error) {
+
+            logger.debug(`Fail to authenticate local server ${JSON.stringify(error)}`);
+
             /** send generic auth fail message */
             this.sendMessage(wsChannel, {
                 remoteMessagesType: 'authenticationFail',
@@ -166,7 +168,7 @@ export class ChannelsBl {
             /** Send feed */
             this.localServersFeed.next({ localServerId: wsChannel.machineMac, localServerFeed });
         } catch (error) {
-
+            logger.warn(`sending feed from local server to clients fail ${JSON.stringify(error)}`);
         }
     }
 
@@ -182,7 +184,7 @@ export class ChannelsBl {
 
             this.sendMessage(wsChannel, { remoteMessagesType: 'registeredUsers', message: { registeredUsers: localServer.validUsers } });
         } catch (error) {
-
+            logger.warn(`sending to local server his valid users fail ${JSON.stringify(error)}`);
         }
     }
 
@@ -264,6 +266,7 @@ export class ChannelsBl {
                     },
                 });
             } catch (error) {
+                logger.warn(`Registar user account for local server forwarding fail ${JSON.stringify(error)}`);
                 this.sendMessage(wsChannel, {
                     remoteMessagesType: 'registerUserResults',
                     message: {
@@ -276,7 +279,6 @@ export class ChannelsBl {
                     },
                 });
             }
-
             return;
         }
 
@@ -319,6 +321,7 @@ export class ChannelsBl {
                 },
             });
         } catch (error) {
+            logger.warn(`Unegistar user account for local server forwarding fail ${JSON.stringify(error)}`);
             this.sendMessage(wsChannel, {
                 remoteMessagesType: 'registerUserResults',
                 message: {
@@ -335,7 +338,7 @@ export class ChannelsBl {
 
     /**
      * Send http request to local server over ws channel.
-     * @param localServerId local server to send rrquest for.
+     * @param localServerId local server phisical address to send request for.
      * @param httpRequest http request message to send.
      * @returns Http response message.
      */
@@ -454,7 +457,7 @@ export class ChannelsBl {
             return;
         }
 
-        localServerConnection.close();
+        try { localServerConnection.close(); } catch (error) { }
 
         /** Remove it from channel map. */
         delete this.localChannelsMap[macAddress];
@@ -464,7 +467,7 @@ export class ChannelsBl {
      * Get channel connection status. 
      * @param macAddress local server physical address
      */
-    public async connectionStatus(macAddress: string) : Promise<boolean> {
+    public async connectionStatus(macAddress: string): Promise<boolean> {
         return macAddress in this.localChannelsMap;
     }
 
@@ -478,4 +481,4 @@ export class ChannelsBl {
     }
 }
 
-export const ChannelsBlSingleton = new ChannelsBl();
+export const ChannelsSingleton = new Channels();

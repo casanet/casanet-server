@@ -2,9 +2,9 @@
 /* tslint:disable */
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
 import { FeedController } from './../controllers/feed-controller';
-import { AdministrationAuthController } from './../controllers/administration-auth-controller';
 import { ForwardingController } from './../controllers/forwarding-controller';
 import { LocalServersController } from './../controllers/local-servers-controller';
+import { AdministrationAuthController } from './../controllers/administration-auth-controller';
 import { ForwardAuthController } from './../controllers/forward-auth-controller';
 import { AdministrationUsersController } from './../controllers/administration-admins-controller';
 import { ManagementsAssetsController } from './../controllers/management-assets-controller';
@@ -175,12 +175,6 @@ const models: TsoaRoute.Models = {
             "results": { "dataType": "array", "array": { "ref": "OperationResult" }, "required": true },
         },
     },
-    "Login": {
-        "properties": {
-            "email": { "dataType": "string", "required": true },
-            "password": { "dataType": "string", "required": true },
-        },
-    },
     "LocalServerStatus": {
         "properties": {
             "macAddress": { "dataType": "string", "required": true },
@@ -194,6 +188,12 @@ const models: TsoaRoute.Models = {
             "macAddress": { "dataType": "string", "required": true },
             "displayName": { "dataType": "string", "required": true },
             "validUsers": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
+        },
+    },
+    "Login": {
+        "properties": {
+            "email": { "dataType": "string", "required": true },
+            "password": { "dataType": "string", "required": true },
         },
     },
     "LocalServerInfo": {
@@ -265,77 +265,6 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.getTimingFeed.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/administration/auth/login',
-        function(request: any, response: any, next: any) {
-            const args = {
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-                login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new AdministrationAuthController();
-
-
-            const promise = controller.administrationLogin.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/administration/auth/login/tfa',
-        function(request: any, response: any, next: any) {
-            const args = {
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-                login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new AdministrationAuthController();
-
-
-            const promise = controller.administrationLoginTfa.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/administration/auth/logout',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new AdministrationAuthController();
-
-
-            const promise = controller.administrationLogout.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/API/ifttt/trigger/**/*',
@@ -502,6 +431,75 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.generateAuthKeyLocalServer.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/administration/auth/login',
+        function(request: any, response: any, next: any) {
+            const args = {
+                login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AdministrationAuthController();
+
+
+            const promise = controller.administrationLogin.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/administration/auth/login/tfa',
+        function(request: any, response: any, next: any) {
+            const args = {
+                login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AdministrationAuthController();
+
+
+            const promise = controller.administrationLoginTfa.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/administration/auth/logout',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new AdministrationAuthController();
+
+
+            const promise = controller.administrationLogout.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/auth/login',
@@ -700,7 +698,7 @@ export function RegisterRoutes(app: express.Express) {
         authenticateMiddleware([{ "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
-                user: { "in": "body", "name": "user", "required": true, "ref": "RemoteAdmin" },
+                admin: { "in": "body", "name": "admin", "required": true, "ref": "RemoteAdmin" },
             };
 
             let validatedArgs: any[] = [];
