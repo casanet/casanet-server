@@ -2,7 +2,8 @@ import * as express from 'express';
 import * as SseStream from 'express-sse';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse, MinionFeed, TimingFeed } from '../../../backend/src/models/sharedInterfaces';
-import { ChannelsBlSingleton } from '../logic/channelsBl';
+import { ChannelsSingleton } from '../logic/channels';
+
 /**
  * Because that swagger not fully support SSE.
  * Use the TSOA routing is for documentation only.
@@ -20,7 +21,7 @@ export class FeedController extends Controller {
         super();
 
         /** Subscribe to each feed event that arrrived from each local server, to send sse event based on it. */
-        ChannelsBlSingleton.localServersFeed.subscribe((localServerFeed) => {
+        ChannelsSingleton.localServersFeed.subscribe((localServerFeed) => {
 
             if (!localServerFeed) {
                 return;

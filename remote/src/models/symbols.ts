@@ -1,5 +1,5 @@
 import { Login } from '../../../backend/src/models/sharedInterfaces'
-import { LocalServer } from './local-server.model';
+import { LocalServer } from './';
 
 /**
  * Scopes of authentication, right know in our system there are only 3 scopes.

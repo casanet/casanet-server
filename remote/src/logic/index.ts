@@ -1,2 +1,2 @@
-export * from './channelsBl';
+export * from './channels';
 export * from './cache';

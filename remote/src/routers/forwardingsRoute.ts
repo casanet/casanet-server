@@ -7,9 +7,9 @@ import { ForwardingController } from '../controllers/forwarding-controller';
 import { expressAuthentication, SystemAuthScopes } from '../security/authentication';
 import { IftttOnChangedSchema } from '../security/schemaValidator';
 import { LocalServersController } from '../controllers/local-servers-controller';
-import { ChannelsBlSingleton } from '../logic';
+import { ChannelsSingleton } from '../logic';
 import { Configuration } from '../../../backend/src/config';
-import { ForwardSession } from '../models/sharedInterfaces';
+import { ForwardSession } from '../models';
 
 export class ForwardingRouter {
 
@@ -57,7 +57,7 @@ export class ForwardingRouter {
                     return;
                 }
 
-                const remoteServerStatus: RemoteConnectionStatus = await ChannelsBlSingleton.connectionStatus(forwardUserSession.server)
+                const remoteServerStatus: RemoteConnectionStatus = await ChannelsSingleton.connectionStatus(forwardUserSession.server)
                     ? 'connectionOK'
                     : 'localServerDisconnected';
 

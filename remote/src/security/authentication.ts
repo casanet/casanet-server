@@ -1,15 +1,18 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import { logger } from '../../../backend/src/utilities/logger';
-import { ForwardSession } from '../models/sharedInterfaces';
+import { AuthScopes, ForwardSession } from '../models';
 import { ErrorResponse, IftttActionTriggeredRequest } from '../../../backend/src/models/sharedInterfaces';
-import { AuthScopes } from '../models/sharedInterfaces';
-import { jwtSecret } from '../controllers/administration-auth-controller';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { IftttAuthRequestSchema } from './schemaValidator';
-import * as cryptoJs from 'crypto-js';
 import { Configuration } from '../../../backend/src/config';
 import { Cache } from '../logic';
+
+export const jwtSecret = process.env.JWT_SECRET;
+if (!jwtSecret) {
+    logger.fatal('You must set the jwt secret!');
+    process.exit();
+}
 
 /**
  * System auth scopes, shown in swagger doc as 2 kinds of security definitions.
@@ -51,6 +54,7 @@ export const expressAuthentication = async (request: express.Request, scopes: st
     if (scopes.indexOf(SystemAuthScopes.iftttScope) !== -1) {
         const { apiKey, localMac } = request.body as IftttActionTriggeredRequest;
         await SchemaValidator({ apiKey, localMac }, IftttAuthRequestSchema);
+        return;
     }
 
     /** If the session cookie empty, ther is nothing to check. */

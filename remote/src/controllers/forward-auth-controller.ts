@@ -2,23 +2,20 @@ import * as express from 'express';
 import * as cryptoJs from 'crypto-js';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse, User, Login } from '../../../backend/src/models/sharedInterfaces';
-import { ChannelsBlSingleton } from '../logic';
-import { getServersByUser, getServer } from '../data-access';
-import { LocalServerInfo, LoginLocalServer, ForwardSession } from '../models/sharedInterfaces';
+import { ChannelsSingleton } from '../logic';
+import { getServersByForwardUser, getServer } from '../data-access';
+import { LocalServerInfo, LoginLocalServer, ForwardSession } from '../models';
 import { Configuration } from '../../../backend/src/config';
 import { HttpResponse } from '../../../backend/src/models/remote2localProtocol';
 import { RequestSchemaValidator, SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { LoginSchema } from '../security/schemaValidator';
-import { forwardCache } from '../security/authentication';
+import { forwardCache, jwtSecret } from '../security/authentication';
 import * as jwt from 'jsonwebtoken';
-import { jwtSecret } from './administration-auth-controller';
 
 const jwtExpiresIn = process.env.FORWARD_JWT_EXPIRES_IN || '360 days';
 
 /**
- * Because that express response object needs in auth logic (to write cookies)
- * The TSOA routing is for documentation only.
- * and one day i will extends TSOA lib to support response in parameter inject like request object.
+ * Manage local servers login requests forwarding
  */
 @Tags('Authentication')
 @Route('auth')
@@ -38,8 +35,10 @@ export class ForwardAuthController extends Controller {
             { expiresIn: jwtExpiresIn }
         );
         this.setHeader('Set-Cookie', `session=${token}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        // TODO change to 204, after frontend update
         this.setStatus(200);
     }
+
     /**
      * Login to local server via remote server channel.
      * If users exists in more then one local server, it returns status code 210 and the available user servers to select.
@@ -66,13 +65,8 @@ export class ForwardAuthController extends Controller {
         if (login.localServerId) {
             connectLocalServerId = login.localServerId;
         } else {
-            try {
-                const r = await getServersByUser(login.email);
-            } catch (error) {
-                console.log(error);
-            }
             /** Get all local server that user is mention as valid users */
-            const userLocalServersInfo = await getServersByUser(login.email);
+            const userLocalServersInfo = await getServersByForwardUser(login.email);
             /** If there is not any local server that user is mantion in it. throw it out.  */
             if (userLocalServersInfo.length === 0) {
                 this.setStatus(401);
@@ -92,7 +86,7 @@ export class ForwardAuthController extends Controller {
                  */
                 for (const userLocalServerInfo of userLocalServersInfo) {
                     /** Send login HTTP request over WS to local server, and wait for the answer. */
-                    const localLoginCheckResponse = await ChannelsBlSingleton.sendHttpViaChannels(userLocalServerInfo.macAddress, {
+                    const localLoginCheckResponse = await ChannelsSingleton.sendHttpViaChannels(userLocalServerInfo.macAddress, {
                         requestId: undefined,
                         httpPath: request.path,
                         httpMethod: request.method.toUpperCase(),
@@ -101,7 +95,7 @@ export class ForwardAuthController extends Controller {
                     });
 
                     /** If the local server authenticate request certificate let client select whitch local server he wants to connect */
-                    if (localLoginCheckResponse.httpStatus === 200 || localLoginCheckResponse.httpStatus === 201) {
+                    if (localLoginCheckResponse.httpStatus === 200 || localLoginCheckResponse.httpStatus === 204) {
                         /** Mark 210 http status code. */
                         this.setStatus(210);
                         return userLocalServersInfo.map((server): LocalServerInfo => {
@@ -113,14 +107,14 @@ export class ForwardAuthController extends Controller {
                     }
                 }
 
-                /** If non of local servers auth login cert */
+                /** If non of local servers succfully auth, dont tell attaker info about servers */
                 this.setStatus(401);
                 return;
             }
         }
 
         /** Send login HTTP request over WS to local server, and wait for the answer. */
-        const localResponse = await ChannelsBlSingleton.sendHttpViaChannels(connectLocalServerId, {
+        const localResponse = await ChannelsSingleton.sendHttpViaChannels(connectLocalServerId, {
             requestId: undefined,
             httpPath: request.path,
             httpMethod: request.method.toUpperCase(),
@@ -168,7 +162,7 @@ export class ForwardAuthController extends Controller {
         if (login.localServerId) {
             connectLocalServerId = login.localServerId;
         } else {
-            const userLocalServersInfo = await await getServersByUser(login.email);
+            const userLocalServersInfo = await await getServersByForwardUser(login.email);
             if (userLocalServersInfo.length === 0) {
                 this.setStatus(401);
                 return;
@@ -184,7 +178,7 @@ export class ForwardAuthController extends Controller {
             }
         }
 
-        const localResponse = await ChannelsBlSingleton.sendHttpViaChannels(connectLocalServerId, {
+        const localResponse = await ChannelsSingleton.sendHttpViaChannels(connectLocalServerId, {
             requestId: undefined,
             httpPath: request.path,
             httpMethod: request.method.toUpperCase(),
@@ -218,7 +212,7 @@ export class ForwardAuthController extends Controller {
         // TODO: extract cookie.
         const forwardSession: ForwardSession = request.body;
         /** Send logut request to local server via sw channel */
-        const localResponse = await ChannelsBlSingleton.sendHttpViaChannels(forwardSession.server, {
+        await ChannelsSingleton.sendHttpViaChannels(forwardSession.server, {
             requestId: undefined,
             httpPath: request.path,
             httpMethod: request.method.toUpperCase(),

@@ -17,7 +17,7 @@ export const getUser = async (email: string): Promise<RemoteAdmin> => {
   });
 };
 
-export const checkUserAccess = async (login: Login): Promise<RemoteAdmin> => {
+export const checkAdminAccess = async (login: Login): Promise<RemoteAdmin> => {
   const { email, password } = login;
 
   const adminsRepository = getConnection().getRepository(RemoteAdmin);

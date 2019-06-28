@@ -1,14 +1,13 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
-import { LocalServer, ServerSession } from '../models';
+import { LocalServer, ServerSession, LocalServerStatus } from '../models';
 import { getServers, getServer, createServer, updateServer, deleteServer, setServerSession } from '../data-access';
 import * as randomstring from 'randomstring';
 import * as cryptoJs from 'crypto-js';
 import { Configuration } from '../../../backend/src/config';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { serverSchema } from '../security/schemaValidator';
-import { ChannelsBlSingleton } from '../logic';
-import { LocalServerStatus } from '../models/sharedInterfaces';
+import { ChannelsSingleton } from '../logic';
 
 @Tags('Servers')
 @Route('servers')
@@ -22,8 +21,9 @@ export class LocalServersController extends Controller {
     @Get()
     public async getServers(): Promise<LocalServerStatus[]> {
         const servers = await getServers() as LocalServerStatus[];
+        /** Add server status to each server */
         for (const server of servers) {
-            server.connectionStatus = await ChannelsBlSingleton.connectionStatus(server.macAddress);
+            server.connectionStatus = await ChannelsSingleton.connectionStatus(server.macAddress);
         }
         return servers;
     }
@@ -46,7 +46,7 @@ export class LocalServersController extends Controller {
 
     /**
      * Update local server properties.
-     * @param localServerId local server to update.
+     * @param serverId local server physical address.
      * @param localServer new properties object to set.
      */
     @Security('adminAuth')
@@ -65,14 +65,14 @@ export class LocalServersController extends Controller {
 
     /**
      * Remove local server from the system.
-     * @param localServerId local server to remove.
+     * @param serverId local server physical address.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Delete('{serverId}')
     public async deleteLocalServer(serverId: string): Promise<void> {
         await deleteServer(serverId);
-        await ChannelsBlSingleton.disconnectLocalServer(serverId);
+        await ChannelsSingleton.disconnectLocalServer(serverId);
     }
 
     /**
@@ -81,7 +81,7 @@ export class LocalServersController extends Controller {
      *
      * KEEP GENERATED KEY PRIVATE AND SECURE,
      * PUT IT IN YOUR LOCAL SERVER AND NEVER SHOW IT TO ANYBODY!!!
-     * @param serverId The local server to generate for.
+     * @param serverId local server physical address to generate for.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -104,11 +104,12 @@ export class LocalServersController extends Controller {
             hashedKey,
         };
 
+        /** Update (or create if not exists) the server keys */
         await setServerSession(serverSession);
 
-        await ChannelsBlSingleton.disconnectLocalServer(serverId);
+        /** Disconnect local server (if connected) */
+        await ChannelsSingleton.disconnectLocalServer(serverId);
 
         return await sessionKey;
     }
-
 }

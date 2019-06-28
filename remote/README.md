@@ -34,15 +34,17 @@ Simple diagram:
 1. Press `node dist/remote/src/index.js` to run the server.
 
 ### Configuration:
-See [server configure](../backend/README.md#configure-server).
+Define local variable named `JWT_SECRET` with secret string to sign sessions.
+You can defain `ADMIN_JWT_EXPIRES_IN` (the default is '2 days') and `FORWARD_JWT_EXPIRES_IN` (the default is '360 days'). 
 
+### Addininal configuration:
+See [server configure](../backend/README.md#configure-server).
 
 ### Configure database
 
-
 Install locally:
 
-Define local variable named DATABASE_URL of the form `postgres://user:pass@localhost:5432/casanet_db`
+Define local variable named `DATABASE_URL` of the form `postgres://user:pass@localhost:5432/casanet_db`
 
 1. Create Database and User:
 

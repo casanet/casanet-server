@@ -4,7 +4,7 @@ import { ErrorResponse, Login, User } from '../../../backend/src/models/sharedIn
 import { logger } from '../../../backend/src/utilities/logger';
 import { FeedController } from '../controllers/feed-controller';
 import { expressAuthentication, SystemAuthScopes } from '../security/authentication';
-import { ForwardSession } from '../models/sharedInterfaces';
+import { ForwardSession } from '../models';
 
 export class FeedRouter {
 
@@ -22,7 +22,7 @@ export class FeedRouter {
 
                 this.feedController.initMinionsFeed(forwardUserSession.server, request, response);
             } catch (error) {
-                response.status(403).send();
+                response.status(401).send();
             }
         });
 
@@ -36,7 +36,7 @@ export class FeedRouter {
 
                 this.feedController.initTimingsFeed(forwardUserSession.server, request, response);
             } catch (error) {
-                response.status(403).send();
+                response.status(401).send();
             }
         });
 

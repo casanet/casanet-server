@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
-import { getServersByUser, getUser, getUsers, updateUser, deleteUser, createUser } from '../data-access';
+import { getUser, getUsers, updateUser, deleteUser, createUser } from '../data-access';
 import { RemoteAdmin } from '../models';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { createUserSchema, updateUserSchema } from '../security/schemaValidator';
@@ -12,7 +12,7 @@ export class AdministrationUsersController extends Controller {
 
     /**
      * Get admin profile.
-     * @returns User.
+     * @returns Admin.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -24,7 +24,7 @@ export class AdministrationUsersController extends Controller {
 
     /**
      * Get all admin users in the administraion system.
-     * @returns Users array.
+     * @returns Admins array.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -34,8 +34,8 @@ export class AdministrationUsersController extends Controller {
     }
 
     /**
-     * Get administraion user by id.
-     * @returns User.
+     * Get admin by email.
+     * @returns Admin.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -45,8 +45,8 @@ export class AdministrationUsersController extends Controller {
     }
 
     /**
-     * Update administraion user properties.
-     * @param adminId User id.
+     * Update administraion admin properties.
+     * @param adminId Admin email.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -58,18 +58,14 @@ export class AdministrationUsersController extends Controller {
             this.setStatus(422);
             return err.error.message;
         }
-        user.email = userId;
-        try {
-            await updateUser(user);
 
-        } catch (error) {
-            console.log(error);
-        }
+        user.email = userId;
+        await updateUser(user);
     }
 
     /**
      * Delete admin user from the administraion system.
-     * @param adminId User id.
+     * @param adminId Admin email.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
@@ -79,19 +75,19 @@ export class AdministrationUsersController extends Controller {
     }
 
     /**
-     *  Creates a new administraion user.
-     * @param user The new administraion to create.
+     *  Creates a new administraion admin.
+     * @param admin The new admin to create.
      */
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post()
-    public async createUser(@Body() user: RemoteAdmin): Promise<void> {
+    public async createUser(@Body() admin: RemoteAdmin): Promise<void> {
         try {
-            user = await SchemaValidator(user, createUserSchema);
+            admin = await SchemaValidator(admin, createUserSchema);
         } catch (err) {
             this.setStatus(422);
             return err.error.message;
         }
-        return await createUser(user);
+        return await createUser(admin);
     }
 }
