@@ -1,16 +1,16 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import { logger } from '../../../backend/src/utilities/logger';
-import { ForwardSession, RemoteAdmin } from '../models';
+import { ForwardSession } from '../models/sharedInterfaces';
 import { ErrorResponse, IftttActionTriggeredRequest } from '../../../backend/src/models/sharedInterfaces';
 import { AuthScopes } from '../models/sharedInterfaces';
 import { jwtSecret } from '../controllers/administration-auth-controller';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { IftttAuthRequestSchema } from './schemaValidator';
-import { getForwardSession, checkSession } from '../data-access';
 import * as cryptoJs from 'crypto-js';
 import { Configuration } from '../../../backend/src/config';
-import { Cache } from '../logic'
+import { Cache } from '../logic';
+
 /**
  * System auth scopes, shown in swagger doc as 2 kinds of security definitions.
  */
@@ -60,24 +60,17 @@ export const expressAuthentication = async (request: express.Request, scopes: st
         } as ErrorResponse;
     }
 
-    /** Handle JWT tokens */
+    /** Handle admin JWT tokens */
     if (scopes.indexOf(SystemAuthScopes.adminScope) !== -1) {
         const payload = jwt.verify(request.cookies.session, jwtSecret) as object;
         return payload['email'];
     }
 
-    const cachedSession = await forwardCache.get(request.cookies.session);
-    if(cachedSession && cachedSession !== 'block'){
-        return cachedSession as ForwardSession;
+    /** Handle forward JWT tokens */
+    if (scopes.indexOf(SystemAuthScopes.forwardScope) !== -1) {
+        const payload = jwt.verify(request.cookies.session, jwtSecret) as ForwardSession;
+        return payload;
     }
-
-    /** Handle Forward requests */
-    const session = await getForwardSession(cryptoJs.SHA512(request.cookies.session + Configuration.keysHandling.saltHash).toString());
-    if (session) {
-        await forwardCache.set(request.cookies.session, session);
-        return session;
-    }
-    await forwardCache.set(request.cookies.session, 'block');
 
     throw {
         responseCode: 1403,

@@ -61,7 +61,7 @@ export class AdministrationAuthController extends Controller {
             login = await SchemaValidator(login, LoginSchema);
         } catch (err) {
             this.setStatus(422);
-            return;
+            return err.error.message;
         }
 
         const user = await checkUserAccess(login);
@@ -121,7 +121,7 @@ export class AdministrationAuthController extends Controller {
             login = await SchemaValidator(login, LoginSchema);
         } catch (err) {
             this.setStatus(422);
-            return;
+            return err.error.message;
         }
 
         /** Get MFA key if exists */
