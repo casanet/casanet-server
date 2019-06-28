@@ -4,13 +4,12 @@ import { ErrorResponse, IftttOnChanged, RemoteConnectionStatus } from '../../../
 import { RequestSchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { logger } from '../../../backend/src/utilities/logger';
 import { ForwardingController } from '../controllers/forwarding-controller';
-import { ForwardSession } from '../models';
 import { expressAuthentication, SystemAuthScopes } from '../security/authentication';
 import { IftttOnChangedSchema } from '../security/schemaValidator';
 import { LocalServersController } from '../controllers/local-servers-controller';
 import { ChannelsBlSingleton } from '../logic';
-import { deleteForwardSession } from '../data-access';
 import { Configuration } from '../../../backend/src/config';
+import { ForwardSession } from '../models/sharedInterfaces';
 
 export class ForwardingRouter {
 
@@ -58,7 +57,7 @@ export class ForwardingRouter {
                     return;
                 }
 
-                const remoteServerStatus: RemoteConnectionStatus = await ChannelsBlSingleton.connectionStatus(forwardUserSession.server.macAddress)
+                const remoteServerStatus: RemoteConnectionStatus = await ChannelsBlSingleton.connectionStatus(forwardUserSession.server)
                     ? 'connectionOK'
                     : 'localServerDisconnected';
 
@@ -85,18 +84,17 @@ export class ForwardingRouter {
                 }
 
                 /** Forward request as is and wait for request. */
-                const response = await this.forwardingController.forwardHttpReq(forwardUserSession.server.macAddress,
+                const response = await this.forwardingController.forwardHttpReq(forwardUserSession.server,
                     {
                         requestId: undefined,
                         httpPath: req.originalUrl,
                         httpMethod: req.method.toUpperCase(),
                         httpBody: req.body,
-                        httpSession: req.cookies.session,
+                        httpSession: forwardUserSession.session,
                     });
 
-                /** If status is 403, delete forward session too. */
+                /** If status is 403, add it to token black list too. */
                 if (response.httpStatus === 403) {
-                    try { await deleteForwardSession(forwardUserSession.hashedKey); } catch (error) { }
                 }
 
                 /** Set status and data and send response back */

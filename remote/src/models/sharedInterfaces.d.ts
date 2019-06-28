@@ -36,3 +36,12 @@ export declare interface LoginLocalServer extends Login {
      */
     localServerId?: string;
 }
+
+export declare interface ForwardSession {
+    /** physical address of the local server to forward */
+    server: string;
+    /** local server session key */
+    session: string;
+    /** session owner */
+    localUser: string;
+}

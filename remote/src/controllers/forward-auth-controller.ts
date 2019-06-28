@@ -3,14 +3,18 @@ import * as cryptoJs from 'crypto-js';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse, User, Login } from '../../../backend/src/models/sharedInterfaces';
 import { ChannelsBlSingleton } from '../logic';
-import { ForwardSession } from '../models';
-import { getServersByUser, createForwardSession, getServer, deleteForwardSession } from '../data-access';
-import { LocalServerInfo, LoginLocalServer } from '../models/sharedInterfaces';
+import { getServersByUser, getServer } from '../data-access';
+import { LocalServerInfo, LoginLocalServer, ForwardSession } from '../models/sharedInterfaces';
 import { Configuration } from '../../../backend/src/config';
 import { HttpResponse } from '../../../backend/src/models/remote2localProtocol';
 import { RequestSchemaValidator, SchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { LoginSchema } from '../security/schemaValidator';
 import { forwardCache } from '../security/authentication';
+import * as jwt from 'jsonwebtoken';
+import { jwtSecret } from './administration-auth-controller';
+
+const jwtExpiresIn = process.env.FORWARD_JWT_EXPIRES_IN || '360 days';
+
 /**
  * Because that express response object needs in auth logic (to write cookies)
  * The TSOA routing is for documentation only.
@@ -21,23 +25,19 @@ import { forwardCache } from '../security/authentication';
 export class ForwardAuthController extends Controller {
 
     private async activeSession(localServerMacAddress: string, localUser: string, httpResponse: HttpResponse) {
-        /**
-        * Save session,
-        * used when user sending request to local server,so can check session *befor* sending.
-        */
         /** Never save plain text key. */
-        const hashedKey = cryptoJs.SHA512(httpResponse.httpSession.key + Configuration.keysHandling.saltHash).toString();
-
         const forwardSession: ForwardSession = {
-            hashedKey,
+            session: httpResponse.httpSession.key,
             localUser,
-            server: await getServer(localServerMacAddress),
+            server: localServerMacAddress,
         }
-        await createForwardSession(forwardSession);
 
-        forwardCache.set(httpResponse.httpSession.key, forwardSession);
-
-        this.setHeader('Set-Cookie', `session=${httpResponse.httpSession.key}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        const token = jwt.sign(
+            forwardSession,
+            jwtSecret,
+            { expiresIn: jwtExpiresIn }
+        );
+        this.setHeader('Set-Cookie', `session=${token}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
         this.setStatus(200);
     }
     /**
@@ -56,7 +56,7 @@ export class ForwardAuthController extends Controller {
             login = await SchemaValidator(login, LoginSchema);
         } catch (err) {
             this.setStatus(422);
-            return;
+            return err.error.message;
         }
 
         /** local server id to try login to. */
@@ -160,7 +160,7 @@ export class ForwardAuthController extends Controller {
             login = await SchemaValidator(login, LoginSchema);
         } catch (err) {
             this.setStatus(422);
-            return;
+            return err.error.message;
         }
 
         let connectLocalServerId: string;
@@ -218,21 +218,16 @@ export class ForwardAuthController extends Controller {
         // TODO: extract cookie.
         const forwardSession: ForwardSession = request.body;
         /** Send logut request to local server via sw channel */
-        const localResponse = await ChannelsBlSingleton.sendHttpViaChannels(forwardSession.server.macAddress, {
+        const localResponse = await ChannelsBlSingleton.sendHttpViaChannels(forwardSession.server, {
             requestId: undefined,
             httpPath: request.path,
             httpMethod: request.method.toUpperCase(),
             httpBody: request.body,
-            httpSession: '',
+            httpSession: forwardSession.session,
         });
 
-        /** And in any case remove session from remote server cache. */
-        await deleteForwardSession(forwardSession.hashedKey);
-
-        // Clean forward cache
-        // forwardCache.set(, undefined);
-
-        /** Send clean session by response to client browser. */
+        // TODO: add to tokens black list
+        /** Send clean session by response to client browser token. */
         this.setHeader('Set-Cookie', `session=0;`);
     }
 }

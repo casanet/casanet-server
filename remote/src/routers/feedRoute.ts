@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import * as express from 'express';
 import { ErrorResponse, Login, User } from '../../../backend/src/models/sharedInterfaces';
-import { SystemAuthScopes } from '../../../backend/src/security/authentication';
 import { logger } from '../../../backend/src/utilities/logger';
 import { FeedController } from '../controllers/feed-controller';
-import { ForwardSession } from '../models';
-import { expressAuthentication } from '../security/authentication';
+import { expressAuthentication, SystemAuthScopes } from '../security/authentication';
+import { ForwardSession } from '../models/sharedInterfaces';
 
 export class FeedRouter {
 
@@ -19,9 +18,9 @@ export class FeedRouter {
                  * Make sure it is valid local server user with valid session.
                  */
                 const forwardUserSession =
-                    await expressAuthentication(request, [SystemAuthScopes.userScope]) as ForwardSession;
+                    await expressAuthentication(request, [SystemAuthScopes.forwardScope]) as ForwardSession;
 
-                this.feedController.initMinionsFeed(forwardUserSession.server.macAddress, request, response);
+                this.feedController.initMinionsFeed(forwardUserSession.server, request, response);
             } catch (error) {
                 response.status(403).send();
             }
@@ -33,9 +32,9 @@ export class FeedRouter {
                  * Make sure it is valid local server user with valid session.
                  */
                 const forwardUserSession =
-                    await expressAuthentication(request, [SystemAuthScopes.userScope]) as ForwardSession;
+                    await expressAuthentication(request, [SystemAuthScopes.forwardScope]) as ForwardSession;
 
-                this.feedController.initTimingsFeed(forwardUserSession.server.macAddress, request, response);
+                this.feedController.initTimingsFeed(forwardUserSession.server, request, response);
             } catch (error) {
                 response.status(403).send();
             }

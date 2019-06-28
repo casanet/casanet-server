@@ -7,7 +7,6 @@ export class FirstVersion1561480877835 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.dropTable('admins', true, true);
-    await queryRunner.dropTable('forwards_sessions', true, true);
     await queryRunner.dropTable('servers_sessions', true, true);
     await queryRunner.dropTable('servers', true, true);
   }
@@ -61,42 +60,6 @@ export class FirstVersion1561480877835 implements MigrationInterface {
           },
         ],
         uniques: [{ columnNames: ['server'] }],
-        foreignKeys: [
-          {
-            columnNames: ['server'],
-            referencedColumnNames: ['physical_address'],
-            referencedTableName: 'servers',
-            onDelete: 'CASCADE',
-          },
-        ],
-      }),
-      true,
-    );
-
-    await queryRunner.createTable(
-      new Table({
-        name: 'forwards_sessions',
-        columns: [
-          {
-            name: 'server',
-            type: 'varchar',
-            length: '12',
-            isNullable: false,
-          },
-          {
-            name: 'hashed_key',
-            type: 'varchar',
-            length: '256',
-            isNullable: false,
-            isPrimary: true,
-          },
-          {
-            name: 'local_user',
-            type: 'varchar',
-            length: '100',
-            isNullable: false,
-          },
-        ],
         foreignKeys: [
           {
             columnNames: ['server'],

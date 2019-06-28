@@ -56,7 +56,7 @@ export class AdministrationUsersController extends Controller {
             user = await SchemaValidator(user, updateUserSchema);
         } catch (err) {
             this.setStatus(422);
-            return;
+            return err.error.message;
         }
         user.email = userId;
         try {
@@ -90,7 +90,7 @@ export class AdministrationUsersController extends Controller {
             user = await SchemaValidator(user, createUserSchema);
         } catch (err) {
             this.setStatus(422);
-            return;
+            return err.error.message;
         }
         return await createUser(user);
     }

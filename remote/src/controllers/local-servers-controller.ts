@@ -39,7 +39,7 @@ export class LocalServersController extends Controller {
             server = await SchemaValidator(server, serverSchema);
         } catch (err) {
             this.setStatus(422);
-            return;
+            return err.error.message;
         }
         return await createServer(server);
     }
@@ -57,7 +57,7 @@ export class LocalServersController extends Controller {
             server = await SchemaValidator(server, serverSchema);
         } catch (err) {
             this.setStatus(422);
-            return;
+            return err.error.message;
         }
         server.macAddress = serverId;
         return await updateServer(server);
