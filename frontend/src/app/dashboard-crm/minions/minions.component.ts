@@ -17,6 +17,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AutoTimeoutDialogComponent } from '../../dialogs/auto-timeout-dialog/auto-timeout-dialog.component';
 import { CreateMinionDialogComponent } from '../../dialogs/create-minion-dialog/create-minion-dialog.component';
 import { Subscription } from 'rxjs';
+import { TimelineDialogComponent } from '../../dialogs/timeline-dialog/timeline-dialog.component';
+import { GeneralMessageDialogComponent } from '../../dialogs/general-message-dialog/general-message-dialog.component';
 
 @Component({
 	selector: 'app-dashboard-crm',
@@ -338,6 +340,13 @@ export class MinionsComponent implements OnInit, OnDestroy {
 	public async editAutoTimeout(minion: Minion) {
 		this.dialog.open(AutoTimeoutDialogComponent, {
 			data: minion
+		});
+	}
+
+	public async minionsTimeline() {
+		this.dialog.open(TimelineDialogComponent, {
+			data: {},
+			height : '90%',
 		});
 	}
 

@@ -15,6 +15,7 @@ import { CreateActivityDialogComponent } from './dialogs/create-activity-dialog/
 import { ManageRegisteredUsersComponent } from './dialogs/manage-registared-users-dialog/manage-registared-users-dialog.component';
 import { CreateTimingDialogComponent } from './dialogs/create-timing-dialog/create-timing-dialog.component';
 import { CreateUserDialogComponent } from './dialogs/create-user-dialog/create-user-dialog.component';
+import { TimelineDialogComponent } from './dialogs/timeline-dialog/timeline-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedModule } from './shared.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -32,6 +33,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatTableModule } from '@angular/material/table';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MglTimelineModule } from 'angular-mgl-timeline';
 
 export function setupTranslateFactory(
   service: TranslateService): Function {
@@ -62,6 +64,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CreateTimingDialogComponent,
     CreateUserDialogComponent,
     ManageRegisteredUsersComponent,
+    TimelineDialogComponent,
   ],
   exports: [
   ],
@@ -88,6 +91,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MatButtonModule,
     MatStepperModule,
     MatSelectModule,
+    MglTimelineModule,
   ],
   providers: [
     MinionsService,
@@ -118,7 +122,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     CreateActivityDialogComponent,
     CreateTimingDialogComponent,
     CreateUserDialogComponent,
-    ManageRegisteredUsersComponent
+    ManageRegisteredUsersComponent,
+    TimelineDialogComponent,
   ]
 })
 export class AppModule { }
