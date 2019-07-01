@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const moment = require("moment");
 const Tuyapi = require("tuyapi");
 const logger_1 = require("../../utilities/logger");
+const sleep_1 = require("../../utilities/sleep");
 const brandModuleBase_1 = require("../brandModuleBase");
 class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
     constructor() {
@@ -171,8 +173,12 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
         /**
          * Subscribe to error event.
          */
-        tuyaDevice.on('error', (err) => {
+        tuyaDevice.on('error', async (err) => {
             logger_1.logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${err}`);
+            tuyaDevice.disconnect();
+            delete this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
+            sleep_1.Delay(moment.duration(5, 'seconds'));
+            await this.getTuyaDevice(minionDevice);
         });
         /**
          * Establish connection

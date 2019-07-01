@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const forceSsl = require("express-force-ssl");
-const RateLimit = require("express-rate-limit");
+const rateLimit = require("express-rate-limit");
 const useragent = require("express-useragent");
 const generic_json_sanitizer_1 = require("generic-json-sanitizer");
 const helmet = require("helmet");
@@ -78,7 +78,7 @@ class App {
             this.express.use(forceSsl);
         } // Use to redirect http to https/ssl
         // Protect from DDOS and access thieves
-        const limiter = new RateLimit({
+        const limiter = rateLimit({
             windowMs: config_1.Configuration.requestsLimit.windowsMs,
             max: config_1.Configuration.requestsLimit.maxRequests,
         });

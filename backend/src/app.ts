@@ -2,7 +2,7 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import * as forceSsl from 'express-force-ssl';
-import * as RateLimit from 'express-rate-limit';
+import * as rateLimit from 'express-rate-limit';
 import * as useragent from 'express-useragent';
 import { sanitizeExpressMiddleware } from 'generic-json-sanitizer';
 import * as helmet from 'helmet';
@@ -97,7 +97,7 @@ class App {
         } // Use to redirect http to https/ssl
 
         // Protect from DDOS and access thieves
-        const limiter = new RateLimit({
+        const limiter = rateLimit({
             windowMs: Configuration.requestsLimit.windowsMs,
             max: Configuration.requestsLimit.maxRequests,
         });
