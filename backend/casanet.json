@@ -5,8 +5,9 @@
         "sessionTimeOutMS": 8.64e+7,
         "password": "casanet",
         "ignoreTfa": true,
-        "scope" : "adminAuth"
+        "scope": "adminAuth"
     },
+    "timelineDaysLength": 15,
     "http": {
         "httpPort": 3000,
         "httpsPort": 443,
@@ -17,7 +18,7 @@
         "maxRequests": 1500
     },
     "homePosition": {
-        "latitude": 32.816, 
+        "latitude": 32.816,
         "longitude": 34.983
     }
 }

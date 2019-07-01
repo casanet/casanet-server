@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
 const minionsBl_1 = require("../business-layer/minionsBl");
 const deepCopy_1 = require("../utilities/deepCopy");
+const timelineBl_1 = require("../business-layer/timelineBl");
 let MinionsController = class MinionsController extends tsoa_1.Controller {
     /**
      * NEVER let anyone get device API keys.
@@ -33,6 +34,12 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
             minionsCopy.push(this.cleanUpMinionBeforRelease(minion));
         }
         return minionsCopy;
+    }
+    /**
+     * Get the timeline of minions status.
+     */
+    async getMinionsTimeline() {
+        return await timelineBl_1.TimelineBlSingleton.getTimeline();
     }
     /**
      * Get all minions in the system.
@@ -127,6 +134,10 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
         return await minionsBl_1.MinionsBlSingleton.notifyMinionChangedByIfttt(minionId, iftttOnChanged);
     }
 };
+__decorate([
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Get('timeline')
+], MinionsController.prototype, "getMinionsTimeline", null);
 __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),

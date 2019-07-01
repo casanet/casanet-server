@@ -38,6 +38,8 @@ export declare interface Config {
         maxRequests: number
     };
     runningMode: RunningMode;
+    /** Timeline length to keep statuses history, in days */
+    timelineDaysLength: number;
     /**
      * 2-step verification config. access to mail using SMTP protocol.
      * *for keys use environment variables only!!!*

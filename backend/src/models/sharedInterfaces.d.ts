@@ -670,3 +670,10 @@ export declare interface VersionInfo {
     /** Time stamp of HEAD commint in UTC format */
     timestamp: number;
 }
+
+/** Minion timeline node */
+export declare interface MinionTimeline {
+    minionId: string;
+    timestamp: number;
+    status: MinionStatus;
+}

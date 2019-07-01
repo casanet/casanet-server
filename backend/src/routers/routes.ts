@@ -194,6 +194,13 @@ const models: TsoaRoute.Models = {
             "isRecordingSupported": { "dataType": "boolean", "required": true },
         },
     },
+    "MinionTimeline": {
+        "properties": {
+            "minionId": { "dataType": "string", "required": true },
+            "timestamp": { "dataType": "double", "required": true },
+            "status": { "ref": "MinionStatus", "required": true },
+        },
+    },
     "MinionRename": {
         "properties": {
             "name": { "dataType": "string", "required": true },
@@ -522,6 +529,28 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.rescanDevices.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/minions/timeline',
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.getMinionsTimeline.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/minions',
