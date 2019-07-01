@@ -253,6 +253,7 @@
     "med": "med",
     "high": "high",
     "low": "low",
+    "fanSpeed" : "fan speed",
     "api-messages": {
         "0": "offline",
         "1401": "unauthorized",

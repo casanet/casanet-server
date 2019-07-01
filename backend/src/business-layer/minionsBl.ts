@@ -98,7 +98,7 @@ export class MinionsBl {
                 minion.isProperlyCommunicated = true;
                 minion.minionStatus = pysicalDeviceUpdate.status;
                 this.minionFeed.next({
-                    event: 'update',
+                    event: 'created',
                     minion,
                 });
             } catch (error) {
@@ -141,20 +141,27 @@ export class MinionsBl {
      * Read minoin current status.
      * @param minion minion to read status for.
      */
-    private async readMinionStatus(minion: Minion): Promise<ErrorResponse> {
-        const currentStatus: MinionStatus = await this.modulesManager.getStatus(minion)
-            .catch((err: ErrorResponse) => {
-                minion.isProperlyCommunicated = false;
-                logger.warn(`Fail to read status of ${minion.name} id: ${minion.minionId} err : ${err.message}`);
-                throw err;
-            }) as MinionStatus;
-        minion.isProperlyCommunicated = true;
-        minion.minionStatus = currentStatus;
-        this.minionFeed.next({
-            event: 'update',
-            minion,
-        });
-        return;
+    private async readMinionStatus(minion: Minion) {
+        try {
+            const currentStatus: MinionStatus = await this.modulesManager.getStatus(minion) as MinionStatus;
+
+            /** If there is no change from last minion status */
+            if (minion.isProperlyCommunicated &&
+                JSON.stringify(minion.minionStatus) === JSON.stringify(currentStatus)) {
+                return;
+            }
+
+            minion.isProperlyCommunicated = true;
+            minion.minionStatus = currentStatus;
+            this.minionFeed.next({
+                event: 'update',
+                minion,
+            });
+        } catch (error) {
+            minion.isProperlyCommunicated = false;
+            logger.warn(`Fail to read status of ${minion.name} id: ${minion.minionId} err : ${error.message}`);
+            throw error;
+        }
     }
 
     /**

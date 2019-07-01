@@ -267,8 +267,8 @@ export class MinionsComponent implements OnInit, OnDestroy {
 			html:
 				`<table border="1" style="margin: auto">
 					<tr><td><b>${this.translatePipe.transform('INNER_ID')}</b>     </td><td> ${minion.minionId} </td></tr>
-					<tr><td><b>${this.translatePipe.transform('MODEL')}</b>        </td><td> ${minion.device.brand} </td></tr>
-					<tr><td><b>${this.translatePipe.transform('BRAND')}</b>        </td><td> ${minion.device.model} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('BRAND')}</b>        </td><td> ${minion.device.brand} </td></tr>
+					<tr><td><b>${this.translatePipe.transform('MODEL')}</b>        </td><td> ${minion.device.model} </td></tr>
 					<tr><td><b>${this.translatePipe.transform('DEVICE_NAME')}</b>  </td><td> ${minion.device.pysicalDevice.name || '?'} </td></tr>
 					<tr><td><b>${this.translatePipe.transform('DEVICE_MAC')}</b>   </td><td> ${minion.device.pysicalDevice.mac} </td></tr>
 					<tr><td><b>${this.translatePipe.transform('DEVICE_IP')}</b>    </td><td> ${minion.device.pysicalDevice.ip || '?'}</td></tr>
