@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import * as Tuyapi from 'tuyapi';
 import {
     DeviceKind,
@@ -9,6 +10,7 @@ import {
     SwitchOptions,
 } from '../../models/sharedInterfaces';
 import { logger } from '../../utilities/logger';
+import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 
 export class TuyaHandler extends BrandModuleBase {
@@ -202,8 +204,13 @@ export class TuyaHandler extends BrandModuleBase {
         /**
          * Subscribe to error event.
          */
-        tuyaDevice.on('error', (err) => {
+        tuyaDevice.on('error', async (err) => {
             logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${err}`);
+            tuyaDevice.disconnect();
+            delete this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
+
+            Delay(moment.duration(5, 'seconds'));
+            await this.getTuyaDevice(minionDevice);
         });
 
         /**
