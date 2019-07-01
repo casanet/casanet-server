@@ -557,6 +557,21 @@ definitions:
             - suppotedMinionType
             - isRecordingSupported
         type: object
+    MinionTimeline:
+        description: 'Minion timeline node'
+        properties:
+            minionId:
+                type: string
+            timestamp:
+                type: number
+                format: double
+            status:
+                $ref: '#/definitions/MinionStatus'
+        required:
+            - minionId
+            - timestamp
+            - status
+        type: object
     MinionRename:
         description: 'Used to rename minion.'
         properties:
@@ -1046,6 +1061,27 @@ paths:
                     userAuth: []
                 -
                     adminAuth: []
+            parameters: []
+    /minions/timeline:
+        get:
+            operationId: GetMinionsTimeline
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/MinionTimeline'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get the timeline of minions status.'
+            tags:
+                - Minions
+            security: []
             parameters: []
     /minions:
         get:

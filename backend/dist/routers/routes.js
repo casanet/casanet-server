@@ -194,6 +194,13 @@ const models = {
             "isRecordingSupported": { "dataType": "boolean", "required": true },
         },
     },
+    "MinionTimeline": {
+        "properties": {
+            "minionId": { "dataType": "string", "required": true },
+            "timestamp": { "dataType": "double", "required": true },
+            "status": { "ref": "MinionStatus", "required": true },
+        },
+    },
     "MinionRename": {
         "properties": {
             "name": { "dataType": "string", "required": true },
@@ -467,6 +474,23 @@ function RegisterRoutes(app) {
         }
         const controller = new devicesController_1.DevicesController();
         const promise = controller.rescanDevices.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/minions/timeline', function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new minionsController_1.MinionsController();
+        const promise = controller.getMinionsTimeline.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.get('/API/minions', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {

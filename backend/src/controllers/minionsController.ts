@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
-import { ErrorResponse, IftttOnChanged, Minion, MinionRename, MinionStatus, SetMinionAutoTurnOff } from '../models/sharedInterfaces';
+import { ErrorResponse, IftttOnChanged, Minion, MinionRename, MinionStatus, SetMinionAutoTurnOff, MinionTimeline } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
+import { TimelineBlSingleton } from '../business-layer/timelineBl';
 
 @Tags('Minions')
 @Route('minions')
@@ -30,6 +31,15 @@ export class MinionsController extends Controller {
         return minionsCopy;
     }
 
+    /**
+     * Get the timeline of minions status.
+     */
+    @Response<ErrorResponse>(501, 'Server error')
+    @Get('timeline')
+    public async getMinionsTimeline(): Promise<MinionTimeline[]> {
+        return await TimelineBlSingleton.getTimeline();
+    }
+    
     /**
      * Get all minions in the system.
      * @returns Minions array.
@@ -89,7 +99,7 @@ export class MinionsController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Put('timeout/{minionId}')
     public async setMinionTimeout(minionId: string, @Body() setTimeout: SetMinionAutoTurnOff): Promise<void> {
-        return await MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS );
+        return await MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS);
     }
 
     /**
