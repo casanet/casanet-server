@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Minion, MinionStatus, MinionFeed, DeviceKind } from '../../../../backend/src/models/sharedInterfaces';
+import { Minion, MinionStatus, MinionFeed, DeviceKind, MinionTimeline } from '../../../../backend/src/models/sharedInterfaces';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
@@ -237,7 +237,15 @@ export class MinionsService {
 
 	public async renameMinion(minion: Minion, newName: number) {
 		try {
-			await this.httpClient.put(`/API/minions/rename/${minion.minionId}`, { name : newName }).toPromise();
+			await this.httpClient.put(`/API/minions/rename/${minion.minionId}`, { name: newName }).toPromise();
+		} catch (error) {
+			this.toastrAndErrorsService.OnHttpError(error);
+		}
+	}
+
+	public async getTimeline() : Promise<MinionTimeline[]> {
+		try {
+			return await this.httpClient.get<MinionTimeline[]>(`/API/minions/timeline`).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}

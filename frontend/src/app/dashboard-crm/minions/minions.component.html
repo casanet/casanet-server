@@ -238,6 +238,10 @@
                 matTooltip="{{'RESCAN_NETWORK_AND_MINIONS' | translate}}">
                 <mat-icon>track_changes</mat-icon>
             </button>
+            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="minionsTimeline()"
+                matTooltip="{{'TIMELINE' | translate}}">
+                <mat-icon>timeline</mat-icon>
+            </button>
             <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="createMinion()"
                 matTooltip="{{'CREATE_MINION' | translate}}">
                 <mat-icon>add</mat-icon>
