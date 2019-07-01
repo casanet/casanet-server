@@ -95,15 +95,10 @@ export class MinionsBl {
 
             try {
                 const minion = await this.getMinionById(pysicalDeviceUpdate.minionId);
-                minion.isProperlyCommunicated = true;
-                minion.minionStatus = pysicalDeviceUpdate.status;
-                this.minionFeed.next({
-                    event: 'created',
-                    minion,
-                });
+                await this.onMinionUpdated(minion, pysicalDeviceUpdate.status);
+
             } catch (error) {
                 logger.info(`Avoiding device update, there is no minion with id: ${pysicalDeviceUpdate.minionId}`);
-                return;
             }
         });
 
@@ -145,18 +140,8 @@ export class MinionsBl {
         try {
             const currentStatus: MinionStatus = await this.modulesManager.getStatus(minion) as MinionStatus;
 
-            /** If there is no change from last minion status */
-            if (minion.isProperlyCommunicated &&
-                JSON.stringify(minion.minionStatus) === JSON.stringify(currentStatus)) {
-                return;
-            }
+            await this.onMinionUpdated(minion, currentStatus);
 
-            minion.isProperlyCommunicated = true;
-            minion.minionStatus = currentStatus;
-            this.minionFeed.next({
-                event: 'update',
-                minion,
-            });
         } catch (error) {
             minion.isProperlyCommunicated = false;
             logger.warn(`Fail to read status of ${minion.name} id: ${minion.minionId} err : ${error.message}`);
@@ -198,6 +183,21 @@ export class MinionsBl {
                 return minion;
             }
         }
+    }
+
+    private async onMinionUpdated(minion: Minion, updateToStatus: MinionStatus) {
+        /** If there is no change from last minion status */
+        if (minion.isProperlyCommunicated &&
+            JSON.stringify(minion.minionStatus) === JSON.stringify(updateToStatus)) {
+            return;
+        }
+
+        minion.isProperlyCommunicated = true;
+        minion.minionStatus = updateToStatus;
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
     }
 
     /**
@@ -388,6 +388,10 @@ export class MinionsBl {
         await this.modulesManager.setStatus(minion, minionStatus)
             .catch((err) => {
                 minion.isProperlyCommunicated = false;
+                this.minionFeed.next({
+                    event: 'update',
+                    minion,
+                });
                 throw err;
             });
 
@@ -610,9 +614,12 @@ export class MinionsBl {
 
         /** Case it's first time update. */
         if (!minion.minionStatus[minion.minionType]) {
-            minion.minionStatus[minion.minionType] = {
+            const initStatus = {
                 status: 'on',
             };
+            const initMinionStatus = {};
+            initMinionStatus[minion.minionType] = initStatus;
+            minion.minionStatus = initMinionStatus as MinionStatus;
         }
 
         /** Update the minion status */
