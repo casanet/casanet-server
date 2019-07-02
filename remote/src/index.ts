@@ -2,17 +2,17 @@ import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
 import * as path from 'path';
+import { createConnection } from 'typeorm';
 import * as WebSocket from 'ws';
 import { Configuration } from '../../backend/src/config';
 import { logger } from '../../backend/src/utilities/logger';
 import app from './app';
 import { ChannelsRouter } from './routers/channelsRoute';
-import { createConnection } from 'typeorm';
 
 logger.info('casa-net remote server app starting...');
 
 // Start HTTP application
-let server: any = http.createServer(app).listen(Configuration.http.httpPort, () => {
+let server: any = http.createServer(app).listen(process.env.PORT || Configuration.http.httpPort, () => {
     logger.info('HTTP listen on port ' + Configuration.http.httpPort);
 });
 
@@ -55,4 +55,3 @@ if (Configuration.http.useHttps) {
         process.exit();
     }
 })();
-

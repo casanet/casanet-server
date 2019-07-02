@@ -14,7 +14,7 @@
     "migrate:revert": "npm run typeorm -- migration:revert",
     "start": "node dist/remote/src/index.js",
     "jscopy": "copyfiles -u 1 src/**/*.js dist/remote/src",
-    "build": "tsoa routes && tsoa swagger && tsc && npm run jscopy",
+    "build:dev": "tsoa routes && tsoa swagger && tsc && npm run jscopy",
     "test": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --require ts-node/register test/**/*.spec.ts e2e/**/*.spec.ts"
   },
   "license": "ISC",

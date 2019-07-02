@@ -4,15 +4,15 @@ const fs = require("fs");
 const http = require("http");
 const https = require("https");
 const path = require("path");
+const typeorm_1 = require("typeorm");
 const WebSocket = require("ws");
 const config_1 = require("../../backend/src/config");
 const logger_1 = require("../../backend/src/utilities/logger");
 const app_1 = require("./app");
 const channelsRoute_1 = require("./routers/channelsRoute");
-const typeorm_1 = require("typeorm");
 logger_1.logger.info('casa-net remote server app starting...');
 // Start HTTP application
-let server = http.createServer(app_1.default).listen(config_1.Configuration.http.httpPort, () => {
+let server = http.createServer(app_1.default).listen(process.env.PORT || config_1.Configuration.http.httpPort, () => {
     logger_1.logger.info('HTTP listen on port ' + config_1.Configuration.http.httpPort);
 });
 // SSL/HTTPS
