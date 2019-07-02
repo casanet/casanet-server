@@ -206,11 +206,17 @@ export class TuyaHandler extends BrandModuleBase {
          */
         tuyaDevice.on('error', async (err) => {
             logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${err}`);
-            tuyaDevice.disconnect();
-            delete this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
 
-            Delay(moment.duration(5, 'seconds'));
-            await this.getTuyaDevice(minionDevice);
+            try {
+                tuyaDevice.disconnect();
+                delete this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
+
+                Delay(moment.duration(5, 'seconds'));
+                await this.getTuyaDevice(minionDevice);
+
+            } catch (error) {
+                logger.warn(`reconnecting TCP connection to the tuya mac: ${minionDevice.pysicalDevice.mac} fail error: ${error}`);
+            }
         });
 
         /**
