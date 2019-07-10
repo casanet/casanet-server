@@ -56,18 +56,6 @@
       </div>
     </form>
   </mat-step>
-  <mat-step [stepControl]="sessionMsTimeoutControl">
-    <form>
-      <ng-template matStepLabel>{{ 'SESSION_HOURES_TIMEOUT' | translate}}</ng-template>
-      <mat-form-field>
-        <input matInput type="number" min="1" [formControl]="sessionHouresTimeoutControl" required>
-            </mat-form-field>
-        <div>
-          <button mat-button matStepperPrevious>{{ 'BACK' | translate}}</button>
-          <button mat-button matStepperNext>{{ 'NEXT' | translate}}</button>
-        </div>
-    </form>
-  </mat-step>
   <mat-step [stepControl]="passwordControl">
     <form>
       <ng-template matStepLabel>{{ 'PRESS_PASSWORD' | translate}}</ng-template>

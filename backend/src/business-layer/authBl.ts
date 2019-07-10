@@ -14,6 +14,8 @@ declare interface TfaData {
     timeStamp: Date;
 }
 
+export const sessionExpiresMs = (+process.env.SESSION_EXPIRES_DAYS || 365) * 24 * 60 * 60 * 1000;
+
 export class AuthBl {
 
     private readonly GENERIC_ERROR_RESPONSE: ErrorResponse = {
@@ -48,14 +50,17 @@ export class AuthBl {
             sameSite: true,
             httpOnly: true, // minimize risk of XSS attacks by restricting the client from reading the cookie
             secure: Configuration.http.useHttps, // only send cookie over https
-            maxAge: user.sessionTimeOutMS,
+            maxAge: sessionExpiresMs, // Age in seconds
         });
+
+        /** All OK, no additional info */
+        response.statusCode = 200;
     }
 
     /**
      * Login to system.
      */
-    public async login(response: express.Response, login: Login): Promise<ErrorResponse> {
+    public async login(response: express.Response, login: Login) {
 
         let userTryToLogin: User;
         try {
@@ -123,7 +128,7 @@ export class AuthBl {
     /**
      * Login to system after tfa sent.
      */
-    public async loginTfa(response: express.Response, login: Login): Promise<ErrorResponse> {
+    public async loginTfa(response: express.Response, login: Login) {
 
         let userTryToLogin: User;
         try {
@@ -161,7 +166,12 @@ export class AuthBl {
     public async logout(sessionKey: string, response: express.Response): Promise<void> {
         const session = await this.sessionsBl.getSession(sessionKey);
         await this.sessionsBl.deleteSession(session);
-        response.cookie('session', '');
+        response.cookie('session', 'null', {
+            sameSite: true,
+            httpOnly: true, // minimize risk of XSS attacks by restricting the client from reading the cookie
+            secure: Configuration.http.useHttps, // only send cookie over https
+            maxAge: 1, // Age in seconds
+        });
     }
 }
 

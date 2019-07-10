@@ -16,7 +16,6 @@ export class AuthService {
     displayName: 'unknown',
     scope: 'userAuth',
     ignoreTfa: false,
-    sessionTimeOutMS: 10,
     password: '',
   };
 

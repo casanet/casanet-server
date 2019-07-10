@@ -183,11 +183,6 @@ export declare interface User {
     email: string;
 
     /**
-     * The time duration for a session in milliseconds (1/1000 from second). 
-     */
-    sessionTimeOutMS: number;
-
-    /**
      * User password.
      */
     password?: string;

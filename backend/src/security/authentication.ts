@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { Application, NextFunction, Request, Response } from 'express';
+import { sessionExpiresMs } from '../business-layer/authBl';
 import { SessionsBlSingleton } from '../business-layer/sessionsBl';
 import { UsersBlSingleton } from '../business-layer/usersBl';
 import { IftttIntergrationDalSingleton } from '../data-layer/iftttIntegrationDal';
@@ -65,7 +66,7 @@ export const expressAuthentication = async (request: express.Request, scopes: st
         /**
          * Make sure that session not expired.
          */
-        if ((new Date().getTime() - session.timeStamp) > user.sessionTimeOutMS) {
+        if ((new Date().getTime() - session.timeStamp) > sessionExpiresMs) {
             await SessionsBlSingleton.deleteSession(session);
             throw {
                 responseCode: 1403,

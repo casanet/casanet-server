@@ -52,7 +52,6 @@ export class UsersDal {
             ignoreTfa: Configuration.defaultUser.ignoreTfa,
             password: passwordHash,
             scope: Configuration.defaultUser.scope,
-            sessionTimeOutMS: Configuration.defaultUser.sessionTimeOutMS,
         });
 
         logger.warn(`There is no any user in system, using default user to allow first time access,` +

@@ -5,6 +5,7 @@ import { Configuration } from '../config';
 import { SessionsDal, SessionsDalSingelton } from '../data-layer/sessionsDal';
 import { Session } from '../models/backendInterfaces';
 import { User } from '../models/sharedInterfaces';
+import { sessionExpiresMs } from './authBl';
 
 export class SessionsBl {
 
@@ -40,7 +41,7 @@ export class SessionsBl {
 
         const userSessions: Session[] = [];
         for (const session of sessions) {
-            if (session.email === user.email && (new Date().getTime() - session.timeStamp) < user.sessionTimeOutMS) {
+            if (session.email === user.email && (new Date().getTime() - session.timeStamp) < sessionExpiresMs) {
                 userSessions.push(session);
             }
         }

@@ -28,7 +28,6 @@ export class UsersComponent implements OnInit, OnDestroy {
       'email',
       'displayName',
       'ignoreTfa',
-      'sessionTimeOutMS',
       'scope',
       'save',
       'password',
@@ -60,14 +59,13 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   public async updateUser(user: User) {
-    const { email, displayName, scope, sessionTimeOutMS, ignoreTfa } = user;
+    const { email, displayName, scope, ignoreTfa } = user;
 
     user['sync'] = true;
     await this.usersService.editUser({
       email,
       displayName,
       scope,
-      sessionTimeOutMS,
       ignoreTfa,
     });
 
@@ -115,14 +113,13 @@ export class UsersComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { email, displayName, scope, sessionTimeOutMS, ignoreTfa } = user;
+    const { email, displayName, scope, ignoreTfa } = user;
 
     user['psync'] = true;
     await this.usersService.editUser({
       email,
       displayName,
       scope,
-      sessionTimeOutMS,
       ignoreTfa,
       password: swalResult.value
     });
@@ -144,14 +141,13 @@ export class UsersComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { email, displayName, scope, sessionTimeOutMS, ignoreTfa } = user;
+    const { email, displayName, scope, ignoreTfa } = user;
 
     user['bsync'] = true;
     await this.usersService.deactivateUserSessions({
       email,
       displayName,
       scope,
-      sessionTimeOutMS,
       ignoreTfa,
       password: swalResult.value
     });
