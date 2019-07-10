@@ -325,7 +325,6 @@ export class MinionsComponent implements OnInit, OnDestroy {
 
 		try {
 			await this.minionsService.deleteMinion(minion);
-			this.minions.splice(this.minions.indexOf(minion), 1);
 		} catch (error) {
 
 		}
