@@ -63,24 +63,23 @@ export class AuthService {
    * Try login.
    * @param email email to login with
    * @param password password to login req.
-   * @returns A promise, with bool to mark if need more action to login.
+   * @returns A promise, with HTTP response to mark if need more action to login.
    * when need to use 2FA api.
    * so true if need to continue with login progress.
    */
-  public async login(email: string, password: string): Promise<boolean> {
-    const respone =
-      await this.httpClient.post('/API/auth/login', { email: email, password: password }, { observe: 'response' }).toPromise();
+  public async login(email: string, password: string, localServerId: string = ''): Promise<HttpResponse<Object>> {
+    const res =
+      await this.httpClient.post('/API/auth/login', { email, password, localServerId }, { observe: 'response' }).toPromise();
 
-    if (respone.status === 200) {
+    if (res.status === 200) {
       await this.retriveProfile();
-      return false;
     }
 
-    return true;
+    return res;
   }
 
-  public async loginTfa(email: string, password: string): Promise<void> {
-    await this.httpClient.post('/API/auth/login/tfa', { email: email, password: password }).toPromise();
+  public async loginTfa(email: string, password: string, localServerId: string = ''): Promise<void> {
+    await this.httpClient.post('/API/auth/login/tfa', { email, password, localServerId }).toPromise();
     await this.retriveProfile();
   }
 

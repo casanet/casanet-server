@@ -26,6 +26,7 @@ import { UsersService } from '../../services/users.service';
 export class LoginComponent implements OnInit, AfterViewInit {
 
   waitingForTfa = false;
+  localServerId = '';
   private genericToast: typeof swal;
 
   userForm: FormGroup;
@@ -42,13 +43,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
     public snackBar: MatSnackBar,
     private authService: AuthService,
     private minionsService: MinionsService,
-		private devicesService: DevicesService,
-		private operationService: OperationService,
-		private timingsService: TimingsService,
-		private usersService: UsersService,
+    private devicesService: DevicesService,
+    private operationService: OperationService,
+    private timingsService: TimingsService,
+    private usersService: UsersService,
     private translateService: TranslateService,
     private toastrAndErrorsService: ToasterAndErrorsService) {
     this.translatePipe = new TranslatePipe(this.translateService);
+
+    document.getElementById('loading-app-assets').innerHTML = '';
 
     this.validationMessages = {
       'email': {
@@ -153,37 +156,64 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public async login() {
 
     const authData = this.userForm.getRawValue();
-    // this.loadingService.startLoading('מתחבר...');
 
-    if (!this.waitingForTfa) {
-      await this.authService.login(authData.email, authData.password)
-        .then(((isNeedTfa: boolean) => {
-          if (!isNeedTfa) {
-            this.onLoginSuccess();
-            return;
-          }
-          // this.loadingService.stopLoading();
-          this.waitingForTfa = true;
-          this.userForm.setValue({
-            email: authData.email,
-            password: '',
-          });
-          this.formErrors.password = undefined;
-        }).bind(this))
-        .catch(((err: HttpErrorResponse) => {
-          this.onLoginFail(err);
-        }).bind(this));
-    } else {
-      await this.authService.loginTfa(authData.email, authData.password)
-        .then((() => {
-          this.onLoginSuccess();
-          this.waitingForTfa = false;
-        }).bind(this))
-        .catch(((err: HttpErrorResponse) => {
-          this.onLoginFail(err);
-        }).bind(this));
+    if (this.waitingForTfa) {
+      try {
+        await this.authService.loginTfa(authData.email, authData.password, this.localServerId);
+        this.onLoginSuccess();
+      } catch (error) {
+        this.onLoginFail(error);
+      }
+      return;
     }
 
+
+    try {
+      const res = await this.authService.login(authData.email, authData.password, this.localServerId);
+      if (res.status === 200) {
+        this.onLoginSuccess();
+        return;
+      }
+
+      if (res.status === 201) {
+        this.waitingForTfa = true;
+        this.userForm.setValue({
+          email: authData.email,
+          password: '',
+        });
+        this.formErrors.password = undefined;
+        return;
+      }
+
+      if (res.status === 210) {
+
+        const servers: { displayName: string; localServerId: string; }[] = res.body as any;
+        const selectOptions = servers.reduce((kpv, server) => {
+          kpv[server.localServerId] = server.displayName;
+          return kpv;
+        }, {});
+
+        const swalResult: void | SweetAlertResult = await swal({
+          title: `${this.translatePipe.transform('SELECT_LOCAL_SERVER')}`,
+          input: 'select',
+          inputOptions: selectOptions,
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: this.translatePipe.transform('SUBMIT'),
+          cancelButtonText: this.translatePipe.transform('CANCEL')
+        });
+
+        // Case user select 'cancel' cancel the delete.
+        if (swalResult && swalResult.dismiss) {
+          return;
+        }
+
+        this.localServerId = swalResult.value;
+        this.login();
+      }
+    } catch (error) {
+      this.onLoginFail(error);
+    }
 
   }
 }
