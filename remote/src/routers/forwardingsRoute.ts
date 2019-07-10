@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 import * as express from 'express';
+import { Configuration } from '../../../backend/src/config';
 import { ErrorResponse, IftttOnChanged, RemoteConnectionStatus } from '../../../backend/src/models/sharedInterfaces';
 import { RequestSchemaValidator } from '../../../backend/src/security/schemaValidator';
 import { logger } from '../../../backend/src/utilities/logger';
 import { ForwardingController } from '../controllers/forwarding-controller';
-import { expressAuthentication, SystemAuthScopes } from '../security/authentication';
-import { IftttOnChangedSchema } from '../security/schemaValidator';
 import { LocalServersController } from '../controllers/local-servers-controller';
 import { ChannelsSingleton } from '../logic';
-import { Configuration } from '../../../backend/src/config';
 import { ForwardSession } from '../models';
+import { expressAuthentication, SystemAuthScopes } from '../security/authentication';
+import { IftttOnChangedSchema } from '../security/schemaValidator';
 
 export class ForwardingRouter {
 
@@ -41,9 +41,9 @@ export class ForwardingRouter {
             }
         });
 
-        /** 
-         * Overwrite '/API/remote/status' to return remote server status 
-         * from the view fo remote server to local server 
+        /**
+         * Overwrite '/API/remote/status' to return remote server status
+         * from the view fo remote server to local server
          */
         app.get('/API/remote/status', async (req: Request, res: Response) => {
             try {

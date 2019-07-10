@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcryptjs';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, PrimaryColumn, BeforeUpdate } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 /**
  * Represents a local server in the system.
@@ -32,7 +32,7 @@ export class RemoteAdmin {
 
     @BeforeUpdate()
     beforeUpdate() {
-        if(this.password){
+        if (this.password) {
             this.beforeInsert();
         }
     }

@@ -1,6 +1,6 @@
 import * as cryptoJs from 'crypto-js';
-import * as momoent from 'moment';
 import * as moment from 'moment';
+import * as momoent from 'moment';
 import * as randomstring from 'randomstring';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import * as ws from 'ws';
@@ -9,7 +9,7 @@ import { HttpRequest, HttpResponse, LocalMessage, LocalServerFeed, RemoteMessage
 import { ErrorResponse, MinionFeed, TimingFeed } from '../../../backend/src/models/sharedInterfaces';
 import { logger } from '../../../backend/src/utilities/logger';
 import { SendMail } from '../../../backend/src/utilities/mailSender';
-import { getServer, checkSession, updateServer } from '../data-access';
+import { checkSession, getServer, updateServer } from '../data-access';
 
 /**
  * Extend ws to allow hold uniqe id to each authenticated local server ws channel.
@@ -117,7 +117,7 @@ export class Channels {
                 this.localChannelsMap[certAuth.macAddress].machineMac = null;
 
                 /** Need to test the behavior of local server when closing old connection manualy  */
-                try { this.localChannelsMap[certAuth.macAddress].close(); } catch (err) { };
+                try { this.localChannelsMap[certAuth.macAddress].close(); } catch (err) { }
 
                 delete this.localChannelsMap[certAuth.macAddress];
             }
@@ -464,7 +464,7 @@ export class Channels {
     }
 
     /**
-     * Get channel connection status. 
+     * Get channel connection status.
      * @param macAddress local server physical address
      */
     public async connectionStatus(macAddress: string): Promise<boolean> {

@@ -1,4 +1,4 @@
-import { Login } from '../../../backend/src/models/sharedInterfaces'
+import { Login } from '../../../backend/src/models/sharedInterfaces';
 import { LocalServer } from './';
 
 /**
@@ -26,7 +26,7 @@ export declare interface LocalServerInfo {
 }
 
 /**
- * Extends login with local server selection, 
+ * Extends login with local server selection,
  * case use owns more than one local server needs to know which server to connect.
  */
 export declare interface LoginLocalServer extends Login {

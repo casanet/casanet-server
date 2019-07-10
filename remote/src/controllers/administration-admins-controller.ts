@@ -1,9 +1,9 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
-import { getUser, getUsers, updateUser, deleteUser, createUser } from '../data-access';
-import { RemoteAdmin } from '../models';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
+import { createUser, deleteUser, getUser, getUsers, updateUser } from '../data-access';
+import { RemoteAdmin } from '../models';
 import { createUserSchema, updateUserSchema } from '../security/schemaValidator';
 
 @Tags('Admins')

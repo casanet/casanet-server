@@ -1,12 +1,12 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
-import { logger } from '../../../backend/src/utilities/logger';
-import { AuthScopes, ForwardSession } from '../models';
+import { Configuration } from '../../../backend/src/config';
 import { ErrorResponse, IftttActionTriggeredRequest } from '../../../backend/src/models/sharedInterfaces';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
-import { IftttAuthRequestSchema } from './schemaValidator';
-import { Configuration } from '../../../backend/src/config';
+import { logger } from '../../../backend/src/utilities/logger';
 import { Cache } from '../logic';
+import { AuthScopes, ForwardSession } from '../models';
+import { IftttAuthRequestSchema } from './schemaValidator';
 
 export const jwtSecret = process.env.JWT_SECRET;
 if (!jwtSecret) {
@@ -29,7 +29,7 @@ export const SystemAuthScopes: {
 
 export const forwardCache = new Cache(
     +process.env.FORWARD_CACHE_TTL || 60 * 60 * 2,
-    +process.env.FORWARD_CACHE_CHECK_PERIOD || 60 * 60
+    +process.env.FORWARD_CACHE_CHECK_PERIOD || 60 * 60,
 );
 
 /**

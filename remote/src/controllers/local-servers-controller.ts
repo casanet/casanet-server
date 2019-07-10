@@ -1,13 +1,13 @@
-import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
-import { LocalServer, ServerSession, LocalServerStatus } from '../models';
-import { getServers, getServer, createServer, updateServer, deleteServer, setServerSession } from '../data-access';
-import * as randomstring from 'randomstring';
 import * as cryptoJs from 'crypto-js';
+import * as randomstring from 'randomstring';
+import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { Configuration } from '../../../backend/src/config';
+import { ErrorResponse } from '../../../backend/src/models/sharedInterfaces';
 import { SchemaValidator } from '../../../backend/src/security/schemaValidator';
-import { serverSchema } from '../security/schemaValidator';
+import { createServer, deleteServer, getServer, getServers, setServerSession, updateServer } from '../data-access';
 import { ChannelsSingleton } from '../logic';
+import { LocalServer, LocalServerStatus, ServerSession } from '../models';
+import { serverSchema } from '../security/schemaValidator';
 
 @Tags('Servers')
 @Route('servers')
