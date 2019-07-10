@@ -1,16 +1,16 @@
-import * as express from 'express';
 import * as cryptoJs from 'crypto-js';
+import * as express from 'express';
+import * as jwt from 'jsonwebtoken';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { ErrorResponse, User, Login } from '../../../backend/src/models/sharedInterfaces';
-import { ChannelsSingleton } from '../logic';
-import { getServersByForwardUser, getServer } from '../data-access';
-import { LocalServerInfo, LoginLocalServer, ForwardSession } from '../models';
 import { Configuration } from '../../../backend/src/config';
 import { HttpResponse } from '../../../backend/src/models/remote2localProtocol';
+import { ErrorResponse, Login, User } from '../../../backend/src/models/sharedInterfaces';
 import { RequestSchemaValidator, SchemaValidator } from '../../../backend/src/security/schemaValidator';
-import { LoginSchema } from '../security/schemaValidator';
+import { getServer, getServersByForwardUser } from '../data-access';
+import { ChannelsSingleton } from '../logic';
+import { ForwardSession, LocalServerInfo, LoginLocalServer } from '../models';
 import { forwardCache, jwtSecret } from '../security/authentication';
-import * as jwt from 'jsonwebtoken';
+import { LoginSchema } from '../security/schemaValidator';
 
 const jwtExpiresIn = process.env.FORWARD_JWT_EXPIRES_IN || '360 days';
 
@@ -27,13 +27,14 @@ export class ForwardAuthController extends Controller {
             session: httpResponse.httpSession.key,
             localUser,
             server: localServerMacAddress,
-        }
+        };
 
         const token = jwt.sign(
             forwardSession,
             jwtSecret,
-            { expiresIn: jwtExpiresIn }
+            { expiresIn: jwtExpiresIn },
         );
+        // tslint:disable-next-line:max-line-length
         this.setHeader('Set-Cookie', `session=${token}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
         // TODO change to 204, after frontend update
         this.setStatus(200);
@@ -102,7 +103,7 @@ export class ForwardAuthController extends Controller {
                             return {
                                 displayName: server.displayName,
                                 localServerId: server.macAddress,
-                            }
+                            };
                         });
                     }
                 }
@@ -209,9 +210,8 @@ export class ForwardAuthController extends Controller {
     @Response<ErrorResponse>(501, 'Server error')
     @Post('logout')
     public async logout(@Request() request: express.Request): Promise<void> {
-        // TODO: extract cookie.
-        const forwardSession: ForwardSession = request.body;
-        /** Send logut request to local server via sw channel */
+        const forwardSession: ForwardSession = request.user;
+        /** Send logout request to local server via sw channel */
         await ChannelsSingleton.sendHttpViaChannels(forwardSession.server, {
             requestId: undefined,
             httpPath: request.path,
@@ -222,6 +222,7 @@ export class ForwardAuthController extends Controller {
 
         // TODO: add to tokens black list
         /** Send clean session by response to client browser token. */
-        this.setHeader('Set-Cookie', `session=0;`);
+        // tslint:disable-next-line:max-line-length
+        this.setHeader('Set-Cookie', `session=null; Max-Age=${1}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
     }
 }

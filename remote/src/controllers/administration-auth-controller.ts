@@ -1,14 +1,14 @@
-import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
-import { ErrorResponse, Login } from '../../../backend/src/models/sharedInterfaces';
-import { SchemaValidator, LoginSchema } from '../../../backend/src/security/schemaValidator';
-import { checkAdminAccess } from '../data-access';
-import { RemoteAdmin } from '../models';
-import { Configuration } from '../../../backend/src/config';
-import { logger } from '../../../backend/src/utilities/logger';
-import * as randomstring from 'randomstring';
-import { SendMail } from '../../../backend/src/utilities/mailSender';
 import * as jwt from 'jsonwebtoken';
 import * as momoent from 'moment';
+import * as randomstring from 'randomstring';
+import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
+import { Configuration } from '../../../backend/src/config';
+import { ErrorResponse, Login } from '../../../backend/src/models/sharedInterfaces';
+import { LoginSchema, SchemaValidator } from '../../../backend/src/security/schemaValidator';
+import { logger } from '../../../backend/src/utilities/logger';
+import { SendMail } from '../../../backend/src/utilities/mailSender';
+import { checkAdminAccess } from '../data-access';
+import { RemoteAdmin } from '../models';
 import { jwtSecret } from '../security/authentication';
 
 const jwtExpiresIn = process.env.ADMIN_JWT_EXPIRES_IN || '2 days';
@@ -30,14 +30,19 @@ export class AdministrationAuthController extends Controller {
     private async activeSession(admin: RemoteAdmin): Promise<void> {
 
         const token = jwt.sign(
-            { email: admin.email },
+            {
+                email: admin.email,
+            },
             jwtSecret,
-            { expiresIn: jwtExpiresIn }
+            {
+                expiresIn: jwtExpiresIn,
+            },
         );
         /**
          * Finally load session on cookies response.
          */
-        this.setHeader('Set-Cookie', `session=${token}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        // tslint:disable-next-line:max-line-length
+        this.setHeader('Set-Cookie', `session=${token}; Max-Age=${2.592e+6}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
     }
 
     /**
