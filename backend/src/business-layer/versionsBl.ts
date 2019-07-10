@@ -1,5 +1,6 @@
 import { exec } from 'child-process-promise';
 import * as simplegit from 'simple-git/promise';
+import { Configuration } from '../config';
 import { ErrorResponse, UpdateResults, VersionInfo } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
@@ -19,6 +20,12 @@ export class VersionsBl {
     public async updateToLastVersion(): Promise<UpdateResults> {
         /** Get last update from git repo */
         try {
+            /** Clean up the workspace, this is a dangerous part!!! it will remove any files change. */
+            if (Configuration.runningMode === 'prod') {
+                /** clean all workstation to the HEAD image. to allow the git pull. */
+                await this.git.reset('hard');
+            }
+
             const pullResults = await this.git.pull('origin', 'master', { '--rebase': 'false' });
 
             logger.info(`pull last version pulld ${pullResults.summary.changes} changes`);
@@ -70,7 +77,7 @@ export class VersionsBl {
             const commintHash = await this.git.revparse(['--short', 'HEAD']);
             const rawTimestamp = await this.git.show(['-s', '--format=%ct']);
 
-            const timestamp = parseInt(rawTimestamp) * 1000;
+            const timestamp = +rawTimestamp * 1000;
             return {
                 version: tags.latest,
                 commintHash,
