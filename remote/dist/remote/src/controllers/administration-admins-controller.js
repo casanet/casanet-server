@@ -14,9 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const tsoa_1 = require("tsoa");
+const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
 const data_access_1 = require("../data-access");
 const models_1 = require("../models");
-const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
 const schemaValidator_2 = require("../security/schemaValidator");
 let AdministrationUsersController = class AdministrationUsersController extends tsoa_1.Controller {
     /**

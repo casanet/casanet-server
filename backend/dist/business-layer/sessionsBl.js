@@ -4,6 +4,7 @@ const cryptoJs = require("crypto-js");
 const randomstring = require("randomstring");
 const config_1 = require("../config");
 const sessionsDal_1 = require("../data-layer/sessionsDal");
+const authBl_1 = require("./authBl");
 class SessionsBl {
     /**
      * Init session bl. using dependecy injection pattern to allow units testings.
@@ -30,7 +31,7 @@ class SessionsBl {
         const sessions = await this.sessionDal.getSessions();
         const userSessions = [];
         for (const session of sessions) {
-            if (session.email === user.email && (new Date().getTime() - session.timeStamp) < user.sessionTimeOutMS) {
+            if (session.email === user.email && (new Date().getTime() - session.timeStamp) < authBl_1.sessionExpiresMs) {
                 userSessions.push(session);
             }
         }

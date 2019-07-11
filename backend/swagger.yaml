@@ -653,10 +653,6 @@ definitions:
             email:
                 type: string
                 description: 'User email'
-            sessionTimeOutMS:
-                type: number
-                format: double
-                description: 'The time duration for a session in milliseconds (1/1000 from second).'
             password:
                 type: string
                 description: 'User password.'
@@ -673,7 +669,6 @@ definitions:
                 description: 'User scopes.'
         required:
             - email
-            - sessionTimeOutMS
             - ignoreTfa
             - scope
         type: object

@@ -41,7 +41,6 @@ class UsersDal {
             ignoreTfa: config_1.Configuration.defaultUser.ignoreTfa,
             password: passwordHash,
             scope: config_1.Configuration.defaultUser.scope,
-            sessionTimeOutMS: config_1.Configuration.defaultUser.sessionTimeOutMS,
         });
         logger_1.logger.warn(`There is no any user in system, using default user to allow first time access,` +
             ` user name is: ${defaultUserName} and for password see casanet.json file.` +

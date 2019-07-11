@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const jwt = require("jsonwebtoken");
-const logger_1 = require("../../../backend/src/utilities/logger");
 const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
-const schemaValidator_2 = require("./schemaValidator");
+const logger_1 = require("../../../backend/src/utilities/logger");
 const logic_1 = require("../logic");
+const schemaValidator_2 = require("./schemaValidator");
 exports.jwtSecret = process.env.JWT_SECRET;
 if (!exports.jwtSecret) {
     logger_1.logger.fatal('You must set the jwt secret!');

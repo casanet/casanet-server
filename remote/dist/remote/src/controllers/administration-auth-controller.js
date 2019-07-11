@@ -12,15 +12,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const tsoa_1 = require("tsoa");
-const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
-const data_access_1 = require("../data-access");
-const config_1 = require("../../../backend/src/config");
-const logger_1 = require("../../../backend/src/utilities/logger");
-const randomstring = require("randomstring");
-const mailSender_1 = require("../../../backend/src/utilities/mailSender");
 const jwt = require("jsonwebtoken");
 const momoent = require("moment");
+const randomstring = require("randomstring");
+const tsoa_1 = require("tsoa");
+const config_1 = require("../../../backend/src/config");
+const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
+const logger_1 = require("../../../backend/src/utilities/logger");
+const mailSender_1 = require("../../../backend/src/utilities/mailSender");
+const data_access_1 = require("../data-access");
 const authentication_1 = require("../security/authentication");
 const jwtExpiresIn = process.env.ADMIN_JWT_EXPIRES_IN || '2 days';
 const tfaLogins = {};
@@ -29,11 +29,16 @@ const tfaLogins = {};
  */
 let AdministrationAuthController = class AdministrationAuthController extends tsoa_1.Controller {
     async activeSession(admin) {
-        const token = jwt.sign({ email: admin.email }, authentication_1.jwtSecret, { expiresIn: jwtExpiresIn });
+        const token = jwt.sign({
+            email: admin.email,
+        }, authentication_1.jwtSecret, {
+            expiresIn: jwtExpiresIn,
+        });
         /**
          * Finally load session on cookies response.
          */
-        this.setHeader('Set-Cookie', `session=${token}; Path=/; HttpOnly; ${config_1.Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        // tslint:disable-next-line:max-line-length
+        this.setHeader('Set-Cookie', `session=${token}; Max-Age=${2.592e+6}; Path=/; HttpOnly; ${config_1.Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
     }
     /**
      * Login to the administration system.

@@ -13,14 +13,14 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const tsoa_1 = require("tsoa");
-const logic_1 = require("../logic");
-const data_access_1 = require("../data-access");
 const config_1 = require("../../../backend/src/config");
 const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
-const schemaValidator_2 = require("../security/schemaValidator");
+const data_access_1 = require("../data-access");
+const logic_1 = require("../logic");
 const authentication_1 = require("../security/authentication");
-const jwt = require("jsonwebtoken");
+const schemaValidator_2 = require("../security/schemaValidator");
 const jwtExpiresIn = process.env.FORWARD_JWT_EXPIRES_IN || '360 days';
 /**
  * Manage local servers login requests forwarding
@@ -34,6 +34,7 @@ let ForwardAuthController = class ForwardAuthController extends tsoa_1.Controlle
             server: localServerMacAddress,
         };
         const token = jwt.sign(forwardSession, authentication_1.jwtSecret, { expiresIn: jwtExpiresIn });
+        // tslint:disable-next-line:max-line-length
         this.setHeader('Set-Cookie', `session=${token}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${config_1.Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
         // TODO change to 204, after frontend update
         this.setStatus(200);
@@ -184,9 +185,8 @@ let ForwardAuthController = class ForwardAuthController extends tsoa_1.Controlle
      * Logout manually from remote and local server systems.
      */
     async logout(request) {
-        // TODO: extract cookie.
-        const forwardSession = request.body;
-        /** Send logut request to local server via sw channel */
+        const forwardSession = request.user;
+        /** Send logout request to local server via sw channel */
         await logic_1.ChannelsSingleton.sendHttpViaChannels(forwardSession.server, {
             requestId: undefined,
             httpPath: request.path,
@@ -196,7 +196,8 @@ let ForwardAuthController = class ForwardAuthController extends tsoa_1.Controlle
         });
         // TODO: add to tokens black list
         /** Send clean session by response to client browser token. */
-        this.setHeader('Set-Cookie', `session=0;`);
+        // tslint:disable-next-line:max-line-length
+        this.setHeader('Set-Cookie', `session=null; Max-Age=${1}; Path=/; HttpOnly; ${config_1.Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
     }
 };
 __decorate([

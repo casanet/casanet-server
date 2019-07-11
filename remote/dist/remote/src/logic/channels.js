@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const cryptoJs = require("crypto-js");
-const momoent = require("moment");
 const moment = require("moment");
+const momoent = require("moment");
 const randomstring = require("randomstring");
 const rxjs_1 = require("rxjs");
 const config_1 = require("../../../backend/src/config");
@@ -79,7 +79,6 @@ class Channels {
                     this.localChannelsMap[certAuth.macAddress].close();
                 }
                 catch (err) { }
-                ;
                 delete this.localChannelsMap[certAuth.macAddress];
             }
             /**

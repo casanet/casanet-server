@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const authBl_1 = require("../business-layer/authBl");
 const sessionsBl_1 = require("../business-layer/sessionsBl");
 const usersBl_1 = require("../business-layer/usersBl");
 const iftttIntegrationDal_1 = require("../data-layer/iftttIntegrationDal");
@@ -49,7 +50,7 @@ exports.expressAuthentication = async (request, scopes) => {
         /**
          * Make sure that session not expired.
          */
-        if ((new Date().getTime() - session.timeStamp) > user.sessionTimeOutMS) {
+        if ((new Date().getTime() - session.timeStamp) > authBl_1.sessionExpiresMs) {
             await sessionsBl_1.SessionsBlSingleton.deleteSession(session);
             throw {
                 responseCode: 1403,

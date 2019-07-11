@@ -570,7 +570,7 @@ definitions:
             - displayName
         type: object
     LoginLocalServer:
-        description: "Extends login with local server selection, \r\ncase use owns more than one local server needs to know which server to connect."
+        description: "Extends login with local server selection,\r\ncase use owns more than one local server needs to know which server to connect."
         properties:
             email:
                 type: string

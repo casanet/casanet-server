@@ -305,6 +305,28 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
         }
         this.updateCache();
     }
+    async recordRollerRFCommand(miniom, statusToRecordFor) {
+        const broadlink = await this.getBroadlinkInstance(miniom);
+        const minionCache = this.getOrCreateMinionCache(miniom);
+        if (!minionCache.rollerCommands) {
+            minionCache.rollerCommands = {
+                up: '',
+                down: '',
+                off: '',
+            };
+        }
+        const hexIRCommand = await this.enterBeamLearningMode(broadlink);
+        if (statusToRecordFor.roller.status === 'off') {
+            minionCache.rollerCommands.off = hexIRCommand;
+        }
+        else if (statusToRecordFor.roller.direction === 'up') {
+            minionCache.rollerCommands.up = hexIRCommand;
+        }
+        else {
+            minionCache.rollerCommands.down = hexIRCommand;
+        }
+        this.updateCache();
+    }
     async generateToggleRFCommand(miniom, statusToRecordFor) {
         const generatedCode = BroadlinkCodeGeneration.generate('RF433');
         const minionCache = this.getOrCreateMinionCache(miniom);
@@ -386,6 +408,8 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
                 return await this.recordRFToggleCommands(miniom, statusToRecordFor);
             case 'RM3 / RM Pro as IR AC':
                 return await this.recordIRACCommands(miniom, statusToRecordFor);
+            case 'RM Pro as RF roller':
+                return await this.recordRollerRFCommand(miniom, statusToRecordFor);
         }
         throw {
             responseCode: 8404,

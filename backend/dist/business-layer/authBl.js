@@ -8,6 +8,7 @@ const logger_1 = require("../utilities/logger");
 const mailSender_1 = require("../utilities/mailSender");
 const sessionsBl_1 = require("./sessionsBl");
 const usersBl_1 = require("./usersBl");
+exports.sessionExpiresMs = (+process.env.SESSION_EXPIRES_DAYS || 365) * 24 * 60 * 60 * 1000;
 class AuthBl {
     /**
      * Init auth bl. using dependecy injection pattern to allow units testings.
@@ -32,8 +33,10 @@ class AuthBl {
             sameSite: true,
             httpOnly: true,
             secure: config_1.Configuration.http.useHttps,
-            maxAge: user.sessionTimeOutMS,
+            maxAge: exports.sessionExpiresMs,
         });
+        /** All OK, no additional info */
+        response.statusCode = 200;
     }
     /**
      * Login to system.
@@ -132,7 +135,12 @@ class AuthBl {
     async logout(sessionKey, response) {
         const session = await this.sessionsBl.getSession(sessionKey);
         await this.sessionsBl.deleteSession(session);
-        response.cookie('session', '');
+        response.cookie('session', 'null', {
+            sameSite: true,
+            httpOnly: true,
+            secure: config_1.Configuration.http.useHttps,
+            maxAge: 1,
+        });
     }
 }
 exports.AuthBl = AuthBl;

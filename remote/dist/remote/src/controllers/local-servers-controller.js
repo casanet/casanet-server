@@ -12,15 +12,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const tsoa_1 = require("tsoa");
-const models_1 = require("../models");
-const data_access_1 = require("../data-access");
-const randomstring = require("randomstring");
 const cryptoJs = require("crypto-js");
+const randomstring = require("randomstring");
+const tsoa_1 = require("tsoa");
 const config_1 = require("../../../backend/src/config");
 const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
-const schemaValidator_2 = require("../security/schemaValidator");
+const data_access_1 = require("../data-access");
 const logic_1 = require("../logic");
+const models_1 = require("../models");
+const schemaValidator_2 = require("../security/schemaValidator");
 let LocalServersController = class LocalServersController extends tsoa_1.Controller {
     /**
      * Get local servers in the system.

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_promise_1 = require("child-process-promise");
 const simplegit = require("simple-git/promise");
+const config_1 = require("../config");
 const logger_1 = require("../utilities/logger");
 class VersionsBl {
     constructor() {
@@ -15,6 +16,11 @@ class VersionsBl {
     async updateToLastVersion() {
         /** Get last update from git repo */
         try {
+            /** Clean up the workspace, this is a dangerous part!!! it will remove any files change. */
+            if (config_1.Configuration.runningMode === 'prod') {
+                /** clean all workstation to the HEAD image. to allow the git pull. */
+                await this.git.reset('hard');
+            }
             const pullResults = await this.git.pull('origin', 'master', { '--rebase': 'false' });
             logger_1.logger.info(`pull last version pulld ${pullResults.summary.changes} changes`);
             /** If thers is no any change just return. */
@@ -58,7 +64,7 @@ class VersionsBl {
             const tags = await this.git.tags();
             const commintHash = await this.git.revparse(['--short', 'HEAD']);
             const rawTimestamp = await this.git.show(['-s', '--format=%ct']);
-            const timestamp = parseInt(rawTimestamp) * 1000;
+            const timestamp = +rawTimestamp * 1000;
             return {
                 version: tags.latest,
                 commintHash,

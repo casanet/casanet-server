@@ -235,7 +235,6 @@ const models = {
         "properties": {
             "displayName": { "dataType": "string" },
             "email": { "dataType": "string", "required": true },
-            "sessionTimeOutMS": { "dataType": "double", "required": true },
             "password": { "dataType": "string" },
             "ignoreTfa": { "dataType": "boolean", "required": true },
             "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },

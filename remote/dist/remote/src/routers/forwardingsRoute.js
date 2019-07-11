@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const schemaValidator_1 = require("../../../backend/src/security/schemaValidator");
 const forwarding_controller_1 = require("../controllers/forwarding-controller");
-const authentication_1 = require("../security/authentication");
-const schemaValidator_2 = require("../security/schemaValidator");
 const local_servers_controller_1 = require("../controllers/local-servers-controller");
 const logic_1 = require("../logic");
+const authentication_1 = require("../security/authentication");
+const schemaValidator_2 = require("../security/schemaValidator");
 class ForwardingRouter {
     constructor() {
         this.forwardingController = new forwarding_controller_1.ForwardingController();
