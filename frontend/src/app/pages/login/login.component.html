@@ -39,9 +39,10 @@
                                 </mat-grid-list>
 
                                 <div style="margin: 10px"></div>
-                                <button mat-raised-button color="primary" type="submit" [disabled]="!userForm.valid">{{ 'LOGIN' | translate }}</button>
+                                <button mat-raised-button color="primary" type="submit" [disabled]="!userForm.valid || watingToServer">{{ 'LOGIN' | translate }}</button>
                     </form>
                 </mat-card-content>
+                <mat-progress-bar mode="indeterminate" *ngIf="watingToServer"></mat-progress-bar>
             </mat-card>
         </div>
     </div>

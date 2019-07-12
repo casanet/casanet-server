@@ -1,19 +1,26 @@
 <div style="width: 50vw; height: 70%;" dir="ltr">
-    <mgl-timeline [toggle]="true" [alternate]="true" [focusOnOpen]="true">
-        <mgl-timeline-entry *ngFor="let entry of timeline; let i = index;">
-            <mgl-timeline-entry-header>
-                <b>{{entry.minionName}}</b>
-                <br>
-                <i>{{entry.date}}</i>
-            </mgl-timeline-entry-header>
-            <mgl-timeline-entry-content>
-                <ul>
-                    <li *ngFor="let property of entry.status">
-                        <b>{{ property.name | translate}}</b>: {{ property.value | translate}}
-                    </li>
-                </ul>
-            </mgl-timeline-entry-content>
-            <mgl-timeline-entry-dot [class]="'primary'" [size]="40"></mgl-timeline-entry-dot>
-        </mgl-timeline-entry>
-    </mgl-timeline>
+    <ng-container *ngIf="loading">
+        <mat-progress-bar mode="query"></mat-progress-bar>
+    </ng-container>
+    <ng-container *ngIf="!loading">
+        <mgl-timeline [toggle]="true" [alternate]="true" [focusOnOpen]="true">
+            <mgl-timeline-entry *ngFor="let entry of timeline; let i = index;">
+                <mgl-timeline-entry-header>
+                    <b>{{entry.minionName}}</b>
+                    <br>
+                    <i>{{entry.date}}</i>
+                </mgl-timeline-entry-header>
+                <mgl-timeline-entry-content>
+                    <ul>
+                        <li *ngFor="let property of entry.status">
+                            <b>{{ property.name | translate}}</b>: {{ property.value | translate}}
+                        </li>
+                    </ul>
+                </mgl-timeline-entry-content>
+                <mgl-timeline-entry-dot [style.background-color]="entry.state === 'on' ? '#de6060' : '#a0a0a0'"
+                    [size]="40">
+                </mgl-timeline-entry-dot>
+            </mgl-timeline-entry>
+        </mgl-timeline>
+    </ng-container>
 </div>

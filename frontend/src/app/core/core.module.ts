@@ -23,7 +23,6 @@ import {
     MatSnackBarModule,
     MatSidenavModule,
     MatSliderModule,
-    MatProgressBarModule,
     MatDialogModule
 } from '@angular/material';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -70,7 +69,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         MatTabsModule,
         MatSliderModule,
         MatSnackBarModule,
-        MatProgressBarModule,
         MatDialogModule,
         MatSelectModule,
     ],

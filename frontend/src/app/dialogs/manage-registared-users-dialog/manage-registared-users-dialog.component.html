@@ -1,4 +1,3 @@
-
 <div class="table-container">
   <table mat-table [dataSource]="users" class="mat-elevation-z8 example-container"
     [style.text-align]="('LEFT_DIR' | translate)">
@@ -25,4 +24,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+  <ng-container *ngIf="loading">
+    <mat-progress-bar mode="query"></mat-progress-bar>
+  </ng-container>
 </div>

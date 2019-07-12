@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   waitingForTfa = false;
   localServerId = '';
+  watingToServer = false;
   private genericToast: typeof swal;
 
   userForm: FormGroup;
@@ -126,6 +127,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   private onLoginSuccess() {
+    this.watingToServer = false;
     this.router.navigate(['/']);
     this.snackBar.open(this.translatePipe.transform('LOGIN_SUCCESSFULLY'), this.translatePipe.transform('SUBMIT'), {
       duration: 2000,
@@ -141,7 +143,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private onLoginFail(err: HttpErrorResponse) {
 
-    // this.loadingService.stopLoading();
+    this.watingToServer = false;
 
     if (err.status === 403 || err.status === 401) {
       this.snackBar.open(this.translatePipe.transform('CONNECTED_FAIL'), this.translatePipe.transform('SUBMIT'), {
@@ -155,6 +157,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   public async login() {
 
+    this.watingToServer = true;
     const authData = this.userForm.getRawValue();
 
     if (this.waitingForTfa) {
@@ -170,6 +173,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     try {
       const res = await this.authService.login(authData.email, authData.password, this.localServerId);
+      this.watingToServer = false;
+
       if (res.status === 200) {
         this.onLoginSuccess();
         return;
@@ -203,7 +208,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           cancelButtonText: this.translatePipe.transform('CANCEL')
         });
 
-        // Case user select 'cancel' cancel the delete.
+        // Case user select 'cancel' cancel the selection.
         if (swalResult && swalResult.dismiss) {
           return;
         }
@@ -212,6 +217,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.login();
       }
     } catch (error) {
+      this.watingToServer = false;
       this.onLoginFail(error);
     }
 

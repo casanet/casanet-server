@@ -216,6 +216,7 @@
     "CURRENT_NAME": "שם נוכחי",
     "RENAME": "שנה שם",
     "TIMELINE" : "ציר הזמן",
+    "SELECT_LOCAL_SERVER": "בחר שרת מקומי",
     "notConfigured": "לא הוגדר שרת מרוחק",
     "cantReachRemoteServer": "שרת מרוחק לא נגיש",
     "authorizationFail": "אימות מול שרת מרוחק נכשל",

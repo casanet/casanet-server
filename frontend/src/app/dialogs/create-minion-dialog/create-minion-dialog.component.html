@@ -6,10 +6,7 @@
         <mat-select placeholder="{{ 'SELECT_A_DEVICE' | translate}}" [formControl]="devicesControl" required>
           <mat-option>--</mat-option>
           <mat-option *ngFor="let device of devices" [value]="device.mac" style="min-width: 400px">
-            <b>
-              {{device.mac}}
-            </b>
-            <span style="font-size: 15px"> {{device.display}}</span>
+            {{device.display}}
           </mat-option>
         </mat-select>
       </mat-form-field>

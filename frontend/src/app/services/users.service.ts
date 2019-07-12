@@ -127,7 +127,7 @@ export class UsersService {
     }
   }
 
-  public async getRegisteredUsers() : Promise<string[]> {
+  public async getRegisteredUsers(): Promise<string[]> {
     try {
       return await this.httpClient.get<string[]>(`/API/users/forward`).toPromise();
     } catch (error) {

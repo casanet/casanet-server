@@ -16,18 +16,18 @@ export class ManageRegisteredUsersComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'remove'];
   users: string[];
+  public loading: boolean;
 
   private translatePipe: TranslatePipe;
-
   constructor(
     public dialog: MatDialog,
     private usersService: UsersService,
     private translateService: TranslateService,
     private dialogRef: MatDialogRef<ManageRegisteredUsersComponent>,
     @Inject(MAT_DIALOG_DATA) _data) {
-      
-      this.translatePipe = new TranslatePipe(this.translateService);
-      this.loadUsers();
+
+    this.translatePipe = new TranslatePipe(this.translateService);
+    this.loadUsers();
   }
 
   ngOnInit() {
@@ -35,8 +35,9 @@ export class ManageRegisteredUsersComponent implements OnInit {
   }
 
   private async loadUsers() {
+    this.loading = true;
     this.users = await this.usersService.getRegisteredUsers();
-    console.table(this.users);
+    this.loading = false;
   }
 
   public async deleteUser(user: string) {
@@ -56,6 +57,7 @@ export class ManageRegisteredUsersComponent implements OnInit {
       return;
     }
 
+    this.loading = true;
     await this.usersService.removeUserFromRemote(user);
     await this.loadUsers();
   }

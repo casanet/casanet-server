@@ -1,12 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { Minion, MinionTimeline } from '../../../../../backend/src/models/sharedInterfaces';
+import { Minion, MinionTimeline, SwitchOptions } from '../../../../../backend/src/models/sharedInterfaces';
 import { MinionsService } from '../../services/minions.service';
 
 declare interface MinionTimelineView {
   date: string;
   minionName: string;
   status: { name: string, value: any }[];
+  state: SwitchOptions;
 }
 
 @Component({
@@ -18,6 +19,8 @@ export class TimelineDialogComponent implements OnInit {
 
   public timeline: MinionTimelineView[] = [];
 
+  public loading: boolean;
+
   constructor(private minionsService: MinionsService, private dialogRef: MatDialogRef<TimelineDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data) {
     this.retriveTimeline();
@@ -27,13 +30,14 @@ export class TimelineDialogComponent implements OnInit {
   }
 
   private isToday(date: Date): boolean {
-    const today = new Date()
+    const today = new Date();
     return date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
+      date.getFullYear() === today.getFullYear();
   }
 
   private async retriveTimeline() {
+    this.loading = true;
     const timeline = await this.minionsService.getTimeline();
     if (!timeline) {
       return;
@@ -52,7 +56,7 @@ export class TimelineDialogComponent implements OnInit {
         } as unknown as Minion;
       }
 
-      let date: string = timeStampDate.toLocaleTimeString();;
+      let date: string = timeStampDate.toLocaleTimeString();
       if (!this.isToday(timeStampDate)) {
         date += ' ' + timeStampDate.toLocaleDateString();
       }
@@ -63,7 +67,7 @@ export class TimelineDialogComponent implements OnInit {
           return {
             name: kvp[0],
             value: kvp[1],
-          }
+          };
         }).sort((a, b) => {
           return a < b ? 1 : -1;
         });
@@ -73,7 +77,10 @@ export class TimelineDialogComponent implements OnInit {
         date,
         minionName: minion.name,
         status,
+        state: !node.status || !node.status[minion.minionType] ? 'off' : node.status[minion.minionType].status,
       });
     }
+
+    this.loading = false;
   }
 }

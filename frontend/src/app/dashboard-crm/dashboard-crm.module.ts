@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { MinionsComponent } from './minions/minions.component';
 import { OperationsComponent } from './operations/operations.component';
 import { TimingsComponent } from './timings/timings.component';
-import { LoaderComponent } from './loader/loader.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -48,7 +47,6 @@ import { UsersComponent } from './users/users.component';
     MatButtonModule,
     MatSlideToggleModule,
     MatMenuModule,
-    MatProgressBarModule,
     MatProgressSpinnerModule,
     SharedModule,
     MatIconModule,
@@ -62,7 +60,6 @@ import { UsersComponent } from './users/users.component';
   ],
   declarations: [
     MinionsComponent,
-    LoaderComponent,
     OperationsComponent,
     TimingsComponent,
     DevicesComponent,
