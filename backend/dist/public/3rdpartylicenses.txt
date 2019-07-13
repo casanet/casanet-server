@@ -327,6 +327,9 @@ MIT
 @angular/router
 MIT
 
+@angular/service-worker
+MIT
+
 @ecodev/fab-speed-dial
 MIT
 

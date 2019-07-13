@@ -15,8 +15,8 @@ import { ForwardingRouter } from './routers/forwardingsRoute';
 import { RegisterRoutes } from './routers/routes';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
-import './controllers/administration-auth-controller';
 import './controllers/administration-admins-controller';
+import './controllers/administration-auth-controller';
 import './controllers/feed-controller';
 import './controllers/forward-auth-controller';
 import './controllers/local-servers-controller';
@@ -105,9 +105,24 @@ class App {
      */
     private vulnerabilityProtection(): void {
 
+        // Use to redirect http to https/ssl
+
         if (Configuration.http.useHttps) {
             this.express.use(forceSsl);
-        } // Use to redirect http to https/ssl
+        }
+
+        /** Redirect to https behaind elastic load balancer */
+        if (process.env.REDIRECT_TO_HTTPS === 'true') {
+            this.express.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+                const xfp =
+                    req.headers['X-Forwarded-Proto'] || req.headers['x-forwarded-proto'];
+                if (xfp === 'http') {
+                    res.redirect(301, `https://${req.hostname}${req.url}`);
+                } else {
+                    next();
+                }
+            });
+        }
 
         // Protect from DDOS and access thieves
         const limiter = new RateLimit({

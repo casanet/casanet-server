@@ -49,6 +49,8 @@ import { TimingsService } from './services/timings.service';
 import { SettingsService } from './services/settings.service';
 import { UsersService } from './services/users.service';
 import { AuthService } from './services/auth/auth.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -92,6 +94,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MatStepperModule,
     MatSelectModule,
     MglTimelineModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     MinionsService,

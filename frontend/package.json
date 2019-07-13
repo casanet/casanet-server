@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postbuild": "copyfiles ./light-app/**/* ../backend/dist/public/ && copyfiles -u 4 ../backend/dist/public/**/* ../remote/dist/remote/src/public/static/"
+    "postbuild": "copyfiles ./light-app/**/* ../backend/dist/public/ && del-cli ../remote/dist/remote/src/public/static/ --force && copyfiles -u 4 ../backend/dist/public/**/* ../remote/dist/remote/src/public/static/"
   },
   "private": false,
   "dependencies": {
@@ -23,7 +23,9 @@
     "@angular/material": "^7.3.7",
     "@angular/platform-browser": "^7.2.14",
     "@angular/platform-browser-dynamic": "^7.2.14",
+    "@angular/pwa": "0.12",
     "@angular/router": "^7.2.14",
+    "@angular/service-worker": "^7.2.14",
     "@ecodev/fab-speed-dial": "^3.1.0",
     "angular-mgl-timeline": "^0.3.2",
     "core-js": "^2.6.5",
@@ -45,6 +47,7 @@
     "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
     "copyfiles": "^2.1.0",
+    "del-cli": "^2.0.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "^4.1.0",

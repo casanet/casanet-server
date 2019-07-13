@@ -16,8 +16,8 @@ const forwardingsIftttRoute_1 = require("./routers/forwardingsIftttRoute");
 const forwardingsRoute_1 = require("./routers/forwardingsRoute");
 const routes_1 = require("./routers/routes");
 // controllers need to be referenced in order to get crawled by the TSOA generator
-require("./controllers/administration-auth-controller");
 require("./controllers/administration-admins-controller");
+require("./controllers/administration-auth-controller");
 require("./controllers/feed-controller");
 require("./controllers/forward-auth-controller");
 require("./controllers/local-servers-controller");
@@ -85,9 +85,22 @@ class App {
      * Protect from many vulnerabilities ,by http headers such as HSTS HTTPS redirect etc.
      */
     vulnerabilityProtection() {
+        // Use to redirect http to https/ssl
         if (config_1.Configuration.http.useHttps) {
             this.express.use(forceSsl);
-        } // Use to redirect http to https/ssl
+        }
+        /** Redirect to https behaind elastic load balancer */
+        if (process.env.REDIRECT_TO_HTTPS === 'true') {
+            this.express.use((req, res, next) => {
+                const xfp = req.headers['X-Forwarded-Proto'] || req.headers['x-forwarded-proto'];
+                if (xfp === 'http') {
+                    res.redirect(301, `https://${req.hostname}${req.url}`);
+                }
+                else {
+                    next();
+                }
+            });
+        }
         // Protect from DDOS and access thieves
         const limiter = new RateLimit({
             windowMs: config_1.Configuration.requestsLimit.windowsMs,

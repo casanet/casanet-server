@@ -18,7 +18,6 @@ import { AutoTimeoutDialogComponent } from '../../dialogs/auto-timeout-dialog/au
 import { CreateMinionDialogComponent } from '../../dialogs/create-minion-dialog/create-minion-dialog.component';
 import { Subscription } from 'rxjs';
 import { TimelineDialogComponent } from '../../dialogs/timeline-dialog/timeline-dialog.component';
-import { GeneralMessageDialogComponent } from '../../dialogs/general-message-dialog/general-message-dialog.component';
 
 @Component({
 	selector: 'app-dashboard-crm',
