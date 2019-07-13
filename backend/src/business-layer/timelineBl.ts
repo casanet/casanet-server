@@ -1,10 +1,9 @@
+import { TimelineDal, TimelineDalSingleton } from '../data-layer/timelineDal';
 import {
     Minion,
     MinionTimeline,
 } from '../models/sharedInterfaces';
 import { MinionsBl, MinionsBlSingleton } from './minionsBl';
-import { TimelineDal, TimelineDalSingleton } from '../data-layer/timelineDal';
-
 
 /**
  * This class take care on all logic of timeline management.
@@ -25,7 +24,7 @@ export class TimelineBl {
 
             switch (minionFeed.event) {
                 case 'update':
-                    try { this.onMinionUpdate(minionFeed.minion); } catch { };
+                    try { this.onMinionUpdate(minionFeed.minion); } catch { }
                     break;
             }
         });

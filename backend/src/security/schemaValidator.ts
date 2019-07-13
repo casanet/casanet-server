@@ -28,6 +28,7 @@ export const UserUpdateSchema: ObjectSchema = Joi.object().keys({
 export const LoginSchema: ObjectSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().not('').required(),
+    localServerId: Joi.string().allow(''),
 }).required();
 
 export const ErrorResponseSchema: ObjectSchema = Joi.object().keys({

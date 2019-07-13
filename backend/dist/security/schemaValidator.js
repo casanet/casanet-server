@@ -23,6 +23,7 @@ exports.UserUpdateSchema = Joi.object().keys({
 exports.LoginSchema = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().not('').required(),
+    localServerId: Joi.string().allow(''),
 }).required();
 exports.ErrorResponseSchema = Joi.object().keys({
     responseCode: Joi.number().min(4000).max(5999).required(),

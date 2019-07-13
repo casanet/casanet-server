@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const minionsBl_1 = require("./minionsBl");
 const timelineDal_1 = require("../data-layer/timelineDal");
+const minionsBl_1 = require("./minionsBl");
 /**
  * This class take care on all logic of timeline management.
  */
@@ -24,7 +24,6 @@ class TimelineBl {
                         this.onMinionUpdate(minionFeed.minion);
                     }
                     catch (_a) { }
-                    ;
                     break;
             }
         });
