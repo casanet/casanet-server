@@ -39,7 +39,8 @@ export class SettingsService {
 
       } catch (httpErrorResponse) {
         /** If request fail. check if the reasone is becuase the s. */
-        liveliness = httpErrorResponse['status'] !== 0;
+        const currStatus = httpErrorResponse['status'];
+        liveliness = currStatus === 200 && currStatus === 204;
         if (this.onlineFeed.value !== liveliness) {
           this.onlineFeed.next(liveliness);
         }

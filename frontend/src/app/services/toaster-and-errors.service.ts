@@ -33,7 +33,7 @@ export class ToasterAndErrorsService {
       return;
     }
 
-    if (httpErrorResponse.status === 0) {
+    if (httpErrorResponse.status === 0 || httpErrorResponse.status === 504) {
       this.genericToast({
         type: 'error',
         title: this.translatePipe.transform('REQUEST_FAIL'),
