@@ -1,4 +1,5 @@
 node_modules/
+encryption/
 data/
 logs/
 .env
