@@ -1,11 +1,12 @@
 {
-  "name": "casaui",
+  "name": "casanet-ui",
   "short_name": "casaui",
-  "theme_color": "#1976d2",
+  "theme_color": "#15856b",
   "background_color": "#fafafa",
   "display": "standalone",
-  "scope": "/",
+  "scope": "/static/",
   "start_url": "/static/",
+  "orientation": "any",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",

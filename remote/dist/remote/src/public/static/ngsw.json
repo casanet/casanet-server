@@ -1,29 +1,18 @@
 {
   "configVersion": 1,
-  "timestamp": 1563053263004,
+  "timestamp": 1563351758053,
   "index": "/static/index.html",
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "updateMode": "prefetch",
-      "urls": [
-        "/static/5.4b47ad72ecfe1492f58a.js",
-        "/static/6.0119a291bf8a20792c0e.js",
-        "/static/7.49850df546e357f02a99.js",
-        "/static/common.89e976357bfeaee811cb.js",
-        "/static/favicon.ico",
-        "/static/index.html",
-        "/static/main.cd6c43917cedcc6a57df.js",
-        "/static/polyfills.8059bb84d6027a351725.js",
-        "/static/runtime.50b7453946d74b70727a.js",
-        "/static/styles.2f493d95351baa3319c3.css"
-      ],
+      "urls": [],
       "patterns": []
     },
     {
       "name": "assets",
-      "installMode": "lazy",
+      "installMode": "prefetch",
       "updateMode": "prefetch",
       "urls": [
         "/static/assets/fonts/VarelaRound-Regular.ttf",
@@ -48,22 +37,24 @@
         "/static/assets/login_wallpaper.png",
         "/static/assets/logo.ico",
         "/static/assets/logo.png",
-        "/static/assets/logo_long.png",
-        "/static/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.d7e60f9d1433a45ed718.woff2",
-        "/static/login_wallpaper.702b89de2b2f219e6dda.png",
-        "/static/w8gdH283Tvk__Lua32TysjIfp8uP.579fc6ff502e1f1e998d.woff2",
-        "/static/w8gdH283Tvk__Lua32TysjIfpcuPP9g.afc40c9dde4b0a97110d.woff2",
-        "/static/w8gdH283Tvk__Lua32TysjIfqMuPP9g.5e3e6d5a3d70ef27185a.woff2",
-        "/static/w8gdH283Tvk__Lua32TysjIfqcuPP9g.bb22c40fcde80c96f15a.woff2"
+        "/static/assets/logo_long.png"
       ],
       "patterns": []
     }
   ],
-  "dataGroups": [],
+  "dataGroups": [
+    {
+      "name": "casanet-ui-data",
+      "patterns": [
+        "\\/static\\/.*"
+      ],
+      "strategy": "performance",
+      "maxSize": 100,
+      "maxAge": 2592000000,
+      "version": 0
+    }
+  ],
   "hashTable": {
-    "/static/5.4b47ad72ecfe1492f58a.js": "f7213fec1c37d71f4f5f063330310357eaa5d0ce",
-    "/static/6.0119a291bf8a20792c0e.js": "1a8bb541214056df6d94e34e72360e08a575cb91",
-    "/static/7.49850df546e357f02a99.js": "202dc5d261dae05de99bff3e7ba48b7708372811",
     "/static/assets/fonts/VarelaRound-Regular.ttf": "ba813c94b2852df5198085e36368bd5a79a39693",
     "/static/assets/fonts/google-material-fonts.css": "84df2f526340856b606b309d75133b019fe90e74",
     "/static/assets/fonts/w8gdH283Tvk__Lua32TysjIfp8uP.woff2": "40c316746fc7da006e77373123caf25b8fe8ee6c",
@@ -74,32 +65,19 @@
     "/static/assets/i18n/he.json": "36e7f41a3f894f34c6205065136b8b4ed5347bc6",
     "/static/assets/icons/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2": "d22573acfb7163487f48c8fcbd593f2ec5b9e729",
     "/static/assets/icons/google-material-icons.css": "71be0b33b5f202490c9576eeb83f9304e61520df",
-    "/static/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
-    "/static/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
-    "/static/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
-    "/static/assets/icons/icon-192x192.png": "1abd80d431a237a853ce38147d8c63752f10933b",
-    "/static/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
-    "/static/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
-    "/static/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
-    "/static/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
+    "/static/assets/icons/icon-128x128.png": "848482317421dd6b2e34fc5dea945b86c1d0b5dc",
+    "/static/assets/icons/icon-144x144.png": "c68e93ea7528e2c526d3dfce35352d6eafed602e",
+    "/static/assets/icons/icon-152x152.png": "4b7529a5ed27d335fc8f989bd1a622b82219ca6e",
+    "/static/assets/icons/icon-192x192.png": "57ef0c4915dc9d238e12eca2094c973f83bc3837",
+    "/static/assets/icons/icon-384x384.png": "a9b762de079a462735ee18e419dcbf6a9862f954",
+    "/static/assets/icons/icon-512x512.png": "5ee341bf7dbacfbe86f52b0502045375dc2b09af",
+    "/static/assets/icons/icon-72x72.png": "792785ce9965ed94c1356cf82adf8209d1173b24",
+    "/static/assets/icons/icon-96x96.png": "328638878a3ce8fc1270a6365588bf7b1f1d1f23",
     "/static/assets/images/avatars/noavatar.png": "e05578b6533d433ace16706a5490429d318c3ab9",
     "/static/assets/login_wallpaper.png": "2bcffc1c67282b7523a8e06e91409c216f3bacde",
     "/static/assets/logo.ico": "197e1ecd42e4a2e2540a5800756e91b9c44d753b",
     "/static/assets/logo.png": "ebf36d69e539b6b7ec3ac43a006db3b5780b3dd6",
-    "/static/assets/logo_long.png": "cd6e5221f79e4e841f179884b74c2b03c1c65e3b",
-    "/static/common.89e976357bfeaee811cb.js": "be40b37ae882deaeb1e89f63c6344886cf7337a9",
-    "/static/favicon.ico": "197e1ecd42e4a2e2540a5800756e91b9c44d753b",
-    "/static/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.d7e60f9d1433a45ed718.woff2": "d22573acfb7163487f48c8fcbd593f2ec5b9e729",
-    "/static/index.html": "8ee5c5d56fc8d91d3178b9dedfb4093284d1c887",
-    "/static/login_wallpaper.702b89de2b2f219e6dda.png": "2bcffc1c67282b7523a8e06e91409c216f3bacde",
-    "/static/main.cd6c43917cedcc6a57df.js": "6e417de9bc75f0e128d5f639ec1f8e6bd76b5210",
-    "/static/polyfills.8059bb84d6027a351725.js": "1eb1e8d752ba1c82e855c3a5a458814444219960",
-    "/static/runtime.50b7453946d74b70727a.js": "0a1da31722476b8a386390a5dd7d48616e600146",
-    "/static/styles.2f493d95351baa3319c3.css": "9908d05b22acd1eef1e2aaa1982293de158ba77e",
-    "/static/w8gdH283Tvk__Lua32TysjIfp8uP.579fc6ff502e1f1e998d.woff2": "40c316746fc7da006e77373123caf25b8fe8ee6c",
-    "/static/w8gdH283Tvk__Lua32TysjIfpcuPP9g.afc40c9dde4b0a97110d.woff2": "4bb9cbbe3bec2722bf917acfe613fe86a41114b7",
-    "/static/w8gdH283Tvk__Lua32TysjIfqMuPP9g.5e3e6d5a3d70ef27185a.woff2": "a78ec59214394b29f4b26a842f09047c54391306",
-    "/static/w8gdH283Tvk__Lua32TysjIfqcuPP9g.bb22c40fcde80c96f15a.woff2": "20e7dd102918897ee72f8c98c7cd7356d8eda611"
+    "/static/assets/logo_long.png": "cd6e5221f79e4e841f179884b74c2b03c1c65e3b"
   },
   "navigationUrls": [
     {
