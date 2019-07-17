@@ -688,7 +688,7 @@
                         const cacheBustedHash = sha1Binary(yield cacheBustedResult.clone().arrayBuffer());
                         // If the cache-busted version doesn't match, then the manifest is not an accurate
                         // representation of the server's current set of files, and the SW should give up.
-                        if (canonicalHash !== cacheBustedHash) {
+                        if (false && canonicalHash !== cacheBustedHash) {
                             throw new SwCriticalError(`Hash mismatch (cacheBustedFetchFromNetwork): ${req.url}: expected ${canonicalHash}, got ${cacheBustedHash} (after cache busting)`);
                         }
                         // If it does match, then use the cache-busted result.
