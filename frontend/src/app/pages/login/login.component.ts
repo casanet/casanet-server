@@ -141,13 +141,25 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   }
 
-  private onLoginFail(err: HttpErrorResponse) {
+  private async onLoginFail(err: HttpErrorResponse) {
 
     this.watingToServer = false;
 
     if (err.status === 403 || err.status === 401) {
       this.snackBar.open(this.translatePipe.transform('CONNECTED_FAIL'), this.translatePipe.transform('SUBMIT'), {
         duration: 2000,
+      });
+      return;
+    }
+
+    if (err.status === 429) {
+      await swal({
+        type: 'error',
+        title: `${this.translatePipe.transform('TOO_MANY_REQUESTS')}`,
+        text: this.translatePipe.transform('WAIT_15_MINUTES_FOR_NEXT_TRYING'),
+        showConfirmButton: false,
+        showCancelButton: true,
+        cancelButtonText: this.translatePipe.transform('CANCEL')
       });
       return;
     }

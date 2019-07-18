@@ -217,6 +217,8 @@
     "RENAME": "Rename",
     "TIMELINE": "Timeline",
     "SELECT_LOCAL_SERVER": "Select local server",
+    "WAIT_15_MINUTES_FOR_NEXT_TRYING": "Wait 15 minutes for next trying",
+    "TOO_MANY_REQUESTS" : "Too many requests",
     "notConfigured": "Remote server not configured",
     "cantReachRemoteServer": "Remote server offline",
     "authorizationFail": "Local server fail to authenticate",

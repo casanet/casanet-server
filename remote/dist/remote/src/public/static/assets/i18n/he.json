@@ -217,6 +217,8 @@
     "RENAME": "שנה שם",
     "TIMELINE" : "ציר הזמן",
     "SELECT_LOCAL_SERVER": "בחר שרת מקומי",
+    "WAIT_15_MINUTES_FOR_NEXT_TRYING": "נא התמן רבע שעה עד שתוכל לנסות שוב",
+    "TOO_MANY_REQUESTS" : "יותר מדי בקשות",
     "notConfigured": "לא הוגדר שרת מרוחק",
     "cantReachRemoteServer": "שרת מרוחק לא נגיש",
     "authorizationFail": "אימות מול שרת מרוחק נכשל",

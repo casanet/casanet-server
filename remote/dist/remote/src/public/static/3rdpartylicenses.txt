@@ -359,7 +359,7 @@ SOFTWARE.
 
 
 casa-net
-ISC
+GNU
 
 core-js
 MIT
