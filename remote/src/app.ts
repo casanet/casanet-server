@@ -2,8 +2,7 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import * as forceSsl from 'express-force-ssl';
-import * as RateLimit from 'express-rate-limit';
-import * as useragent from 'express-useragent';
+import * as rateLimit from 'express-rate-limit';
 import { sanitizeExpressMiddleware } from 'generic-json-sanitizer';
 import * as helmet from 'helmet';
 import * as path from 'path';
@@ -23,6 +22,8 @@ import './controllers/local-servers-controller';
 import './controllers/management-assets-controller';
 import './controllers/static-assets-controller';
 
+const { APP_BEHIND_PROXY, APP_BEHIND_PROXY_REDIRECT_HTTPS } = process.env;
+
 class App {
     public express: express.Express;
     private feedRouter: FeedRouter = new FeedRouter();
@@ -32,6 +33,11 @@ class App {
     constructor() {
         /** Creat the express app */
         this.express = express();
+
+        /** Take care with app that runs behind proxy (Heroku, Nginx, etc) */
+        if (APP_BEHIND_PROXY === 'true') {
+            this.appBehindProxy();
+        }
 
         /** Security is the first thing, right?  */
         this.vulnerabilityProtection();
@@ -101,37 +107,60 @@ class App {
     }
 
     /**
+     * Take care with app that runs behind proxy (Heroku, Nginx, etc).
+     * mark proxy as trust, and redirect to HTTPS if need.
+     */
+    private appBehindProxy() {
+        this.express.set('trust proxy', 1);
+
+        if (APP_BEHIND_PROXY_REDIRECT_HTTPS !== 'true') {
+            return;
+        }
+
+        /** Redirect to https behaind proxy / elastic load balancer */
+        this.express.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+            const xfp =
+                req.headers['X-Forwarded-Proto'] || req.headers['x-forwarded-proto'];
+            if (xfp === 'http') {
+                res.redirect(301, `https://${req.hostname}${req.url}`);
+            } else {
+                next();
+            }
+        });
+    }
+
+    /**
      * Protect from many vulnerabilities ,by http headers such as HSTS HTTPS redirect etc.
      */
     private vulnerabilityProtection(): void {
 
-        // Use to redirect http to https/ssl
-
-        if (Configuration.http.useHttps) {
-            this.express.use(forceSsl);
-        }
-
-        /** Redirect to https behaind elastic load balancer */
-        if (process.env.REDIRECT_TO_HTTPS === 'true') {
-            this.express.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-                const xfp =
-                    req.headers['X-Forwarded-Proto'] || req.headers['x-forwarded-proto'];
-                if (xfp === 'http') {
-                    res.redirect(301, `https://${req.hostname}${req.url}`);
-                } else {
-                    next();
-                }
-            });
-        }
 
         // Protect from DDOS and access thieves
-        const limiter = new RateLimit({
+        const limiter = rateLimit({
             windowMs: Configuration.requestsLimit.windowsMs,
             max: Configuration.requestsLimit.maxRequests,
         });
 
         //  apply to all  IP requests
         this.express.use(limiter);
+
+        // Protect authentication API from guessing username/password.
+        const authLimiter = rateLimit({
+            windowMs: 15 * 60 * 1000, // 15 minutes
+            max: 10,
+        });
+        // apply to all authentication requests
+        this.express.use('/API/administration/auth/**', authLimiter);
+
+        // Use to redirect http to https/ssl
+        if (Configuration.http.useHttps) {
+            this.express.use(forceSsl);
+        }
+
+        // Use to redirect http to https/ssl
+        if (Configuration.http.useHttps) {
+            this.express.use(forceSsl);
+        }
 
         // Protect from XSS and other malicious attacks
         this.express.use(helmet());
@@ -145,7 +174,6 @@ class App {
         this.express.use(cookieParser()); // Parse every request cookie to readble json.
 
         this.express.use(bodyParser.json({ limit: '2mb' })); // for parsing application/json
-        this.express.use(useragent.express()); // for parsing user agent to readble struct
     }
 
     /**

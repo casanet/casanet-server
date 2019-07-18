@@ -37,7 +37,12 @@ Simple diagram:
 Define local variable named `JWT_SECRET` with secret string to sign sessions.
 You can defain `ADMIN_JWT_EXPIRES_IN` (the default is '2 days') and `FORWARD_JWT_EXPIRES_IN` (the default is '360 days'). 
 
-### Addininal configuration:
+### App behind proxy
+When deploying an app to some services (Heroku, AWS, etc) the app runs behind a proxy.
+To tell the app to trust the proxy set `APP_BEHIND_PROXY` env var to `true`.
+And to redirect HTTP request to HTTPS set `APP_BEHIND_PROXY_REDIRECT_HTTPS` env var to `true`.
+
+### Addininal configuration available:
 See [server configure](../backend/README.md#configure-server).
 
 ### Configure database

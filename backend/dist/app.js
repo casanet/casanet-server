@@ -5,7 +5,6 @@ const cookieParser = require("cookie-parser");
 const express = require("express");
 const forceSsl = require("express-force-ssl");
 const rateLimit = require("express-rate-limit");
-const useragent = require("express-useragent");
 const generic_json_sanitizer_1 = require("generic-json-sanitizer");
 const helmet = require("helmet");
 const path = require("path");
@@ -41,13 +40,13 @@ class App {
         this.dataParsing();
         /** After data parsed, sanitize it. */
         this.sanitizeData();
-        /** Serve static client side */
+        /** Serve static client side assets */
         this.serveStatic();
-        /** Init remote server connection */
+        /** Load instance to remote server connection logic. */
         this.loadRemoteServerConnection();
         /** Finaly route to API */
         this.routes();
-        /** And never sent errors back to client. */
+        /** And never sent errors back to the client. */
         this.catchErrors();
     }
     /**
@@ -74,16 +73,24 @@ class App {
      * Protect from many vulnerabilities ,by http headers such as HSTS HTTPS redirect etc.
      */
     vulnerabilityProtection() {
-        if (config_1.Configuration.http.useHttps) {
-            this.express.use(forceSsl);
-        } // Use to redirect http to https/ssl
         // Protect from DDOS and access thieves
         const limiter = rateLimit({
             windowMs: config_1.Configuration.requestsLimit.windowsMs,
             max: config_1.Configuration.requestsLimit.maxRequests,
         });
-        //  apply to all  IP requests
+        // apply to all requests
         this.express.use(limiter);
+        // Protect authentication API from guessing username/password.
+        const authLimiter = rateLimit({
+            windowMs: 15 * 60 * 1000,
+            max: 10,
+        });
+        // apply to all authentication requests
+        this.express.use('/API/auth/**', authLimiter);
+        // Use to redirect http to https/ssl
+        if (config_1.Configuration.http.useHttps) {
+            this.express.use(forceSsl);
+        }
         // Protect from XSS and other malicious attacks
         this.express.use(helmet());
         this.express.use(helmet.frameguard({ action: 'deny' }));
@@ -100,7 +107,6 @@ class App {
     dataParsing() {
         this.express.use(cookieParser()); // Parse every request cookie to readble json.
         this.express.use(bodyParser.json({ limit: '2mb' })); // for parsing application/json
-        this.express.use(useragent.express()); // for parsing user agent to readble struct
     }
     /**
      * Sanitize Json schema arrived from client.
@@ -124,7 +130,7 @@ class App {
             res.send();
         });
         /**
-         * Production error handler, no stacktraces leaked to user.
+         * Production error handler, no stacktraces leaked to the client.
          */
         this.express.use((err, req, res, next) => {
             try {

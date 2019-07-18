@@ -3,7 +3,6 @@ import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import * as forceSsl from 'express-force-ssl';
 import * as rateLimit from 'express-rate-limit';
-import * as useragent from 'express-useragent';
 import { sanitizeExpressMiddleware } from 'generic-json-sanitizer';
 import * as helmet from 'helmet';
 import * as path from 'path';
@@ -48,16 +47,16 @@ class App {
         /** After data parsed, sanitize it. */
         this.sanitizeData();
 
-        /** Serve static client side */
+        /** Serve static client side assets */
         this.serveStatic();
 
-        /** Init remote server connection */
+        /** Load instance to remote server connection logic. */
         this.loadRemoteServerConnection();
 
         /** Finaly route to API */
         this.routes();
 
-        /** And never sent errors back to client. */
+        /** And never sent errors back to the client. */
         this.catchErrors();
     }
 
@@ -92,18 +91,26 @@ class App {
      */
     private vulnerabilityProtection(): void {
 
-        if (Configuration.http.useHttps) {
-            this.express.use(forceSsl);
-        } // Use to redirect http to https/ssl
-
         // Protect from DDOS and access thieves
         const limiter = rateLimit({
             windowMs: Configuration.requestsLimit.windowsMs,
             max: Configuration.requestsLimit.maxRequests,
         });
-
-        //  apply to all  IP requests
+        // apply to all requests
         this.express.use(limiter);
+
+        // Protect authentication API from guessing username/password.
+        const authLimiter = rateLimit({
+            windowMs: 15 * 60 * 1000, // 15 minutes
+            max: 10,
+        });
+        // apply to all authentication requests
+        this.express.use('/API/auth/**', authLimiter);
+
+        // Use to redirect http to https/ssl
+        if (Configuration.http.useHttps) {
+            this.express.use(forceSsl);
+        }
 
         // Protect from XSS and other malicious attacks
         this.express.use(helmet());
@@ -124,7 +131,6 @@ class App {
         this.express.use(cookieParser()); // Parse every request cookie to readble json.
 
         this.express.use(bodyParser.json({ limit: '2mb' })); // for parsing application/json
-        this.express.use(useragent.express()); // for parsing user agent to readble struct
     }
 
     /**
@@ -152,7 +158,7 @@ class App {
         });
 
         /**
-         * Production error handler, no stacktraces leaked to user.
+         * Production error handler, no stacktraces leaked to the client.
          */
         this.express.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
             try {
