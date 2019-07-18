@@ -35,7 +35,7 @@ let ForwardAuthController = class ForwardAuthController extends tsoa_1.Controlle
         };
         const token = jwt.sign(forwardSession, authentication_1.jwtSecret, { expiresIn: jwtExpiresIn });
         // tslint:disable-next-line:max-line-length
-        this.setHeader('Set-Cookie', `session=${token}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${config_1.Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        this.setHeader('Set-Cookie', `session=${token}; Max-Age=${httpResponse.httpSession.maxAge}; Path=/; HttpOnly; ${config_1.Configuration.http.useHttps || process.env.APP_BEHIND_PROXY_REDIRECT_HTTPS ? 'Secure' : ''}; SameSite=Strict`);
         // TODO change to 204, after frontend update
         this.setStatus(200);
     }
@@ -197,7 +197,7 @@ let ForwardAuthController = class ForwardAuthController extends tsoa_1.Controlle
         // TODO: add to tokens black list
         /** Send clean session by response to client browser token. */
         // tslint:disable-next-line:max-line-length
-        this.setHeader('Set-Cookie', `session=null; Max-Age=${1}; Path=/; HttpOnly; ${config_1.Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        this.setHeader('Set-Cookie', `session=null; Max-Age=${1}; Path=/; HttpOnly; SameSite=Strict`);
     }
 };
 __decorate([

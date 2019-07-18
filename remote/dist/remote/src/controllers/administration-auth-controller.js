@@ -38,7 +38,7 @@ let AdministrationAuthController = class AdministrationAuthController extends ts
          * Finally load session on cookies response.
          */
         // tslint:disable-next-line:max-line-length
-        this.setHeader('Set-Cookie', `session=${token}; Max-Age=${2.592e+6}; Path=/; HttpOnly; ${config_1.Configuration.http.useHttps ? 'Secure' : ''} SameSite=Strict`);
+        this.setHeader('Set-Cookie', `session=${token}; Max-Age=${2.592e+6}; Path=/; HttpOnly; ${config_1.Configuration.http.useHttps || process.env.APP_BEHIND_PROXY_REDIRECT_HTTPS ? 'Secure' : ''}; SameSite=Strict`);
     }
     /**
      * Login to the administration system.
