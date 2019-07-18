@@ -8,7 +8,6 @@
     "emitDecoratorMetadata": true,
   },
   "files": [
-    "./node_modules/@types/mocha/index.d.ts",
     "../backend/src/models/backendInterfaces.d.ts",
   ],
   "include": [

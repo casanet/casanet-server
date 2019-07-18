@@ -607,7 +607,7 @@ info:
     version: 2.0.0
     description: 'Remote server for forwarding requests to locals home network. hosted in [GitHub repo](https://github.com/haimkastner/Home-IoT-Server).'
     license:
-        name: ISC
+        name: GNU
 paths:
     /feed/minions:
         get:

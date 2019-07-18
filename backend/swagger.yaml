@@ -794,7 +794,7 @@ info:
     version: 2.0.0
     description: 'IoT server for local home network. hosted in [GitHub repo](https://github.com/haimkastner/Home-IoT-Server).'
     license:
-        name: ISC
+        name: GNU
 paths:
     '/auth/logout-sessions/{userId}':
         post:

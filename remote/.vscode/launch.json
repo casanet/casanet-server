@@ -17,29 +17,5 @@
         "NODE_ENV": "debug"
       }
     },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Mocha Tests",
-      "preLaunchTask": "npm: test",
-      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "env": {
-        "NODE_ENV": "test",
-        "TEST_LONG_SPECS" : "true"
-      },
-      "args": [
-        "--require",
-        "ts-node/register",
-        "-u",
-        "tdd",
-        "--timeout",
-        "999999",
-        "--colors",
-        "--recursive",
-        "${workspaceFolder}/test/**/*.spec.ts",
-        "${workspaceFolder}/e2e/**/*.spec.ts"
-      ],
-      "internalConsoleOptions": "openOnSessionStart"
-    },
   ]
 }
