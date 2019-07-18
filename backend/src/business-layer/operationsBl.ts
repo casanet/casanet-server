@@ -49,33 +49,46 @@ export class OperationsBl {
     private async invokeOperationActivities(operationActiviries: OperationActivity[]): Promise<OperationResult[]> {
         const errors: OperationResult[] = [];
         for (const activity of operationActiviries) {
+            /**
+              * wait 1 sec between one minion to other, becuase of broadcasting mismatch in some brands communication protocol.
+              */
+            await Delay(moment.duration(1, 'seconds'));
+
             logger.info(`Setting minion ${activity.minionId} a new status by operation activity...`);
 
             try {
                 await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+                continue;
             } catch (error) {
-
                 logger.warn(`Setting minion ${activity.minionId} a new status by operation activity data: ` +
                     `${JSON.stringify(activity.minionStatus)} fail, ` +
                     `${JSON.stringify(error)}`);
-
-                logger.info(`Tring set status for  ${activity.minionId} agine...`);
-
-                try {
-                    await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
-                } catch (error) {
-                    logger.warn(`The second try to set status for ${activity.minionId} fail too`);
-                    errors.push({
-                        minionId: activity.minionId,
-                        error,
-                    });
-                }
             }
 
-            /**
-             * wait 1 sec between one minion to other, becuase of broadcasting mismatch in some brands communication protocol.
-             */
-            await Delay(moment.duration(1, 'seconds'));
+            await Delay(moment.duration(3, 'seconds'));
+
+            logger.info(`Trying set status for  ${activity.minionId} agine...`);
+
+            try {
+                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+                continue;
+            } catch (error) {
+                logger.warn(`The second try to set status for ${activity.minionId} fail too`);
+            }
+
+            await Delay(moment.duration(5, 'seconds'));
+
+            logger.info(`Last chance of set status for  ${activity.minionId} ...`);
+
+            try {
+                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+            } catch (error) {
+                logger.warn(`Last chance to set status for ${activity.minionId} fail too. sorry ;)`);
+                errors.push({
+                    minionId: activity.minionId,
+                    error,
+                });
+            }
         }
         return errors;
     }
