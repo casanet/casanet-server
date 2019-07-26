@@ -7,6 +7,7 @@ import { BrandModuleBase } from './brandModuleBase';
 ///////////////////////////////////////////////////////////////////////////////
 //////////////// TO EXTEND: Place here handler reference //////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+import { CommandsSet } from '../models/backendInterfaces';
 import { BroadlinkHandler } from './broadlink/broadlinkHandler';
 import { IftttHandler } from './ifttt/iftttHandler';
 import { MiioHandler } from './miio/miioHandler';
@@ -226,6 +227,35 @@ export class ModulesManager {
         return await minionModule.generateCommand(minion, statusToGenerateFor);
     }
 
+    /**
+     * Update the currect module with fatched commands set.
+     * see https://github.com/haimkastner/rf-commands-repo project API.
+     * @param minion minioin to update commands by fetched commands set.
+     * @param commandsSet Fetched RF commands set.
+     */
+    public async setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse> {
+        const minionModule = this.getMinionModule(minion.device.brand);
+
+        if (!minionModule) {
+            const errorResponse: ErrorResponse = {
+                responseCode: 7404,
+                message: `there is not module for -${minion.device.brand}- brand`,
+            };
+            throw errorResponse;
+        }
+
+        /** Make sure that minion supprt recording */
+        const modelKind = this.getModelKind(minionModule, minion.device);
+        if (!modelKind || !modelKind.isRecordingSupported) {
+            const errorResponse: ErrorResponse = {
+                responseCode: 6409,
+                message: `the minioin not support command recording or sending`,
+            };
+            throw errorResponse;
+        }
+
+        return await minionModule.setFetchedCommands(minion, commandsSet);
+    }
     /**
      * Refresh and reset all module communications.
      * Used for cleaning up communication before re-reading data, after communication auth changed or just hard reset module etc.

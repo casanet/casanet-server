@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import * as Tuyapi from 'tuyapi';
+import { CommandsSet } from '../../models/backendInterfaces';
 import {
     DeviceKind,
     ErrorResponse,
@@ -405,6 +406,10 @@ export class TuyaHandler extends BrandModuleBase {
             responseCode: 6409,
             message: 'the tuya module not support any recording mode',
         } as ErrorResponse;
+    }
+
+    public async setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse> {
+        // There's nothing to do.
     }
 
     public async refreshCommunication(): Promise<void> {

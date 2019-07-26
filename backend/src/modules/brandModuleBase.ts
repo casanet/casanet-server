@@ -3,6 +3,7 @@ import * as path from 'path';
 import { PullBehavior } from 'pull-behavior';
 import { BehaviorSubject } from 'rxjs';
 import { Configuration } from '../config';
+import { AcCommands, CommandsSet, RollerCommands, ToggleCommands } from '../models/backendInterfaces';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
@@ -111,6 +112,14 @@ export abstract class BrandModuleBase {
      * @param statusToGenerateFor the specific status to record for.
      */
     public abstract generateCommand(minion: Minion, statusToGenerateFor: MinionStatus): Promise<void | ErrorResponse>;
+
+    /**
+     * Update module with commands set, instead of recording on by one by the end user.
+     * see https://github.com/haimkastner/rf-commands-repo project API.
+     * @param minion minioin to update commands by fetched commands set.
+     * @param commandsSet Fetched RF commands set.
+     */
+    public abstract setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse>;
 
     /**
      * Refresh and reset all module communications.

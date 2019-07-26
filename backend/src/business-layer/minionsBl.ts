@@ -536,60 +536,6 @@ export class MinionsBl {
     }
 
     /**
-     * Record command for current minion status.
-     * @param minionId minion to record for.
-     * @param statusToRecordFor The status to record command for.
-     */
-    public async recordCommand(minionId: string, statusToRecordFor: MinionStatus): Promise<void> {
-        const minion = this.findMinion(minionId);
-        if (!minion) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            } as ErrorResponse;
-        }
-
-        /**
-         * The minion status is depend on minion type.
-         */
-        if (!statusToRecordFor[minion.minionType]) {
-            throw {
-                responseCode: 1405,
-                message: 'incorrect minion status for current minion type',
-            } as ErrorResponse;
-        }
-
-        await this.modulesManager.enterRecordMode(minion, statusToRecordFor);
-    }
-
-    /**
-     * Record command for current minion status.
-     * @param minionId minion to record for.
-     * @param statusToGenerateFor The status to record command for.
-     */
-    public async generateCommand(minionId: string, statusToGenerateFor: MinionStatus): Promise<void> {
-        const minion = this.findMinion(minionId);
-        if (!minion) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            } as ErrorResponse;
-        }
-
-        /**
-         * The minion status is depend on minion type.
-         */
-        if (!statusToGenerateFor[minion.minionType]) {
-            throw {
-                responseCode: 1405,
-                message: 'incorrect minion status for current minion type',
-            } as ErrorResponse;
-        }
-
-        await this.modulesManager.generateCommand(minion, statusToGenerateFor);
-    }
-
-    /**
      * Notify minion status changed by ifttt
      * @param minionId Minon id.
      * @param iftttOnChanged Minion key amd status to set.

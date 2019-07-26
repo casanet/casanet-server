@@ -20,6 +20,7 @@ import './controllers/feedController';
 import './controllers/iftttController';
 import './controllers/minionsController';
 import './controllers/operationsController';
+import './controllers/radioFrequencyController';
 import './controllers/remoteConnectionController';
 import './controllers/staticAssetsController';
 import './controllers/timingsController';

@@ -22,6 +22,10 @@
                 "description": "Manage the minions (logic devices in system) in home, such as turn on off etc."
             },
             {
+                "name": "RF",
+                "description": "Manage everything about RF devices (IR, 433MHZ etc.) includes record, generate and fetch from commands repository."
+            },
+            {
                 "name": "Operations",
                 "description": "Manage operation in system, such as create operation to turn on all home lights etc."
             },
