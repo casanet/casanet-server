@@ -163,7 +163,7 @@ export class TimingsComponent implements OnInit, OnDestroy {
 
     const operations = await this.operationService.operationFeed.value;
 
-    /** REduce all operation to on key paie value when key is id and vale is name. for the form select  */
+    /** Reduce all operation to on key paie value when key is id and vale is name. for the form select  */
     const selectOptions = operations.reduce((kpv, operation) => {
       kpv[operation.operationId] = operation.operationName;
       return kpv;

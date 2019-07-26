@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Minion, MinionStatus, MinionFeed, DeviceKind, MinionTimeline } from '../../../../backend/src/models/sharedInterfaces';
+import { Minion, MinionStatus, MinionFeed, DeviceKind, MinionTimeline, CommandsRepoDevice } from '../../../../backend/src/models/sharedInterfaces';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
@@ -18,9 +18,22 @@ export class MinionsService {
 		this.retriveData();
 	}
 
+	public async getCommandsRepoAvailableDevices(): Promise<CommandsRepoDevice[]> {
+		try {
+			return await this.httpClient.get<CommandsRepoDevice[]>(`/API/rf/devices`).toPromise();
+		} catch (error) {
+			this.toastrAndErrorsService.OnHttpError(error);
+			return null;
+		}
+	}
+
+	public async fetchDeviceCommandsToMinion(minion: Minion, commandsRepoDevice: CommandsRepoDevice): Promise<void> {
+		await this.httpClient.put(`/API/rf/fetch-commands/${minion.minionId}`, commandsRepoDevice).toPromise();
+	}
+
 	public async recordCommand(minion: Minion, minionStatus: MinionStatus) {
 		try {
-			await this.httpClient.post(`/API/minions/commands/record/${minion.minionId}`, minionStatus).toPromise();
+			await this.httpClient.post(`/API/rf/record/${minion.minionId}`, minionStatus).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
@@ -28,7 +41,7 @@ export class MinionsService {
 
 	public async generateCommand(minion: Minion, minionStatus: MinionStatus) {
 		try {
-			await this.httpClient.post(`/API/minions/commands/generate/${minion.minionId}`, minionStatus).toPromise();
+			await this.httpClient.post(`/API/rf/generate/${minion.minionId}`, minionStatus).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
@@ -243,7 +256,7 @@ export class MinionsService {
 		}
 	}
 
-	public async getTimeline() : Promise<MinionTimeline[]> {
+	public async getTimeline(): Promise<MinionTimeline[]> {
 		try {
 			return await this.httpClient.get<MinionTimeline[]>(`/API/minions/timeline`).toPromise();
 		} catch (error) {

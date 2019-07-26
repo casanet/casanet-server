@@ -6,6 +6,7 @@ import {
 	MinionStatus,
 	DeviceKind,
 	ColorLight,
+	CommandsRepoDevice,
 } from '../../../../../backend/src/models/sharedInterfaces';
 import { MinionsService } from '../../services/minions.service';
 import { DevicesService } from '../../services/devices.service';
@@ -303,6 +304,71 @@ export class MinionsComponent implements OnInit, OnDestroy {
 		minion['recordMode'] = true;
 	}
 
+	public async fetchCommands(minion: Minion) {
+		let availableDevicesCommands: CommandsRepoDevice[] = [];
+
+		/** Get supported devices */
+		await swal({
+			title: this.translatePipe.transform('GETTING_SUPPOTERD_DEVICES'),
+			timer: 1000,
+			onBeforeOpen: async () => {
+				swal.showLoading();
+				swal.stopTimer();
+				availableDevicesCommands = await this.minionsService.getCommandsRepoAvailableDevices();
+				swal.resumeTimer();
+			},
+		});
+
+		if (!availableDevicesCommands) {
+			return;
+		}
+
+		/** Sort devices */
+		availableDevicesCommands.sort((itemA, itemB) => {
+			if (itemA.brand === itemB.brand) {
+				return itemA.model < itemB.model ? -1 : 1;
+			}
+			return itemA.brand < itemB.brand ? -1 : 1;
+		});
+
+		/** Create selection map */
+		const selectOptions = availableDevicesCommands.reduce((kpv, device) => {
+			kpv[`${device.brand}:~:${device.model}:~:${device.category}`] = `${device.brand} ${device.model}`;
+			return kpv;
+		}, {});
+
+		/** Select a device from the list */
+		await swal({
+			title: `${this.translatePipe.transform('SELECT_DEVICE')}`,
+			text: `${this.translatePipe.transform('MATCH_TO')}-${minion.name} ${this.translatePipe.transform('COMMANDS_SET')}`,
+			input: 'select',
+			inputOptions: selectOptions,
+			showConfirmButton: true,
+			showCancelButton: true,
+			confirmButtonText: this.translatePipe.transform('SUBMIT'),
+			cancelButtonText: this.translatePipe.transform('CANCEL'),
+			showLoaderOnConfirm: true,
+			preConfirm: async (value) => {
+				if (!value) {
+					return;
+				}
+				const selected = value.split(':~:');
+				try {
+					await this.minionsService.fetchDeviceCommandsToMinion(minion, {
+						brand: selected[0],
+						model: selected[1],
+						category: selected[2],
+					});
+				} catch (error) {
+					swal.showValidationMessage(
+						`${this.translatePipe.transform('REQUEST_FAIL')}`
+					);
+				}
+			},
+			allowOutsideClick: () => !swal.isLoading()
+		});
+	}
+
 	public async deleteMinion(minion: Minion) {
 		const swalResult: void | SweetAlertResult = await swal({
 			type: 'warning',
@@ -344,7 +410,7 @@ export class MinionsComponent implements OnInit, OnDestroy {
 	public async minionsTimeline() {
 		this.dialog.open(TimelineDialogComponent, {
 			data: {},
-			height : '90%',
+			height: '90%',
 		});
 	}
 
