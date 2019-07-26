@@ -3,9 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pull_behavior_1 = require("pull-behavior");
 const rxjs_1 = require("rxjs");
 const config_1 = require("../config");
-///////////////////////////////////////////////////////////////////////////////
-//////////////// TO EXTEND: Place here handler reference //////////////////////
-///////////////////////////////////////////////////////////////////////////////
 const broadlinkHandler_1 = require("./broadlink/broadlinkHandler");
 const iftttHandler_1 = require("./ifttt/iftttHandler");
 const miioHandler_1 = require("./miio/miioHandler");
@@ -191,6 +188,32 @@ class ModulesManager {
             throw errorResponse;
         }
         return await minionModule.generateCommand(minion, statusToGenerateFor);
+    }
+    /**
+     * Update the currect module with fatched commands set.
+     * see https://github.com/haimkastner/rf-commands-repo project API.
+     * @param minion minioin to update commands by fetched commands set.
+     * @param commandsSet Fetched RF commands set.
+     */
+    async setFetchedCommands(minion, commandsSet) {
+        const minionModule = this.getMinionModule(minion.device.brand);
+        if (!minionModule) {
+            const errorResponse = {
+                responseCode: 7404,
+                message: `there is not module for -${minion.device.brand}- brand`,
+            };
+            throw errorResponse;
+        }
+        /** Make sure that minion supprt recording */
+        const modelKind = this.getModelKind(minionModule, minion.device);
+        if (!modelKind || !modelKind.isRecordingSupported) {
+            const errorResponse = {
+                responseCode: 6409,
+                message: `the minioin not support command recording or sending`,
+            };
+            throw errorResponse;
+        }
+        return await minionModule.setFetchedCommands(minion, commandsSet);
     }
     /**
      * Refresh and reset all module communications.

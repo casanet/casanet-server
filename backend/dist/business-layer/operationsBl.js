@@ -40,8 +40,8 @@ class OperationsBl {
         const errors = [];
         for (const activity of operationActiviries) {
             /**
-              * wait 1 sec between one minion to other, becuase of broadcasting mismatch in some brands communication protocol.
-              */
+             * wait 1 sec between one minion to other, becuase of broadcasting mismatch in some brands communication protocol.
+             */
             await sleep_1.Delay(moment.duration(1, 'seconds'));
             logger_1.logger.info(`Setting minion ${activity.minionId} a new status by operation activity...`);
             try {

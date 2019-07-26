@@ -178,6 +178,9 @@ class MqttHandler extends brandModuleBase_1.BrandModuleBase {
             message: 'the mqtt module not support any recording mode',
         };
     }
+    async setFetchedCommands(minion, commandsSet) {
+        // There's nothing to do.
+    }
     async refreshCommunication() {
         // There's nothing to do.
     }

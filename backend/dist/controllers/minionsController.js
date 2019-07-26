@@ -11,8 +11,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
 const minionsBl_1 = require("../business-layer/minionsBl");
-const deepCopy_1 = require("../utilities/deepCopy");
 const timelineBl_1 = require("../business-layer/timelineBl");
+const deepCopy_1 = require("../utilities/deepCopy");
 let MinionsController = class MinionsController extends tsoa_1.Controller {
     /**
      * NEVER let anyone get device API keys.
@@ -78,24 +78,6 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
      */
     async setMinionTimeout(minionId, setTimeout) {
         return await minionsBl_1.MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS);
-    }
-    /**
-     * Record a command (IR, 433-RF or any other supported RF tech)
-     * for current minion status.
-     * @param minionId Minon id.
-     * @param minionStatus Minion object status to get command for.
-     */
-    async recordMinionCommand(minionId, minionStatus) {
-        return minionsBl_1.MinionsBlSingleton.recordCommand(minionId, minionStatus);
-    }
-    /**
-     * Generate a command (IR, 433-RF or any other supported RF tech)
-     * for current minion status.
-     * @param minionId Minon id.
-     * @param minionStatus Minion object status to generate command for.
-     */
-    async generateMinionCommand(minionId, minionStatus) {
-        return minionsBl_1.MinionsBlSingleton.generateCommand(minionId, minionStatus);
     }
     /**
      * Recheck minion device status (update server status cache).
@@ -170,20 +152,6 @@ __decorate([
     tsoa_1.Put('timeout/{minionId}'),
     __param(1, tsoa_1.Body())
 ], MinionsController.prototype, "setMinionTimeout", null);
-__decorate([
-    tsoa_1.Security('userAuth'),
-    tsoa_1.Security('adminAuth'),
-    tsoa_1.Response(501, 'Server error'),
-    tsoa_1.Post('commands/record/{minionId}'),
-    __param(1, tsoa_1.Body())
-], MinionsController.prototype, "recordMinionCommand", null);
-__decorate([
-    tsoa_1.Security('userAuth'),
-    tsoa_1.Security('adminAuth'),
-    tsoa_1.Response(501, 'Server error'),
-    tsoa_1.Post('commands/generate/{minionId}'),
-    __param(1, tsoa_1.Body())
-], MinionsController.prototype, "generateMinionCommand", null);
 __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),

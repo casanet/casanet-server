@@ -191,6 +191,9 @@ class MockHandler extends brandModuleBase_1.BrandModuleBase {
     async generateCommand(miniom, statusToRecordFor) {
         await sleep_1.Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real command generation.
     }
+    async setFetchedCommands(minion, commandsSet) {
+        // There's nothing to do.
+    }
     async refreshCommunication() {
         // There's nothing to do.
     }

@@ -21,6 +21,7 @@ require("./controllers/feedController");
 require("./controllers/iftttController");
 require("./controllers/minionsController");
 require("./controllers/operationsController");
+require("./controllers/radioFrequencyController");
 require("./controllers/remoteConnectionController");
 require("./controllers/staticAssetsController");
 require("./controllers/timingsController");

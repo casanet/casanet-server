@@ -344,9 +344,9 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
         }
         this.updateCache();
     }
-    async generateRollerRFCommand(miniom, statusToRecordFor) {
+    async generateRollerRFCommand(minion, statusToRecordFor) {
         const generatedCode = BroadlinkCodeGeneration.generate('RF433');
-        const minionCache = this.getOrCreateMinionCache(miniom);
+        const minionCache = this.getOrCreateMinionCache(minion);
         if (!minionCache.rollerCommands) {
             minionCache.rollerCommands = {
                 down: undefined,
@@ -427,6 +427,20 @@ class BroadlinkHandler extends brandModuleBase_1.BrandModuleBase {
             responseCode: 8404,
             message: 'unknown minion model',
         };
+    }
+    async setFetchedCommands(minion, commandsSet) {
+        const minionCache = this.getOrCreateMinionCache(minion);
+        switch (minion.minionType) {
+            case 'toggle':
+                minionCache.toggleCommands = commandsSet.commands.toggle;
+                break;
+            case 'airConditioning':
+                minionCache.acCommands = commandsSet.commands.airConditioning;
+                break;
+            case 'roller':
+                minionCache.rollerCommands = commandsSet.commands.roller;
+                break;
+        }
     }
     async refreshCommunication() {
         // There's nothing to do.

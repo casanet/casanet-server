@@ -12,6 +12,7 @@ import { RemoteConnectionController } from './../controllers/remoteConnectionCon
 import { StaticAssetsController } from './../controllers/staticAssetsController';
 import { IftttController } from './../controllers/iftttController';
 import { VersionsController } from './../controllers/versionsController';
+import { RfController } from './../controllers/radioFrequencyController';
 import { expressAuthentication } from './../security/authentication';
 import * as express from 'express';
 import { ErrorResponse, User } from '../../../backend/src/models/sharedInterfaces';
@@ -288,6 +289,13 @@ const models: TsoaRoute.Models = {
             "version": { "dataType": "string", "required": true },
             "commintHash": { "dataType": "string", "required": true },
             "timestamp": { "dataType": "double", "required": true },
+        },
+    },
+    "CommandsRepoDevice": {
+        "properties": {
+            "brand": { "dataType": "string", "required": true },
+            "model": { "dataType": "string", "required": true },
+            "category": { "dataType": "string", "required": true },
         },
     },
 };
@@ -672,56 +680,6 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.setMinionTimeout.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/minions/commands/record/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.recordMinionCommand.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/minions/commands/generate/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.generateMinionCommand.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/API/minions/rescan/:minionId',
@@ -1653,6 +1611,104 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.getCurrentVersion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/rf/devices',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new RfController();
+
+
+            const promise = controller.getCommandsRepoAvailableDevices.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.put('/API/rf/fetch-commands/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+                commandsRepoDevice: { "in": "body", "name": "commandsRepoDevice", "required": true, "ref": "CommandsRepoDevice" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new RfController();
+
+
+            const promise = controller.fetchDeviceCommandsToMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/rf/record/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+                minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new RfController();
+
+
+            const promise = controller.recordMinionCommand.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/API/rf/generate/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+                minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new RfController();
+
+
+            const promise = controller.generateMinionCommand.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 
