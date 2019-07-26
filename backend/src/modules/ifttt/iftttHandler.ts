@@ -2,6 +2,7 @@ import * as moment from 'moment';
 import { Duration } from 'moment';
 import * as request from 'request-promise';
 import { BehaviorSubject } from 'rxjs';
+import { CommandsSet } from '../../models/backendInterfaces';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { DeepCopy } from '../../utilities/deepCopy';
 import { logger } from '../../utilities/logger';
@@ -135,6 +136,10 @@ export class IftttHandler extends BrandModuleBase {
             responseCode: 6409,
             message: 'the ifttt module not support any recording mode',
         } as ErrorResponse;
+    }
+
+    public async setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse> {
+        // There's nothing to do.
     }
 
     public async refreshCommunication(): Promise<void> {

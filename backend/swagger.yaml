@@ -789,6 +789,20 @@ definitions:
             - commintHash
             - timestamp
         type: object
+    CommandsRepoDevice:
+        description: 'Device in commands repo project. see https://github.com/haimkastner/rf-commands-repo. API section'
+        properties:
+            brand:
+                type: string
+            model:
+                type: string
+            category:
+                type: string
+        required:
+            - brand
+            - model
+            - category
+        type: object
 info:
     title: 'CASAnet - API'
     version: 2.0.0
@@ -1280,74 +1294,6 @@ paths:
                     required: true
                     schema:
                         $ref: '#/definitions/SetMinionAutoTurnOff'
-    '/minions/commands/record/{minionId}':
-        post:
-            operationId: RecordMinionCommand
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: "Record a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status."
-            tags:
-                - Minions
-            security:
-                -
-                    userAuth: []
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'Minon id.'
-                    in: path
-                    name: minionId
-                    required: true
-                    type: string
-                -
-                    description: 'Minion object status to get command for.'
-                    in: body
-                    name: minionStatus
-                    required: true
-                    schema:
-                        $ref: '#/definitions/MinionStatus'
-    '/minions/commands/generate/{minionId}':
-        post:
-            operationId: GenerateMinionCommand
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: "Generate a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status."
-            tags:
-                - Minions
-            security:
-                -
-                    userAuth: []
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'Minon id.'
-                    in: path
-                    name: minionId
-                    required: true
-                    type: string
-                -
-                    description: 'Minion object status to generate command for.'
-                    in: body
-                    name: minionStatus
-                    required: true
-                    schema:
-                        $ref: '#/definitions/MinionStatus'
     '/minions/rescan/{minionId}':
         post:
             operationId: RescanMinionStatus
@@ -2307,6 +2253,133 @@ paths:
                 -
                     userAuth: []
             parameters: []
+    /rf/devices:
+        get:
+            operationId: GetCommandsRepoAvailableDevices
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/CommandsRepoDevice'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get all aupported devices in commands repo see https://github.com/haimkastner/rf-commands-repo API.'
+            tags:
+                - RF
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters: []
+    '/rf/fetch-commands/{minionId}':
+        put:
+            operationId: FetchDeviceCommandsToMinion
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Fetch commands set for certain minion see https://github.com/haimkastner/rf-commands-repo API.'
+            tags:
+                - RF
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'minion to fetch commands for.'
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
+                -
+                    description: 'devices commands set to fetch.'
+                    in: body
+                    name: commandsRepoDevice
+                    required: true
+                    schema:
+                        $ref: '#/definitions/CommandsRepoDevice'
+    '/rf/record/{minionId}':
+        post:
+            operationId: RecordMinionCommand
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Record a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status."
+            tags:
+                - RF
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'Minon id.'
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
+                -
+                    description: 'Minion object status to get command for.'
+                    in: body
+                    name: minionStatus
+                    required: true
+                    schema:
+                        $ref: '#/definitions/MinionStatus'
+    '/rf/generate/{minionId}':
+        post:
+            operationId: GenerateMinionCommand
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: "Generate a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status."
+            tags:
+                - RF
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'Minon id.'
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
+                -
+                    description: 'Minion object status to generate command for.'
+                    in: body
+                    name: minionStatus
+                    required: true
+                    schema:
+                        $ref: '#/definitions/MinionStatus'
 produces:
     - application/json
 swagger: '2.0'
@@ -2337,6 +2410,9 @@ tags:
     -
         name: Minions
         description: 'Manage the minions (logic devices in system) in home, such as turn on off etc.'
+    -
+        name: RF
+        description: 'Manage everything about RF devices (IR, 433MHZ etc.) includes record, generate and fetch from commands repository.'
     -
         name: Operations
         description: 'Manage operation in system, such as create operation to turn on all home lights etc.'

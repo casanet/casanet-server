@@ -1,5 +1,6 @@
 import * as miio from 'miio';
 import { BehaviorSubject } from 'rxjs';
+import { CommandsSet } from '../../models/backendInterfaces';
 import {
     Cleaner,
     CleanerMode,
@@ -130,11 +131,13 @@ export class MiioHandler extends BrandModuleBase {
                 case 'cleaner':
                     currentStatus = {
                         cleaner: await this.getVaccumStatus(device),
-                    }; break;
+                    };
+                    break;
                 case 'temperatureLight':
                     currentStatus = {
                         temperatureLight: await this.getTempLightStatus(device),
-                    }; break;
+                    };
+                    break;
                 default:
                     throw {
                         responseCode: 8404,
@@ -196,7 +199,11 @@ export class MiioHandler extends BrandModuleBase {
         } as ErrorResponse;
     }
 
-    public async refreshCommunication(): Promise<void> {
+    public async setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse> {
+        // There's nothing to do.
+    }
 
+    public async refreshCommunication(): Promise<void> {
+        // There's nothing to do.
     }
 }

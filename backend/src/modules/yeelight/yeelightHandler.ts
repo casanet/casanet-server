@@ -1,5 +1,6 @@
 import * as nodeYeelightWifi from 'node-yeelight-wifi';
 import { Color, CommandType, DevicePropery, Discover, IDevice, Yeelight } from 'yeelight-awesome';
+import { CommandsSet } from '../../models/backendInterfaces';
 import {
     ColorLight,
     DeviceKind,
@@ -424,6 +425,10 @@ export class YeelightHandler extends BrandModuleBase {
             responseCode: 6409,
             message: 'the yeelight module not support any recording mode',
         } as ErrorResponse;
+    }
+
+    public async setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse> {
+        // There's nothing to do.
     }
 
     public async refreshCommunication(): Promise<void> {

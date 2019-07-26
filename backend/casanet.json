@@ -19,5 +19,6 @@
     "homePosition": {
         "latitude": 32.816,
         "longitude": 34.983
-    }
+    },
+    "commandsRepoUrl" : "https://rf-commands-repo.herokuapp.com"
 }

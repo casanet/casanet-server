@@ -1,8 +1,16 @@
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Query, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
-import { ErrorResponse, IftttOnChanged, Minion, MinionRename, MinionStatus, SetMinionAutoTurnOff, MinionTimeline } from '../models/sharedInterfaces';
-import { DeepCopy } from '../utilities/deepCopy';
 import { TimelineBlSingleton } from '../business-layer/timelineBl';
+import {
+    ErrorResponse,
+    IftttOnChanged,
+    Minion,
+    MinionRename,
+    MinionStatus,
+    MinionTimeline,
+    SetMinionAutoTurnOff,
+} from '../models/sharedInterfaces';
+import { DeepCopy } from '../utilities/deepCopy';
 
 @Tags('Minions')
 @Route('minions')
@@ -39,7 +47,7 @@ export class MinionsController extends Controller {
     public async getMinionsTimeline(): Promise<MinionTimeline[]> {
         return await TimelineBlSingleton.getTimeline();
     }
-    
+
     /**
      * Get all minions in the system.
      * @returns Minions array.
@@ -100,34 +108,6 @@ export class MinionsController extends Controller {
     @Put('timeout/{minionId}')
     public async setMinionTimeout(minionId: string, @Body() setTimeout: SetMinionAutoTurnOff): Promise<void> {
         return await MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS);
-    }
-
-    /**
-     * Record a command (IR, 433-RF or any other supported RF tech)
-     * for current minion status.
-     * @param minionId Minon id.
-     * @param minionStatus Minion object status to get command for.
-     */
-    @Security('userAuth')
-    @Security('adminAuth')
-    @Response<ErrorResponse>(501, 'Server error')
-    @Post('commands/record/{minionId}')
-    public async recordMinionCommand(minionId: string, @Body() minionStatus: MinionStatus): Promise<void> {
-        return MinionsBlSingleton.recordCommand(minionId, minionStatus);
-    }
-
-    /**
-     * Generate a command (IR, 433-RF or any other supported RF tech)
-     * for current minion status.
-     * @param minionId Minon id.
-     * @param minionStatus Minion object status to generate command for.
-     */
-    @Security('userAuth')
-    @Security('adminAuth')
-    @Response<ErrorResponse>(501, 'Server error')
-    @Post('commands/generate/{minionId}')
-    public async generateMinionCommand(minionId: string, @Body() minionStatus: MinionStatus): Promise<void> {
-        return MinionsBlSingleton.generateCommand(minionId, minionStatus);
     }
 
     /**

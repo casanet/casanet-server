@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 import { Duration } from 'moment';
 import { BehaviorSubject } from 'rxjs';
+import { CommandsSet } from '../../models/backendInterfaces';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { DeepCopy } from '../../utilities/deepCopy';
 import { Delay } from '../../utilities/sleep';
@@ -212,6 +213,10 @@ export class MockHandler extends BrandModuleBase {
 
     public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
         await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real command generation.
+    }
+
+    public async setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse> {
+        // There's nothing to do.
     }
 
     public async refreshCommunication(): Promise<void> {

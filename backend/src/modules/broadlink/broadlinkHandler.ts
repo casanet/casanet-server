@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { Duration } from 'moment';
+import { AcCommands, AirConditioningCommand, CommandsSet, RollerCommands, ToggleCommands } from '../../models/backendInterfaces';
 import { AirConditioning, DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions } from '../../models/sharedInterfaces';
 import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
@@ -17,24 +18,12 @@ interface BroadlinkAPI {
     setPower: (status: boolean, callback: (err: any) => void) => void;
 }
 
-interface AirConditioningCommand {
-    command: string;
-    status: AirConditioning;
-}
-
 interface Cache {
     minionId: string;
     lastStatus: MinionStatus;
-    toggleCommands?: { on: string, off: string };
-    acCommands?: {
-        off: string;
-        statusCommands: AirConditioningCommand[];
-    };
-    rollerCommands?: {
-        off: string;
-        up: string;
-        down: string;
-    };
+    toggleCommands?: ToggleCommands;
+    acCommands?: AcCommands;
+    rollerCommands?: RollerCommands;
 }
 
 export class BroadlinkHandler extends BrandModuleBase {
@@ -441,11 +430,11 @@ export class BroadlinkHandler extends BrandModuleBase {
         this.updateCache();
     }
 
-    private async generateRollerRFCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+    private async generateRollerRFCommand(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
 
         const generatedCode = BroadlinkCodeGeneration.generate('RF433');
 
-        const minionCache = this.getOrCreateMinionCache(miniom);
+        const minionCache = this.getOrCreateMinionCache(minion);
 
         if (!minionCache.rollerCommands) {
             minionCache.rollerCommands = {
@@ -532,6 +521,22 @@ export class BroadlinkHandler extends BrandModuleBase {
             responseCode: 8404,
             message: 'unknown minion model',
         } as ErrorResponse;
+    }
+
+    public async setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse> {
+        const minionCache = this.getOrCreateMinionCache(minion);
+
+        switch (minion.minionType) {
+            case 'toggle':
+                minionCache.toggleCommands = commandsSet.commands.toggle;
+                break;
+            case 'airConditioning':
+                minionCache.acCommands = commandsSet.commands.airConditioning;
+                break;
+            case 'roller':
+                minionCache.rollerCommands = commandsSet.commands.roller;
+                break;
+        }
     }
 
     public async refreshCommunication(): Promise<void> {

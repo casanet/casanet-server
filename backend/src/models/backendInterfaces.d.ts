@@ -1,4 +1,4 @@
-import { User, LocalNetworkDevice, DeviceKind, MinionStatus, Minion, ErrorResponse } from './sharedInterfaces';
+import { User, LocalNetworkDevice, DeviceKind, MinionStatus, Minion, ErrorResponse, AirConditioning, MinionTypes } from './sharedInterfaces';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs';
 
 /**
@@ -66,6 +66,8 @@ export declare interface Config {
         /** Bcrypt salt rounds */
         bcryptSaltRounds: number;
     };
+    /** Rf commands repo to fetch from see project page https://github.com/haimkastner/rf-commands-repo */
+    commandsRepoUrl: string;
 }
 
 /**
@@ -91,4 +93,36 @@ export declare class IDataIO {
      * @param data 
      */
     public setData(data: any[]): Promise<void>;
+}
+
+/** AC particular status command  */
+export declare interface AirConditioningCommand {
+    command: string;
+    status: AirConditioning;
+}
+
+/** Toggle commands set */
+export declare interface ToggleCommands { on: string, off: string }
+
+/** Ac commands set */
+export declare interface AcCommands {
+    off: string;
+    statusCommands: AirConditioningCommand[];
+}
+
+/** Roller commands set */
+export declare interface RollerCommands {
+    off: string;
+    up: string;
+    down: string;
+}
+
+/** RF (IR/433MHz etc.) commands set based of device type */
+export declare interface CommandsSet {
+    deviceType : MinionTypes,
+    commands : {
+        toggle? : ToggleCommands;
+        airConditioning? : AcCommands;
+        roller? : RollerCommands;
+    }
 }

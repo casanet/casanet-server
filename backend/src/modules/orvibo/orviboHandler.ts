@@ -1,6 +1,7 @@
 import * as  dgram from 'dgram';
 import * as  moment from 'moment';
 import * as Orvibo from 'node-orvibo-2';
+import { CommandsSet } from '../../models/backendInterfaces';
 import {
     DeviceKind,
     ErrorResponse,
@@ -276,6 +277,10 @@ export class OrviboHandler extends BrandModuleBase {
             responseCode: 6409,
             message: 'the orvibo module not support any recording mode',
         } as ErrorResponse;
+    }
+
+    public async setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse> {
+        // There's nothing to do.
     }
 
     public async refreshCommunication(): Promise<void> {
