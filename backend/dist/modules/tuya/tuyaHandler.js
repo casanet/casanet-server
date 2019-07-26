@@ -348,6 +348,9 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
             message: 'the tuya module not support any recording mode',
         };
     }
+    async setFetchedCommands(minion, commandsSet) {
+        // There's nothing to do.
+    }
     async refreshCommunication() {
         for (const tuyaApi of Object.values(this.pysicalDevicesMap)) {
             tuyaApi.disconnect();
