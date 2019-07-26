@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1563445324597,
+  "timestamp": 1564149456291,
   "index": "/static/index.html",
   "assetGroups": [
     {
@@ -51,7 +51,7 @@
       "strategy": "performance",
       "maxSize": 100,
       "maxAge": 2592000000,
-      "version": 1
+      "version": 2
     }
   ],
   "hashTable": {
@@ -61,8 +61,8 @@
     "/static/assets/fonts/w8gdH283Tvk__Lua32TysjIfpcuPP9g.woff2": "4bb9cbbe3bec2722bf917acfe613fe86a41114b7",
     "/static/assets/fonts/w8gdH283Tvk__Lua32TysjIfqMuPP9g.woff2": "a78ec59214394b29f4b26a842f09047c54391306",
     "/static/assets/fonts/w8gdH283Tvk__Lua32TysjIfqcuPP9g.woff2": "20e7dd102918897ee72f8c98c7cd7356d8eda611",
-    "/static/assets/i18n/en.json": "44733ad825459f63c2717ce0027fa386fb80f4e9",
-    "/static/assets/i18n/he.json": "0327815c9e5d0901c33d10bd62b032c8f3b9e64f",
+    "/static/assets/i18n/en.json": "8b74f87fad5a2f5a691557652bb9dff956b63396",
+    "/static/assets/i18n/he.json": "7bd1855ac6e63618c07e3afaecb0f92fd8190a05",
     "/static/assets/icons/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2": "d22573acfb7163487f48c8fcbd593f2ec5b9e729",
     "/static/assets/icons/google-material-icons.css": "71be0b33b5f202490c9576eeb83f9304e61520df",
     "/static/assets/icons/icon-128x128.png": "848482317421dd6b2e34fc5dea945b86c1d0b5dc",

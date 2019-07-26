@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { RemoteConnectionStatus, RemoteSettings, IftttIntegrationSettings, UpdateResults, VersionInfo } from '../../../../backend/src/models/sharedInterfaces';
+import {
+  RemoteConnectionStatus,
+  RemoteSettings,
+  IftttIntegrationSettings,
+  UpdateResults,
+  VersionInfo
+} from '../../../../backend/src/models/sharedInterfaces';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';

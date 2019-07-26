@@ -80,6 +80,10 @@
                         <span *ngIf="!minion.recordMode">{{ 'ENTER_RECORD_OR_GENERATE_MODE' | translate}}</span>
                         <span *ngIf="minion.recordMode">{{ 'EXIT_RECORD_OR_GENERATE_MODE' | translate}}</span>
                     </button>
+                    <button mat-menu-item (click)="fetchCommands(minion)" [disabled]="!isMinionRecordble(minion)">
+                        <mat-icon>play_for_work</mat-icon>
+                        <span> {{ 'FETCH_COMMANDS' | translate}}</span>
+                    </button>
                     <button mat-menu-item (click)="renameMinion(minion)">
                         <mat-icon>format_italic</mat-icon>
                         <span>{{ 'RENAME' | translate}}</span>
