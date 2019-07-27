@@ -71,6 +71,13 @@ that's all.
 Each IoT device should be connected to the local network before can add it to the casa-net server.
 For each supported IoT device model connection and pairing instructions see [modules documentations](./src/modules/README.md).
 
+## Fetch RF (IR / 433MHz etc.) commands from a commands repository.
+When using RF transmitter to control home devices it`s possible to record the command from the original remote control or generating random command.
+So to avoid recording a lot of commands one by one there is another project to store commands and serve then on demand. see the [project page](https://github.com/haimkastner/rf-commands-repo).
+The `rf-commands-repo` URL placed in the `casanet.json` configuration file.
+
+If you want to update my repo, feel free to contact me. 
+
 ## API
 The UI should wrap API. 
 
