@@ -7,6 +7,22 @@ const logger_1 = require("../utilities/logger");
 class VersionsBl {
     constructor() {
         this.git = simplegit();
+        this.updateStatus = 'finished';
+    }
+    /**
+     * Install/update NPM dependencies in the background. it's can take a while.
+     */
+    async updateVersionDependencies() {
+        try {
+            logger_1.logger.info(`starting NPM install, it's can take a while`);
+            const installationResults = await child_process_promise_1.exec('npm i');
+            logger_1.logger.info(`installing last dependencies results: ${installationResults.stdout}`);
+            this.updateStatus = 'finished';
+        }
+        catch (error) {
+            this.updateStatus = 'fail';
+            logger_1.logger.warn(`Installing last dependencies fail ${error.stdout}`);
+        }
     }
     /**
      * Update CASA-net application to the latest version.
@@ -16,15 +32,24 @@ class VersionsBl {
     async updateToLastVersion() {
         /** Get last update from git repo */
         try {
+            /** Skip process if updating application already in progress */
+            if (this.updateStatus === 'inProgress') {
+                return {
+                    alreadyUpToDate: false,
+                };
+            }
+            this.updateStatus = 'inProgress';
             /** Clean up the workspace, this is a dangerous part!!! it will remove any files change. */
             if (config_1.Configuration.runningMode === 'prod') {
                 /** clean all workstation to the HEAD image. to allow the git pull. */
                 await this.git.reset('hard');
             }
+            /** Pull last version from the GitHub repo. */
             const pullResults = await this.git.pull('origin', 'master', { '--rebase': 'false' });
             logger_1.logger.info(`pull last version pulld ${pullResults.summary.changes} changes`);
             /** If thers is no any change just return. */
             if (pullResults.summary.changes === 0) {
+                this.updateStatus = 'finished';
                 return {
                     alreadyUpToDate: true,
                 };
@@ -33,26 +58,23 @@ class VersionsBl {
             await this.git.fetch(['--tags', '--force']);
         }
         catch (error) {
+            this.updateStatus = 'fail';
             logger_1.logger.warn(`Pulling last change from remote repo fail ${error.message}`);
             throw {
                 responseCode: 7501,
                 message: 'Pulling last change from remote repo fail',
             };
         }
-        /** Install last dependencies updates */
-        try {
-            const installationResults = await child_process_promise_1.exec('npm i');
-            logger_1.logger.info(`installing last dependencies results  ${installationResults.stdout}`);
-        }
-        catch (error) {
-            logger_1.logger.warn(`Installing last dependencies fail ${error.stdout}`);
-            throw {
-                responseCode: 8501,
-                message: 'Installing last dependencies fail',
-            };
-        }
+        /** Install the last dependencies updates in the background */
+        this.updateVersionDependencies();
         return {
             alreadyUpToDate: false,
+        };
+    }
+    /** Get version update status */
+    async getUpdateStatus() {
+        return {
+            updateStatus: this.updateStatus,
         };
     }
     /**

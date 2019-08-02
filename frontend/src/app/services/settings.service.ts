@@ -5,7 +5,9 @@ import {
   RemoteSettings,
   IftttIntegrationSettings,
   UpdateResults,
-  VersionInfo
+  VersionInfo,
+  VersionUpdateStatus,
+  UpdateStatus
 } from '../../../../backend/src/models/sharedInterfaces';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
@@ -142,6 +144,21 @@ export class SettingsService {
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
       throw error;
+    }
+  }
+
+  public async waitForVersionUpdate(): Promise<UpdateStatus> {
+    try {
+      let updateStatus: UpdateStatus = 'inProgress';
+      while (updateStatus === 'inProgress') {
+        const currentStatus = await this.httpClient.get<VersionUpdateStatus>('/API/version/update-status').toPromise();
+        updateStatus = currentStatus.updateStatus;
+        await this.sleep(5000);
+      }
+
+      return updateStatus;
+    } catch (error) {
+
     }
   }
 

@@ -16,6 +16,12 @@ let VersionsController = class VersionsController extends tsoa_1.Controller {
         return await versionsBl_1.VersionsBlSingleton.updateToLastVersion();
     }
     /**
+     * Get current version update progress status
+     */
+    async getUpdateStatus() {
+        return await versionsBl_1.VersionsBlSingleton.getUpdateStatus();
+    }
+    /**
      * Get current version.
      * @returns Current version.
      */
@@ -28,6 +34,11 @@ __decorate([
     tsoa_1.Response(501, 'Server error'),
     tsoa_1.Put('latest')
 ], VersionsController.prototype, "updateVersion", null);
+__decorate([
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Get('update-status')
+], VersionsController.prototype, "getUpdateStatus", null);
 __decorate([
     tsoa_1.Security('adminAuth'),
     tsoa_1.Security('userAuth'),

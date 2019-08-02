@@ -284,6 +284,11 @@ const models: TsoaRoute.Models = {
             "alreadyUpToDate": { "dataType": "boolean", "required": true },
         },
     },
+    "VersionUpdateStatus": {
+        "properties": {
+            "updateStatus": { "dataType": "enum", "enums": ["inProgress", "finished", "fail"], "required": true },
+        },
+    },
     "VersionInfo": {
         "properties": {
             "version": { "dataType": "string", "required": true },
@@ -1588,6 +1593,29 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.updateVersion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/version/update-status',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new VersionsController();
+
+
+            const promise = controller.getUpdateStatus.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/version',

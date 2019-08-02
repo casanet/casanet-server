@@ -666,6 +666,14 @@ export declare interface VersionInfo {
     timestamp: number;
 }
 
+/** Version update progress status options */
+export declare type UpdateStatus = 'inProgress' | 'finished' | 'fail';
+
+/** Version update progress status info. */
+export declare interface VersionUpdateStatus {
+    updateStatus: UpdateStatus;
+}
+
 /** Minion timeline node */
 export declare interface MinionTimeline {
     minionId: string;
@@ -675,7 +683,7 @@ export declare interface MinionTimeline {
 
 /** Device in commands repo project. see https://github.com/haimkastner/rf-commands-repo. API section */
 export declare interface CommandsRepoDevice {
-    brand : string;
-    model : string;
-    category : string;
+    brand: string;
+    model: string;
+    category: string;
 }

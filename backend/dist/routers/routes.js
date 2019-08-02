@@ -284,6 +284,11 @@ const models = {
             "alreadyUpToDate": { "dataType": "boolean", "required": true },
         },
     },
+    "VersionUpdateStatus": {
+        "properties": {
+            "updateStatus": { "dataType": "enum", "enums": ["inProgress", "finished", "fail"], "required": true },
+        },
+    },
     "VersionInfo": {
         "properties": {
             "version": { "dataType": "string", "required": true },
@@ -1302,6 +1307,23 @@ function RegisterRoutes(app) {
         }
         const controller = new versionsController_1.VersionsController();
         const promise = controller.updateVersion.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.get('/API/version/update-status', authenticateMiddleware([{ "adminAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new versionsController_1.VersionsController();
+        const promise = controller.getUpdateStatus.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.get('/API/version', authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]), function (request, response, next) {

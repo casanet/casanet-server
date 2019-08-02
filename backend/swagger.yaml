@@ -771,6 +771,18 @@ definitions:
         required:
             - alreadyUpToDate
         type: object
+    VersionUpdateStatus:
+        description: 'Version update progress status info.'
+        properties:
+            updateStatus:
+                type: string
+                enum:
+                    - inProgress
+                    - finished
+                    - fail
+        required:
+            - updateStatus
+        type: object
     VersionInfo:
         description: 'Version info'
         properties:
@@ -2224,6 +2236,27 @@ paths:
                     schema:
                         $ref: '#/definitions/ErrorResponse'
             description: 'Update CASA-net application to the latest version (Restart required for the version update complete).'
+            tags:
+                - Version
+            security:
+                -
+                    adminAuth: []
+            parameters: []
+    /version/update-status:
+        get:
+            operationId: GetUpdateStatus
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/VersionUpdateStatus'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get current version update progress status'
             tags:
                 - Version
             security:

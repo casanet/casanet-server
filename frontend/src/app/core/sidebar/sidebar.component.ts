@@ -1,7 +1,15 @@
 import { Component, OnInit, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SettingsService } from '../../services/settings.service';
-import { RemoteConnectionStatus, RemoteSettings, User, UpdateResults, VersionInfo } from '../../../../../backend/src/models/sharedInterfaces';
+import {
+    RemoteConnectionStatus,
+    RemoteSettings,
+    User,
+    UpdateResults,
+    VersionInfo,
+    VersionUpdateStatus,
+    UpdateStatus
+} from '../../../../../backend/src/models/sharedInterfaces';
 import swal, { SweetAlertResult } from 'sweetalert2';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subscription } from 'rxjs';
@@ -242,16 +250,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
     /** Versioning */
     public async updateVertionToLast() {
         const swalResult: void | SweetAlertResult = await swal({
-            type: 'question',
+            imageUrl: './assets/icons/baseline_system_update_black_48dp.png',
             title: this.translatePipe.transform('UPDATE_TO_THE_LAST_VERSION'),
+            text: this.translatePipe.transform('UPDATING_WARNING'),
             showLoaderOnConfirm: true,
             confirmButtonText: this.translatePipe.transform('UPDATE'),
-            cancelButtonText: this.translatePipe.transform('CANCEL'),
-            showCancelButton: true,
+            showCancelButton: false,
             allowOutsideClick: () => !swal.isLoading(),
             preConfirm: async () => {
                 try {
-                    return await this.settingsService.updateToLastVersion();
+                    const startingUpdateRes = await this.settingsService.updateToLastVersion();
+                    if (startingUpdateRes.alreadyUpToDate) {
+                        return startingUpdateRes;
+                    }
+                    return await this.settingsService.waitForVersionUpdate();
                 } catch (error) {
                     return false;
                 }
@@ -268,6 +280,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
             await swal({
                 type: 'info',
                 title: `${this.translatePipe.transform('SYSTEM_ALREADY_UP_TO_DATE')}`,
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        const updateStatus: UpdateStatus = swalResult.value;
+
+        if (updateStatus === 'fail') {
+            await swal({
+                type: 'error',
+                title: `${this.translatePipe.transform('UPDATE_SYSTEM_FAIL')}`,
+                text: `${this.translatePipe.transform('CONTACT_SUPPORT_OR_CHECK_LOCAL_SERVER_HEALTH')}`,
                 confirmButtonText: 'OK'
             });
             return;

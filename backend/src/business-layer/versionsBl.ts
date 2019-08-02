@@ -1,15 +1,31 @@
 import { exec } from 'child-process-promise';
 import * as simplegit from 'simple-git/promise';
 import { Configuration } from '../config';
-import { ErrorResponse, UpdateResults, VersionInfo } from '../models/sharedInterfaces';
+import { ErrorResponse, UpdateResults, UpdateStatus, VersionInfo, VersionUpdateStatus } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
 export class VersionsBl {
 
     private git = simplegit();
+    private updateStatus: UpdateStatus = 'finished';
 
     constructor() {
 
+    }
+
+    /**
+     * Install/update NPM dependencies in the background. it's can take a while.
+     */
+    private async updateVersionDependencies() {
+        try {
+            logger.info(`starting NPM install, it's can take a while`);
+            const installationResults = await exec('npm i');
+            logger.info(`installing last dependencies results: ${installationResults.stdout}`);
+            this.updateStatus = 'finished';
+        } catch (error) {
+            this.updateStatus = 'fail';
+            logger.warn(`Installing last dependencies fail ${error.stdout}`);
+        }
     }
 
     /**
@@ -20,18 +36,29 @@ export class VersionsBl {
     public async updateToLastVersion(): Promise<UpdateResults> {
         /** Get last update from git repo */
         try {
+
+            /** Skip process if updating application already in progress */
+            if (this.updateStatus === 'inProgress') {
+                return {
+                    alreadyUpToDate: false,
+                };
+            }
+            this.updateStatus = 'inProgress';
+
             /** Clean up the workspace, this is a dangerous part!!! it will remove any files change. */
             if (Configuration.runningMode === 'prod') {
                 /** clean all workstation to the HEAD image. to allow the git pull. */
                 await this.git.reset('hard');
             }
 
+            /** Pull last version from the GitHub repo. */
             const pullResults = await this.git.pull('origin', 'master', { '--rebase': 'false' });
 
             logger.info(`pull last version pulld ${pullResults.summary.changes} changes`);
 
             /** If thers is no any change just return. */
             if (pullResults.summary.changes === 0) {
+                this.updateStatus = 'finished';
                 return {
                     alreadyUpToDate: true,
                 };
@@ -41,6 +68,7 @@ export class VersionsBl {
             await this.git.fetch(['--tags', '--force']);
 
         } catch (error) {
+            this.updateStatus = 'fail';
             logger.warn(`Pulling last change from remote repo fail ${error.message}`);
             throw {
                 responseCode: 7501,
@@ -48,22 +76,18 @@ export class VersionsBl {
             } as ErrorResponse;
         }
 
-        /** Install last dependencies updates */
-        try {
-            const installationResults = await exec('npm i');
-
-            logger.info(`installing last dependencies results  ${installationResults.stdout}`);
-
-        } catch (error) {
-            logger.warn(`Installing last dependencies fail ${error.stdout}`);
-            throw {
-                responseCode: 8501,
-                message: 'Installing last dependencies fail',
-            } as ErrorResponse;
-        }
+        /** Install the last dependencies updates in the background */
+        this.updateVersionDependencies();
 
         return {
             alreadyUpToDate: false,
+        };
+    }
+
+    /** Get version update status */
+    public async getUpdateStatus(): Promise<VersionUpdateStatus> {
+        return {
+            updateStatus: this.updateStatus,
         };
     }
 

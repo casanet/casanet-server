@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Body, Controller, Delete, Get, Header, Path, Post, Put, Request, Response, Route, Security, SuccessResponse, Tags } from 'tsoa';
 import { VersionsBlSingleton } from '../business-layer/versionsBl';
-import { ErrorResponse, User, UpdateResults, VersionInfo } from '../models/sharedInterfaces';
+import { ErrorResponse, UpdateResults, VersionInfo, VersionUpdateStatus } from '../models/sharedInterfaces';
 
 @Tags('Version')
 @Route('version')
@@ -15,6 +15,16 @@ export class VersionsController extends Controller {
     @Put('latest')
     public async updateVersion(): Promise<UpdateResults> {
         return await VersionsBlSingleton.updateToLastVersion();
+    }
+
+    /**
+     * Get current version update progress status
+     */
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Get('update-status')
+    public async getUpdateStatus(): Promise<VersionUpdateStatus> {
+        return await VersionsBlSingleton.getUpdateStatus();
     }
 
     /**
