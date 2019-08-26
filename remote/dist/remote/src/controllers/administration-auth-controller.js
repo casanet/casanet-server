@@ -125,7 +125,7 @@ let AdministrationAuthController = class AdministrationAuthController extends ts
     async administrationLogout() {
         /** Currently there is no blacklist of invalid tokens */
         /** Send clean session by response to client browser. */
-        this.setHeader('Set-Cookie', `session=0;`);
+        this.setHeader('Set-Cookie', `session=0;  Path=/;`);
     }
 };
 __decorate([

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const express = require("express");
 const forceSsl = require("express-force-ssl");
 const rateLimit = require("express-rate-limit");
@@ -119,7 +120,7 @@ class App {
         // Protect authentication API from guessing username/password.
         const authLimiter = rateLimit({
             windowMs: 15 * 60 * 1000,
-            max: 10,
+            max: 20,
         });
         // apply to all authentication requests
         this.express.use('/API/administration/auth/**', authLimiter);
@@ -134,6 +135,21 @@ class App {
         // Protect from XSS and other malicious attacks
         this.express.use(helmet());
         this.express.use(helmet.frameguard({ action: 'deny' }));
+        const whitelist = [
+            process.env.ALLOW_DASHBOARD_ORIGIN || 'http://192.168.1.104:8080',
+            process.env.ALLOW_MANAGEMENT_ORIGIN || 'http://127.0.0.1:8080'
+        ];
+        this.express.use(cors({
+            credentials: true,
+            origin: (origin, callback) => {
+                if (whitelist.indexOf(origin) !== -1) {
+                    callback(null, true);
+                }
+                else {
+                    callback(new Error('Not allowed by CORS'));
+                }
+            }
+        }));
     }
     /**
      * Parse request query and body.

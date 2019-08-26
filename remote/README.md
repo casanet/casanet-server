@@ -42,6 +42,11 @@ When deploying an app to some services (Heroku, AWS, etc) the app runs behind a 
 To tell the app to trust the proxy set `APP_BEHIND_PROXY` env var to `true`.
 And to redirect HTTP request to HTTPS set `APP_BEHIND_PROXY_REDIRECT_HTTPS` env var to `true`.
 
+### Allow cors for the frontend apps
+To allow the dashboard app to access remote server API set `ALLOW_MANAGEMENT_ORIGIN` with the origin URL of the management app (default is 'http://127.0.0.1:8080'). 
+
+And set `ALLOW_DASHBOARD_ORIGIN` for the user's dashboard origin URL app (default is 'http://127.0.0.1:8081').
+
 ### Addininal configuration available:
 See [server configure](../backend/README.md#configure-server).
 
