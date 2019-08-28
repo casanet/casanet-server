@@ -73,7 +73,7 @@ For each supported IoT device model connection and pairing instructions see [mod
 
 ## Fetch RF (IR / 433MHz etc.) commands from a commands repository.
 When using RF transmitter to control home devices it`s possible to record the command from the original remote control or generating random command.
-So to avoid recording a lot of commands one by one there is another project to store commands and serve then on demand. see the [project page](https://github.com/haimkastner/rf-commands-repo).
+So to avoid recording a lot of commands one by one there is another project to store commands and serve then on demand. see the [project page](https://github.com/casanet/rf-commands-repo).
 The `rf-commands-repo` URL placed in the `casanet.json` configuration file.
 
 If you want to update my repo, feel free to contact me. 

@@ -66,7 +66,7 @@ export declare interface Config {
         /** Bcrypt salt rounds */
         bcryptSaltRounds: number;
     };
-    /** Rf commands repo to fetch from see project page https://github.com/haimkastner/rf-commands-repo */
+    /** Rf commands repo to fetch from see project page https://github.com/casanet/rf-commands-repo */
     commandsRepoUrl: string;
 }
 

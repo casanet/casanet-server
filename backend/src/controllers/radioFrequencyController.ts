@@ -11,7 +11,7 @@ import {
 export class RfController extends Controller {
 
     /**
-     * Get all aupported devices in commands repo see https://github.com/haimkastner/rf-commands-repo API.
+     * Get all aupported devices in commands repo see https://github.com/casanet/rf-commands-repo API.
      * @returns supported devices collection.
      */
     @Security('userAuth')
@@ -23,7 +23,7 @@ export class RfController extends Controller {
     }
 
     /**
-     * Fetch commands set for certain minion see https://github.com/haimkastner/rf-commands-repo API.
+     * Fetch commands set for certain minion see https://github.com/casanet/rf-commands-repo API.
      * @param minionId minion to fetch commands for.
      * @param commandsRepoDevice devices commands set to fetch.
      */

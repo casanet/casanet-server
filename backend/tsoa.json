@@ -55,7 +55,7 @@
             }
         ],
         "name": "CASAnet - API",
-        "description": "IoT server for local home network. hosted in [GitHub repo](https://github.com/haimkastner/Home-IoT-Server).",
+        "description": "IoT server for local home network. hosted in [GitHub repo](https://github.com/casanet/casanet-server).",
         "securityDefinitions": {
             "userAuth": {
                 "type": "apiKey",
