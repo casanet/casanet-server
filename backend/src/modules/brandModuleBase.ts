@@ -115,7 +115,7 @@ export abstract class BrandModuleBase {
 
     /**
      * Update module with commands set, instead of recording on by one by the end user.
-     * see https://github.com/haimkastner/rf-commands-repo project API.
+     * see https://github.com/casanet/rf-commands-repo project API.
      * @param minion minioin to update commands by fetched commands set.
      * @param commandsSet Fetched RF commands set.
      */

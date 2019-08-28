@@ -681,7 +681,7 @@ export declare interface MinionTimeline {
     status: MinionStatus;
 }
 
-/** Device in commands repo project. see https://github.com/haimkastner/rf-commands-repo. API section */
+/** Device in commands repo project. see https://github.com/casanet/rf-commands-repo. API section */
 export declare interface CommandsRepoDevice {
     brand: string;
     model: string;

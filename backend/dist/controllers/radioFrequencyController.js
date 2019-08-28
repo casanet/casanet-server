@@ -13,14 +13,14 @@ const tsoa_1 = require("tsoa");
 const rfBl_1 = require("../business-layer/rfBl");
 let RfController = class RfController extends tsoa_1.Controller {
     /**
-     * Get all aupported devices in commands repo see https://github.com/haimkastner/rf-commands-repo API.
+     * Get all aupported devices in commands repo see https://github.com/casanet/rf-commands-repo API.
      * @returns supported devices collection.
      */
     async getCommandsRepoAvailableDevices() {
         return await rfBl_1.RfBlSingleton.getAvailableDevicesToFetch();
     }
     /**
-     * Fetch commands set for certain minion see https://github.com/haimkastner/rf-commands-repo API.
+     * Fetch commands set for certain minion see https://github.com/casanet/rf-commands-repo API.
      * @param minionId minion to fetch commands for.
      * @param commandsRepoDevice devices commands set to fetch.
      */

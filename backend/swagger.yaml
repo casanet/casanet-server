@@ -802,7 +802,7 @@ definitions:
             - timestamp
         type: object
     CommandsRepoDevice:
-        description: 'Device in commands repo project. see https://github.com/haimkastner/rf-commands-repo. API section'
+        description: 'Device in commands repo project. see https://github.com/casanet/rf-commands-repo. API section'
         properties:
             brand:
                 type: string
@@ -818,7 +818,7 @@ definitions:
 info:
     title: 'CASAnet - API'
     version: 2.0.0
-    description: 'IoT server for local home network. hosted in [GitHub repo](https://github.com/haimkastner/Home-IoT-Server).'
+    description: 'IoT server for local home network. hosted in [GitHub repo](https://github.com/casanet/casanet-server).'
     license:
         name: GNU
 paths:
@@ -2302,7 +2302,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get all aupported devices in commands repo see https://github.com/haimkastner/rf-commands-repo API.'
+            description: 'Get all aupported devices in commands repo see https://github.com/casanet/rf-commands-repo API.'
             tags:
                 - RF
             security:
@@ -2323,7 +2323,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Fetch commands set for certain minion see https://github.com/haimkastner/rf-commands-repo API.'
+            description: 'Fetch commands set for certain minion see https://github.com/casanet/rf-commands-repo API.'
             tags:
                 - RF
             security:
