@@ -3,7 +3,7 @@
  */
 let accessFail = () => {
     alert('ACCESS FORBIDDEN, redirecting to auth page...')
-    window.location.href = "/static/#/login";
+    window.location.href = "/#/login";
 }
 
 let getMinionsFail = (msg) => {
