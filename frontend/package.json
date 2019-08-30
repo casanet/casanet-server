@@ -2,14 +2,15 @@
   "name": "casa-net-ui",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build --prod",
+    "environment:internal": "node ./src/environments/build-internal-environment.js",
+    "environment:external": "node ./src/environments/build-external-environment.js",
+    "postngbuild": "copyfiles ./light-app/**/* ./dist && node ./pwa/pwa-ngsw-copy.js",
+    "build": "npm run environment:internal && ng build --prod && npm run postngbuild && del-cli ../backend/dist/public --force && copyfiles -u 1 ./dist/**/* ../backend/dist/public",
+    "build:external": "npm run environment:external && ng build --prod && npm run postngbuild",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prebuild": "node ./pwa/pwa-versioning.js",
-    "postbuild": "copyfiles ./light-app/**/* ../backend/dist/public/ && node ./pwa/pwa-ngsw-copy.js && del-cli ../remote/dist/remote/src/public/static/ --force && copyfiles -u 4 ../backend/dist/public/**/* ../remote/dist/remote/src/public/static/"
+    "prebuild": "node ./pwa/pwa-versioning.js"
   },
   "private": false,
   "dependencies": {

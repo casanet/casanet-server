@@ -3,7 +3,7 @@ import { ToolbarHelpers } from './toolbar.helpers';
 import { SettingsService } from '../../services/settings.service';
 import { RemoteConnectionStatus, User } from '../../../../../backend/src/models/sharedInterfaces';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
 	// tslint:disable-next-line:component-selector

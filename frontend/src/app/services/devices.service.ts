@@ -4,6 +4,7 @@ import { Minion, MinionStatus, MinionFeed, DeviceKind, LocalNetworkDevice } from
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,9 @@ export class DevicesService {
 
   private async loadDevicesKindsData() {
     try {
-      const devices = await this.httpClient.get<DeviceKind[]>('/API/devices/kinds').toPromise();
+      const devices = await this.httpClient.get<DeviceKind[]>(`${environment.baseUrl}/devices/kinds`, {
+        withCredentials: true
+      }).toPromise();
       this.devicesKinds = devices;
 
     } catch (error) {
@@ -44,7 +47,9 @@ export class DevicesService {
 
   private async loadLanDevices() {
     try {
-      const lanDevices = await this.httpClient.get<LocalNetworkDevice[]>('/API/devices').toPromise();
+      const lanDevices = await this.httpClient.get<LocalNetworkDevice[]>(`${environment.baseUrl}/devices`, {
+        withCredentials: true
+      }).toPromise();
       this.lanDevices = lanDevices;
 
       this.lanDevicesFeed.next(DeepCopy<LocalNetworkDevice[]>(this.lanDevices));
@@ -65,7 +70,9 @@ export class DevicesService {
 
     this.lanDevices = [];
     try {
-      await this.httpClient.post(`/API/devices/rescan`, {}).toPromise();
+      await this.httpClient.post(`${environment.baseUrl}/devices/rescan`, {}, {
+        withCredentials: true
+      }).toPromise();
       await this.loadLanDevices();
 
     } catch (error) {
@@ -76,9 +83,11 @@ export class DevicesService {
   public async setDeviceName(localNetworkDevice: LocalNetworkDevice, name: string) {
     try {
       const { mac } = localNetworkDevice;
-      await this.httpClient.put(`/API/devices/${localNetworkDevice.mac}`, {
+      await this.httpClient.put(`${environment.baseUrl}/devices/${localNetworkDevice.mac}`, {
         name,
         mac,
+      }, {
+        withCredentials: true
       }).toPromise();
       this.loadLanDevices();
     } catch (error) {

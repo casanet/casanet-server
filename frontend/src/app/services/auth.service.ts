@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, Subscriber, Observer, BehaviorSubject } from 'rxjs';
-import { User } from '../../../../../backend/src/models/sharedInterfaces';
+import { User } from '../../../../backend/src/models/sharedInterfaces';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +57,9 @@ export class AuthService {
   }
 
   private async retriveProfile(): Promise<void> {
-    const profile: User = await this.httpClient.get<User>('/API/users/profile').toPromise();
+    const profile: User = await this.httpClient.get<User>(`${environment.baseUrl}/users/profile`, {
+      withCredentials: true
+    }).toPromise();
     this.setProfile(profile);
   }
   /**
@@ -69,7 +72,10 @@ export class AuthService {
    */
   public async login(email: string, password: string, localServerId: string = ''): Promise<HttpResponse<Object>> {
     const res =
-      await this.httpClient.post('/API/auth/login', { email, password, localServerId }, { observe: 'response' }).toPromise();
+      await this.httpClient.post(`${environment.baseUrl}/auth/login`, { email, password, localServerId }, {
+        withCredentials: true,
+        observe: 'response'
+      }).toPromise();
 
     if (res.status === 200) {
       await this.retriveProfile();
@@ -79,12 +85,16 @@ export class AuthService {
   }
 
   public async loginTfa(email: string, password: string, localServerId: string = ''): Promise<void> {
-    await this.httpClient.post('/API/auth/login/tfa', { email, password, localServerId }).toPromise();
+    await this.httpClient.post(`${environment.baseUrl}/auth/login/tfa`, { email, password, localServerId }, {
+      withCredentials: true
+    }).toPromise();
     await this.retriveProfile();
   }
 
   public async logout(): Promise<void> {
-    await this.httpClient.post('/API/auth/logout', {}).toPromise();
+    await this.httpClient.post(`${environment.baseUrl}/auth/logout`, {}, {
+      withCredentials: true
+    }).toPromise();
 
     this.setProfile(this.DEFAULT_USER);
     this.router.navigate(['/login']);

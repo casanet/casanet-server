@@ -24,7 +24,7 @@
     {
       "name": "casanet-ui-data",
       "urls": [
-        "/static/**"
+        "/**"
       ],
       "version": 3,
       "cacheConfig": {

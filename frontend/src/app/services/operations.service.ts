@@ -4,6 +4,7 @@ import { Minion, MinionStatus, Operation } from '../../../../backend/src/models/
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,9 @@ export class OperationService {
 
   private async loadOperations() {
     try {
-      const operations = await this.httpClient.get<Operation[]>('/API/operations').toPromise();
+      const operations = await this.httpClient.get<Operation[]>(`${environment.baseUrl}/operations`, {
+        withCredentials: true
+      }).toPromise();
       operations.sort((itemA, itemB) => {
         return itemA.operationName < itemB.operationName ? -1 : 1;
       });
@@ -44,7 +47,9 @@ export class OperationService {
 
   public async createOperation(operation: Operation) {
     try {
-      await this.httpClient.post('/API/operations', operation).toPromise();
+      await this.httpClient.post(`${environment.baseUrl}/operations`, operation, {
+        withCredentials: true
+      }).toPromise();
       this.loadOperations();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -53,7 +58,9 @@ export class OperationService {
 
   public async editOperation(operation: Operation) {
     try {
-      await this.httpClient.put(`/API/operations/${operation.operationId}`, operation).toPromise();
+      await this.httpClient.put(`${environment.baseUrl}/operations/${operation.operationId}`, operation, {
+        withCredentials: true
+      }).toPromise();
       this.loadOperations();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -62,7 +69,9 @@ export class OperationService {
 
   public async deleteOperation(operation: Operation) {
     try {
-      await this.httpClient.delete(`/API/operations/${operation.operationId}`).toPromise();
+      await this.httpClient.delete(`${environment.baseUrl}/operations/${operation.operationId}`, {
+        withCredentials: true
+      }).toPromise();
       this.loadOperations();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -79,7 +88,9 @@ export class OperationService {
 
   public async triggerOperation(operation: Operation) {
     try {
-      await this.httpClient.post(`/API/operations/trigger/${operation.operationId}`, undefined).toPromise();
+      await this.httpClient.post(`${environment.baseUrl}/operations/trigger/${operation.operationId}`, undefined, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
