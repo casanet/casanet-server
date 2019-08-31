@@ -789,28 +789,28 @@
                         // First, narrow down the set of resources to those which are handled by this group.
                         // Either it's a known URL, or it matches a given pattern.
                         .filter(url => this.config.urls.some(cacheUrl => cacheUrl === url) ||
-                        this.patterns.some(pattern => pattern.test(url)))
+                            this.patterns.some(pattern => pattern.test(url)))
                         // Finally, process each resource in turn.
                         .reduce((previous, url) => __awaiter(this, void 0, void 0, function* () {
-                        yield previous;
-                        const req = this.adapter.newRequest(url);
-                        // It's possible that the resource in question is already cached. If so,
-                        // continue to the next one.
-                        const alreadyCached = ((yield cache.match(req)) !== undefined);
-                        if (alreadyCached) {
-                            return;
-                        }
-                        // Get the most recent old version of the resource.
-                        const res = yield updateFrom.lookupResourceWithoutHash(url);
-                        if (res === null || res.metadata === undefined) {
-                            // Unexpected, but not harmful.
-                            return;
-                        }
-                        // Write it into the cache. It may already be expired, but it can still serve
-                        // traffic until it's updated (stale-while-revalidate approach).
-                        yield cache.put(req, res.response);
-                        yield metaTable.write(url, Object.assign({}, res.metadata, { used: false }));
-                    }), Promise.resolve());
+                            yield previous;
+                            const req = this.adapter.newRequest(url);
+                            // It's possible that the resource in question is already cached. If so,
+                            // continue to the next one.
+                            const alreadyCached = ((yield cache.match(req)) !== undefined);
+                            if (alreadyCached) {
+                                return;
+                            }
+                            // Get the most recent old version of the resource.
+                            const res = yield updateFrom.lookupResourceWithoutHash(url);
+                            if (res === null || res.metadata === undefined) {
+                                // Unexpected, but not harmful.
+                                return;
+                            }
+                            // Write it into the cache. It may already be expired, but it can still serve
+                            // traffic until it's updated (stale-while-revalidate approach).
+                            yield cache.put(req, res.response);
+                            yield metaTable.write(url, Object.assign({}, res.metadata, { used: false }));
+                        }), Promise.resolve());
                 }
             });
         }
@@ -1050,6 +1050,13 @@
          */
         handleFetch(req, ctx) {
             return __awaiter$1(this, void 0, void 0, function* () {
+
+                // Ignore API calls, 
+                // Need it because the angular pattern builder is poor.
+                if (req.url && req.url.indexOf('/API/') !== -1) {
+                    return null;
+                }
+
                 // Do nothing
                 if (!this.patterns.some(pattern => pattern.test(req.url))) {
                     return null;
@@ -2376,11 +2383,11 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ 'Content-Type': 'text/plain' }
                 yield (yield this.scope.caches.keys())
                     .filter(key => key.startsWith('ngsw:'))
                     .reduce((previous, key) => __awaiter$5(this, void 0, void 0, function* () {
-                    yield Promise.all([
-                        previous,
-                        this.scope.caches.delete(key),
-                    ]);
-                }), Promise.resolve());
+                        yield Promise.all([
+                            previous,
+                            this.scope.caches.delete(key),
+                        ]);
+                    }), Promise.resolve());
             });
         }
         /**
@@ -2591,14 +2598,14 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ 'Content-Type': 'text/plain' }
                 // future operation could change the response. If no response has been found yet, keep
                 // checking versions until one is or until all versions have been exhausted.
                 .reduce((prev, version) => __awaiter$5(this, void 0, void 0, function* () {
-                // First, check the previous result. If a non-null result has been found already, just
-                // return it.
-                if ((yield prev) !== null) {
-                    return prev;
-                }
-                // No result has been found yet. Try the next `AppVersion`.
-                return version.lookupResourceWithHash(url, hash);
-            }), Promise.resolve(null));
+                    // First, check the previous result. If a non-null result has been found already, just
+                    // return it.
+                    if ((yield prev) !== null) {
+                        return prev;
+                    }
+                    // No result has been found yet. Try the next `AppVersion`.
+                    return version.lookupResourceWithHash(url, hash);
+                }), Promise.resolve(null));
         }
         lookupResourceWithoutHash(url) {
             return __awaiter$5(this, void 0, void 0, function* () {
