@@ -12,6 +12,7 @@ import {
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,9 @@ export class SettingsService {
     while (true) {
       try {
 
-        remoteConnectionStatus = await this.httpClient.get<RemoteConnectionStatus>('/API/remote/status').toPromise();
+        remoteConnectionStatus = await this.httpClient.get<RemoteConnectionStatus>(`${environment.baseUrl}/remote/status`, {
+          withCredentials: true,
+        }).toPromise();
 
         if (!this.onlineFeed.value) {
           this.onlineFeed.next(true);
@@ -64,7 +67,9 @@ export class SettingsService {
 
   public async isIftttIntegrationEnabled(): Promise<boolean> {
     try {
-      return await this.httpClient.get<boolean>('/API/ifttt/settings').toPromise();
+      return await this.httpClient.get<boolean>(`${environment.baseUrl}/ifttt/settings`, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
       return false;
@@ -76,7 +81,9 @@ export class SettingsService {
       enableIntegration: false,
     };
     try {
-      await this.httpClient.put('/API/ifttt/settings', iftttSettings).toPromise();
+      await this.httpClient.put(`${environment.baseUrl}/ifttt/settings`, iftttSettings, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -88,7 +95,9 @@ export class SettingsService {
       apiKey,
     };
     try {
-      await this.httpClient.put('/API/ifttt/settings', iftttSettings).toPromise();
+      await this.httpClient.put(`${environment.baseUrl}/ifttt/settings`, iftttSettings, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -98,7 +107,9 @@ export class SettingsService {
 
   public async getRemoteHostname(): Promise<string> {
     try {
-      return await this.httpClient.get<string>('/API/remote').toPromise();
+      return await this.httpClient.get<string>(`${environment.baseUrl}/remote`, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
       return '';
@@ -107,7 +118,9 @@ export class SettingsService {
 
   public async disconnectRemote(): Promise<void> {
     try {
-      await this.httpClient.delete('/API/remote').toPromise();
+      await this.httpClient.delete(`${environment.baseUrl}/remote`, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -115,7 +128,9 @@ export class SettingsService {
 
   public async getLocalServerMac(): Promise<string> {
     try {
-      return await this.httpClient.get<string>('/API/remote/machine-mac').toPromise();
+      return await this.httpClient.get<string>(`${environment.baseUrl}/remote/machine-mac`, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
       return '';
@@ -124,7 +139,9 @@ export class SettingsService {
 
   public async setRemoteSettings(remoteSettings: RemoteSettings) {
     try {
-      await this.httpClient.put('/API/remote', remoteSettings).toPromise();
+      await this.httpClient.put(`${environment.baseUrl}/remote`, remoteSettings, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -132,7 +149,9 @@ export class SettingsService {
 
   public async getCurrentVersion(): Promise<VersionInfo> {
     try {
-      return await this.httpClient.get<VersionInfo>('/API/version').toPromise();
+      return await this.httpClient.get<VersionInfo>(`${environment.baseUrl}/version`, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -140,7 +159,9 @@ export class SettingsService {
 
   public async updateToLastVersion(): Promise<UpdateResults> {
     try {
-      return await this.httpClient.put<UpdateResults>('/API/version/latest', {}).toPromise();
+      return await this.httpClient.put<UpdateResults>(`${environment.baseUrl}/version/latest`, {}, {
+        withCredentials: true
+      }).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
       throw error;
@@ -151,7 +172,9 @@ export class SettingsService {
     try {
       let updateStatus: UpdateStatus = 'inProgress';
       while (updateStatus === 'inProgress') {
-        const currentStatus = await this.httpClient.get<VersionUpdateStatus>('/API/version/update-status').toPromise();
+        const currentStatus = await this.httpClient.get<VersionUpdateStatus>(`${environment.baseUrl}/version/update-status`, {
+          withCredentials: true
+        }).toPromise();
         updateStatus = currentStatus.updateStatus;
         await this.sleep(5000);
       }

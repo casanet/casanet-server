@@ -4,6 +4,7 @@ import { Minion, MinionStatus, MinionFeed, DeviceKind, MinionTimeline, CommandsR
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
 	providedIn: 'root'
@@ -20,7 +21,9 @@ export class MinionsService {
 
 	public async getCommandsRepoAvailableDevices(): Promise<CommandsRepoDevice[]> {
 		try {
-			return await this.httpClient.get<CommandsRepoDevice[]>(`/API/rf/devices`).toPromise();
+			return await this.httpClient.get<CommandsRepoDevice[]>(`${environment.baseUrl}/rf/devices`, {
+				withCredentials: true
+			}).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 			return null;
@@ -28,12 +31,16 @@ export class MinionsService {
 	}
 
 	public async fetchDeviceCommandsToMinion(minion: Minion, commandsRepoDevice: CommandsRepoDevice): Promise<void> {
-		await this.httpClient.put(`/API/rf/fetch-commands/${minion.minionId}`, commandsRepoDevice).toPromise();
+		await this.httpClient.put(`${environment.baseUrl}/rf/fetch-commands/${minion.minionId}`, commandsRepoDevice, {
+			withCredentials: true
+		}).toPromise();
 	}
 
 	public async recordCommand(minion: Minion, minionStatus: MinionStatus) {
 		try {
-			await this.httpClient.post(`/API/rf/record/${minion.minionId}`, minionStatus).toPromise();
+			await this.httpClient.post(`${environment.baseUrl}/rf/record/${minion.minionId}`, minionStatus, {
+				withCredentials: true
+			}).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
@@ -41,7 +48,9 @@ export class MinionsService {
 
 	public async generateCommand(minion: Minion, minionStatus: MinionStatus) {
 		try {
-			await this.httpClient.post(`/API/rf/generate/${minion.minionId}`, minionStatus).toPromise();
+			await this.httpClient.post(`${environment.baseUrl}/rf/generate/${minion.minionId}`, minionStatus, {
+				withCredentials: true
+			}).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
@@ -54,7 +63,9 @@ export class MinionsService {
 
 		this.minions = [];
 		try {
-			await this.httpClient.post(`/API/minions/rescan`, {}).toPromise();
+			await this.httpClient.post(`${environment.baseUrl}/minions/rescan`, {}, {
+				withCredentials: true
+			}).toPromise();
 			await this.loadMinions();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
@@ -63,7 +74,9 @@ export class MinionsService {
 
 	public async refreshMinion(minion: Minion) {
 		try {
-			await this.httpClient.post(`/API/minions/rescan/${minion.minionId}`, {}).toPromise();
+			await this.httpClient.post(`${environment.baseUrl}/minions/rescan/${minion.minionId}`, {}, {
+				withCredentials: true
+			}).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
@@ -79,7 +92,9 @@ export class MinionsService {
 	}
 	private async patchMinions() {
 		try {
-			const minions = await this.httpClient.get<Minion[]>('/API/minions').toPromise();
+			const minions = await this.httpClient.get<Minion[]>(`${environment.baseUrl}/minions`, {
+				withCredentials: true
+			}).toPromise();
 			this.minions = minions;
 
 			for (const minion of this.minions) {
@@ -102,7 +117,9 @@ export class MinionsService {
 			this.minionsServerFeed.close();
 		}
 
-		this.minionsServerFeed = new EventSource('/API/feed/minions');
+		this.minionsServerFeed = new EventSource(`${environment.baseUrl}/feed/minions`, {
+			withCredentials: true
+		});
 		this.minionsServerFeed.onmessage = (minionFeedEvent: MessageEvent) => {
 			this.OnMinionFeedUpdate(minionFeedEvent);
 		};
@@ -203,7 +220,9 @@ export class MinionsService {
 	public async setStatus(setMinion: Minion) {
 		const minion = this.findMinion(setMinion.minionId);
 		try {
-			await this.httpClient.put(`/API/minions/${setMinion.minionId}`, setMinion.minionStatus).toPromise();
+			await this.httpClient.put(`${environment.baseUrl}/minions/${setMinion.minionId}`, setMinion.minionStatus, {
+				withCredentials: true
+			}).toPromise();
 
 			minion.isProperlyCommunicated = true;
 			minion.minionStatus = DeepCopy<MinionStatus>(setMinion.minionStatus);
@@ -216,7 +235,9 @@ export class MinionsService {
 
 	public async deleteMinion(minionToRemove: Minion) {
 		try {
-			await this.httpClient.delete(`/API/minions/${minionToRemove.minionId}`).toPromise();
+			await this.httpClient.delete(`${environment.baseUrl}/minions/${minionToRemove.minionId}`, {
+				withCredentials: true
+			}).toPromise();
 
 			const minion = this.findMinion(minionToRemove.minionId);
 			if (minion) {
@@ -234,7 +255,9 @@ export class MinionsService {
 
 	public async createMinion(minionToCreate: Minion) {
 		try {
-			await this.httpClient.post(`/API/minions`, minionToCreate).toPromise();
+			await this.httpClient.post(`${environment.baseUrl}/minions`, minionToCreate, {
+				withCredentials: true
+			}).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
@@ -242,7 +265,9 @@ export class MinionsService {
 
 	public async setAutoTimeout(minion: Minion, timeout: number) {
 		try {
-			await this.httpClient.put(`/API/minions/timeout/${minion.minionId}`, { setAutoTurnOffMS: timeout }).toPromise();
+			await this.httpClient.put(`${environment.baseUrl}/minions/timeout/${minion.minionId}`, { setAutoTurnOffMS: timeout }, {
+				withCredentials: true
+			}).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
@@ -250,7 +275,9 @@ export class MinionsService {
 
 	public async renameMinion(minion: Minion, newName: number) {
 		try {
-			await this.httpClient.put(`/API/minions/rename/${minion.minionId}`, { name: newName }).toPromise();
+			await this.httpClient.put(`${environment.baseUrl}/minions/rename/${minion.minionId}`, { name: newName }, {
+				withCredentials: true
+			}).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
@@ -258,7 +285,9 @@ export class MinionsService {
 
 	public async getTimeline(): Promise<MinionTimeline[]> {
 		try {
-			return await this.httpClient.get<MinionTimeline[]>(`/API/minions/timeline`).toPromise();
+			return await this.httpClient.get<MinionTimeline[]>(`${environment.baseUrl}/minions/timeline`, {
+				withCredentials: true
+			}).toPromise();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}

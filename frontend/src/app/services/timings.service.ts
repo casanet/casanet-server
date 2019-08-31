@@ -4,6 +4,7 @@ import { Minion, MinionStatus, Operation, Timing, TimingFeed } from '../../../..
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,9 @@ export class TimingsService {
 
   private async loadTimings() {
     try {
-      const timings = await this.httpClient.get<Timing[]>('/API/timings').toPromise();
+      const timings = await this.httpClient.get<Timing[]>(`${environment.baseUrl}/timings`, {
+        withCredentials: true
+      }).toPromise();
       timings.sort((itemA, itemB) => {
         return itemA.timingName < itemB.timingName ? -1 : 1;
       });
@@ -43,7 +46,7 @@ export class TimingsService {
       this.activatedTimingsServerFeed.close();
     }
 
-    this.activatedTimingsServerFeed = new EventSource('/API/feed/timings');
+    this.activatedTimingsServerFeed = new EventSource(`${environment.baseUrl}/feed/timings`, { withCredentials: true });
     this.activatedTimingsServerFeed.onmessage = (timingFeedEvent: MessageEvent) => {
       if (timingFeedEvent.data === '"init"') {
         return;
@@ -77,7 +80,9 @@ export class TimingsService {
 
   public async createTiming(timing: Timing) {
     try {
-      await this.httpClient.post('/API/timings', timing).toPromise();
+      await this.httpClient.post(`${environment.baseUrl}/timings`, timing, {
+        withCredentials: true
+      }).toPromise();
       this.loadTimings();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -86,7 +91,9 @@ export class TimingsService {
 
   public async deleteTiming(timing: Timing) {
     try {
-      await this.httpClient.delete(`/API/timings/${timing.timingId}`).toPromise();
+      await this.httpClient.delete(`${environment.baseUrl}/timings/${timing.timingId}`, {
+        withCredentials: true
+      }).toPromise();
       this.loadTimings();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -95,7 +102,9 @@ export class TimingsService {
 
   public async editTimings(timing: Timing) {
     try {
-      await this.httpClient.put(`/API/timings/${timing.timingId}`, timing).toPromise();
+      await this.httpClient.put(`${environment.baseUrl}/timings/${timing.timingId}`, timing, {
+        withCredentials: true
+      }).toPromise();
       this.loadTimings();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
