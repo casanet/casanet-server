@@ -391,7 +391,7 @@
                 // Either the request matches one of the known resource URLs, one of the patterns for
                 // dynamically matched URLs, or neither. Determine which is the case for this request in
                 // order to decide how to handle it.
-                if (this.config.urls.indexOf(url) !== -1 || this.patterns.some(pattern => pattern.test(url))) {
+                if (this.config.urls.indexOf(url) !== -1 || (url.indexOf('/API/') === -1 && this.patterns.some(pattern => pattern.test(url)))) {
                     // This URL matches a known resource. Either it's been cached already or it's missing, in
                     // which case it needs to be loaded from the network.
                     // Open the cache to check whether this resource is present.
@@ -789,28 +789,28 @@
                         // First, narrow down the set of resources to those which are handled by this group.
                         // Either it's a known URL, or it matches a given pattern.
                         .filter(url => this.config.urls.some(cacheUrl => cacheUrl === url) ||
-                            this.patterns.some(pattern => pattern.test(url)))
-                        // Finally, process each resource in turn.
-                        .reduce((previous, url) => __awaiter(this, void 0, void 0, function* () {
-                            yield previous;
-                            const req = this.adapter.newRequest(url);
-                            // It's possible that the resource in question is already cached. If so,
-                            // continue to the next one.
-                            const alreadyCached = ((yield cache.match(req)) !== undefined);
-                            if (alreadyCached) {
-                                return;
-                            }
-                            // Get the most recent old version of the resource.
-                            const res = yield updateFrom.lookupResourceWithoutHash(url);
-                            if (res === null || res.metadata === undefined) {
-                                // Unexpected, but not harmful.
-                                return;
-                            }
-                            // Write it into the cache. It may already be expired, but it can still serve
-                            // traffic until it's updated (stale-while-revalidate approach).
-                            yield cache.put(req, res.response);
-                            yield metaTable.write(url, Object.assign({}, res.metadata, { used: false }));
-                        }), Promise.resolve());
+                            (url.indexOf('/API/') === -1 && this.patterns.some(pattern => pattern.test(url))))
+                                // Finally, process each resource in turn.
+                                .reduce((previous, url) => __awaiter(this, void 0, void 0, function* () {
+                                    yield previous;
+                                    const req = this.adapter.newRequest(url);
+                                    // It's possible that the resource in question is already cached. If so,
+                                    // continue to the next one.
+                                    const alreadyCached = ((yield cache.match(req)) !== undefined);
+                                    if (alreadyCached) {
+                                        return;
+                                    }
+                                    // Get the most recent old version of the resource.
+                                    const res = yield updateFrom.lookupResourceWithoutHash(url);
+                                    if (res === null || res.metadata === undefined) {
+                                        // Unexpected, but not harmful.
+                                        return;
+                                    }
+                                    // Write it into the cache. It may already be expired, but it can still serve
+                                    // traffic until it's updated (stale-while-revalidate approach).
+                                    yield cache.put(req, res.response);
+                                    yield metaTable.write(url, Object.assign({}, res.metadata, { used: false }));
+                                }), Promise.resolve());
                 }
             });
         }

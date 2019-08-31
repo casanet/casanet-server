@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1567281659980,
+  "timestamp": 1567287687732,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -47,12 +47,12 @@
     {
       "name": "casanet-ui-data",
       "patterns": [
-        "\\/.*"
+        "\\/!\\/API\\/.*"
       ],
       "strategy": "performance",
       "maxSize": 100,
       "maxAge": 2592000000,
-      "version": 9
+      "version": 10
     }
   ],
   "hashTable": {
