@@ -24,9 +24,9 @@
     {
       "name": "casanet-ui-data",
       "urls": [
-        "!/API/**"
+        "/static/**"
       ],
-      "version": 10,
+      "version": 11,
       "cacheConfig": {
         "maxSize": 100,
         "maxAge": "30d"
