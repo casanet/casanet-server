@@ -1,0 +1,4 @@
+This server build by an open-source project at https://github.com/casanet/casanet-server .
+If you would like to report a security issue in the code-base please open an issue in the repository,
+or contact me directly via my profile https://github.com/haimkastner .
+Thanks!
