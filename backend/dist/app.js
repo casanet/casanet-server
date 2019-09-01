@@ -41,12 +41,12 @@ class App {
         this.dataParsing();
         /** After data parsed, sanitize it. */
         this.sanitizeData();
-        /** Serve static client side assets */
-        this.serveStatic();
         /** Load instance to remote server connection logic. */
         this.loadRemoteServerConnection();
         /** Finaly route to API */
         this.routes();
+        /** Serve static client side assets */
+        this.serveStatic();
         /** And never sent errors back to the client. */
         this.catchErrors();
     }
@@ -57,7 +57,7 @@ class App {
         /** In / path only serve the index.html file */
         this.express.get('/', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
         /** Get any file in public directory */
-        this.express.use('/static', express.static(path.join(__dirname, '/public/')));
+        this.express.use(express.static(path.join(__dirname, '/public/')));
     }
     /**
      * Route requests to API.

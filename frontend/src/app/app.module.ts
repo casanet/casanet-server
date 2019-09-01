@@ -48,7 +48,7 @@ import { DevicesService } from './services/devices.service';
 import { TimingsService } from './services/timings.service';
 import { SettingsService } from './services/settings.service';
 import { UsersService } from './services/users.service';
-import { AuthService } from './services/auth/auth.service';
+import { AuthService } from './services/auth.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 

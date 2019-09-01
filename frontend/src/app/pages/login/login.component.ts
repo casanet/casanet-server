@@ -6,7 +6,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 // import { LoadingService } from '../../services/loading/loading.service';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from '../../services/auth.service';
 import swal, { SweetAlertResult } from 'sweetalert2';
 import { TranslatePipe } from '../../translate.pipe';
 import { TranslateService } from '../../translate.service';

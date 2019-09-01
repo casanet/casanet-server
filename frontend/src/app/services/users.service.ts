@@ -3,7 +3,8 @@ import { Observable, Subscriber, BehaviorSubject, Subscription } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { User } from '../../../../backend/src/models/sharedInterfaces';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,9 @@ export class UsersService {
 
   private async loadUsers() {
     try {
-      this.users = await this.httpClient.get<User[]>('/API/users').toPromise();
+      this.users = await this.httpClient.get<User[]>(`${environment.baseUrl}/users`, {
+        withCredentials: true
+      }).toPromise();
       this.usersFeed.next(this.users);
     } catch (error) {
       this.isUsersRetrived = false;
@@ -55,7 +58,9 @@ export class UsersService {
 
   public async createUser(user: User) {
     try {
-      await this.httpClient.post('/API/users', user).toPromise();
+      await this.httpClient.post(`${environment.baseUrl}/users`, user, {
+        withCredentials: true
+      }).toPromise();
       this.loadUsers();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -64,7 +69,9 @@ export class UsersService {
 
   public async deleteUser(user: string) {
     try {
-      await this.httpClient.delete(`/API/users/${user}`).toPromise();
+      await this.httpClient.delete(`${environment.baseUrl}/users/${user}`,{
+				withCredentials: true
+			}).toPromise();
       this.loadUsers();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -73,7 +80,9 @@ export class UsersService {
 
   public async editUser(user: User) {
     try {
-      await this.httpClient.put(`/API/users/${user.email}`, user).toPromise();
+      await this.httpClient.put(`${environment.baseUrl}/users/${user.email}`, user,{
+				withCredentials: true
+			}).toPromise();
       this.loadUsers();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
@@ -82,7 +91,9 @@ export class UsersService {
 
   public async deactivateUserSessions(user: User) {
     try {
-      await this.httpClient.post(`/API/auth/logout-sessions/${user.email}`, {}).toPromise();
+      await this.httpClient.post(`${environment.baseUrl}/auth/logout-sessions/${user.email}`, {},{
+				withCredentials: true
+			}).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -105,7 +116,9 @@ export class UsersService {
 
   public async requestRegistrationCode(user: User) {
     try {
-      await this.httpClient.post(`/API/users/forward-auth/${user.email}`, {}).toPromise();
+      await this.httpClient.post(`${environment.baseUrl}/users/forward-auth/${user.email}`, {},{
+				withCredentials: true
+			}).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -113,7 +126,9 @@ export class UsersService {
 
   public async removeUserFromRemote(user: string) {
     try {
-      await this.httpClient.delete(`/API/users/forward/${user}`, {}).toPromise();
+      await this.httpClient.delete(`${environment.baseUrl}/users/forward/${user}`,{
+				withCredentials: true
+			}).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -121,7 +136,9 @@ export class UsersService {
 
   public async requestRegiterUser(user: User, code: string) {
     try {
-      await this.httpClient.post(`/API/users/forward/${user.email}`, { code : code }).toPromise();
+      await this.httpClient.post(`${environment.baseUrl}/users/forward/${user.email}`, { code: code },{
+				withCredentials: true
+			}).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
     }
@@ -129,7 +146,9 @@ export class UsersService {
 
   public async getRegisteredUsers(): Promise<string[]> {
     try {
-      return await this.httpClient.get<string[]>(`/API/users/forward`).toPromise();
+      return await this.httpClient.get<string[]>(`${environment.baseUrl}/users/forward`,{
+				withCredentials: true
+			}).toPromise();
     } catch (error) {
       this.toastrAndErrorsService.OnHttpError(error);
       return [];

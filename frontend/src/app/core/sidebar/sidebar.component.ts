@@ -13,7 +13,7 @@ import {
 import swal, { SweetAlertResult } from 'sweetalert2';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { TranslateService } from '../../translate.service';
 import { ManageRegisteredUsersComponent } from '../../dialogs/manage-registared-users-dialog/manage-registared-users-dialog.component';
 import { TranslatePipe } from '../../translate.pipe';

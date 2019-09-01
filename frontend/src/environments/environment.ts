@@ -4,7 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  baseUrl: 'http://127.0.0.1:3000/API'
 };
 export const palete = {
     primary: '#D32F2F',
