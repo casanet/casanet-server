@@ -226,6 +226,8 @@
     "GETTING_SUPPOTERD_DEVICES": "מאחזר מכשירים קיימים",
     "MATCH_TO": "התאם ל",
     "COMMANDS_SET": "ערכת פקודות",
+    "OPERATION_ID" : "מזהה פעולה",
+    "INFO" : "מידע",
     "notConfigured": "לא הוגדר שרת מרוחק",
     "cantReachRemoteServer": "שרת מרוחק לא נגיש",
     "authorizationFail": "אימות מול שרת מרוחק נכשל",

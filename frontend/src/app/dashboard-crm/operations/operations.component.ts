@@ -181,6 +181,17 @@ export class OperationsComponent implements OnInit, OnDestroy {
     operation['sync'] = false;
   }
 
+  public async showInfo(operation){
+    const swalResult: void | SweetAlertResult = await swal({
+      type: 'info',
+      title: `${this.translatePipe.transform('OPERATION_ID')}:`,
+      text: operation.operationId,
+      showConfirmButton: true,
+      showCancelButton: false,
+      confirmButtonText: this.translatePipe.transform('OK'),
+    });
+  }
+
   public async refreshData() {
     this.dataLoading = true;
     await this.operationService.refreshData();
