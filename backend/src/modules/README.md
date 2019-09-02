@@ -73,8 +73,8 @@ So to create new brand / communication protocol module:
 1) Create in the new folder new ts file, name format `xxxxHandler.ts`.
 1) Write a class that inherits from [brandModuleBase.ts](./brandModuleBase.ts).
 1) Write the module communication code (getStatus / setStatus etc.).
-1) Add import to the new module in [modulesManager.ts](./modulesManager.ts) file (line 9). 
-1) Create an instance of the module in [modulesManager.ts](./modulesManager.ts) file (line 58).
+1) Add import to the new module in [modulesManager.ts](./modulesManager.ts#L9) file (line 9). 
+1) Create an instance of the module in [modulesManager.ts](./modulesManager.ts#L71) file (line 71).
 1) Build by `npm run build`.
 1) Open PR ;).
 

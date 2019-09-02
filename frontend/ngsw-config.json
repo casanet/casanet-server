@@ -26,7 +26,7 @@
       "urls": [
         "/**"
       ],
-      "version": 12,
+      "version": 13,
       "cacheConfig": {
         "maxSize": 100,
         "maxAge": "30d"

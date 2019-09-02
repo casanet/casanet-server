@@ -5,7 +5,7 @@ This is the casa-net local server to communicats and control IoT devices in a ho
 1. Download the project via git or download files as a zip.
 1. In Linux OS, make sure `net-tools` installed.
 1. Install Node.js on the machine.
-1. Navigate in a command line to `$/.../backend` and press `npm install --save`.
+1. Navigate in a command line to `$/.../backend` and press `npm ci`.
 1. Press `node dist/index.js` to run the server.
 
 Then open the browser in `http://127.0.0.1:3000`.
@@ -49,7 +49,7 @@ if not set, the default network is the first current machine IP subnet.
 
 #### Specify physical address 
 set `PHYSICAL_ADDRESS` env var to specify the physical (aka MAC) address to use.
-if not set, the address will be the real machine address.
+if not set, the address will be the first real machine address.
 
 #### Two factor authentication (MFA):
 To Allows MFA protection the server needs access to the email account to send the code to user email before login is done.
@@ -72,7 +72,7 @@ Each IoT device should be connected to the local network before can add it to th
 For each supported IoT device model connection and pairing instructions see [modules documentations](./src/modules/README.md).
 
 ## Fetch RF (IR / 433MHz etc.) commands from a commands repository.
-When using RF transmitter to control home devices it`s possible to record the command from the original remote control or generating random command.
+When using RF transmitter to control home devices it's possible to record the command from the original remote control or generating random command.
 So to avoid recording a lot of commands one by one there is another project to store commands and serve then on demand. see the [project page](https://github.com/casanet/rf-commands-repo).
 The `rf-commands-repo` URL placed in the `casanet.json` configuration file.
 

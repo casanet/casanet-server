@@ -15,7 +15,7 @@ class VersionsBl {
     async updateVersionDependencies() {
         try {
             logger_1.logger.info(`starting NPM install, it's can take a while`);
-            const installationResults = await child_process_promise_1.exec('npm i');
+            const installationResults = await child_process_promise_1.exec('npm ci');
             logger_1.logger.info(`installing last dependencies results: ${installationResults.stdout}`);
             this.updateStatus = 'finished';
         }
