@@ -20,6 +20,10 @@
                 </button>
 
                 <mat-menu #operationMenu="matMenu">
+                    <button mat-menu-item (click)="showInfo(operation)">
+                        <mat-icon>perm_device_information</mat-icon>
+                        <span>{{ 'INFO' | translate}}</span>
+                    </button>
                     <button mat-menu-item disabled>
                         <mat-icon>edit</mat-icon>
                         <span>{{ 'EDIT' | translate}}</span>
@@ -92,8 +96,8 @@
         </eco-fab-speed-dial-trigger>
 
         <eco-fab-speed-dial-actions>
-            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="refreshData()"
-                matTooltip="{{'REFRESH' | translate}}">
+            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}"
+                (click)="refreshData()" matTooltip="{{'REFRESH' | translate}}">
                 <mat-icon>refresh</mat-icon>
             </button>
             <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}"

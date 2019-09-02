@@ -225,6 +225,8 @@
     "FETCH_COMMANDS": "Fetch commands",
     "GETTING_SUPPOTERD_DEVICES": "Getting supported devices",
     "MATCH_TO": "Match to",
+    "OPERATION_ID" : "Operation ID",
+    "INFO" : "Info",
     "COMMANDS_SET": "commands set",
     "notConfigured": "Remote server not configured",
     "cantReachRemoteServer": "Remote server offline",

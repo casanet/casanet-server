@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1567443322734,
+  "timestamp": 1567460377572,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -52,7 +52,7 @@
       "strategy": "performance",
       "maxSize": 100,
       "maxAge": 2592000000,
-      "version": 13
+      "version": 14
     }
   ],
   "hashTable": {
@@ -62,8 +62,8 @@
     "/assets/fonts/w8gdH283Tvk__Lua32TysjIfpcuPP9g.woff2": "4bb9cbbe3bec2722bf917acfe613fe86a41114b7",
     "/assets/fonts/w8gdH283Tvk__Lua32TysjIfqMuPP9g.woff2": "a78ec59214394b29f4b26a842f09047c54391306",
     "/assets/fonts/w8gdH283Tvk__Lua32TysjIfqcuPP9g.woff2": "20e7dd102918897ee72f8c98c7cd7356d8eda611",
-    "/assets/i18n/en.json": "002c0ce10c096b535432c164fec3e43f4d16e6d9",
-    "/assets/i18n/he.json": "cfef6bb73c365cf72b369a7ebcf9eafead111701",
+    "/assets/i18n/en.json": "0f099261419c138fe7051e7c0328a9c6e3a5c354",
+    "/assets/i18n/he.json": "84ccee1fd322ec1bf6dbd9df28ced569402f9ed3",
     "/assets/icons/baseline_system_update_black_48dp.png": "7f99f8a5c4d1b173e12d2de815fcff062f3eb990",
     "/assets/icons/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2": "d22573acfb7163487f48c8fcbd593f2ec5b9e729",
     "/assets/icons/google-material-icons.css": "71be0b33b5f202490c9576eeb83f9304e61520df",
