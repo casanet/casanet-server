@@ -30,7 +30,7 @@ Minimal page (only 5 kb of resources should be transferred !!!) for old phones o
 	title="lite-dashboard screenshot" width="300" height="600" />
 
 
-Link to the minimal page exist in the settings 'light version' section, or just navigate to `[server-ip/host]/static/light-app/index.html`.
+Link to the minimal page exist in the settings 'light version' section, or just navigate to `[server-ip/host]/light-app/index.html`.
 
 ### UI Languages support.
 The UI built to be multi-Language support.
@@ -43,7 +43,7 @@ Any support for other languages will be welcome.
 
 ## How to use it?
 * Run casa-net server in a home network [see documentation](./backend/README.md).
-* Run casa-net remote server in cloud service [see documentation](./remote/README.md).
+* Run casa-net remote server in cloud service [see documentation](https://github.com/casanet/remote-server).
 
 ## How to access casanet from wide internet?
 The server needs to run on local home network, so how to access it via internet?
@@ -54,9 +54,9 @@ Make sure that the address in your home is public and redirect ports in home rou
 (DDNS is recommended for easy access to home address).
 
 #### Method 2: Using casa remote server.
-The casa remote server is built for it, [casanet-remote](./remote/README.md) run on cloud service and to redirect API requests to the local server.
+The casa remote server is built for it, [casanet-remote](https://github.com/casanet/remote-server) run on cloud service and used to redirect API requests to the local server.
 
-## Supported right now.
+## Supported IoT devices / protocols
 
 -  Orvibo (aka wiwo)
 
@@ -66,7 +66,7 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
 
 	-  SP3 (socket). [link](https://www.gearbest.com/smart-access-lock/pp_009282693865.html)
 	-  RM mini 3 (As AC). [link](https://www.gearbest.com/alarm-systems/pp_009753807797.html)
-	-  RM Pro (As AC / RF toggle). [link](https://www.gearbest.com/home-appliances-accessories/pp_009281768756.html)
+	-  RM Pro (As AC / RF toggle / RF curtain). [link](https://www.gearbest.com/home-appliances-accessories/pp_009281768756.html)
 
 -  Yeelight
 
@@ -118,7 +118,7 @@ The casa remote server is built for it, [casanet-remote](./remote/README.md) run
 Yes, it is possible and will be welcome, see [modules](./backend/src/modules/README.md#-for-development-only-).
 
 ## Using scenario:
-- Buy new [supported](#supported-right-now) smart devices or use the `mock` brand.
+- Buy new [supported](#supported-iot-devices-/-protocols) smart devices or use the `mock` brand.
 - [Connect it to local network](./backend/src/modules/README.md) via official app.
 - Scan the local network to find the new device. 
     ![Screenshot](./docs/screenshots/instructions/scan_devices.png)
@@ -162,9 +162,11 @@ See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 * API - Swagger.
 
 ## TODO:
+
 - [X] Finish UI of casanet local server.
-- [ ] Create remote server managments UI.
-- [ ] Support RTSP devices. 
+- [ ] Faster boot time for the angular dashboard app.  
+
+Feel free to open an issue with a bug report or feature to develop for the next version.
 
 For any suggestion or help feel free to contact me.
 
