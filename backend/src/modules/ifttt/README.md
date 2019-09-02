@@ -18,7 +18,7 @@ but this project made to be totally in users hands and control. so using webhook
 1) Connect [WebHooks](https://ifttt.com/maker_webhooks) to Ifttt account.
 1) Watch and copy the webhooks API key.
     - Go to https://ifttt.com/maker_webhooks and press on `documentation`
-        ![Screenshot](../../../../screenshots/ifttt/go-to-webhooks-documentation.PNG)
+        ![Screenshot](../../../../docs/screenshots/ifttt/go-to-webhooks-documentation.PNG)
     - Watch and copy the webhooks API key.
         ![Screenshot](../../../../docs/screenshots/ifttt/watch-webhooks-api-key.PNG)
 1) Create a new minion in casa-net with brand `ifttt` model `switch` or `toggle` and paste the webhooks API key as device id.
