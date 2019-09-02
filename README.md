@@ -179,8 +179,8 @@ I made a Linux image for several devices.
 	- (With hotspot SSID:`CASANET` pass: `casanet-is-the-best?`.
 
 Username: `root` \ `casanet` Password: `casa-net`.
-
 All configured to run the server on boot in port 80. 
+The server runs on tmux window named "casanet".
 
 
 ## Credits
