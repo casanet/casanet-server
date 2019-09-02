@@ -19,7 +19,7 @@ export class VersionsBl {
     private async updateVersionDependencies() {
         try {
             logger.info(`starting NPM install, it's can take a while`);
-            const installationResults = await exec('npm i');
+            const installationResults = await exec('npm ci');
             logger.info(`installing last dependencies results: ${installationResults.stdout}`);
             this.updateStatus = 'finished';
         } catch (error) {
