@@ -4,8 +4,16 @@
  */
 const fse = require('fs-extra');
 
-fse.outputFile('./src/environments/environment.final.ts', `
-    export const environment = {
-        production: true,
-        baseUrl: '/API'
-    };`);
+fse.outputFileSync('./src/environments/environment.final.ts', `
+export const environment = {
+    production: true,
+    baseUrl: '/API'
+};
+`);
+
+/**
+ * Also, build the light app environments
+ */
+fse.outputJSONSync('./light-app/environments.json', {
+    API_URL : "/API"
+});

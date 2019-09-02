@@ -1,3 +1,31 @@
+/** Get the environments */
+let environments = {
+    API_URL : "http://127.0.0.1:3000/API"
+}
+
+let fetchEnvironments = () => {
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onload = () => {
+
+        if (xmlhttp.readyState === 4 && xmlhttp.status == 200) {
+            environments = JSON.parse(xmlhttp.responseText);
+            return;
+        }
+
+        if (xmlhttp.status === 401 || xmlhttp.status === 403) {
+            alert('GET ENVIRONMENTS FAIL')
+            return;
+        }
+
+        getMinionsFail(xmlhttp.responseText);
+    }
+    xmlhttp.open("GET", '/light-app/environments.json', false);
+    xmlhttp.send();
+}
+
+/** Fetch the environments, sync */
+fetchEnvironments();
+
 /**
  * Redirect to auth page.
  */
@@ -58,6 +86,7 @@ let generateMinions = (minions) => {
 let patchMinions = () => {
     // compatible with IE7+, Firefox, Chrome, Opera, Safari
     const xmlhttp = new XMLHttpRequest();
+    xmlhttp.withCredentials = true;
     xmlhttp.onload = () => {
 
         if (xmlhttp.readyState === 4 && xmlhttp.status == 200) {
@@ -72,7 +101,7 @@ let patchMinions = () => {
 
         getMinionsFail(xmlhttp.responseText);
     }
-    xmlhttp.open("GET", '/API/minions', true);
+    xmlhttp.open("GET", `${environments.API_URL}/minions`, true);
     xmlhttp.send();
 }
 
@@ -90,6 +119,8 @@ let buttonClicked = (element, minion) => {
 
     // compatible with IE7+, Firefox, Chrome, Opera, Safari
     const xmlhttp = new XMLHttpRequest();
+    xmlhttp.withCredentials = true;
+
     xmlhttp.onload = () => {
         if (xmlhttp.readyState !== 4) {
             return;
@@ -107,7 +138,7 @@ let buttonClicked = (element, minion) => {
         }
     }
 
-    xmlhttp.open("PUT", `/API/minions/${minion.minionId}`, true);
+    xmlhttp.open("PUT", `${environments.API_URL}/minions/${minion.minionId}`, true);
     xmlhttp.setRequestHeader('Content-type', 'application/json; charset=utf-8');
     xmlhttp.send(JSON.stringify(setStatus));
 }
