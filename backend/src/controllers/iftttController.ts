@@ -7,7 +7,7 @@ import { ErrorResponse, IftttActionTriggered, IftttActionTriggeredRequest, Ifttt
 export class IftttController extends Controller {
 
     /**
-     * Is IFTTT inegration enabled.
+     * Is IFTTT integration enabled.
      */
     @Response<ErrorResponse>(501, 'Server error')
     @Security('adminAuth')
