@@ -13,7 +13,7 @@ const tsoa_1 = require("tsoa");
 const iftttIntegrationBl_1 = require("../business-layer/iftttIntegrationBl");
 let IftttController = class IftttController extends tsoa_1.Controller {
     /**
-     * Is IFTTT inegration enabled.
+     * Is IFTTT integration enabled.
      */
     async isIftttEnabled() {
         const iftttSettings = await iftttIntegrationBl_1.IftttIntegrationBlSingleton.getIftttIntergrationSettings();
