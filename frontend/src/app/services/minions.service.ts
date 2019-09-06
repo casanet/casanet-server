@@ -273,6 +273,16 @@ export class MinionsService {
 		}
 	}
 
+	public async setCalibrate(minion: Minion, calibrate: number) {
+		try {
+			await this.httpClient.put(`${environment.baseUrl}/minions/calibrate/${minion.minionId}`, { calibrationCycleMinutes: calibrate }, {
+				withCredentials: true
+			}).toPromise();
+		} catch (error) {
+			this.toastrAndErrorsService.OnHttpError(error);
+		}
+	}
+
 	public async renameMinion(minion: Minion, newName: number) {
 		try {
 			await this.httpClient.put(`${environment.baseUrl}/minions/rename/${minion.minionId}`, { name: newName }, {

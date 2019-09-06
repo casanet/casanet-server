@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>{{ 'EDIT' | translate }} {{minion.name}} {{ 'CALIBRATION' | translate }} </h1>
+<div mat-dialog-content>
+  <p>{{ 'DEFINE_CALIBRATION' | translate }} </p>
+  <mat-slide-toggle color="primary" [checked]="isCalibrateActive" (change)="isCalibrateActive = $event.checked">
+  </mat-slide-toggle>
+  <br>
+  <br>
+
+  <mat-form-field>
+    <input [disabled]="!isCalibrateActive" matInput type="number" min="1"
+      placeholder="{{ 'MINUTES_CYCLE' | translate }}" [(ngModel)]="minutes">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="data">{{ 'CLOSE' | translate }}</button>
+  <button mat-button cdkFocusInitial (click)="saveCalibrate()">{{ 'SUBMIT' | translate }}</button>
+</div>
