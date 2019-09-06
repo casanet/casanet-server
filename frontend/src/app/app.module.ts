@@ -8,6 +8,7 @@ import { CoreModule } from './core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateService } from './translate.service';
 import { ToasterAndErrorsService } from './services/toaster-and-errors.service';
+import { CalibrateDialogComponent } from './dialogs/calibrate-dialog/calibrate-dialog.component';
 import { AutoTimeoutDialogComponent } from './dialogs/auto-timeout-dialog/auto-timeout-dialog.component';
 import { CreateMinionDialogComponent } from './dialogs/create-minion-dialog/create-minion-dialog.component';
 import { CreateOperationDialogComponent } from './dialogs/create-operation-dialog/create-operation-dialog.component';
@@ -60,6 +61,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   declarations: [
     AppComponent,
     AutoTimeoutDialogComponent,
+    CalibrateDialogComponent,
     CreateMinionDialogComponent,
     CreateOperationDialogComponent,
     CreateActivityDialogComponent,
@@ -120,6 +122,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   bootstrap: [AppComponent],
   entryComponents: [
     AutoTimeoutDialogComponent,
+    CalibrateDialogComponent,
     CreateMinionDialogComponent,
     CreateOperationDialogComponent,
     CreateActivityDialogComponent,

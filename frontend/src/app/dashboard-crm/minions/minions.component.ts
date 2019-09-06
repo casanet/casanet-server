@@ -16,6 +16,7 @@ import { TranslateService } from '../../translate.service';
 import { TranslatePipe } from '../../translate.pipe';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AutoTimeoutDialogComponent } from '../../dialogs/auto-timeout-dialog/auto-timeout-dialog.component';
+import { CalibrateDialogComponent } from '../../dialogs/calibrate-dialog/calibrate-dialog.component';
 import { CreateMinionDialogComponent } from '../../dialogs/create-minion-dialog/create-minion-dialog.component';
 import { Subscription } from 'rxjs';
 import { TimelineDialogComponent } from '../../dialogs/timeline-dialog/timeline-dialog.component';
@@ -81,6 +82,7 @@ export class MinionsComponent implements OnInit, OnDestroy {
 					existMinion.isProperlyCommunicated = minion.isProperlyCommunicated;
 					existMinion.name = minion.name;
 					existMinion.minionAutoTurnOffMS = minion.minionAutoTurnOffMS;
+					existMinion.calibrationCycleMinutes = minion.calibrationCycleMinutes;
 					existMinion.device = minion.device;
 					existMinion.minionStatus = minion.minionStatus;
 					this.createUpdateSet(existMinion);
@@ -403,6 +405,12 @@ export class MinionsComponent implements OnInit, OnDestroy {
 
 	public async editAutoTimeout(minion: Minion) {
 		this.dialog.open(AutoTimeoutDialogComponent, {
+			data: minion
+		});
+	}
+
+	public async editCalibrate(minion: Minion) {
+		this.dialog.open(CalibrateDialogComponent, {
 			data: minion
 		});
 	}
