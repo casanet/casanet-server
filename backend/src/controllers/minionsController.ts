@@ -9,6 +9,7 @@ import {
     MinionStatus,
     MinionTimeline,
     SetMinionAutoTurnOff,
+    SetMinionCalibrate,
 } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
 
@@ -108,6 +109,19 @@ export class MinionsController extends Controller {
     @Put('timeout/{minionId}')
     public async setMinionTimeout(minionId: string, @Body() setTimeout: SetMinionAutoTurnOff): Promise<void> {
         return await MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS);
+    }
+
+    /**
+     * Update minion auto turns off timeout.
+     * @param minionId Minon id.
+     * @param setCalibrate Timeout property.
+     */
+    @Security('userAuth')
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Put('calibrate/{minionId}')
+    public async setMinionCalibrate(minionId: string, @Body() setCalibrate: SetMinionCalibrate): Promise<void> {
+        return await MinionsBlSingleton.setMinionCalibrate(minionId, setCalibrate.calibrationCycleMinutes);
     }
 
     /**

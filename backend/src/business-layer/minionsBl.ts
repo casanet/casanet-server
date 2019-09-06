@@ -86,7 +86,7 @@ export class MinionsBl {
         });
 
         /**
-         * After all registar to devices status updates.
+         * After all, subscribe to devices status updates.
          */
         this.modulesManager.minionStatusChangedEvent.subscribe(async (pysicalDeviceUpdate) => {
             if (!pysicalDeviceUpdate) {
@@ -395,6 +395,12 @@ export class MinionsBl {
                 throw err;
             });
 
+        /** If there is no change from the last minion status */
+        if (minion.isProperlyCommunicated &&
+            JSON.stringify(minion.minionStatus) === JSON.stringify(minionStatus)) {
+            return;
+        }
+
         minion.isProperlyCommunicated = true;
 
         /**
@@ -429,6 +435,37 @@ export class MinionsBl {
          * Save timeout update in Dal for next app running.
          */
         this.minionsDal.updateMinionAutoTurnOff(minionId, setAutoTurnOffMS)
+            .catch((error: ErrorResponse) => {
+                logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
+            });
+
+        /**
+         * Send minion feed update
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
+
+    /**
+     * Set minoin calibrate property.
+     */
+    public async setMinionCalibrate(minionId: string, calibrationCycleMinutes: number): Promise<void> {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            } as ErrorResponse;
+        }
+
+        minion.calibrationCycleMinutes = calibrationCycleMinutes;
+
+        /**
+         * Save timeout update in Dal for next app running.
+         */
+        this.minionsDal.updateMinionCalibrate(minionId, calibrationCycleMinutes)
             .catch((error: ErrorResponse) => {
                 logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
             });
