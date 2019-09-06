@@ -468,6 +468,18 @@ export declare interface SetMinionAutoTurnOff {
 }
 
 /**
+ * Used to change the minion calibration property value.
+ */
+export declare interface SetMinionCalibrate {
+    /** 
+     * Minutes to calibrate stauts, set 0 to turn off calibration 
+     * @minimum 0
+     * @isInt true
+    */
+    calibrationCycleMinutes: number;
+}
+
+/**
  * Used to rename minion.
  */
 export declare interface MinionRename {
@@ -518,6 +530,12 @@ export declare interface Minion {
      * Used for example in boiler minion etc.
      */
     minionAutoTurnOffMS?: number;
+
+    /**
+     * Calibrate the physical device with the server known status, in a periodic cycle, 
+     * if not set or set to 0, never calibrate.
+     */
+    calibrationCycleMinutes? : number
 }
 
 /**

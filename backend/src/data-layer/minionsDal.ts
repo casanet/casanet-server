@@ -134,6 +134,29 @@ export class MinionsDal {
                 throw new Error('fail to save minion timeout update request');
             });
     }
+
+    /**
+     * Update minion calibration property.
+     * @param minionId minion to edit.
+     * @param calibrationCycleMinutes seconds to set (or 0 to disable).
+     */
+    public async updateMinionCalibrate(minionId: string, calibrationCycleMinutes: number): Promise<void> {
+        const originalMinion = this.findMinion(minionId);
+
+        if (!originalMinion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            } as ErrorResponse;
+        }
+
+        originalMinion.calibrationCycleMinutes = calibrationCycleMinutes;
+
+        await this.dataIo.setData(this.minions)
+            .catch(() => {
+                throw new Error('fail to save minion calibrate update request');
+            });
+    }
 }
 
 export const MinionsDalSingleton = new MinionsDal(new DataIO(MINIONS_FILE_NAME));

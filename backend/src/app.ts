@@ -29,6 +29,7 @@ import './controllers/versionsController';
 
 // also import other moduls that not imported in other place.
 import './business-layer/timeoutBl';
+import './business-layer/calibrateBl';
 
 class App {
     public express: express.Express;
