@@ -110,6 +110,25 @@ class MinionsDal {
             throw new Error('fail to save minion timeout update request');
         });
     }
+    /**
+     * Update minion calibration property.
+     * @param minionId minion to edit.
+     * @param calibrationCycleMinutes seconds to set (or 0 to disable).
+     */
+    async updateMinionCalibrate(minionId, calibrationCycleMinutes) {
+        const originalMinion = this.findMinion(minionId);
+        if (!originalMinion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        originalMinion.calibrationCycleMinutes = calibrationCycleMinutes;
+        await this.dataIo.setData(this.minions)
+            .catch(() => {
+            throw new Error('fail to save minion calibrate update request');
+        });
+    }
 }
 exports.MinionsDal = MinionsDal;
 exports.MinionsDalSingleton = new MinionsDal(new dataIO_1.DataIO(MINIONS_FILE_NAME));

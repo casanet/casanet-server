@@ -80,6 +80,14 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
         return await minionsBl_1.MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS);
     }
     /**
+     * Update minion auto turns off timeout.
+     * @param minionId Minon id.
+     * @param setCalibrate Timeout property.
+     */
+    async setMinionCalibrate(minionId, setCalibrate) {
+        return await minionsBl_1.MinionsBlSingleton.setMinionCalibrate(minionId, setCalibrate.calibrationCycleMinutes);
+    }
+    /**
      * Recheck minion device status (update server status cache).
      */
     async rescanMinionStatus(minionId) {
@@ -117,6 +125,8 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
     }
 };
 __decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
     tsoa_1.Response(501, 'Server error'),
     tsoa_1.Get('timeline')
 ], MinionsController.prototype, "getMinionsTimeline", null);
@@ -156,6 +166,13 @@ __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),
     tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Put('calibrate/{minionId}'),
+    __param(1, tsoa_1.Body())
+], MinionsController.prototype, "setMinionCalibrate", null);
+__decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
     tsoa_1.Post('rescan/{minionId}')
 ], MinionsController.prototype, "rescanMinionStatus", null);
 __decorate([
@@ -179,6 +196,7 @@ __decorate([
 ], MinionsController.prototype, "createMinion", null);
 __decorate([
     tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Security('iftttAuth'),
     tsoa_1.Put('{minionId}/ifttt'),
     __param(1, tsoa_1.Body())
 ], MinionsController.prototype, "notifyMinionStatusChanged", null);
