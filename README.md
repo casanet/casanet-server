@@ -157,9 +157,12 @@ Invoking trigger when a device turned on/off the local server require an interne
 See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 
 ## Main technologies.
-* Node.js (TypeScript) - Server.
-* Angular (with angular material) - Client.
-* API - Swagger.
+* Casanet server : [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
+* Dashboard (frontend): [Angular](https://angular.io/) (using [angular material](https://material.angular.io/)).
+* [Remote server](https://github.com/casanet/remote-server) : [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
+* [Remote dashboard](https://github.com/casanet/remote-dashboard) : [Vue.js](https://vuejs.org/) (using [vue material](https://vuematerial.io/)).
+* [RF commands repository](https://github.com/casanet/rf-commands-repo) : Python 3.7.3 (using [Flask](https://palletsprojects.com/p/flask/)).
+* API (for local and remote server) - [Swagger](https://swagger.io/).
 
 ## TODO:
 
