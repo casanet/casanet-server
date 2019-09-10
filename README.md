@@ -36,7 +36,7 @@ Link to the minimal page exist in the settings 'light version' section, or just 
 * **[Casanet server](./backend):**
 	* **Purpose:** control the IoT devices in a local home network.
 	* **Technologies:** [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
-* **[Dashboard](./frontend):**:
+* **[Dashboard](./frontend):**
 	* **Purpose:** The dashboard app (frontend) to control the IoT devices (using casanet server API). 
 	* **Technologies:** [Angular](https://angular.io/) (using [angular material](https://material.angular.io/)).
 * **[Remote server](https://github.com/casanet/remote-server):**
