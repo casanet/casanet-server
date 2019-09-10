@@ -32,7 +32,26 @@ Minimal page (only 5 kb of resources should be transferred !!!) for old phones o
 
 Link to the minimal page exist in the settings 'light version' section, or just navigate to `[server-ip/host]/light-app/index.html`.
 
-### UI Languages support.
+## Project parts + technologies
+* **[Casanet server](./backend):**
+	* **Purpose:** control the IoT devices in a local home network.
+	* **Technologies:** [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
+* **[Dashboard](./frontend):**:
+	* **Purpose:** The dashboard app (frontend) to control the IoT devices (using casanet server API). 
+	* **Technologies:** [Angular](https://angular.io/) (using [angular material](https://material.angular.io/)).
+* **[Remote server](https://github.com/casanet/remote-server):**
+	* **Purpose:** Forward API requests from the wide internet to the local casanet servers.
+	* **Technologies:** [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
+* **[Remote dashboard](https://github.com/casanet/remote-dashboard):**
+	* **Purpose:** Management dashboard for the remote server admin (using remote server API)
+	* **Technologies:** [Vue.js](https://vuejs.org/) (using [vue material](https://vuematerial.io/)).
+* **[RF commands repository](https://github.com/casanet/rf-commands-repo):**
+	* **Purpose:** Light-weight server to keep and serve RF commands (such as: IR, 433 MHz etc.) for appliances.
+	* **Technologies:** Python 3.7.3 (using [Flask](https://palletsprojects.com/p/flask/)).
+* **API (for local and remote server):**
+	* **Technologies:** [Swagger](https://swagger.io/).
+
+### Dashboard Languages support
 The UI built to be multi-Language support.
 
 Current Languages supported:
@@ -48,12 +67,12 @@ Any support for other languages will be welcome.
 ## How to access casanet from wide internet?
 The server needs to run on local home network, so how to access it via internet?
 
-#### Method 1: Port forwarding. 
+#### Method 1: Port forwarding
 Make sure that the address in your home is public and redirect ports in home router to the computer that running casa-net server.
 
 (DDNS is recommended for easy access to home address).
 
-#### Method 2: Using casa remote server.
+#### Method 2: Using casa remote server
 The casa remote server is built for it, [casanet-remote](https://github.com/casanet/remote-server) run on cloud service and used to redirect API requests to the local server.
 
 ## Supported IoT devices / protocols
@@ -114,10 +133,10 @@ The casa remote server is built for it, [casanet-remote](https://github.com/casa
 ## Supported soon.
 
 
-## Adding other devices support.
+## Adding other devices support
 Yes, it is possible and will be welcome, see [modules](./backend/src/modules/README.md#-for-development-only-).
 
-## Using scenario:
+## Using scenario
 - Buy new [supported](#supported-iot-devices-/-protocols) smart devices or use the `mock` brand.
 - [Connect it to local network](./backend/src/modules/README.md) via official app.
 - Scan the local network to find the new device. 
@@ -144,7 +163,7 @@ To watch full API specs use [swagger UI](https://petstore.swagger.io/) and put `
 **
 Minion is a logic device in the system, meaning that a device is a physical device and minion is a logic device that uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device for a few minions, one to central AC control and second for secondary AC control so in it will be two totally  different minions that use one physical device.
 
-## IFTTT integration.
+## IFTTT integration
 The [IFTTT](https://ifttt.com/discover) ecosystem is great ;). 
 Now, invoking trigger when a minion turned on/off or turning on/off minion when any IFTTT trigger invoked is possible.
 
@@ -156,15 +175,7 @@ Invoking trigger when a device turned on/off the local server require an interne
 
 See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 
-## Project parts + technologies
-* Casanet server : [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
-* Dashboard (frontend): [Angular](https://angular.io/) (using [angular material](https://material.angular.io/)).
-* [Remote server](https://github.com/casanet/remote-server) : [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
-* [Remote dashboard](https://github.com/casanet/remote-dashboard) : [Vue.js](https://vuejs.org/) (using [vue material](https://vuematerial.io/)).
-* [RF commands repository](https://github.com/casanet/rf-commands-repo) : Python 3.7.3 (using [Flask](https://palletsprojects.com/p/flask/)).
-* API (for local and remote server) - [Swagger](https://swagger.io/).
-
-## TODO:
+## TODO
 
 - [X] Finish UI of casanet local server.
 - [ ] Faster boot time for the angular dashboard app.  
