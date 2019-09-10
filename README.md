@@ -41,13 +41,13 @@ Link to the minimal page exist in the settings 'light version' section, or just 
 	* **Technologies:** [Angular](https://angular.io/) (using [angular material](https://material.angular.io/)).
 * **[Remote server](https://github.com/casanet/remote-server):**
 	* **Purpose:** Forward API requests from the wide internet to the local casanet servers.
-	* **Technologies:** [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
+	* **Technologies:** [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa) + [PostgreSQL](https://www.postgresql.org/)).
 * **[Remote dashboard](https://github.com/casanet/remote-dashboard):**
 	* **Purpose:** Management dashboard for the remote server admin (using remote server API)
 	* **Technologies:** [Vue.js](https://vuejs.org/) (using [vue material](https://vuematerial.io/)).
 * **[RF commands repository](https://github.com/casanet/rf-commands-repo):**
 	* **Purpose:** Light-weight server to keep and serve RF commands (such as: IR, 433 MHz etc.) for appliances.
-	* **Technologies:** Python 3.7.3 (using [Flask](https://palletsprojects.com/p/flask/)).
+	* **Technologies:** Python 3.7.3 (using [Flask](https://palletsprojects.com/p/flask/) + [Mongodb](https://www.mongodb.com/)).
 * **API (for local and remote server):**
 	* **Technologies:** [Swagger](https://swagger.io/).
 
