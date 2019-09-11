@@ -121,6 +121,7 @@ const models: TsoaRoute.Models = {
             "minionStatus": { "ref": "MinionStatus", "required": true },
             "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
+            "calibrationCycleMinutes": { "dataType": "double" },
         },
     },
     "MinionFeed": {
@@ -210,6 +211,11 @@ const models: TsoaRoute.Models = {
     "SetMinionAutoTurnOff": {
         "properties": {
             "setAutoTurnOffMS": { "dataType": "double", "required": true },
+        },
+    },
+    "SetMinionCalibrate": {
+        "properties": {
+            "calibrationCycleMinutes": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "isInt": { "errorMsg": "true" } } },
         },
     },
     "IftttOnChanged": {
@@ -544,6 +550,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/API/minions/timeline',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -687,6 +694,31 @@ export function RegisterRoutes(app: express.Express) {
             const promise = controller.setMinionTimeout.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
+    app.put('/API/minions/calibrate/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+                setCalibrate: { "in": "body", "name": "setCalibrate", "required": true, "ref": "SetMinionCalibrate" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.setMinionCalibrate.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
     app.post('/API/minions/rescan/:minionId',
         authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
@@ -783,6 +815,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/minions/:minionId/ifttt',
+        authenticateMiddleware([{ "iftttAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },

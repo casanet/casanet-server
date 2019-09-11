@@ -9,6 +9,7 @@ import {
     MinionStatus,
     MinionTimeline,
     SetMinionAutoTurnOff,
+    SetMinionCalibrate,
 } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
 
@@ -42,6 +43,8 @@ export class MinionsController extends Controller {
     /**
      * Get the timeline of minions status.
      */
+    @Security('userAuth')
+    @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Get('timeline')
     public async getMinionsTimeline(): Promise<MinionTimeline[]> {
@@ -111,6 +114,19 @@ export class MinionsController extends Controller {
     }
 
     /**
+     * Update minion auto turns off timeout.
+     * @param minionId Minon id.
+     * @param setCalibrate Timeout property.
+     */
+    @Security('userAuth')
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Put('calibrate/{minionId}')
+    public async setMinionCalibrate(minionId: string, @Body() setCalibrate: SetMinionCalibrate): Promise<void> {
+        return await MinionsBlSingleton.setMinionCalibrate(minionId, setCalibrate.calibrationCycleMinutes);
+    }
+
+    /**
      * Recheck minion device status (update server status cache).
      */
     @Security('userAuth')
@@ -164,6 +180,7 @@ export class MinionsController extends Controller {
      * @param iftttOnChanged Minion key amd status to set.
      */
     @Response<ErrorResponse>(501, 'Server error')
+    @Security('iftttAuth')
     @Put('{minionId}/ifttt')
     public async notifyMinionStatusChanged(minionId: string, @Body() iftttOnChanged: IftttOnChanged): Promise<void> {
         return await MinionsBlSingleton.notifyMinionChangedByIfttt(minionId, iftttOnChanged);
