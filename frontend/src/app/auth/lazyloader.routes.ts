@@ -13,6 +13,6 @@ export const appRoutes: Routes = [{
         { path: 'timings', component: TimingsComponent },
         { path: 'devices', component: DevicesComponent },
         { path: 'users', component: UsersComponent },
-        { path: 'pages', loadChildren: '../pages/pages.module#PagesModule' },
+        { path: 'pages', loadChildren: () => import('../pages/pages.module').then(m => m.PagesModule) },
     ]
 }];
