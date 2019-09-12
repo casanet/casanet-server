@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, AfterContentInit, OnDestroy } from '@angular/core';
-import { MediaChange, ObservableMedia } from '@angular/flex-layout';
+import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import { TimingsService } from '../services/timings.service';
 import { Subscription } from 'rxjs';
 import swal, { SweetAlertResult } from 'sweetalert2';
@@ -34,7 +34,7 @@ export class AuthComponent implements OnInit, OnChanges, AfterContentInit, OnDes
     }
 
     constructor(
-        private media: ObservableMedia,
+        private media: MediaObserver,
         private timingService: TimingsService,
         private minionsService: MinionsService,
         private operationService: OperationService,
@@ -44,7 +44,7 @@ export class AuthComponent implements OnInit, OnChanges, AfterContentInit, OnDes
     }
 
     ngOnInit() {
-        this.media.subscribe((mediaChange: MediaChange) => {
+        this.media.media$.subscribe((mediaChange: MediaChange) => {
             this.toggleView();
         });
 
