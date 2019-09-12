@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pull_behavior_1 = require("pull-behavior");
 const rxjs_1 = require("rxjs");
 const config_1 = require("../config");
+const withTimeout = require("promise-with-timeout");
+const moment = require("moment");
 const broadlinkHandler_1 = require("./broadlink/broadlinkHandler");
 const iftttHandler_1 = require("./ifttt/iftttHandler");
 const miioHandler_1 = require("./miio/miioHandler");
@@ -14,6 +16,7 @@ const tuyaHandler_1 = require("./tuya/tuyaHandler");
 const yeelightHandler_1 = require("./yeelight/yeelightHandler");
 class ModulesManager {
     constructor() {
+        this.COMMUNICATE_DEVICE_TIMEOUT = moment.duration(15, 'seconds');
         /**
          * All modules handlers
          */
@@ -117,7 +120,19 @@ class ModulesManager {
             };
             throw errorResponse;
         }
-        return await minionModule.getStatus(miniom);
+        try {
+            return await withTimeout(minionModule.getStatus(miniom), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+        }
+        catch (error) {
+            if (typeof error.message === 'string' &&
+                error.message.indexOf('Promise not resolved after') !== -1) {
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with device fail, timeout',
+                };
+            }
+            throw error;
+        }
     }
     /**
      * Set minion new status. (such as turn minion on off etc.)
@@ -133,26 +148,38 @@ class ModulesManager {
             };
             throw errorResponse;
         }
-        return await minionModule.setStatus(miniom, setStatus);
+        try {
+            return await withTimeout(minionModule.setStatus(miniom, setStatus), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+        }
+        catch (error) {
+            if (typeof error.message === 'string' &&
+                error.message.indexOf('Promise not resolved after') !== -1) {
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with device fail, timeout',
+                };
+            }
+            throw error;
+        }
     }
     /**
      * Record data for currrent minion status.
      * Note, only few devices models support this feature.
      * For example it is used when need to record IR data to math status for next use.
-     * @param miniom minion to record for.
+     * @param minion minion to record for.
      * @param statusToRecordFor the specific status to record for.
      */
-    async enterRecordMode(miniom, statusToRecordFor) {
-        const minionModule = this.getMinionModule(miniom.device.brand);
+    async enterRecordMode(minion, statusToRecordFor) {
+        const minionModule = this.getMinionModule(minion.device.brand);
         if (!minionModule) {
             const errorResponse = {
                 responseCode: 7404,
-                message: `there is not module for -${miniom.device.brand}- brand`,
+                message: `there is not module for -${minion.device.brand}- brand`,
             };
             throw errorResponse;
         }
         /** Make sure that minion supprt recording */
-        const modelKind = this.getModelKind(minionModule, miniom.device);
+        const modelKind = this.getModelKind(minionModule, minion.device);
         if (!modelKind || !modelKind.isRecordingSupported) {
             const errorResponse = {
                 responseCode: 6409,
@@ -160,7 +187,19 @@ class ModulesManager {
             };
             throw errorResponse;
         }
-        return await minionModule.enterRecordMode(miniom, statusToRecordFor);
+        try {
+            return await withTimeout(minionModule.enterRecordMode(minion, statusToRecordFor), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+        }
+        catch (error) {
+            if (typeof error.message === 'string' &&
+                error.message.indexOf('Promise not resolved after') !== -1) {
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with device fail, timeout',
+                };
+            }
+            throw error;
+        }
     }
     /**
      * Generate an RF or IR command for given status.
@@ -187,7 +226,19 @@ class ModulesManager {
             };
             throw errorResponse;
         }
-        return await minionModule.generateCommand(minion, statusToGenerateFor);
+        try {
+            return await withTimeout(minionModule.generateCommand(minion, statusToGenerateFor), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+        }
+        catch (error) {
+            if (typeof error.message === 'string' &&
+                error.message.indexOf('Promise not resolved after') !== -1) {
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with device fail, timeout',
+                };
+            }
+            throw error;
+        }
     }
     /**
      * Update the currect module with fatched commands set.
@@ -213,7 +264,19 @@ class ModulesManager {
             };
             throw errorResponse;
         }
-        return await minionModule.setFetchedCommands(minion, commandsSet);
+        try {
+            return await withTimeout(minionModule.setFetchedCommands(minion, commandsSet), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+        }
+        catch (error) {
+            if (typeof error.message === 'string' &&
+                error.message.indexOf('Promise not resolved after') !== -1) {
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with device fail, timeout',
+                };
+            }
+            throw error;
+        }
     }
     /**
      * Refresh and reset all module communications.
@@ -221,7 +284,11 @@ class ModulesManager {
      */
     async refreshModules() {
         for (const brandHandler of this.modulesHandlers) {
-            await brandHandler.refreshCommunication();
+            try {
+                await withTimeout(brandHandler.refreshCommunication(), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+            }
+            catch (error) {
+            }
         }
     }
     /**
@@ -237,7 +304,19 @@ class ModulesManager {
             };
             throw errorResponse;
         }
-        await minionModule.refreshCommunication();
+        try {
+            return await withTimeout(minionModule.refreshCommunication(), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+        }
+        catch (error) {
+            if (typeof error.message === 'string' &&
+                error.message.indexOf('Promise not resolved after') !== -1) {
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with device fail, timeout',
+                };
+            }
+            throw error;
+        }
     }
 }
 exports.ModulesManager = ModulesManager;
