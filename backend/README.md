@@ -5,7 +5,7 @@ This is the casa-net local server to communicats and control IoT devices in a ho
 1. Download the project via git or download files as a zip.
 1. In Linux OS, make sure `net-tools` installed.
 1. Install Node.js on the machine.
-1. Navigate in a command line to `$/.../backend` and press `npm ci`.
+1. Navigate in a command line to `$/casanet-server/backend` and press `npm ci`.
 1. Press `node dist/index.js` to run the server.
 
 Then open the browser in `http://127.0.0.1:3000`.
