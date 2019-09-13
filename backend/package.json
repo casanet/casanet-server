@@ -44,7 +44,7 @@
     "moment": "^2.23.0",
     "mosca": "^2.8.3",
     "network-list2": "^1.0.2",
-    "node-orvibo-2": "1.1.4",
+    "node-orvibo-2": "1.1.5",
     "node-yeelight-wifi": "^0.1.2",
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
@@ -57,7 +57,7 @@
     "rxjs": "^6.5.2",
     "simple-git": "^1.121.0",
     "suncalc": "^1.8.0",
-    "tsoa": "^2.4.3",
+    "tsoa": "2.4.3",
     "tuyapi": "^5.1.2",
     "yeelight-awesome": "^1.0.12"
   },
