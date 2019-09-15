@@ -1,6 +1,7 @@
 <app-loader *ngIf="dataLoading"></app-loader>
-<div *ngIf="!dataLoading" fxLayout="row" fxLayout="row wrap">
-    <div *ngFor="let operation of operations" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
+<div *ngIf="!dataLoading" fxLayout="row wrap">
+    <div fxFlex fxLayout="column" fxLayoutAlign="space-between start"
+        *ngFor="let operation of operations" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
 
         <mat-card class="operation-text" style="max-width: 500px !important; background: #5c6bc0">
             <mat-card-header>
