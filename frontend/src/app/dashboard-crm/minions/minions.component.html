@@ -1,6 +1,6 @@
 <app-loader *ngIf="dataLoading"></app-loader>
-<div *ngIf="!dataLoading" fxLayout="row wrap">
-    <div fxFlex fxLayout="column" fxLayoutAlign="space-between start" 
+<div *ngIf="!dataLoading" fxLayout="row wrap" fxFill>
+    <div fxFlex fxLayout="column" fxLayoutAlign="space-between" 
         *ngFor="let minion of minions" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
 
         <mat-card class="minion-text {{minion.area && minion.minionType !== 'toggle' ? 'minion-card-focus' : ''}}"

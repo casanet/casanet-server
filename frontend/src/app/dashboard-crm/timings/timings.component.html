@@ -1,6 +1,6 @@
 <app-loader *ngIf="dataLoading"></app-loader>
-<div *ngIf="!dataLoading" fxLayout="row wrap">
-    <div fxFlex fxLayout="column" fxLayoutAlign="space-between start"
+<div *ngIf="!dataLoading" fxLayout="row wrap" fxFill>
+    <div fxFlex fxLayout="column" fxLayoutAlign="space-between"
         *ngFor="let timing of timings" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
 
         <mat-card class="timing-text" style="max-width: 500px !important; background: #4f93a8">

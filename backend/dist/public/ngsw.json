@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1568507221852,
+  "timestamp": 1568577245827,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -36,6 +36,8 @@
         "/assets/icons/icon-96x96.png",
         "/assets/images/avatars/noavatar.png",
         "/assets/login_wallpaper.png",
+        "/assets/logo-loading-hq.gif",
+        "/assets/logo-loading-lq.gif",
         "/assets/logo.ico",
         "/assets/logo.png",
         "/assets/logo_long.png"
@@ -52,7 +54,7 @@
       "strategy": "performance",
       "maxSize": 100,
       "maxAge": 2592000000,
-      "version": 17
+      "version": 18
     }
   ],
   "hashTable": {
@@ -77,6 +79,8 @@
     "/assets/icons/icon-96x96.png": "328638878a3ce8fc1270a6365588bf7b1f1d1f23",
     "/assets/images/avatars/noavatar.png": "e05578b6533d433ace16706a5490429d318c3ab9",
     "/assets/login_wallpaper.png": "2bcffc1c67282b7523a8e06e91409c216f3bacde",
+    "/assets/logo-loading-hq.gif": "cb18bbd42d3441a62fb84a06cb483403d55efcad",
+    "/assets/logo-loading-lq.gif": "c011cb45e6005fc7ca10bf7c190ea7bfc350daed",
     "/assets/logo.ico": "197e1ecd42e4a2e2540a5800756e91b9c44d753b",
     "/assets/logo.png": "ebf36d69e539b6b7ec3ac43a006db3b5780b3dd6",
     "/assets/logo_long.png": "cd6e5221f79e4e841f179884b74c2b03c1c65e3b"
