@@ -1,12 +1,12 @@
 {
-  "name": "casanet-ui",
-  "short_name": "casaui",
+  "name": "casanet dashboard",
+  "short_name": "casanet",
   "theme_color": "#15856b",
-  "background_color": "#fafafa",
+  "background_color": "#2A3443",
+  "description": "A dashboard to control IoT devices in a local home network",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "orientation": "any",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
