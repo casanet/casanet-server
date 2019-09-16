@@ -4,7 +4,7 @@
   "scripts": {
     "environment:internal": "node ./src/environments/build-internal-environment.js",
     "environment:external": "node ./src/environments/build-external-environment.js",
-    "postngbuild": "copyfiles ./light-app/**/* ./dist && node ./pwa/pwa-ngsw-copy.js",
+    "postngbuild": "node ./pwa/pwa-ngsw-copy.js",
     "build": "npm run environment:internal && ng build --prod && npm run postngbuild && del-cli ../backend/dist/public/ --force && copyfiles --all --up 1 ./dist/**/* ../backend/dist/public",
     "build:external": "npm run environment:external && ng build --prod && npm run postngbuild",
     "test": "ng test",
