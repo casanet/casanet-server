@@ -147,7 +147,9 @@ let buttonClicked = (element, minion) => {
 patchMinions();
 
 /** SSE */
-var evtSource = new EventSource(`${environments.API_URL}/feed/minions`);
+var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
+    withCredentials: true
+});
 
 evtSource.onmessage = (e) => {
     patchMinions();
