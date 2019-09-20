@@ -96,7 +96,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MatStepperModule,
     MatSelectModule,
     MglTimelineModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    localStorage.getItem('use-sw') !== 'true' ?  [] : ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     MinionsService,

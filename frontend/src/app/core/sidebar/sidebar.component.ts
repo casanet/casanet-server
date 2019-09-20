@@ -310,4 +310,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
     public async setLang(lang: string) {
         await this.translateService.setLeng(lang);
     }
+
+    /** PWA */
+    public async installPWA() {
+        localStorage.setItem('use-sw', 'true');
+        /** refresh page to acvtivate changes */
+        window.location.reload();
+
+    }
+
+    public async uninstallPWA() {
+        localStorage.setItem('use-sw', 'false');
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (let registration of registrations) {
+            registration.unregister();
+        }
+    }
 }

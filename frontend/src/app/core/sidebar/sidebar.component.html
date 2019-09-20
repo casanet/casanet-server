@@ -81,6 +81,21 @@
 
 <div class="settings-viewer-wrapper">
     <div class="settings-viewer-title">
+        <div class="settings-viewer-title-spacer"> {{ 'PWA' | translate }}</div>
+        <button mat-icon-button matTooltipPosition="below">
+            <mat-icon>get_app</mat-icon>
+        </button>
+    </div>
+    <div class="settings-viewer-body form-container">
+        <button class="setting-button" mat-stroked-button
+            (click)="installPWA()">{{ 'INSTALL' | translate }}</button>
+        <button class="setting-button" mat-stroked-button (click)="uninstallPWA()">
+            {{ 'UNINSTALL' | translate }}</button>
+    </div>
+</div>
+
+<div class="settings-viewer-wrapper">
+    <div class="settings-viewer-title">
         <div class="settings-viewer-title-spacer">
             <table style="margin: auto; text-align: right">
                 <tr>
