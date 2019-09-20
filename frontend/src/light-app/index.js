@@ -1,6 +1,6 @@
 /** Get the environments */
 let environments = {
-    API_URL : "http://127.0.0.1:3000/API"
+    API_URL: "http://127.0.0.1:3000/API"
 }
 
 let fetchEnvironments = () => {
@@ -145,3 +145,23 @@ let buttonClicked = (element, minion) => {
 
 /** On start. get and generate minions */
 patchMinions();
+
+/** SSE */
+var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
+    withCredentials: true
+});
+
+evtSource.onmessage = (e) => {
+    patchMinions();
+}
+
+/** PWA */
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/light-app/service-worker.js')
+        .then(function (registration) {
+            console.log('Registration successful, scope is:', registration.scope);
+        })
+        .catch(function (error) {
+            console.warn('Service worker registration failed, error:', error);
+        });
+}

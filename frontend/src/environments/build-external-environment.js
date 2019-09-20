@@ -20,6 +20,6 @@ export const environment = {
 /**
 * Also, build the light app environments
 */
-fse.outputJSONSync('./light-app/environments.json', {
+fse.outputJSONSync('./src/light-app/environments.json', {
     API_URL: `${API_URL || defaultApiUrl}/API`
 });

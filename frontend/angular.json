@@ -27,6 +27,7 @@
               "src/favicon.ico",
               "src/assets",
               "src/.well-known",
+              "src/light-app",
               "src/manifest.json"
             ],
             "styles": [
