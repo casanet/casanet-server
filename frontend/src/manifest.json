@@ -2,7 +2,7 @@
   "name": "casanet dashboard",
   "short_name": "casanet",
   "theme_color": "#15856b",
-  "background_color": "#2A3443",
+  "background_color": "#fafafa",
   "description": "A dashboard to control IoT devices in a local home network",
   "display": "standalone",
   "scope": "/",
