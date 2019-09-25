@@ -3,9 +3,9 @@
     "short_name": "casa lite",
     "start_url": "/light-app/index.html",
     "display": "standalone",
-    "background_color": "#2A3443",
+    "background_color": "#fafafa",
     "description": "A lite version of casanet dashboard",
-    "theme_color": "#2A3443",
+    "theme_color": "#373a40",
     "icons": [
         {
           "src": "/light-app/icons/icon-72x72.png",
