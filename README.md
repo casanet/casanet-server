@@ -104,7 +104,7 @@ The casa remote server is built for it, [casanet-remote](https://github.com/casa
 
 - Tasmota
     
-    - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363))
+    - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363)) 
 
 - [IFTTT](https://ifttt.com/discover) module. [module use documentation](./backend/src/modules/ifttt/README.md)..
 
@@ -116,8 +116,8 @@ The casa remote server is built for it, [casanet-remote](https://github.com/casa
     -  Switch.
     -  Air-conditioning.
     -  Light
-    -  Temperature.
-    -  Color.
+    -  Temperature light.
+    -  Color light.
     -  Roller.
     
 - Mock (for testing only)
