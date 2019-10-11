@@ -184,7 +184,7 @@ Feel free to open an issue with a bug report or feature to develop for the next 
 
 For any suggestion or help feel free to contact me.
 
-## Casanet image
+## Casanet server deployment
 Although there is no way to run the server in a docker container because the app should scan the real local network.
 I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
 
@@ -192,7 +192,7 @@ I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices 
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
 
-Shared with	 ❤️ 	 by kastnet.
+Shared with :heart: by kastnet.
 
 ---
 > The version 1 of the project placed in [here](https://github.com/casanet/casanet-server/tree/archive-v1), maintaining for security and fatal bugs fixes only.
