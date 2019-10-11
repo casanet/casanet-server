@@ -47,6 +47,8 @@ for it copy the .env.example file and edit the real env:
 ```cp .env.example .env```
 Then edit real environments by ```nano .env``` or any other text editor.
 
+> The `orange pi` armbian image changes his mac address each boot, so I recommend to get the mac address and set it to the `PHYSICAL_ADDRESS` environment variable, else the default username and the identity against a [remote server](https://github.com/casanet/remote-server) will change each boot.
+
 ### Exist window
 press `ctrl` + `b` + `d` to exit from the tmux window.
 
