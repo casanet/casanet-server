@@ -1,4 +1,4 @@
-# Installing casanet server on a Linux OS based devices.
+# Deploy casanet server on a Linux OS based devices.
 
 Tested on orenge pi zero + armbian image, orenge pi one + armbian image and raspebery pi B+ with rapsebian image.
 
