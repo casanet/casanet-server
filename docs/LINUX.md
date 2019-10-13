@@ -1,8 +1,8 @@
-# Deploy casanet server on a Linux OS based devices.
+# Deploy casanet server on a Linux OS based devices
 
 Tested on orenge pi zero + armbian image, orenge pi one + armbian image and raspebery pi B+ with rapsebian image.
 
-## Pre requries
+## Pre requirments
 
 ### Update system 
 ```sudo apt-get update``` 
@@ -21,7 +21,7 @@ Then
 
 ```sudo apt-get install -y nodejs```
 
-### Install GIT (if not installed yet on the image)
+### Install Git (if not installed yet on the image)
 ```sudo apt-get install -y git```
 
 ### Install tmux 
@@ -97,7 +97,9 @@ And change the link name to a boot pattern.
 
 ```mv casanet S01casanet```
 
-Now reboot the device and chack that all work properly. Good Luck!.
+Now reboot the device and chack that all work properly. 
+
+Good Luck!
 
 
 
