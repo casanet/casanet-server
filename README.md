@@ -178,7 +178,7 @@ See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 ## TODO
 
 - [X] Finish UI of casanet local server.
-- [ ] Faster boot time for the angular dashboard app.  
+- [X] Faster boot time for the angular dashboard app.  
 
 Feel free to open an issue with a bug report or feature to develop for the next version.
 
