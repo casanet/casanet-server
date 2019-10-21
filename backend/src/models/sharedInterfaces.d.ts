@@ -684,12 +684,17 @@ export declare interface VersionInfo {
     timestamp: number;
 }
 
-/** Version update progress status options */
-export declare type UpdateStatus = 'inProgress' | 'finished' | 'fail';
+/** Long-time job status */
+export declare type ProgressStatus = 'inProgress' | 'finished' | 'fail';
 
-/** Version update progress status info. */
+/** Scanning progress status */
+export declare interface ScaningStatus {
+    scaningStatus: ProgressStatus;
+}
+
+/** Version update progress status */
 export declare interface VersionUpdateStatus {
-    updateStatus: UpdateStatus;
+    updateStatus: ProgressStatus;
 }
 
 /** Minion timeline node */

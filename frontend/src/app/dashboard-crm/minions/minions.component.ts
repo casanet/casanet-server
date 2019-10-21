@@ -422,19 +422,15 @@ export class MinionsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	public async refreshMinions() {
-		this.minions = [];
+	public async refreshMinions(scanNetwork = false) {
 		this.dataLoading = true;
 
-		await this.minionsService.refreshMinions();
+		await this.minionsService.refreshMinions(scanNetwork);
+		this.dataLoading = false;
 	}
 
 	public async reScanNetwordAndRefreshMinions() {
-		this.minions = [];
-		this.dataLoading = true;
-
-		await this.devicesService.rescanLanDevices();
-		await this.refreshMinions();
+		await this.refreshMinions(true);
 	}
 
 	public loadChangeColor(colorLight: ColorLight, setRgbHexColor: string) {

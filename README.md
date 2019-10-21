@@ -104,7 +104,7 @@ The casa remote server is built for it, [casanet-remote](https://github.com/casa
 
 - Tasmota
     
-    - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363))
+    - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363)) 
 
 - [IFTTT](https://ifttt.com/discover) module. [module use documentation](./backend/src/modules/ifttt/README.md)..
 
@@ -116,8 +116,8 @@ The casa remote server is built for it, [casanet-remote](https://github.com/casa
     -  Switch.
     -  Air-conditioning.
     -  Light
-    -  Temperature.
-    -  Color.
+    -  Temperature light.
+    -  Color light.
     -  Roller.
     
 - Mock (for testing only)
@@ -178,29 +178,21 @@ See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 ## TODO
 
 - [X] Finish UI of casanet local server.
-- [ ] Faster boot time for the angular dashboard app.  
+- [X] Faster boot time for the angular dashboard app.  
 
 Feel free to open an issue with a bug report or feature to develop for the next version.
 
 For any suggestion or help feel free to contact me.
 
-## Casanet image
+## Casanet server deployment
 Although there is no way to run the server in a docker container because the app should scan the real local network.
-I made a Linux image for several devices.
-- [Orange Pi One H3 512MB](https://1drv.ms/u/s!AkCfoHMx_LhRrZMxfN_eyA8gHbeALg?e=uHbjTV) based `Armbian_5.83` `Debian_stretch`.
-- [Orange Pi Zero H2 512MB](https://1drv.ms/u/s!AkCfoHMx_LhRrZMw26D8_EBF7Arayw?e=oQn15w) based `Armbian_5.83` `Debian_stretch`.
-- [Orange Pi Zero H2 512MB](https://1drv.ms/u/s!AkCfoHMx_LhRrZMvMbCzaCZabZIoEg?e=n67UiJ) based `Armbian_5.83` `Debian_stretch`. 
-	- (With hotspot SSID:`CASANET` pass: `casanet-is-the-best?`.
-
-Username: `root` \ `casanet` Password: `casa-net`.
-All configured to run the server on boot in port 80. 
-The server runs on tmux window named "casanet".
+I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
 
 
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
 
-Shared with 	❤️ 	by kastnet.
+Shared with :heart: by kastnet.
 
 ---
 > The version 1 of the project placed in [here](https://github.com/casanet/casanet-server/tree/archive-v1), maintaining for security and fatal bugs fixes only.

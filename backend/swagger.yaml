@@ -607,6 +607,18 @@ definitions:
         required:
             - calibrationCycleMinutes
         type: object
+    ScaningStatus:
+        description: 'Scanning progress status'
+        properties:
+            scaningStatus:
+                type: string
+                enum:
+                    - inProgress
+                    - finished
+                    - fail
+        required:
+            - scaningStatus
+        type: object
     IftttOnChanged:
         description: "Ifttt webhook request body to notify minion status changed.\r\n*Used in ifttt module interface only*"
         properties:
@@ -788,7 +800,7 @@ definitions:
             - alreadyUpToDate
         type: object
     VersionUpdateStatus:
-        description: 'Version update progress status info.'
+        description: 'Version update progress status'
         properties:
             updateStatus:
                 type: string
@@ -1124,141 +1136,6 @@ paths:
                 -
                     adminAuth: []
             parameters: []
-    /minions:
-        get:
-            operationId: GetMinions
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        type: array
-                        items:
-                            $ref: '#/definitions/Minion'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Get all minions in the system.'
-            tags:
-                - Minions
-            security:
-                -
-                    userAuth: []
-                -
-                    adminAuth: []
-            parameters: []
-        post:
-            operationId: CreateMinion
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Creates a new minion.'
-            tags:
-                - Minions
-            security:
-                -
-                    userAuth: []
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'The new minion to create.'
-                    in: body
-                    name: minion
-                    required: true
-                    schema:
-                        $ref: '#/definitions/Minion'
-    '/minions/{minionId}':
-        get:
-            operationId: GetMinion
-            produces:
-                - application/json
-            responses:
-                '200':
-                    description: Ok
-                    schema:
-                        $ref: '#/definitions/Minion'
-            description: 'Get minion by id.'
-            tags:
-                - Minions
-            security:
-                -
-                    userAuth: []
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    in: path
-                    name: minionId
-                    required: true
-                    type: string
-        put:
-            operationId: SetMinion
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Update minion status.'
-            tags:
-                - Minions
-            security:
-                -
-                    userAuth: []
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'Minion id.'
-                    in: path
-                    name: minionId
-                    required: true
-                    type: string
-                -
-                    description: 'Minion status to set.'
-                    in: body
-                    name: setStatus
-                    required: true
-                    schema:
-                        $ref: '#/definitions/MinionStatus'
-        delete:
-            operationId: DeleteMinion
-            produces:
-                - application/json
-            responses:
-                '204':
-                    description: 'No content'
-                '501':
-                    description: 'Server error'
-                    schema:
-                        $ref: '#/definitions/ErrorResponse'
-            description: 'Delete minion from the system.'
-            tags:
-                - Minions
-            security:
-                -
-                    userAuth: []
-                -
-                    adminAuth: []
-            parameters:
-                -
-                    description: 'Minon id.'
-                    in: path
-                    name: minionId
-                    required: true
-                    type: string
     '/minions/rename/{minionId}':
         put:
             operationId: RenameMinion
@@ -1399,6 +1276,170 @@ paths:
                     schema:
                         $ref: '#/definitions/ErrorResponse'
             description: "Recheck every minion device status (update server status cache).\r\nNote that this is not the devices scan!\r\nThis scanning only checks every minion API to know the current status."
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    default: false
+                    description: 'Whenever scan also the local networks IP''s map or not'
+                    in: query
+                    name: scanNetwork
+                    required: false
+                    type: boolean
+        get:
+            operationId: GetSescaningMinionsStatus
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/ScaningStatus'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get the current scanning status'
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters: []
+    '/minions/{minionId}':
+        delete:
+            operationId: DeleteMinion
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Delete minion from the system.'
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'Minon id.'
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
+        get:
+            operationId: GetMinion
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/Minion'
+            description: 'Get minion by id.'
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
+        put:
+            operationId: SetMinion
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Update minion status.'
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'Minion id.'
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
+                -
+                    description: 'Minion status to set.'
+                    in: body
+                    name: setStatus
+                    required: true
+                    schema:
+                        $ref: '#/definitions/MinionStatus'
+    /minions:
+        post:
+            operationId: CreateMinion
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Creates a new minion.'
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'The new minion to create.'
+                    in: body
+                    name: minion
+                    required: true
+                    schema:
+                        $ref: '#/definitions/Minion'
+        get:
+            operationId: GetMinions
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/definitions/Minion'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get all minions in the system.'
             tags:
                 - Minions
             security:

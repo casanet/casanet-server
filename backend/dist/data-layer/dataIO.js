@@ -44,6 +44,6 @@ class DataIO {
         });
     }
 }
-DataIO.DATA_DIRACTORY = path.join('./data/', config_1.Configuration.runningMode);
 exports.DataIO = DataIO;
+DataIO.DATA_DIRACTORY = path.join('./data/', config_1.Configuration.runningMode);
 //# sourceMappingURL=dataIO.js.map

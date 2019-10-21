@@ -1,13 +1,13 @@
 import { exec } from 'child-process-promise';
 import * as simplegit from 'simple-git/promise';
 import { Configuration } from '../config';
-import { ErrorResponse, UpdateResults, UpdateStatus, VersionInfo, VersionUpdateStatus } from '../models/sharedInterfaces';
+import { ErrorResponse, UpdateResults, ProgressStatus, VersionInfo, VersionUpdateStatus } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
 export class VersionsBl {
 
     private git = simplegit();
-    private updateStatus: UpdateStatus = 'finished';
+    private updateStatus: ProgressStatus = 'finished';
 
     constructor() {
 

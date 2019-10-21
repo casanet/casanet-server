@@ -42,28 +42,6 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
         return await timelineBl_1.TimelineBlSingleton.getTimeline();
     }
     /**
-     * Get all minions in the system.
-     * @returns Minions array.
-     */
-    async getMinions() {
-        return this.cleanUpMinionsBeforRelease(await minionsBl_1.MinionsBlSingleton.getMinions());
-    }
-    /**
-     * Get minion by id.
-     * @returns Minion.
-     */
-    async getMinion(minionId) {
-        return this.cleanUpMinionBeforRelease(await minionsBl_1.MinionsBlSingleton.getMinionById(minionId));
-    }
-    /**
-     * Update minion status.
-     * @param minionId Minion id.
-     * @param setStatus Minion status to set.
-     */
-    async setMinion(minionId, setStatus) {
-        return await minionsBl_1.MinionsBlSingleton.setMinionStatus(minionId, setStatus);
-    }
-    /**
      * Update minion name.
      * @param minionId Minion id.
      * @param name Minion new name to set.
@@ -97,9 +75,18 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
      * Recheck every minion device status (update server status cache).
      * Note that this is not the devices scan!
      * This scanning only checks every minion API to know the current status.
+     * @param scanNetwork Whenever scan also the local networks IP's map or not
      */
-    async rescanMinionsStatus() {
-        return await minionsBl_1.MinionsBlSingleton.scanMinionsStatus();
+    async rescanMinionsStatus(scanNetwork = false) {
+        return await minionsBl_1.MinionsBlSingleton.scanMinionsStatus(scanNetwork);
+    }
+    /**
+     * Get the current scanning status
+     */
+    async getSescaningMinionsStatus() {
+        return {
+            scaningStatus: await minionsBl_1.MinionsBlSingleton.getScaningStatus()
+        };
     }
     /**
      * Delete minion from the system.
@@ -123,6 +110,28 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
     async notifyMinionStatusChanged(minionId, iftttOnChanged) {
         return await minionsBl_1.MinionsBlSingleton.notifyMinionChangedByIfttt(minionId, iftttOnChanged);
     }
+    /**
+  * Get all minions in the system.
+  * @returns Minions array.
+  */
+    async getMinions() {
+        return this.cleanUpMinionsBeforRelease(await minionsBl_1.MinionsBlSingleton.getMinions());
+    }
+    /**
+     * Get minion by id.
+     * @returns Minion.
+     */
+    async getMinion(minionId) {
+        return this.cleanUpMinionBeforRelease(await minionsBl_1.MinionsBlSingleton.getMinionById(minionId));
+    }
+    /**
+     * Update minion status.
+     * @param minionId Minion id.
+     * @param setStatus Minion status to set.
+     */
+    async setMinion(minionId, setStatus) {
+        return await minionsBl_1.MinionsBlSingleton.setMinionStatus(minionId, setStatus);
+    }
 };
 __decorate([
     tsoa_1.Security('userAuth'),
@@ -130,24 +139,6 @@ __decorate([
     tsoa_1.Response(501, 'Server error'),
     tsoa_1.Get('timeline')
 ], MinionsController.prototype, "getMinionsTimeline", null);
-__decorate([
-    tsoa_1.Security('userAuth'),
-    tsoa_1.Security('adminAuth'),
-    tsoa_1.Response(501, 'Server error'),
-    tsoa_1.Get()
-], MinionsController.prototype, "getMinions", null);
-__decorate([
-    tsoa_1.Security('userAuth'),
-    tsoa_1.Security('adminAuth'),
-    tsoa_1.Get('{minionId}')
-], MinionsController.prototype, "getMinion", null);
-__decorate([
-    tsoa_1.Security('userAuth'),
-    tsoa_1.Security('adminAuth'),
-    tsoa_1.Response(501, 'Server error'),
-    tsoa_1.Put('{minionId}'),
-    __param(1, tsoa_1.Body())
-], MinionsController.prototype, "setMinion", null);
 __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),
@@ -179,8 +170,15 @@ __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),
     tsoa_1.Response(501, 'Server error'),
-    tsoa_1.Post('rescan')
+    tsoa_1.Post('rescan'),
+    __param(0, tsoa_1.Query())
 ], MinionsController.prototype, "rescanMinionsStatus", null);
+__decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Get('rescan')
+], MinionsController.prototype, "getSescaningMinionsStatus", null);
 __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),
@@ -200,6 +198,24 @@ __decorate([
     tsoa_1.Put('{minionId}/ifttt'),
     __param(1, tsoa_1.Body())
 ], MinionsController.prototype, "notifyMinionStatusChanged", null);
+__decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Get()
+], MinionsController.prototype, "getMinions", null);
+__decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Get('{minionId}')
+], MinionsController.prototype, "getMinion", null);
+__decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Put('{minionId}'),
+    __param(1, tsoa_1.Body())
+], MinionsController.prototype, "setMinion", null);
 MinionsController = __decorate([
     tsoa_1.Tags('Minions'),
     tsoa_1.Route('minions')
