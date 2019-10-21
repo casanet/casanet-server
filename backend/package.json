@@ -10,6 +10,7 @@
   "main": "dist/index.js",
   "scripts": {
     "jscopy": "copyfiles -u 1 src/**/*.js dist",
+    "serve": "tsoa routes && tsoa swagger && tsc && npm run jscopy && node dist/index.js",
     "build": "tsoa routes && tsoa swagger && tsc && npm run jscopy",
     "test": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --require ts-node/register test/**/*.spec.ts",
     "e2e": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --require ts-node/register e2e/**/*.spec.ts"
