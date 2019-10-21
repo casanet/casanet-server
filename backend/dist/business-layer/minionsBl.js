@@ -14,6 +14,7 @@ class MinionsBl {
      * @param minionsDal Inject the dal instance.
      */
     constructor(minionsDal, devicesBl, modulesManager) {
+        this.scanningStatus = 'finished';
         /**
          * minions
          */
@@ -31,13 +32,15 @@ class MinionsBl {
             logger_1.logger.info('Init minions done');
         })
             .catch(() => {
-            logger_1.logger.error('Init minions fail.');
+            logger_1.logger.error('Init minions fail');
         });
     }
     /**
      * Init minions.
      */
     async initData() {
+        /** Mark scannig as 'inProgress' */
+        this.scanningStatus = 'inProgress';
         /**
          * Gets all minions
          */
@@ -85,6 +88,8 @@ class MinionsBl {
          * Finally, after all, get minions status.
          */
         await this.readMinionsStatus();
+        /** Now mark all tasks finished */
+        this.scanningStatus = 'finished';
     }
     /**
      * Load minion devices data
@@ -230,6 +235,26 @@ class MinionsBl {
         minionToCheck.minionType = deviceKind.suppotedMinionType;
     }
     /**
+     * Scan the minions current status
+     * @param scanNetwork Whenever scan also the local networks IP's map or not.
+     */
+    async scanMinioinsNetworkAndStatuses(scanNetwork = false) {
+        this.scanningStatus = 'inProgress';
+        try {
+            if (scanNetwork) {
+                await this.devicesBl.rescanNetwork();
+            }
+            await this.modulesManager.refreshModules();
+            await this.readMinionsStatus();
+        }
+        catch (error) {
+            logger_1.logger.warn(`Scannig minions ${scanNetwork ? 'with network' : ''} faild ${JSON.stringify(error)}`);
+            this.scanningStatus = 'fail';
+            return;
+        }
+        this.scanningStatus = 'finished';
+    }
+    /**
      * API
      */
     /**
@@ -254,11 +279,18 @@ class MinionsBl {
     }
     /**
      * Scan all minions real status.
-     * mean update minions cache by request each device what is the real status.
+     * mean, update minions cache by request each device what is the real status.
+     * @param scanNetwork Whenever scan also the local networks IP's map or not.
      */
-    async scanMinionsStatus() {
-        await this.modulesManager.refreshModules();
-        await this.readMinionsStatus();
+    async scanMinionsStatus(scanNetwork = false) {
+        if (this.scanningStatus !== 'inProgress')
+            this.scanMinioinsNetworkAndStatuses(scanNetwork);
+    }
+    /**
+     * Get the current scanning status
+     */
+    getScaningStatus() {
+        return this.scanningStatus;
     }
     /**
      * Scan minion real status.

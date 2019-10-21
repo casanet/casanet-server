@@ -63,6 +63,6 @@ class BrandModuleBase {
         });
     }
 }
-BrandModuleBase.CACHE_DIRACTORY = path.join('./data/', config_1.Configuration.runningMode, '/cache/');
 exports.BrandModuleBase = BrandModuleBase;
+BrandModuleBase.CACHE_DIRACTORY = path.join('./data/', config_1.Configuration.runningMode, '/cache/');
 //# sourceMappingURL=brandModuleBase.js.map

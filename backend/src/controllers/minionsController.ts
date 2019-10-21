@@ -10,6 +10,8 @@ import {
     MinionTimeline,
     SetMinionAutoTurnOff,
     SetMinionCalibrate,
+    VersionUpdateStatus,
+    ScaningStatus,
 } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
 
@@ -49,42 +51,6 @@ export class MinionsController extends Controller {
     @Get('timeline')
     public async getMinionsTimeline(): Promise<MinionTimeline[]> {
         return await TimelineBlSingleton.getTimeline();
-    }
-
-    /**
-     * Get all minions in the system.
-     * @returns Minions array.
-     */
-    @Security('userAuth')
-    @Security('adminAuth')
-    @Response<ErrorResponse>(501, 'Server error')
-    @Get()
-    public async getMinions(): Promise<Minion[]> {
-        return this.cleanUpMinionsBeforRelease(await MinionsBlSingleton.getMinions());
-    }
-
-    /**
-     * Get minion by id.
-     * @returns Minion.
-     */
-    @Security('userAuth')
-    @Security('adminAuth')
-    @Get('{minionId}')
-    public async getMinion(minionId: string): Promise<Minion> {
-        return this.cleanUpMinionBeforRelease(await MinionsBlSingleton.getMinionById(minionId));
-    }
-
-    /**
-     * Update minion status.
-     * @param minionId Minion id.
-     * @param setStatus Minion status to set.
-     */
-    @Security('userAuth')
-    @Security('adminAuth')
-    @Response<ErrorResponse>(501, 'Server error')
-    @Put('{minionId}')
-    public async setMinion(minionId: string, @Body() setStatus: MinionStatus): Promise<void> {
-        return await MinionsBlSingleton.setMinionStatus(minionId, setStatus);
     }
 
     /**
@@ -141,13 +107,27 @@ export class MinionsController extends Controller {
      * Recheck every minion device status (update server status cache).
      * Note that this is not the devices scan!
      * This scanning only checks every minion API to know the current status.
+     * @param scanNetwork Whenever scan also the local networks IP's map or not
      */
     @Security('userAuth')
     @Security('adminAuth')
     @Response<ErrorResponse>(501, 'Server error')
     @Post('rescan')
-    public async rescanMinionsStatus(): Promise<void> {
-        return await MinionsBlSingleton.scanMinionsStatus();
+    public async rescanMinionsStatus(@Query() scanNetwork: boolean = false): Promise<void> {
+        return await MinionsBlSingleton.scanMinionsStatus(scanNetwork);
+    }
+
+    /**
+     * Get the current scanning status
+     */
+    @Security('userAuth')
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Get('rescan')
+    public async getSescaningMinionsStatus(): Promise<ScaningStatus> {
+        return {
+            scaningStatus: await MinionsBlSingleton.getScaningStatus()
+        };
     }
 
     /**
@@ -184,5 +164,41 @@ export class MinionsController extends Controller {
     @Put('{minionId}/ifttt')
     public async notifyMinionStatusChanged(minionId: string, @Body() iftttOnChanged: IftttOnChanged): Promise<void> {
         return await MinionsBlSingleton.notifyMinionChangedByIfttt(minionId, iftttOnChanged);
+    }
+
+    /**
+  * Get all minions in the system.
+  * @returns Minions array.
+  */
+    @Security('userAuth')
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Get()
+    public async getMinions(): Promise<Minion[]> {
+        return this.cleanUpMinionsBeforRelease(await MinionsBlSingleton.getMinions());
+    }
+
+    /**
+     * Get minion by id.
+     * @returns Minion.
+     */
+    @Security('userAuth')
+    @Security('adminAuth')
+    @Get('{minionId}')
+    public async getMinion(minionId: string): Promise<Minion> {
+        return this.cleanUpMinionBeforRelease(await MinionsBlSingleton.getMinionById(minionId));
+    }
+
+    /**
+     * Update minion status.
+     * @param minionId Minion id.
+     * @param setStatus Minion status to set.
+     */
+    @Security('userAuth')
+    @Security('adminAuth')
+    @Response<ErrorResponse>(501, 'Server error')
+    @Put('{minionId}')
+    public async setMinion(minionId: string, @Body() setStatus: MinionStatus): Promise<void> {
+        return await MinionsBlSingleton.setMinionStatus(minionId, setStatus);
     }
 }

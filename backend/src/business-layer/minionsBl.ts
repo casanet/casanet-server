@@ -10,6 +10,7 @@ import {
     Minion,
     MinionFeed,
     MinionStatus,
+    ProgressStatus,
 } from '../models/sharedInterfaces';
 import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
 import { logger } from '../utilities/logger';
@@ -22,6 +23,7 @@ export class MinionsBl {
     private minionsDal: MinionsDal;
     private devicesBl: DevicesBl;
     private modulesManager: ModulesManager;
+    private scanningStatus: ProgressStatus = 'finished';
 
     /**
      * minions
@@ -49,7 +51,7 @@ export class MinionsBl {
                 logger.info('Init minions done');
             })
             .catch(() => {
-                logger.error('Init minions fail.');
+                logger.error('Init minions fail');
             });
     }
 
@@ -57,6 +59,9 @@ export class MinionsBl {
      * Init minions.
      */
     private async initData(): Promise<void> {
+
+        /** Mark scannig as 'inProgress' */
+        this.scanningStatus = 'inProgress';
 
         /**
          * Gets all minions
@@ -113,6 +118,9 @@ export class MinionsBl {
          * Finally, after all, get minions status.
          */
         await this.readMinionsStatus();
+
+        /** Now mark all tasks finished */
+        this.scanningStatus = 'finished';
     }
 
     /**
@@ -276,6 +284,26 @@ export class MinionsBl {
     }
 
     /**
+     * Scan the minions current status
+     * @param scanNetwork Whenever scan also the local networks IP's map or not.
+     */
+    private async scanMinioinsNetworkAndStatuses(scanNetwork: boolean = false) {
+        this.scanningStatus = 'inProgress';
+        try {
+            if (scanNetwork) {
+                await this.devicesBl.rescanNetwork();
+            }
+            await this.modulesManager.refreshModules();
+            await this.readMinionsStatus();
+        } catch (error) {
+            logger.warn(`Scannig minions ${scanNetwork ? 'with network' : ''} faild ${JSON.stringify(error)}`);
+            this.scanningStatus = 'fail';
+            return;
+        }
+        this.scanningStatus = 'finished';
+    }
+
+    /**
      * API
      */
 
@@ -304,11 +332,19 @@ export class MinionsBl {
 
     /**
      * Scan all minions real status.
-     * mean update minions cache by request each device what is the real status.
+     * mean, update minions cache by request each device what is the real status.
+     * @param scanNetwork Whenever scan also the local networks IP's map or not.
      */
-    public async scanMinionsStatus(): Promise<void> {
-        await this.modulesManager.refreshModules();
-        await this.readMinionsStatus();
+    public async scanMinionsStatus(scanNetwork: boolean = false): Promise<void> {
+        if (this.scanningStatus !== 'inProgress')
+            this.scanMinioinsNetworkAndStatuses(scanNetwork);
+    }
+
+    /**
+     * Get the current scanning status
+     */
+    public getScaningStatus(): ProgressStatus {
+        return this.scanningStatus;
     }
 
     /**
