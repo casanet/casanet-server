@@ -8,7 +8,7 @@ import {
     UpdateResults,
     VersionInfo,
     VersionUpdateStatus,
-    UpdateStatus
+    ProgressStatus
 } from '../../../../../backend/src/models/sharedInterfaces';
 import swal, { SweetAlertResult } from 'sweetalert2';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -285,7 +285,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const updateStatus: UpdateStatus = swalResult.value;
+        const updateStatus: ProgressStatus = swalResult.value;
 
         if (updateStatus === 'fail') {
             await swal({

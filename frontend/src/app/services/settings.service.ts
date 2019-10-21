@@ -7,7 +7,7 @@ import {
   UpdateResults,
   VersionInfo,
   VersionUpdateStatus,
-  UpdateStatus
+  ProgressStatus
 } from '../../../../backend/src/models/sharedInterfaces';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
@@ -168,9 +168,9 @@ export class SettingsService {
     }
   }
 
-  public async waitForVersionUpdate(): Promise<UpdateStatus> {
+  public async waitForVersionUpdate(): Promise<ProgressStatus> {
     try {
-      let updateStatus: UpdateStatus = 'inProgress';
+      let updateStatus: ProgressStatus = 'inProgress';
       while (updateStatus === 'inProgress') {
         const currentStatus = await this.httpClient.get<VersionUpdateStatus>(`${environment.baseUrl}/version/update-status`, {
           withCredentials: true

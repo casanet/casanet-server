@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1568986604172,
+  "timestamp": 1571682994838,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -54,7 +54,7 @@
       "strategy": "performance",
       "maxSize": 100,
       "maxAge": 2592000000,
-      "version": 25
+      "version": 26
     }
   ],
   "hashTable": {

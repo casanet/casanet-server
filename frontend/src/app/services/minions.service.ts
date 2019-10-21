@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Minion, MinionStatus, MinionFeed, DeviceKind, MinionTimeline, CommandsRepoDevice } from '../../../../backend/src/models/sharedInterfaces';
-import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Minion, MinionStatus, MinionFeed, DeviceKind, MinionTimeline, CommandsRepoDevice, ProgressStatus, ScaningStatus } from '../../../../backend/src/models/sharedInterfaces';
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
 import { environment } from '../../environments/environment';
@@ -56,7 +56,7 @@ export class MinionsService {
 		}
 	}
 
-	public async refreshMinions() {
+	public async refreshMinions(scanNetwork) {
 		if (this.minionsServerFeed) {
 			this.minionsServerFeed.close();
 		}
@@ -64,12 +64,39 @@ export class MinionsService {
 		this.minions = [];
 		try {
 			await this.httpClient.post(`${environment.baseUrl}/minions/rescan`, {}, {
+				params: new HttpParams().set('scanNetwork', scanNetwork),
 				withCredentials: true
 			}).toPromise();
+			await this.waitForMinionsScanning();
 			await this.loadMinions();
 		} catch (error) {
 			this.toastrAndErrorsService.OnHttpError(error);
 		}
+	}
+
+	private async waitForMinionsScanning(): Promise<ProgressStatus> {
+		try {
+			let updateStatus: ProgressStatus = 'inProgress';
+			while (updateStatus === 'inProgress') {
+				const currentStatus = await this.httpClient.get<ScaningStatus>(`${environment.baseUrl}/minions/rescan`, {
+					withCredentials: true
+				}).toPromise();
+				updateStatus = currentStatus.scaningStatus;
+				await this.sleep(5000);
+			}
+
+			return updateStatus;
+		} catch (error) {
+
+		}
+	}
+
+	private sleep(delayMs: number): Promise<void> {
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve();
+			}, delayMs);
+		});
 	}
 
 	public async refreshMinion(minion: Minion) {
