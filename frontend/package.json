@@ -6,6 +6,7 @@
     "environment:external": "node ./src/environments/build-external-environment.js",
     "postngbuild": "node ./pwa/pwa-ngsw-copy.js",
     "build": "npm run environment:internal && ng build --prod && npm run postngbuild && del-cli ../backend/dist/public/ --force && copyfiles --all --up 1 ./dist/**/* ../backend/dist/public",
+    "serve": "ng serve --watch",
     "build:external": "npm run environment:external && ng build --prod && npm run postngbuild",
     "test": "ng test",
     "lint": "ng lint",
