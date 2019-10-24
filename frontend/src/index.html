@@ -22,10 +22,26 @@
     <!-- loader -->
     <div id="loading-app-assets">
         <div class="loader-container">
-            <img id="loading-image" src="assets/logo-loading-lq.gif" width="80px" height="80px"/>
+            <img id="loading-image" src="assets/logo-loading-hq.gif" width="100px" height="100px" />
         </div>
     </div>
     <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
+
+<style>
+    .loader-container {
+        background-color: white;
+        width: 95vw;
+        height: 95vh;
+        z-index: 2000 !important;
+        position: absolute;
+    }
+
+    #loading-image {
+        position: absolute;
+        top: calc(50vh - 40px);
+        left: calc(50vw - 40px);
+    }
+</style>
 
 </html>
