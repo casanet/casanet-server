@@ -98,31 +98,7 @@ body{
 }
 
 
-.loader-container {
-    background-color: white;
-    width: 100vw;
-    height: 100vh;
-    z-index: 2000 !important;
-    position: absolute;
 
-}
-
-#loading-image {
-  position: absolute;
-  top: calc(50% - 40px);
-  left: calc(50% - 40px);
-
-  
-  -moz-animation: cssAnimation 1s ease-in 3s forwards;
-  /* Firefox */
-  animation: cssAnimation 1s ease-in 3s forwards;
-  /* Safari and Chrome */
-  -o-animation: cssAnimation 1s ease-in 3s forwards;
-  /* Opera */
-  animation: cssAnimation 1s ease-in 3s forwards;
-  animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-}
 
 @keyframes sk-bouncedelay {
   0%, 80%, 100% { transform: scale(0) }
