@@ -50,7 +50,7 @@ export class AuthBl {
             sameSite: true,
             httpOnly: true, // minimize risk of XSS attacks by restricting the client from reading the cookie
             secure: Configuration.http.useHttps, // only send cookie over https
-            maxAge: sessionExpiresMs, // Age in seconds
+            maxAge: sessionExpiresMs, // Age in milliseconds
         });
 
         /** All OK, no additional info */
