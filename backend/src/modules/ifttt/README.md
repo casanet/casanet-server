@@ -1,15 +1,15 @@
 ## Philosophy
-The main goal of the current project is to control home kits in the local network without using any manufacturers services.
+The main goal of the current project is to control home kits in the local network without using any manufacturer's services.
 But, some of the devices not supported any API to control it in an offline network, for this case the IFTTT service is great.
 It can allow control of any device that his manufacturer support Ifttt services.
 
 > Note, this is not an Ifttt integration for the whole project,
-To allow  turn on/off any device by any Ifttt trigger and to trigger by minion on/off event. see [Ifttt integration](../../../../README.md#ifttt-integration). 
+To allow turn on/off any device by any Ifttt trigger and to trigger by minion on/off event. see [Ifttt integration](../../../../README.md#ifttt-integration). 
 
 ## Implementation
-Currently, the implementation of Ifttt interface is using Ifttt [WebHooks](https://ifttt.com/maker_webhooks).
-because implementing of Ifttt service require main host that received Ifttt API calls,
-but this project made to be totally in users hands and control. so using webhooks is the best option for it.
+Currently, the implementation of the Ifttt interface is using Ifttt [WebHooks](https://ifttt.com/maker_webhooks).
+because implementing an Ifttt service requires registering a constant host to received Ifttt API calls,
+but this project made to be totally in the user's hands and control. so using webhooks is the best option for it.
 
 ## Step by step instructions
 
@@ -28,7 +28,7 @@ but this project made to be totally in users hands and control. so using webhook
 
 ### Trigger turn on/off.
 1) Go to [ifttt applets page](https://ifttt.com/my_applets) and press `new applet`.
-1) Press on `+this` button.
+1) Press on the `+this` button.
 1) Choose webhooks service. 
     - ![Screenshot](../../../../docs/screenshots/ifttt/choose-webhooks-service.PNG)
 1) Choose the sebhooks trigger. 
