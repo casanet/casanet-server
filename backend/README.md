@@ -1,5 +1,5 @@
 # CASANET server.
-This is the casa-net local server to communicats and control IoT devices in a home. 
+This is the casa-net local server to communicate and control IoT devices in a home. 
 
 ### Server installation:
 1. Download the project via git or download files as a zip.
@@ -12,7 +12,7 @@ Then open the browser in `http://127.0.0.1:3000`.
 
 ### Configure server:
 
-In `casanet.json` file you can edit the configuration of a few stuff.
+In the `casanet.json` file you can edit the configuration of a few stuff.
 
 
 #### Default user:
@@ -40,14 +40,14 @@ It doesn't need to be the exact location but needs to be close enough.
 To get your home latitude and longitude you can use https://www.latlong.net/.
 
 #### Password hash salt
-set `SALT_KEYS` env var for salt sessions hash. otherways the salt will generate randomly on runtime, and in next running, all sessions will be invalid. 
+set `SALT_KEYS` env var for salt sessions hash. otherways the salt will generate randomly on runtime, and in the next running, all sessions will be invalid. 
 
-#### Specify devices network 
+#### Specify devices network
 set `SUBNET_TO_SCAN` env var to specify the network to scan devices IP's in it. the format is `xxx.xxx.xxx`. 
 
 if not set, the default network is the first current machine IP subnet.  
 
-#### Specify physical address 
+#### Specify physical address
 set `PHYSICAL_ADDRESS` env var to specify the physical (aka MAC) address to use.
 if not set, the address will be the first real machine address.
 
@@ -58,7 +58,7 @@ Let's take for example how to config a Gmail account: (Of course, it will work f
 
 First needs to turn on the IMAP/SMTP access service for the account, [see google instructions](https://support.google.com/mail/answer/7126229) and follow `Step 1` only.
 
-If MFA is enabled for the Gmail account create an application key for the password. [see google instructions](https://support.google.com/accounts/answer/185833).
+If MFA is enabled for the Gmail account to create an application key for the password. [see google instructions](https://support.google.com/accounts/answer/185833).
 
 And use the following environment variables:
 * `TFA_SMTP_SERVER` (value example: `smtp.gmail.com`)
@@ -68,7 +68,7 @@ And use the following environment variables:
 that's all.
 
 ## Devices connection:
-Each IoT device should be connected to the local network before can add it to the casa-net server.
+Each IoT device should be connected to the local network before it can add it to the casa-net server.
 For each supported IoT device model connection and pairing instructions see [modules documentations](./src/modules/README.md).
 
 ## Fetch RF (IR / 433MHz etc.) commands from a commands repository.
