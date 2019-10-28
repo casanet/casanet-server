@@ -1,32 +1,32 @@
-## CASANET mudules / drivers.
+## Casanet modules/drivers
 
 ## How to connect my device to the local network and how to add it to be managed by the casa-net server?
 Good question... depend on device protocol.
 
-### Broadlink devices:
+### Broadlink devices
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.broadlink.rmt).
 
 Then scan the local network by the casa-net server.
 
-### Orvibo devices:
+### Orvibo devices
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.orvibo.irhost).
 
 Then scan the local network by the casa-net server.
 
-### Yeelight devices:
+### Yeelight devices
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.yeelight.cherry).
 then you have to [enable the LAN Control](https://www.yeelight.com/en_US/developer) 
 see [intraction with pics](https://getyeti.co/posts/how-to-control-yeelight-and-your-smarthome-with-yeti). 
 
 Then scan the local network by the casa-net server.
 
-### Xiaomi (Miio) devices:
+### Xiaomi (Miio) devices
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.xiaomi.smarthome).
-then you have to get the device token see [Obtain Mi Home device token](https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token.md). 
+then you have to get the device token to see [Obtain Mi Home device token](https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token.md). 
 
 Then scan the local network by the casa-net server.
 
-### Tasmota devices:
+### Tasmota devices
 
 Tasmota is a great open-source firmware for ESP8266 based boards. see the project [here](https://github.com/arendst/Sonoff-Tasmota).
  
@@ -36,13 +36,13 @@ Then scan the local network by the casa-net server.
 
 > This module using the HTTP API of Tasmota. and assuming that there is no username/password required.
 
-### MQTT devices:
+### MQTT devices
 
-MQTT is a great open-source publish-subscribe system for IOT devices.
+MQTT is a great open-source publish-subscribe system for IoT devices.
  
 For integration guide see [MQTT module](./mqtt/README.md)
 
-### Tuya devies:
+### Tuya devices
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.tuya.smart).
 Note that a lot of Chinese devices supported tuya API, see [tuyapi project](https://github.com/codetheweb/tuyapi).
 
@@ -54,20 +54,20 @@ After you get the id and key (called token in casa-net) then scan it insert the 
 
 > Note that the tuya device can communicate by only one TCP connection, so if the Tuya app is open the casa-net server could not communicate with the device. 
 
-### Ifttt devies:
+### Ifttt devices
 If a device doesn't have API to control it via the local network, 
 it's possible to use the device manufacturer Ifttt service (if exist).
-to control device from the casa-net server.
+to control the device from the casa-net server.
 
 [Using Ifttt as device API step by step instructions.](./ifttt/README.md#step-by-step-instructions).
 
-> Note that internet connection is required to control device via Ifttt.
+> Note that internet connection is required to control devices via Ifttt.
 # *** FOR DEVELOPMENT ONLY ***
 
 To allow a server to communicate with many models and manufacturers each brand needs to write
 own module that inherits from [brandModuleBase.ts](./brandModuleBase.ts).
 
-So to create new brand / communication protocol module:
+So to create a new brand/communication protocol module:
 1) Fork the project.
 1) Create a new folder with the brand name in `backend/src/modules`.
 1) Create in the new folder new ts file, name format `xxxxHandler.ts`.
