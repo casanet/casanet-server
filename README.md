@@ -10,12 +10,12 @@ In this project, I came to solve a number of troublesome. first of all, anyone w
 hold 10 applications for each home appliance that each is completely different in the interface and operations and authentication,
 it's a very annoying thing and in addition, the servers, some of which are small Chinese companies, do not always work well, so there is no external access, and there is no normal and clear message about why it does not work.
 
-And the biggest thing is a security issue, I don't want to trust any company code/server in my home. I want to use open-source only. when I can make sure that no one tracks me or any other malicious code runnig in my home. also, I want to block all of my Chinese devices from  communicating any server outside my local network.   
+And the biggest thing is a security issue, I don't want to trust any company code/server in my home. I want to use open-source only. when I can make sure that no one tracks me or any other malicious code running in my home. also, I want to block all of my Chinese devices from communicating any server outside my local network.   
 
-As a solution to these problems this project consolidates all the smart home appliances into one simple and clear and easy to access API.
+As a solution to these problems, this project consolidates all the smart home appliances into one simple and clear and easy to access API.
 and it runs on a computer (or any other device that can run node.js, tested on Windows 10 and Linux Ubuntu) at home and does not require connection to the internet to work properly.
 
-The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device etc, and for each physical device its own module that realizes the capabilities that the device of its kind enables,(and the advanced options that each company realizes in a different way like timing, thrown), and on all devices there is a switch component with on\off option.
+The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device, etc, and for each physical device its own module that realizes the capabilities that the device of its kind enables,(and the advanced options that each company realizes in a different way like timing, thrown), and on all devices there is a switch component with on\off option.
 
 This structure enables the creation of a separate server and a collection of modules that enable communication by implementing preset methods for each device type (such as the OOP interface).
 
@@ -65,10 +65,10 @@ Any support for other languages will be welcome.
 * Run casa-net remote server in cloud service [see documentation](https://github.com/casanet/remote-server).
 
 ## How to access casanet from wide internet?
-The server needs to run on local home network, so how to access it via internet?
+The server needs to run in the local home network, so how to access it via the internet?
 
 #### Method 1: Port forwarding
-Make sure that the address in your home is public and redirect ports in home router to the computer that running casa-net server.
+Make sure that the IP address of your home is public and redirect ports in-home router to the computer that running the casanet server.
 
 (DDNS is recommended for easy access to home address).
 
@@ -161,17 +161,17 @@ Yes, it is possible and will be welcome, see [modules](./backend/src/modules/REA
 To watch full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/swagger.yaml` in explorer input.
 
 **
-Minion is a logic device in the system, meaning that a device is a physical device and minion is a logic device that uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device for a few minions, one to central AC control and second for secondary AC control so in it will be two totally  different minions that use one physical device.
+Minion is a logic device in the system, meaning that a device is a physical device and minion is a logic device that uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device for a few minions, one to central AC control and second for secondary AC control so in it will be two totally different minions that use one physical device.
 
 ## IFTTT integration
 The [IFTTT](https://ifttt.com/discover) ecosystem is great ;). 
-Now, invoking trigger when a minion turned on/off or turning on/off minion when any IFTTT trigger invoked is possible.
+Now, invoking triggers when a minion turned on/off or turning on/off minion when any IFTTT trigger invoked is possible.
 
 The integration is using [WebHooks](https://ifttt.com/maker_webhooks) API.
 
-Receiving invoked triggers allow only if casa-net server accessible via public internet or via a remote server.
+Receiving invoked triggers allow only if the casa-net server accessible via public internet or via a remote server.
 
-Invoking trigger when a device turned on/off the local server require an internet connection.  
+Invoking triggers when a device turned on/off the local server requires an internet connection.  
 
 See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 
@@ -182,7 +182,7 @@ See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
 
 Feel free to open an issue with a bug report or feature to develop for the next version.
 
-For any suggestion or help feel free to contact me.
+For any suggestions or help feel free to contact me.
 
 ## Casanet server deployment
 Although there is no way to run the server in a docker container because the app should scan the real local network.
@@ -195,5 +195,5 @@ I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices 
 Shared with :heart: by kastnet.
 
 ---
-> The version 1 of the project placed in [here](https://github.com/casanet/casanet-server/tree/archive-v1), maintaining for security and fatal bugs fixes only.
+> Version 1 of the project placed in [here](https://github.com/casanet/casanet-server/tree/archive-v1), maintaining for security and fatal bugs fixes only.
 ---
