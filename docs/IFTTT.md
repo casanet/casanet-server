@@ -1,7 +1,7 @@
 ## Philosophy
-The IFTTT is great service and integrating it in an IOT server can be wonderful.
+The IFTTT is great service and integrating it in an IoT service can be wonderful.
 
-All the idea can integrate into a real house,
+Now, all the ideas can integrate into a real house,
 
 For example, turn on Air-Conditioner when the weather in the area is above x degrees.
 Turn on the boiler when you enter the neighborhood.
@@ -12,8 +12,7 @@ And any other great using.
 
 ## Implementation
 Currently, the implementation of Ifttt integration is using Ifttt [WebHooks](https://ifttt.com/maker_webhooks).
-because implementing of Ifttt service require main host that received Ifttt API calls,
-but this project made to be totally in users hands and control. so using webhooks is the best option for it.
+because implementing an Ifttt service requires registering a constant host to received Ifttt API calls, but this project made to be totally in the user's hands and control. so using webhooks is the best option for it.
 
 ## Step by step instructions
 
@@ -29,7 +28,7 @@ but this project made to be totally in users hands and control. so using webhook
        
 ### Invoke IFTTT trigger when minion turned on/off.
 1) Go to [ifttt applets page](https://ifttt.com/my_applets) and press `new applet`.
-1) Press on `+this` button.
+1) Press on the `+this` button.
 1) Choose webhooks service. 
     - ![Screenshot](./screenshots/ifttt/choose-webhooks-service.PNG)
 1) Choose the webhooks trigger. 
@@ -40,7 +39,7 @@ but this project made to be totally in users hands and control. so using webhook
 1) In event name put `when` , the `inner-id` of minion and the on/off operation, all divided by `-`, Look like `when-xxxxxx-on`, And press `create trigger`.
     > Example here is for `on` operation, the `off` operation is just the same, but instead of 'on' put 'off'. 
     - ![Screenshot](./screenshots/ifttt/put-trigger-name.PNG)
-1) Press on `+that` button and select the Ifttt service and the action that turn the device on.
+1) Press on the `+that` button and select the Ifttt service and the action that turns the device on.
 For example sending phone notification, email alert, or any idea from wide IFTTT ecosystem.
 1) Note that the 'webhooks' trigger gives 3 variables to use, with the following values:
     - `value1`: contains the minion display name.
