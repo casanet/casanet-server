@@ -13,7 +13,7 @@ it's a very annoying thing and in addition, the servers, some of which are small
 And the biggest thing is a security issue, I don't want to trust any company code/server in my home. I want to use open-source only. when I can make sure that no one tracks me or any other malicious code running in my home. also, I want to block all of my Chinese devices from communicating any server outside my local network.   
 
 As a solution to these problems, this project consolidates all the smart home appliances into one simple and clear and easy to access API.
-and it runs on a computer (or any other device that can run node.js, tested on Windows 10 and Linux Ubuntu) at home and does not require connection to the internet to work properly.
+and it runs on a computer (or any other device that can run Node.JS) at home and does not must connect to the internet to work properly.
 
 The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device, etc, and for each physical device its own module that realizes the capabilities that the device of its kind enables,(and the advanced options that each company realizes in a different way like timing, thrown), and on all devices there is a switch component with on\off option.
 
@@ -64,13 +64,13 @@ Any support for other languages will be welcome.
 * Run casa-net server in a home network [see documentation](./backend/README.md).
 * Run casa-net remote server in cloud service [see documentation](https://github.com/casanet/remote-server).
 
-## How to access casanet from wide internet?
-The server needs to run in the local home network, so how to access it via the internet?
+## Accessing casanet server from the internet
+The server needs to run on local home network, so how to access it viain the local home network, so how to access it viaget access to the casanet local server from the internet?
 
 #### Method 1: Port forwarding
 Make sure that the IP address of your home is public and redirect ports in-home router to the computer that running the casanet server.
 
-(DDNS is recommended for easy access to home address).
+(DDNS is recommended for easy access to the home IP address).
 
 #### Method 2: Using casa remote server
 The casa remote server is built for it, [casanet-remote](https://github.com/casanet/remote-server) run on cloud service and used to redirect API requests to the local server.
@@ -173,7 +173,7 @@ Receiving invoked triggers allow only if the casa-net server accessible via publ
 
 Invoking triggers when a device turned on/off the local server requires an internet connection.  
 
-See [step by step instraction](./docs/IFTTT.md) to use IFTTT.
+See [step by step instruction ](./docs/IFTTT.md) to use IFTTT.
 
 ## TODO
 
@@ -188,6 +188,12 @@ For any suggestions or help feel free to contact me.
 Although there is no way to run the server in a docker container because the app should scan the real local network.
 I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
 
+### The casanet server tested on
+* Windows 7
+* Windows 10
+* Linux Ubuntu
+* Orange PI Armbian (Debian-based)
+* Raspberry PI Raspbian
 
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
