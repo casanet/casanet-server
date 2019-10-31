@@ -1,8 +1,8 @@
 # Deploy casanet server on a Linux OS based devices
 
-Tested on orenge pi zero + armbian image, orenge pi one + armbian image and raspebery pi B+ with rapsebian image.
+Tested on Orange  pi zero + armbian image, Orange pi one + armbian image and Raspberry pi B+ with rapsebian image.
 
-## Pre requirments
+## Pre requirements
 
 ### Update system 
 ```sudo apt-get update``` 
@@ -42,12 +42,12 @@ Then
 ### Install casanet server dependencies
 ```npm ci```
 
-It is recomended to check the default environments of the server and change it by demand.
+It is recommended to check the default environments of the server and change it by demand.
 for it copy the .env.example file and edit the real env:
 ```cp .env.example .env```
 Then edit real environments by ```nano .env``` or any other text editor.
 
-> The orange pi armbian image, changes his mac address each boot, so I recommend to get the mac address and set it to the `PHYSICAL_ADDRESS` environment variable, else the default username and the identity against a [remote server](https://github.com/casanet/remote-server) will change each boot.
+> The Orange pi armbian image, changes his mac address each boot, so I recommend to get the mac address and set it to the `PHYSICAL_ADDRESS` environment variable, else the default username and the identity against a [remote server](https://github.com/casanet/remote-server) will change each boot.
 
 ### Exist window
 press `ctrl` + `b` + `d` to exit from the tmux window.
@@ -61,10 +61,10 @@ Go to the `init.d` directory
 Then create and edit the script named `casanet`
 ```nano casanet```
 
-In the editor paste the folloing content:
+In the editor paste the following content:
 ```bash
 #!/bin/bash 
-# auto start casanet server 
+# autostart casanet server 
 echo "Starting casanet server in casanet tmux window" 
 case "$1" in 
 'start') 
@@ -79,7 +79,7 @@ case "$1" in
         tmux kill-session -t "casanet" 
 esac 
 ```
-Then give to file the exe premission 
+Then give to file the exe permission 
 
 ```chmod +x casanet```
 
@@ -97,7 +97,7 @@ And change the link name to a boot pattern.
 
 ```mv casanet S01casanet```
 
-Now reboot the device and chack that all work properly. 
+Now reboot the device and check that all work properly. 
 
 Good Luck!
 
