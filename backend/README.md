@@ -12,8 +12,13 @@ Then open the browser in `http://127.0.0.1:3000`.
 
 ### Configure server
 
-In the `casanet.json` file you can edit the configuration of a few stuff.
+The configuration is based on the environment variable.
 
+All variables with example value placed in the [.env.example](./.env.example) file.
+
+You can load the environment using a .env file.
+
+Also in the `casanet.json` file, you can edit the configuration of a few stuff (if not set by the environments variables).
 
 #### Default user
 Can edit any property of the default user. 
@@ -54,7 +59,7 @@ if not set, the address will be the first real machine address.
 #### Two factor authentication (MFA)
 To Allows MFA protection the server needs access to the email account to send the code to user email before login is done.
 
-Let's take for example how to config a Gmail account: (Of course, it will work for any other SMTP services).
+Let's take for example how to configure a Gmail account: (Of course, it will work for any other SMTP services).
 
 First needs to turn on the IMAP/SMTP access service for the account, [see google instructions](https://support.google.com/mail/answer/7126229) and follow `Step 1` only.
 
@@ -69,7 +74,7 @@ that's all.
 
 ## Devices connection
 Each IoT device should be connected to the local network before it can add it to the casa-net server.
-For each supported IoT device model connection and pairing instructions see [modules documentations](./src/modules/README.md).
+For each supported IoT device model connection and pairing instructions see [modules documentation](./src/modules/README.md).
 
 ## Fetch RF (IR / 433MHz etc.) commands from a commands repository
 When using RF transmitter to control home devices it's possible to record the command from the original remote control or generating random command.
