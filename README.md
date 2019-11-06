@@ -6,16 +6,16 @@ Let's create a smart home, without giving anyone access to our house 😊.
 Open-source server to control IoT devices in a local home network.
 
 ## Philosophy.
-In this project, I came to solve a number of troublesome. first of all, anyone who uses a number of smart devices (smart IR, smart socket, or anything like that) of different companies knows the problem of dealing with a number of different applications,
-hold 10 applications for each home appliance that each is completely different in the interface and operations and authentication,
-it's a very annoying thing and in addition, the servers, some of which are small Chinese companies, do not always work well, so there is no external access, and there is no normal and clear message about why it does not work.
+In this project, I wanted to solve a number of troubles. first of all, anyone who uses a number of smart devices (smart IR, smart socket, or anything of that kind) of different companies is familiar with the problem of dealing with a number of different applications;
+holding 10 applications for each home appliance when each is completely different in the interface and operations and authentication.
+It's a very annoying thing and in addition, the servers, some of which are small Chinese companies, do not always work well, so there is no external access, and there is no normal and clear message that tells you why it does not work.
 
-And the biggest thing is a security issue, I don't want to trust any company code/server in my home. I want to use open-source only. when I can make sure that no one tracks me or any other malicious code running in my home. also, I want to block all of my Chinese devices from communicating any server outside my local network.   
+And the biggest problem is security issues. I don't want to trust any company code/server in my home. I want to use open-source only, where I can make sure that no one tracks me or any other malicious code is running in my home. Also, I want to block all of my Chinese devices from communicating any server outside my local network.   
 
-As a solution to these problems, this project consolidates all the smart home appliances into one simple and clear and easy to access API.
-and it runs on a computer (or any other device that can run Node.JS) at home and does not must connect to the internet to work properly.
+As a solution to these problems, this project consolidates all the smart home appliances into one simple, clear and easy to access API.
+And on top of that, it runs on a computer (or any other device that can run Node.JS) at home and does not have to connect to the internet to work properly.
 
-The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device, etc, and for each physical device its own module that realizes the capabilities that the device of its kind enables,(and the advanced options that each company realizes in a different way like timing, thrown), and on all devices there is a switch component with on\off option.
+The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device, etc, and each physical device has its own module that realizes the capabilities that the device of its kind enables, (and the advanced options that each company realizes in a different way like timing, thrown), and on all devices there is a switch component with on\off option.
 
 This structure enables the creation of a separate server and a collection of modules that enable communication by implementing preset methods for each device type (such as the OOP interface).
 
@@ -52,9 +52,9 @@ Link to the minimal page exist in the settings 'light version' section, or just 
 	* **Technologies:** [Swagger](https://swagger.io/).
 
 ### Dashboard Languages support
-The UI built to be multi-Language support.
+The UI is designed to support multi-Language.
 
-Current Languages supported:
+Current supported Languages:
 * English
 * Hebrew
 
@@ -65,15 +65,15 @@ Any support for other languages will be welcome.
 * Run casa-net remote server in cloud service [see documentation](https://github.com/casanet/remote-server).
 
 ## Accessing casanet server from the internet
-The server needs to run on local home network, so how to access it viain the local home network, so how to access it viaget access to the casanet local server from the internet?
+The server needs to run on local home network. So how does one access it via the local home network? How does one get access to the casanet local server from the internet?
 
 #### Method 1: Port forwarding
-Make sure that the IP address of your home is public and redirect ports in-home router to the computer that running the casanet server.
+Make sure that the IP address of your home is public and redirect ports in-home router to the computer that is running the casanet server.
 
 (DDNS is recommended for easy access to the home IP address).
 
 #### Method 2: Using casa remote server
-The casa remote server is built for it, [casanet-remote](https://github.com/casanet/remote-server) run on cloud service and used to redirect API requests to the local server.
+The casa remote server is built for this, [casanet-remote](https://github.com/casanet/remote-server) run on cloud service and used to redirect API requests to the local server.
 
 ## Supported IoT devices / protocols
 
@@ -133,7 +133,7 @@ The casa remote server is built for it, [casanet-remote](https://github.com/casa
 ## Supported soon.
 
 ## Adding other devices support
-Yes, it is possible and will be welcome, see [modules](./backend/src/modules/README.md#-for-development-only-).
+Yes, it is possible and is welcomed, see [modules](./backend/src/modules/README.md#-for-development-only-).
 
 
 ## Using scenario
