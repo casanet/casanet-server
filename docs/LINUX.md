@@ -49,7 +49,7 @@ Then edit real environments by ```nano .env``` or any other text editor.
 
 > The Orange pi armbian image, changes his mac address each boot, so I recommend to get the mac address and set it to the `PHYSICAL_ADDRESS` environment variable, else the default username and the identity against a [remote server](https://github.com/casanet/remote-server) will change each boot.
 
-### Exist window
+### Exit from the tmux window
 press `ctrl` + `b` + `d` to exit from the tmux window.
 
 # Configure autostart on boot.
