@@ -2,18 +2,20 @@
 matrix:
   include:
     -
-      before_script:
+      before_install:
         - "cd backend"
       language: node_js
       node_js:
         - stable
       install:
         - npm install
+      env:
+        - TEST_LONG_SPECS=false
       script:
         - npm run cover
       after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
     -
-      before_script:
+      before_install:
         - "cd frontend"
       language: node_js
       node_js:
