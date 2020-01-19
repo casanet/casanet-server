@@ -1,19 +1,24 @@
-/** This script use for local server assets serving, 
- * to allow user fetch frontend app from local server 
- * without creating second server for static files serve 
+/** This script use for local server assets serving,
+ * to allow user fetch frontend app from local server
+ * without creating second server for static files serve
  */
-const fse = require('fs-extra');
+const fse = require("fs-extra");
 
-fse.outputFileSync('./src/environments/environment.final.ts', `
+fse.outputFileSync(
+  "./src/environments/environment.final.ts",
+  `
 export const environment = {
     production: true,
-    baseUrl: '/API'
+    baseUrl: '/API',
+    dashboardDomain: ''
 };
-`);
+`
+);
 
 /**
  * Also, build the light app environments
  */
-fse.outputJSONSync('./src/light-app/environments.json', {
-    API_URL : "/API"
+fse.outputJSONSync("./src/light-app/environments.json", {
+  API_URL: "/API",
+  DASHBOARD_DOMAIN: ''
 });

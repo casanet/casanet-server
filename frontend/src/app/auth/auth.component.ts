@@ -8,6 +8,7 @@ import { TranslatePipe } from '../translate.pipe';
 import { MinionsService } from '../services/minions.service';
 import { OperationService } from '../services/operations.service';
 import { Minion } from '../../../../backend/src/models/sharedInterfaces';
+import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'app-auth',
@@ -96,8 +97,32 @@ export class AuthComponent implements OnInit, OnChanges, AfterContentInit, OnDes
                 });
 
             });
+
+        setTimeout(() => { this.domainsAlert(); }, 5000);
     }
 
+    private async domainsAlert() {
+
+        if (document.baseURI.includes(environment.dashboardDomain)) {
+            return;
+        }
+
+        const msg = `
+		${this.translatePipe.transform('go to correct domain')}
+		<br>
+		<a target="_blank" href="${environment.dashboardDomain}">${environment.dashboardDomain}</a>
+		`;
+
+
+        const swalResult: void | SweetAlertResult = await swal({
+            type: 'warning',
+            html: msg,
+            showConfirmButton: true,
+            showCancelButton: false,
+            confirmButtonText: this.translatePipe.transform('OK'),
+        });
+    }
+    
     ngAfterContentInit() {
         /** Clear loader from DOM, to not let it work in background */
         document.getElementById('loading-app-assets').innerHTML = '';
