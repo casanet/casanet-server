@@ -23,7 +23,7 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
         caches.match(e.request).then((r) => {
             if (e.request.url.indexOf('/API/') !== -1) {
-                console.log(e.request.url + ' feched as api');
+                console.log(e.request.url + ' fetched as api');
                 return fetch(e.request);
             }
             console.log('[Service Worker] Fetching resource: ' + e.request.url);
