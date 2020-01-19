@@ -164,6 +164,7 @@ export class BroadlinkHandler extends BrandModuleBase {
         minionCache.rollerCommands = commandsSet.commands.roller;
         break;
     }
+    this.updateCache();
   }
 
   public async refreshCommunication(): Promise<void> {
