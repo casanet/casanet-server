@@ -31,7 +31,7 @@ class SessionsBl {
         const sessions = await this.sessionDal.getSessions();
         const userSessions = [];
         for (const session of sessions) {
-            if (session.email === user.email && (new Date().getTime() - session.timeStamp) < authBl_1.sessionExpiresMs) {
+            if (session.email === user.email && new Date().getTime() - session.timeStamp < authBl_1.sessionExpiresMs) {
                 userSessions.push(session);
             }
         }

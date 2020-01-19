@@ -18,8 +18,7 @@ class RemoteConnectionDal {
      */
     async deleteRemoteSettings() {
         this.remoteSettings = [];
-        await this.dataIo.setData(this.remoteSettings)
-            .catch(() => {
+        await this.dataIo.setData(this.remoteSettings).catch(() => {
             throw new Error('fail to save remote settings delete request');
         });
     }
@@ -29,8 +28,7 @@ class RemoteConnectionDal {
      */
     async setRemoteSettings(remoteSettings) {
         this.remoteSettings = [remoteSettings];
-        await this.dataIo.setData(this.remoteSettings)
-            .catch(() => {
+        await this.dataIo.setData(this.remoteSettings).catch(() => {
             throw new Error('fail to save set remote settings request');
         });
     }

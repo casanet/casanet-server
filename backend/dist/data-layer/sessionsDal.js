@@ -12,16 +12,6 @@ class SessionsDal {
         this.sessions = dataIo.getDataSync();
     }
     /**
-     * Find sessin in session array
-     */
-    findSession(key) {
-        for (const session of this.sessions) {
-            if (session.keyHash === key) {
-                return session;
-            }
-        }
-    }
-    /**
      * Get all session as array.
      */
     async getSessions() {
@@ -43,8 +33,7 @@ class SessionsDal {
      */
     async createSession(newSession) {
         this.sessions.push(newSession);
-        await this.dataIo.setData(this.sessions)
-            .catch(() => {
+        await this.dataIo.setData(this.sessions).catch(() => {
             this.sessions.splice(this.sessions.indexOf(newSession), 1);
             throw new Error('fail to save session');
         });
@@ -58,11 +47,20 @@ class SessionsDal {
             throw new Error('sessin not exist');
         }
         this.sessions.splice(this.sessions.indexOf(originalSession), 1);
-        await this.dataIo.setData(this.sessions)
-            .catch(() => {
+        await this.dataIo.setData(this.sessions).catch(() => {
             this.sessions.push(originalSession);
             throw new Error('fail to save session delete request');
         });
+    }
+    /**
+     * Find sessin in session array
+     */
+    findSession(key) {
+        for (const session of this.sessions) {
+            if (session.keyHash === key) {
+                return session;
+            }
+        }
     }
 }
 exports.SessionsDal = SessionsDal;

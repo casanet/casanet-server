@@ -34,11 +34,9 @@ class YeelightHandler extends brandModuleBase_1.BrandModuleBase {
         /** Use nodeYeelightWifi lib to handle update from devices only.
          * The yeelight-awesome is for get/set data only.
          */
-        this.lookupYeelightWifi.on('detected', (light) => {
-            light.on('connected', () => {
-            });
-            light.on('disconnected', () => {
-            });
+        this.lookupYeelightWifi.on('detected', light => {
+            light.on('connected', () => { });
+            light.on('disconnected', () => { });
             light.on('stateUpdate', async (lightUpdate) => {
                 if (!this.retrieveMinions.isPullingAvailble) {
                     return;
@@ -72,10 +70,76 @@ class YeelightHandler extends brandModuleBase_1.BrandModuleBase {
                         });
                     }
                 }
-                catch (error) {
-                }
+                catch (error) { }
             });
         });
+    }
+    async getStatus(minion) {
+        try {
+            const l = await this.createYeeligtDeviceComm(minion.device);
+            let status;
+            switch (minion.minionType) {
+                case 'temperatureLight':
+                    status = (await this.getSimpleLightStatus(minion, l));
+                    break;
+                case 'colorLight':
+                    status = (await this.getColorLightStatus(minion, l));
+                    break;
+                default:
+            }
+            l.disconnect();
+            return status;
+        }
+        catch (error) {
+            try {
+                error = error.result.error.message;
+            }
+            catch (error) { }
+            logger_1.logger.warn(`Fail to get yeeligt ${minion.minionId} status, ${error}`);
+            throw {
+                responseCode: 7503,
+            };
+        }
+    }
+    async setStatus(minion, setStatus) {
+        try {
+            const l = await this.createYeeligtDeviceComm(minion.device);
+            switch (minion.minionType) {
+                case 'temperatureLight':
+                    await this.setSimpleLightStatus(minion, l, setStatus.temperatureLight);
+                    break;
+                case 'colorLight':
+                    await this.setColorLightStatus(minion, l, setStatus.colorLight);
+                    break;
+                default:
+            }
+            l.disconnect();
+            return;
+        }
+        catch (error) {
+            logger_1.logger.warn(`Fail to set yeelight ${minion.minionId} status, ${error.result.error.message}`);
+            throw {
+                responseCode: 6503,
+            };
+        }
+    }
+    async enterRecordMode(miniom, statusToRecordFor) {
+        throw {
+            responseCode: 6409,
+            message: 'the yeelight module not support any recording mode',
+        };
+    }
+    async generateCommand(miniom, statusToRecordFor) {
+        throw {
+            responseCode: 6409,
+            message: 'the yeelight module not support any recording mode',
+        };
+    }
+    async setFetchedCommands(minion, commandsSet) {
+        // There's nothing to do.
+    }
+    async refreshCommunication() {
+        // There's nothing to do.
     }
     /**
      * Create new yeelight communication device api.
@@ -96,7 +160,7 @@ class YeelightHandler extends brandModuleBase_1.BrandModuleBase {
         yeelight.on('end', () => {
             logger_1.logger.debug(`yeelight device mac: ${minionDevice.pysicalDevice.mac} end`);
         });
-        yeelight.on('error', (err) => {
+        yeelight.on('error', err => {
             logger_1.logger.debug(`yeelight device mac: ${minionDevice.pysicalDevice.mac} error ${err}`);
         });
         /**
@@ -119,9 +183,10 @@ class YeelightHandler extends brandModuleBase_1.BrandModuleBase {
         if (lightUpdate.bright !== currentStatus.brightness) {
             return false;
         }
-        if (minion.minionType === 'colorLight' && (lightUpdate.rgb.r !== currentStatus.red ||
-            lightUpdate.rgb.g !== currentStatus.green ||
-            lightUpdate.rgb.b !== currentStatus.blue)) {
+        if (minion.minionType === 'colorLight' &&
+            (lightUpdate.rgb.r !== currentStatus.red ||
+                lightUpdate.rgb.g !== currentStatus.green ||
+                lightUpdate.rgb.b !== currentStatus.blue)) {
             return false;
         }
         return true;
@@ -141,9 +206,9 @@ class YeelightHandler extends brandModuleBase_1.BrandModuleBase {
         for (let i = 0; i < 8; i++) {
             green = green / 2;
         }
-        green = green % (Math.pow(2, 8));
+        green = green % Math.pow(2, 8);
         let blue = intager;
-        blue = blue % (Math.pow(2, 8));
+        blue = blue % Math.pow(2, 8);
         return {
             r: Math.floor(red),
             g: Math.floor(green),
@@ -159,7 +224,7 @@ class YeelightHandler extends brandModuleBase_1.BrandModuleBase {
         const maxRange = 6500;
         const range = maxRange - minRange;
         const factor = range / 100;
-        return Math.floor((valueInPercents * factor) + minRange);
+        return Math.floor(valueInPercents * factor + minRange);
     }
     /**
      * Convert Kelvin units to light temperature in percents (1-100)  see https://en.wikipedia.org/wiki/Color_temperature
@@ -204,7 +269,12 @@ class YeelightHandler extends brandModuleBase_1.BrandModuleBase {
      */
     async getColorLightStatus(minion, yeelightDevice) {
         try {
-            const props = await yeelightDevice.getProperty([yeelight_awesome_1.DevicePropery.POWER, yeelight_awesome_1.DevicePropery.BRIGHT, yeelight_awesome_1.DevicePropery.CT, yeelight_awesome_1.DevicePropery.RGB]);
+            const props = await yeelightDevice.getProperty([
+                yeelight_awesome_1.DevicePropery.POWER,
+                yeelight_awesome_1.DevicePropery.BRIGHT,
+                yeelight_awesome_1.DevicePropery.CT,
+                yeelight_awesome_1.DevicePropery.RGB,
+            ]);
             const rgb = this.intToRgb(parseInt(props.result.result[3], 10));
             return {
                 colorLight: {
@@ -276,73 +346,6 @@ class YeelightHandler extends brandModuleBase_1.BrandModuleBase {
                 responseCode: 6503,
             };
         }
-    }
-    async getStatus(minion) {
-        try {
-            const l = await this.createYeeligtDeviceComm(minion.device);
-            let status;
-            switch (minion.minionType) {
-                case 'temperatureLight':
-                    status = await this.getSimpleLightStatus(minion, l);
-                    break;
-                case 'colorLight':
-                    status = await this.getColorLightStatus(minion, l);
-                    break;
-                default:
-            }
-            l.disconnect();
-            return status;
-        }
-        catch (error) {
-            try {
-                error = error.result.error.message;
-            }
-            catch (error) { }
-            logger_1.logger.warn(`Fail to get yeeligt ${minion.minionId} status, ${error}`);
-            throw {
-                responseCode: 7503,
-            };
-        }
-    }
-    async setStatus(minion, setStatus) {
-        try {
-            const l = await this.createYeeligtDeviceComm(minion.device);
-            switch (minion.minionType) {
-                case 'temperatureLight':
-                    await this.setSimpleLightStatus(minion, l, setStatus.temperatureLight);
-                    break;
-                case 'colorLight':
-                    await this.setColorLightStatus(minion, l, setStatus.colorLight);
-                    break;
-                default:
-            }
-            l.disconnect();
-            return;
-        }
-        catch (error) {
-            logger_1.logger.warn(`Fail to set yeelight ${minion.minionId} status, ${error.result.error.message}`);
-            throw {
-                responseCode: 6503,
-            };
-        }
-    }
-    async enterRecordMode(miniom, statusToRecordFor) {
-        throw {
-            responseCode: 6409,
-            message: 'the yeelight module not support any recording mode',
-        };
-    }
-    async generateCommand(miniom, statusToRecordFor) {
-        throw {
-            responseCode: 6409,
-            message: 'the yeelight module not support any recording mode',
-        };
-    }
-    async setFetchedCommands(minion, commandsSet) {
-        // There's nothing to do.
-    }
-    async refreshCommunication() {
-        // There's nothing to do.
     }
 }
 exports.YeelightHandler = YeelightHandler;

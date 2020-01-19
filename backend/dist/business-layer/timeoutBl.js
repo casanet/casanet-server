@@ -43,7 +43,7 @@ class TimeoutBl {
         for (const timeoutMinion of this.minionsTimeoutInfo) {
             if (timeoutMinion.isTimeoutDisabled ||
                 timeoutMinion.status !== 'on' ||
-                (now.getTime() - timeoutMinion.turnOnTimeStump.getTime()) < timeoutMinion.timeout.asMilliseconds()) {
+                now.getTime() - timeoutMinion.turnOnTimeStump.getTime() < timeoutMinion.timeout.asMilliseconds()) {
                 continue;
             }
             try {
@@ -94,7 +94,7 @@ class TimeoutBl {
     AddMinion(minion) {
         this.minionsTimeoutInfo.push({
             minionId: minion.minionId,
-            isTimeoutDisabled: (!minion.minionAutoTurnOffMS || minion.minionAutoTurnOffMS < 1),
+            isTimeoutDisabled: !minion.minionAutoTurnOffMS || minion.minionAutoTurnOffMS < 1,
             timeout: moment.duration(minion.minionAutoTurnOffMS, 'milliseconds'),
             status: this.extractMinionOnOffStatus(minion),
             turnOnTimeStump: new Date(),
@@ -145,7 +145,7 @@ class TimeoutBl {
         /**
          * Then registar to changes feed.
          */
-        this.minionsBl.minionFeed.subscribe((minionFeed) => {
+        this.minionsBl.minionFeed.subscribe(minionFeed => {
             if (!minionFeed) {
                 return;
             }

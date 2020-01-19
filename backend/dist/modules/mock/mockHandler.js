@@ -7,14 +7,6 @@ const brandModuleBase_1 = require("../brandModuleBase");
 class MockHandler extends brandModuleBase_1.BrandModuleBase {
     constructor() {
         super();
-        /**
-         * Time duratin to mock pysical device status update for switch minion.
-         */
-        this.SWITCH_CHANGED_INTERVAL = moment.duration(4, 'seconds');
-        /**
-         * Time duratin to mock pysical device status update for ac minion.
-         */
-        this.AC_CHANGED_INTERVAL = moment.duration(5, 'seconds');
         this.brandName = 'mock';
         this.devices = [
             {
@@ -81,13 +73,19 @@ class MockHandler extends brandModuleBase_1.BrandModuleBase {
                 isRecordingSupported: false,
             },
         ];
+        /**
+         * Time duratin to mock pysical device status update for switch minion.
+         */
+        this.SWITCH_CHANGED_INTERVAL = moment.duration(4, 'seconds');
+        /**
+         * Time duratin to mock pysical device status update for ac minion.
+         */
+        this.AC_CHANGED_INTERVAL = moment.duration(5, 'seconds');
         // for debug updattes remove 'return'
         return;
         setInterval(async () => {
             const minions = await this.retrieveMinions.pull();
-            if (minions.length === 0
-                || !minions[0].minionStatus
-                || !minions[0].minionStatus[minions[0].minionType]) {
+            if (minions.length === 0 || !minions[0].minionStatus || !minions[0].minionStatus[minions[0].minionType]) {
                 return;
             }
             const statusCopy = deepCopy_1.DeepCopy(minions[0].minionStatus);

@@ -15,16 +15,6 @@ class DevicesDal {
         this.devices = dataIo.getDataSync();
     }
     /**
-     * Find device in devices array
-     */
-    findDevice(mac) {
-        for (const device of this.devices) {
-            if (device.mac === mac) {
-                return device;
-            }
-        }
-    }
-    /**
      * Get all saved devices as array.
      */
     async getDevices() {
@@ -39,8 +29,7 @@ class DevicesDal {
             this.devices.splice(this.devices.indexOf(originalDevice), 1);
         }
         this.devices.push(deviceToSave);
-        await this.dataIo.setData(this.devices)
-            .catch(() => {
+        await this.dataIo.setData(this.devices).catch(() => {
             this.devices.splice(this.devices.indexOf(deviceToSave), 1);
             if (originalDevice) {
                 this.devices.push(originalDevice);
@@ -57,11 +46,20 @@ class DevicesDal {
             throw new Error('device not saved');
         }
         this.devices.splice(this.devices.indexOf(originalDevice), 1);
-        await this.dataIo.setData(this.devices)
-            .catch(() => {
+        await this.dataIo.setData(this.devices).catch(() => {
             this.devices.push(originalDevice);
             throw new Error('fail to save device removed request');
         });
+    }
+    /**
+     * Find device in devices array
+     */
+    findDevice(mac) {
+        for (const device of this.devices) {
+            if (device.mac === mac) {
+                return device;
+            }
+        }
     }
 }
 exports.DevicesDal = DevicesDal;

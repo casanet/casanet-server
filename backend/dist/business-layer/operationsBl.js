@@ -17,67 +17,6 @@ class OperationsBl {
         this.minionsBl = minionsBl;
     }
     /**
-     * Validate activities. (minion and status to set).
-     * @param operationActiviries activities array to validate.
-     */
-    async validateNewOperationActivities(operationActiviries) {
-        for (const activity of operationActiviries) {
-            const activityMinion = await this.minionsBl.getMinionById(activity.minionId);
-            if (!activity.minionStatus[activityMinion.minionType]) {
-                throw {
-                    responseCode: 2405,
-                    message: 'incorrect minion status for activity minion type',
-                };
-            }
-        }
-        return;
-    }
-    /**
-     * Invoke each activity.
-     * @param operationActiviries activities to invoke.
-     */
-    async invokeOperationActivities(operationActiviries) {
-        const errors = [];
-        for (const activity of operationActiviries) {
-            /**
-              * wait 1 sec between one minion to other, becuase of broadcasting mismatch in some brands communication protocol.
-              */
-            await sleep_1.Delay(moment.duration(1, 'seconds'));
-            logger_1.logger.info(`Setting minion ${activity.minionId} a new status by operation activity...`);
-            try {
-                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
-                continue;
-            }
-            catch (error) {
-                logger_1.logger.warn(`Setting minion ${activity.minionId} a new status by operation activity data: ` +
-                    `${JSON.stringify(activity.minionStatus)} fail, ` +
-                    `${JSON.stringify(error)}`);
-            }
-            await sleep_1.Delay(moment.duration(3, 'seconds'));
-            logger_1.logger.info(`Trying set status for  ${activity.minionId} agine...`);
-            try {
-                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
-                continue;
-            }
-            catch (error) {
-                logger_1.logger.warn(`The second try to set status for ${activity.minionId} fail too`);
-            }
-            await sleep_1.Delay(moment.duration(5, 'seconds'));
-            logger_1.logger.info(`Last chance of set status for  ${activity.minionId} ...`);
-            try {
-                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
-            }
-            catch (error) {
-                logger_1.logger.warn(`Last chance to set status for ${activity.minionId} fail too. sorry ;)`);
-                errors.push({
-                    minionId: activity.minionId,
-                    error,
-                });
-            }
-        }
-        return errors;
-    }
-    /**
      * API
      */
     /**
@@ -132,6 +71,67 @@ class OperationsBl {
         logger_1.logger.info(`Invokeing operation ${operation.operationName}, id: ${operationId} ...`);
         const errors = await this.invokeOperationActivities(operation.activities);
         logger_1.logger.info(`Invokeing operation ${operation.operationName}, id: ${operationId} done`);
+        return errors;
+    }
+    /**
+     * Validate activities. (minion and status to set).
+     * @param operationActiviries activities array to validate.
+     */
+    async validateNewOperationActivities(operationActiviries) {
+        for (const activity of operationActiviries) {
+            const activityMinion = await this.minionsBl.getMinionById(activity.minionId);
+            if (!activity.minionStatus[activityMinion.minionType]) {
+                throw {
+                    responseCode: 2405,
+                    message: 'incorrect minion status for activity minion type',
+                };
+            }
+        }
+        return;
+    }
+    /**
+     * Invoke each activity.
+     * @param operationActiviries activities to invoke.
+     */
+    async invokeOperationActivities(operationActiviries) {
+        const errors = [];
+        for (const activity of operationActiviries) {
+            /**
+             * wait 1 sec between one minion to other, becuase of broadcasting mismatch in some brands communication protocol.
+             */
+            await sleep_1.Delay(moment.duration(1, 'seconds'));
+            logger_1.logger.info(`Setting minion ${activity.minionId} a new status by operation activity...`);
+            try {
+                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+                continue;
+            }
+            catch (error) {
+                logger_1.logger.warn(`Setting minion ${activity.minionId} a new status by operation activity data: ` +
+                    `${JSON.stringify(activity.minionStatus)} fail, ` +
+                    `${JSON.stringify(error)}`);
+            }
+            await sleep_1.Delay(moment.duration(3, 'seconds'));
+            logger_1.logger.info(`Trying set status for  ${activity.minionId} agine...`);
+            try {
+                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+                continue;
+            }
+            catch (error) {
+                logger_1.logger.warn(`The second try to set status for ${activity.minionId} fail too`);
+            }
+            await sleep_1.Delay(moment.duration(5, 'seconds'));
+            logger_1.logger.info(`Last chance of set status for  ${activity.minionId} ...`);
+            try {
+                await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+            }
+            catch (error) {
+                logger_1.logger.warn(`Last chance to set status for ${activity.minionId} fail too. sorry ;)`);
+                errors.push({
+                    minionId: activity.minionId,
+                    error,
+                });
+            }
+        }
         return errors;
     }
 }

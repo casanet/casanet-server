@@ -44,8 +44,7 @@ class BrandModuleBase {
      * Get cache JSON data.
      */
     async getCacheData() {
-        const data = await fse.readJSON(this.cacheFilePath)
-            .catch((err) => {
+        const data = await fse.readJSON(this.cacheFilePath).catch(err => {
             logger_1.logger.warn(`Fail to read ${this.cacheFilePath} cache file, ${err}`);
             throw new Error('Fail to read cache data');
         });
@@ -56,8 +55,7 @@ class BrandModuleBase {
      * @param data Data to save in cache.
      */
     async setCacheData(data) {
-        await fse.outputFile(this.cacheFilePath, JSON.stringify(data, null, 2))
-            .catch((err) => {
+        await fse.outputFile(this.cacheFilePath, JSON.stringify(data, null, 2)).catch(err => {
             logger_1.logger.warn(`Fail to write ${this.cacheFilePath} cache file, ${err}`);
             throw new Error('Fail to write cache data');
         });

@@ -29,16 +29,14 @@ class DataIO {
         }
     }
     async getData() {
-        const data = await fse.readJSON(this.filePath)
-            .catch((err) => {
+        const data = await fse.readJSON(this.filePath).catch(err => {
             logger_1.logger.warn(`Fail to read ${this.fileName} file, ${err}`);
             throw new Error('Fail to read data');
         });
         return data;
     }
     async setData(data) {
-        await fse.outputFile(this.filePath, JSON.stringify(data, null, 2))
-            .catch((err) => {
+        await fse.outputFile(this.filePath, JSON.stringify(data, null, 2)).catch(err => {
             logger_1.logger.warn(`Fail to write ${this.fileName} file, ${err}`);
             throw new Error('Fail to write data');
         });

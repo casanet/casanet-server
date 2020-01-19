@@ -14,7 +14,7 @@ class TimelineBl {
     constructor(minionsBl, timelineDal) {
         this.minionsBl = minionsBl;
         this.timelineDal = timelineDal;
-        this.minionsBl.minionFeed.subscribe((minionFeed) => {
+        this.minionsBl.minionFeed.subscribe(minionFeed => {
             if (!minionFeed) {
                 return;
             }

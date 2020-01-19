@@ -15,40 +15,6 @@ const usersBl_1 = require("../business-layer/usersBl");
 const deepCopy_1 = require("../utilities/deepCopy");
 let UsersController = class UsersController extends tsoa_1.Controller {
     /**
-     * NEVER let anyone get hashed password.
-     * @param user user to remove password from.
-     */
-    cleanUpUserBeforRelease(user) {
-        const userCopy = deepCopy_1.DeepCopy(user);
-        delete userCopy.password;
-        return userCopy;
-    }
-    /**
-     * NEVER let anyone get hashed password.
-     * @param users users to remove password from.
-     */
-    cleanUpUsersBeforRelease(users) {
-        const usersCopy = [];
-        for (const user of users) {
-            usersCopy.push(this.cleanUpUserBeforRelease(user));
-        }
-        return usersCopy;
-    }
-    /**
-     * Only admin can watch/update/delete other users.
-     */
-    isUserAllowd(userSession, userIdInReq) {
-        /**
-         * Only admin can update other user.
-         */
-        if (userSession.scope !== 'adminAuth' && userSession.email !== userIdInReq) {
-            throw {
-                responseCode: 4403,
-                message: 'user not allowed to watch other accounts',
-            };
-        }
-    }
-    /**
      * Get user profile.
      * @returns User.
      */
@@ -129,6 +95,40 @@ let UsersController = class UsersController extends tsoa_1.Controller {
      */
     async createUser(user) {
         return await usersBl_1.UsersBlSingleton.createUser(user);
+    }
+    /**
+     * NEVER let anyone get hashed password.
+     * @param user user to remove password from.
+     */
+    cleanUpUserBeforRelease(user) {
+        const userCopy = deepCopy_1.DeepCopy(user);
+        delete userCopy.password;
+        return userCopy;
+    }
+    /**
+     * NEVER let anyone get hashed password.
+     * @param users users to remove password from.
+     */
+    cleanUpUsersBeforRelease(users) {
+        const usersCopy = [];
+        for (const user of users) {
+            usersCopy.push(this.cleanUpUserBeforRelease(user));
+        }
+        return usersCopy;
+    }
+    /**
+     * Only admin can watch/update/delete other users.
+     */
+    isUserAllowd(userSession, userIdInReq) {
+        /**
+         * Only admin can update other user.
+         */
+        if (userSession.scope !== 'adminAuth' && userSession.email !== userIdInReq) {
+            throw {
+                responseCode: 4403,
+                message: 'user not allowed to watch other accounts',
+            };
+        }
     }
 };
 __decorate([

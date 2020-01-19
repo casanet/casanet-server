@@ -10,21 +10,6 @@ class VersionsBl {
         this.updateStatus = 'finished';
     }
     /**
-     * Install/update NPM dependencies in the background. it's can take a while.
-     */
-    async updateVersionDependencies() {
-        try {
-            logger_1.logger.info(`starting NPM install, it's can take a while`);
-            const installationResults = await child_process_promise_1.exec('npm ci');
-            logger_1.logger.info(`installing last dependencies results: ${installationResults.stdout}`);
-            this.updateStatus = 'finished';
-        }
-        catch (error) {
-            this.updateStatus = 'fail';
-            logger_1.logger.warn(`Installing last dependencies fail ${error.stdout}`);
-        }
-    }
-    /**
      * Update CASA-net application to the latest version.
      * Step 1: pull changes from remote repo.
      * Step 2: install the new dependencies update via npm.
@@ -99,6 +84,21 @@ class VersionsBl {
                 responseCode: 9501,
                 message: 'Get current version fail',
             };
+        }
+    }
+    /**
+     * Install/update NPM dependencies in the background. it's can take a while.
+     */
+    async updateVersionDependencies() {
+        try {
+            logger_1.logger.info(`starting NPM install, it's can take a while`);
+            const installationResults = await child_process_promise_1.exec('npm ci');
+            logger_1.logger.info(`installing last dependencies results: ${installationResults.stdout}`);
+            this.updateStatus = 'finished';
+        }
+        catch (error) {
+            this.updateStatus = 'fail';
+            logger_1.logger.warn(`Installing last dependencies fail ${error.stdout}`);
         }
     }
 }

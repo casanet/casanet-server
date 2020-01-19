@@ -17,7 +17,8 @@ const welcomeMessage = `
   .||.....|  '|..|'  '|...' '|..'|' .||. |'....|'   '|...' .||.       '|     '|...' .||.    
                                                                                             
 `;
-console.log('\x1b[34m', welcomeMessage, '\x1b[0m');
+// tslint:disable-next-line: no-console
+console.info('\x1b[34m', welcomeMessage, '\x1b[0m');
 const fs = require("fs");
 const http = require("http");
 const https = require("https");

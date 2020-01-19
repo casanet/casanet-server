@@ -12,16 +12,6 @@ class TimingsDal {
         this.timings = dataIo.getDataSync();
     }
     /**
-     * Find timing in timings array
-     */
-    findTiming(timingId) {
-        for (const timing of this.timings) {
-            if (timing.timingId === timingId) {
-                return timing;
-            }
-        }
-    }
-    /**
      * Get all timings as array.
      */
     async getTimings() {
@@ -47,8 +37,7 @@ class TimingsDal {
      */
     async createTiming(newTiming) {
         this.timings.push(newTiming);
-        await this.dataIo.setData(this.timings)
-            .catch(() => {
+        await this.dataIo.setData(this.timings).catch(() => {
             this.timings.splice(this.timings.indexOf(newTiming), 1);
             throw new Error('fail to save timing');
         });
@@ -66,8 +55,7 @@ class TimingsDal {
             };
         }
         this.timings.splice(this.timings.indexOf(originalTiming), 1);
-        await this.dataIo.setData(this.timings)
-            .catch(() => {
+        await this.dataIo.setData(this.timings).catch(() => {
             this.timings.push(originalTiming);
             throw new Error('fail to save timing delete request');
         });
@@ -86,12 +74,21 @@ class TimingsDal {
         }
         this.timings.splice(this.timings.indexOf(originalTiming), 1);
         this.timings.push(timing);
-        await this.dataIo.setData(this.timings)
-            .catch(() => {
+        await this.dataIo.setData(this.timings).catch(() => {
             this.timings.splice(this.timings.indexOf(timing), 1);
             this.timings.push(originalTiming);
             throw new Error('fail to save timing update request');
         });
+    }
+    /**
+     * Find timing in timings array
+     */
+    findTiming(timingId) {
+        for (const timing of this.timings) {
+            if (timing.timingId === timingId) {
+                return timing;
+            }
+        }
     }
 }
 exports.TimingsDal = TimingsDal;

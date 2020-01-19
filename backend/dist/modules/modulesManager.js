@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const moment = require("moment");
+const withTimeout = require("promise-with-timeout");
 const pull_behavior_1 = require("pull-behavior");
 const rxjs_1 = require("rxjs");
 const config_1 = require("../config");
-const withTimeout = require("promise-with-timeout");
-const moment = require("moment");
 const broadlinkHandler_1 = require("./broadlink/broadlinkHandler");
 const iftttHandler_1 = require("./ifttt/iftttHandler");
 const miioHandler_1 = require("./miio/miioHandler");
@@ -16,11 +16,6 @@ const tuyaHandler_1 = require("./tuya/tuyaHandler");
 const yeelightHandler_1 = require("./yeelight/yeelightHandler");
 class ModulesManager {
     constructor() {
-        this.COMMUNICATE_DEVICE_TIMEOUT = moment.duration(15, 'seconds');
-        /**
-         * All modules handlers
-         */
-        this.modulesHandlers = [];
         /**
          * Let subscribe to any status minion changed. from any brand module.
          */
@@ -29,6 +24,11 @@ class ModulesManager {
          * Allows to retrieve minions array. (used as proxy for all moduls).
          */
         this.retrieveMinions = new pull_behavior_1.PullBehavior();
+        this.COMMUNICATE_DEVICE_TIMEOUT = moment.duration(15, 'seconds');
+        /**
+         * All modules handlers
+         */
+        this.modulesHandlers = [];
         /** Currently, do not coverage modules, only 'mock' for other tests. */
         if (config_1.Configuration.runningMode === 'test') {
             this.initHandler(new mockHandler_1.MockHandler());
@@ -47,68 +47,6 @@ class ModulesManager {
         return modulesDevices;
     }
     /**
-     * Init any brand module in system.
-     */
-    initHandlers() {
-        ////////////////////////////////////////////////////////////////////////
-        //////////////// TO EXTEND: Init here new handler //////////////////////
-        ////////////////////////////////////////////////////////////////////////
-        this.initHandler(new mockHandler_1.MockHandler());
-        this.initHandler(new tuyaHandler_1.TuyaHandler());
-        this.initHandler(new tasmotaHandler_1.TasmotaHandler());
-        this.initHandler(new broadlinkHandler_1.BroadlinkHandler());
-        this.initHandler(new yeelightHandler_1.YeelightHandler());
-        this.initHandler(new orviboHandler_1.OrviboHandler());
-        this.initHandler(new iftttHandler_1.IftttHandler());
-        this.initHandler(new miioHandler_1.MiioHandler());
-        this.initHandler(new mqttHandler_1.MqttHandler());
-    }
-    /**
-     * Hold the hendler instance and registar to minions status changed.
-     * @param brandModule the handler instance.
-     */
-    initHandler(brandModule) {
-        /**
-         * Set pull proxy method to get all last minions array.
-         */
-        brandModule.retrieveMinions.setPullMethod(async () => {
-            if (!this.retrieveMinions.isPullingAvailble) {
-                return [];
-            }
-            return await this.retrieveMinions.pull();
-        });
-        brandModule.minionStatusChangedEvent.subscribe((changedMinionStatus) => {
-            this.minionStatusChangedEvent.next(changedMinionStatus);
-        });
-        this.modulesHandlers.push(brandModule);
-    }
-    /**
-     * Get minion communcation module based on brand name.
-     * @param brandName the brand name.
-     * @returns The module instance or undefined if not exist.
-     */
-    getMinionModule(brandName) {
-        for (const brandHandler of this.modulesHandlers) {
-            if (brandName === brandHandler.brandName) {
-                return brandHandler;
-            }
-        }
-    }
-    /**
-     * Get DeviceKind of minoin device.
-     * @param minionsBrandModuleBase The rand module to look in.
-     * @param minionDevice the minoin device to get kind for.
-     * @returns The device kind.
-     */
-    getModelKind(minionsBrandModuleBase, minionDevice) {
-        for (const deviceKind of minionsBrandModuleBase.devices) {
-            if (deviceKind.brand === minionDevice.brand &&
-                deviceKind.model === minionDevice.model) {
-                return deviceKind;
-            }
-        }
-    }
-    /**
      * Get current status of minion. (such as minion status on off etc.)
      */
     async getStatus(miniom) {
@@ -124,8 +62,7 @@ class ModulesManager {
             return await withTimeout(minionModule.getStatus(miniom), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
         }
         catch (error) {
-            if (typeof error.message === 'string' &&
-                error.message.indexOf('Promise not resolved after') !== -1) {
+            if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
                 throw {
                     responseCode: 1503,
                     message: 'communication with device fail, timeout',
@@ -152,8 +89,7 @@ class ModulesManager {
             return await withTimeout(minionModule.setStatus(miniom, setStatus), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
         }
         catch (error) {
-            if (typeof error.message === 'string' &&
-                error.message.indexOf('Promise not resolved after') !== -1) {
+            if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
                 throw {
                     responseCode: 1503,
                     message: 'communication with device fail, timeout',
@@ -191,8 +127,7 @@ class ModulesManager {
             return await withTimeout(minionModule.enterRecordMode(minion, statusToRecordFor), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
         }
         catch (error) {
-            if (typeof error.message === 'string' &&
-                error.message.indexOf('Promise not resolved after') !== -1) {
+            if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
                 throw {
                     responseCode: 1503,
                     message: 'communication with device fail, timeout',
@@ -230,8 +165,7 @@ class ModulesManager {
             return await withTimeout(minionModule.generateCommand(minion, statusToGenerateFor), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
         }
         catch (error) {
-            if (typeof error.message === 'string' &&
-                error.message.indexOf('Promise not resolved after') !== -1) {
+            if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
                 throw {
                     responseCode: 1503,
                     message: 'communication with device fail, timeout',
@@ -268,8 +202,7 @@ class ModulesManager {
             return await withTimeout(minionModule.setFetchedCommands(minion, commandsSet), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
         }
         catch (error) {
-            if (typeof error.message === 'string' &&
-                error.message.indexOf('Promise not resolved after') !== -1) {
+            if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
                 throw {
                     responseCode: 1503,
                     message: 'communication with device fail, timeout',
@@ -287,8 +220,7 @@ class ModulesManager {
             try {
                 await withTimeout(brandHandler.refreshCommunication(), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
             }
-            catch (error) {
-            }
+            catch (error) { }
         }
     }
     /**
@@ -308,14 +240,74 @@ class ModulesManager {
             return await withTimeout(minionModule.refreshCommunication(), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
         }
         catch (error) {
-            if (typeof error.message === 'string' &&
-                error.message.indexOf('Promise not resolved after') !== -1) {
+            if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
                 throw {
                     responseCode: 1503,
                     message: 'communication with device fail, timeout',
                 };
             }
             throw error;
+        }
+    }
+    /**
+     * Init any brand module in system.
+     */
+    initHandlers() {
+        ////////////////////////////////////////////////////////////////////////
+        //////////////// TO EXTEND: Init here new handler //////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        this.initHandler(new mockHandler_1.MockHandler());
+        this.initHandler(new tuyaHandler_1.TuyaHandler());
+        this.initHandler(new tasmotaHandler_1.TasmotaHandler());
+        this.initHandler(new broadlinkHandler_1.BroadlinkHandler());
+        this.initHandler(new yeelightHandler_1.YeelightHandler());
+        this.initHandler(new orviboHandler_1.OrviboHandler());
+        this.initHandler(new iftttHandler_1.IftttHandler());
+        this.initHandler(new miioHandler_1.MiioHandler());
+        this.initHandler(new mqttHandler_1.MqttHandler());
+    }
+    /**
+     * Hold the hendler instance and registar to minions status changed.
+     * @param brandModule the handler instance.
+     */
+    initHandler(brandModule) {
+        /**
+         * Set pull proxy method to get all last minions array.
+         */
+        brandModule.retrieveMinions.setPullMethod(async () => {
+            if (!this.retrieveMinions.isPullingAvailble) {
+                return [];
+            }
+            return await this.retrieveMinions.pull();
+        });
+        brandModule.minionStatusChangedEvent.subscribe(changedMinionStatus => {
+            this.minionStatusChangedEvent.next(changedMinionStatus);
+        });
+        this.modulesHandlers.push(brandModule);
+    }
+    /**
+     * Get minion communcation module based on brand name.
+     * @param brandName the brand name.
+     * @returns The module instance or undefined if not exist.
+     */
+    getMinionModule(brandName) {
+        for (const brandHandler of this.modulesHandlers) {
+            if (brandName === brandHandler.brandName) {
+                return brandHandler;
+            }
+        }
+    }
+    /**
+     * Get DeviceKind of minoin device.
+     * @param minionsBrandModuleBase The rand module to look in.
+     * @param minionDevice the minoin device to get kind for.
+     * @returns The device kind.
+     */
+    getModelKind(minionsBrandModuleBase, minionDevice) {
+        for (const deviceKind of minionsBrandModuleBase.devices) {
+            if (deviceKind.brand === minionDevice.brand && deviceKind.model === minionDevice.model) {
+                return deviceKind;
+            }
         }
     }
 }

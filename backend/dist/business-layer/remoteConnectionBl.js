@@ -66,8 +66,7 @@ class RemoteConnectionBl {
              * dont send ack message.
              * (If remote server not set yet, ther is no point to try sending ack).
              */
-            if (this.remoteConnectionStatus !== 'connectionOK' &&
-                this.remoteConnectionStatus !== 'cantReachRemoteServer') {
+            if (this.remoteConnectionStatus !== 'connectionOK' && this.remoteConnectionStatus !== 'cantReachRemoteServer') {
                 return;
             }
             if (!this.ackPongRecieved) {
@@ -240,8 +239,7 @@ class RemoteConnectionBl {
      * @param localMessage message to send
      */
     sendMessage(localMessage) {
-        if (this.remoteConnectionStatus !== 'connectionOK' &&
-            this.remoteConnectionStatus !== 'cantReachRemoteServer') {
+        if (this.remoteConnectionStatus !== 'connectionOK' && this.remoteConnectionStatus !== 'cantReachRemoteServer') {
             return;
         }
         try {

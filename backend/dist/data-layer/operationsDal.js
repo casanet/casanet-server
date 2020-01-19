@@ -12,16 +12,6 @@ class OperationsDal {
         this.operations = dataIo.getDataSync();
     }
     /**
-     * Find operation in operations array
-     */
-    findOperation(operationId) {
-        for (const operation of this.operations) {
-            if (operation.operationId === operationId) {
-                return operation;
-            }
-        }
-    }
-    /**
      * Get all operations as array.
      */
     async getOperations() {
@@ -47,8 +37,7 @@ class OperationsDal {
      */
     async createOperation(newOperation) {
         this.operations.push(newOperation);
-        await this.dataIo.setData(this.operations)
-            .catch(() => {
+        await this.dataIo.setData(this.operations).catch(() => {
             this.operations.splice(this.operations.indexOf(newOperation), 1);
             throw new Error('fail to save operation');
         });
@@ -66,8 +55,7 @@ class OperationsDal {
             };
         }
         this.operations.splice(this.operations.indexOf(originalMinion), 1);
-        await this.dataIo.setData(this.operations)
-            .catch(() => {
+        await this.dataIo.setData(this.operations).catch(() => {
             this.operations.push(originalMinion);
             throw new Error('fail to save operation delete request');
         });
@@ -86,12 +74,21 @@ class OperationsDal {
         }
         this.operations.splice(this.operations.indexOf(originalOperation), 1);
         this.operations.push(operation);
-        await this.dataIo.setData(this.operations)
-            .catch(() => {
+        await this.dataIo.setData(this.operations).catch(() => {
             this.operations.splice(this.operations.indexOf(operation), 1);
             this.operations.push(originalOperation);
             throw new Error('fail to save operation update request');
         });
+    }
+    /**
+     * Find operation in operations array
+     */
+    findOperation(operationId) {
+        for (const operation of this.operations) {
+            if (operation.operationId === operationId) {
+                return operation;
+            }
+        }
     }
 }
 exports.OperationsDal = OperationsDal;

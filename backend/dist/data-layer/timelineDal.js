@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const dataIO_1 = require("./dataIO");
-const config_1 = require("../config");
 const moment = require("moment");
+const config_1 = require("../config");
 const logger_1 = require("../utilities/logger");
+const dataIO_1 = require("./dataIO");
 const TIMELINE_FILE_NAME = 'timeline.json';
 const TIMELINE_MS_LENGTH = moment.duration(config_1.Configuration.timelineDaysLength, 'days').asMilliseconds();
 class TimelineDal {

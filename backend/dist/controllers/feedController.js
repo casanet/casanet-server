@@ -20,7 +20,7 @@ let FeedController = class FeedController extends tsoa_1.Controller {
      */
     initMinionsFeed(miniosSse) {
         this.miniosSse = miniosSse;
-        minionsBl_1.MinionsBlSingleton.minionFeed.subscribe((minionFeed) => {
+        minionsBl_1.MinionsBlSingleton.minionFeed.subscribe(minionFeed => {
             if (!minionFeed) {
                 return;
             }
@@ -33,7 +33,7 @@ let FeedController = class FeedController extends tsoa_1.Controller {
      */
     initTimingsFeed(timingsSse) {
         this.timingsSse = timingsSse;
-        timingsBl_1.TimingsBlSingleton.timingFeed.subscribe((timingFeed) => {
+        timingsBl_1.TimingsBlSingleton.timingFeed.subscribe(timingFeed => {
             if (!timingFeed) {
                 return;
             }
