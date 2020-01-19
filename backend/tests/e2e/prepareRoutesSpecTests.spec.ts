@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
-import app from '../../src/App';
+import app from '../../src/app';
 import { Configuration } from '../../src/config';
 import { UsersDalSingleton } from '../../src/data-layer/usersDal';
 import { Login, Minion } from '../../src/models/sharedInterfaces';
