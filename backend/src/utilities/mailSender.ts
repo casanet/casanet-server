@@ -5,13 +5,13 @@ import { Configuration } from '../config';
 
 // create reusable transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
-    host: Configuration.twoStepsVerification.smtpServer,
-    port: 465,
-    secure: true, // true for 465, false for other ports
-    auth: {
-        user: Configuration.twoStepsVerification.userName,
-        pass: Configuration.twoStepsVerification.userKey,
-    },
+  host: Configuration.twoStepsVerification.smtpServer,
+  port: 465,
+  secure: true, // true for 465, false for other ports
+  auth: {
+    user: Configuration.twoStepsVerification.userName,
+    pass: Configuration.twoStepsVerification.userKey,
+  },
 });
 
 /**
@@ -20,13 +20,13 @@ const transporter = nodemailer.createTransport({
  * @param code generate code to send.
  */
 export const SendMail = async (to: string, code: string) => {
-    const mailOptions: SendMailOptions = {
-        from: '"CASAnet" <' + Configuration.twoStepsVerification.userName + '>',
-        to,
-        replyTo: undefined,
-        inReplyTo: undefined,
-        subject: 'CasaNet account verification',
-        html: `
+  const mailOptions: SendMailOptions = {
+    from: '"CASAnet" <' + Configuration.twoStepsVerification.userName + '>',
+    to,
+    replyTo: undefined,
+    inReplyTo: undefined,
+    subject: 'CasaNet account verification',
+    html: `
         <!DOCTYPE html>
         <body>
             <table style="width:420px;text-align:center;margin:0 auto;padding:30px 0;line-height:1.5;">
@@ -67,8 +67,8 @@ export const SendMail = async (to: string, code: string) => {
                 </tbody>
             </table>
         </body>`,
-    };
+  };
 
-    // send mail with defined transport object
-    return transporter.sendMail(mailOptions);
+  // send mail with defined transport object
+  return transporter.sendMail(mailOptions);
 };

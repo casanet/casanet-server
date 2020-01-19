@@ -10,18 +10,16 @@
       "sourceMaps": true,
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "env": {
-        "NODE_ENV": "debug",
+        "NODE_ENV": "debug"
       }
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Mocha Tests",
-      "preLaunchTask": "npm: test",
+      "preLaunchTask": "npm: test:unit",
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "env": {
         "NODE_ENV": "test",
@@ -36,7 +34,7 @@
         "999999",
         "--colors",
         "--recursive",
-        "${workspaceFolder}/test/**/*.spec.ts",
+        "${workspaceFolder}/test/**/*.spec.ts"
       ],
       "internalConsoleOptions": "openOnSessionStart"
     },
@@ -44,7 +42,7 @@
       "type": "node",
       "request": "launch",
       "name": "Mocha e2e",
-      "preLaunchTask": "npm: test",
+      "preLaunchTask": "npm: test:e2e",
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "env": {
         "NODE_ENV": "test",
@@ -62,6 +60,6 @@
         "${workspaceFolder}/e2e/**/*.spec.ts"
       ],
       "internalConsoleOptions": "openOnSessionStart"
-    },
+    }
   ]
 }

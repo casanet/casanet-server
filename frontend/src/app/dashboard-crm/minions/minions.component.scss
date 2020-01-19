@@ -1,7 +1,6 @@
 mat-card {
   padding: 5px;
   margin: 7px;
-  
 }
 
 .minion-card-focus:hover {
@@ -10,39 +9,37 @@ mat-card {
 }
 
 .minion-card:active {
-   margin-top: 12px;
+  margin-top: 12px;
 }
 
 .minion-text {
   color: white;
 }
 
-
-/deep/ .mat-form-field-type-mat-select .mat-form-field-label, .mat-select-value {
+::ng-deep .mat-form-field-type-mat-select .mat-form-field-label,
+.mat-select-value {
   color: white;
 }
 
 ::ng-deep .mat-accent .mat-slider-thumb {
   background-color: black;
-} 
+}
 ::ng-deep .mat-accent .mat-slider-thumb-label {
   background-color: black;
-} 
+}
 ::ng-deep .mat-accent .mat-slider-track-fill {
   background-color: black;
-} 
+}
 
 ::ng-deep .mat-mini-fab {
   background-color: #1f5f59;
   color: white;
-} 
+}
 
 ::ng-deep .mat-fab {
   background-color: #1f5f59;
   color: white;
 }
-
-
 
 /* SLIDER */
 
@@ -84,8 +81,6 @@ mat-card {
     font-weight: bold;
     color: white;
   }
-
-
 
   .custom-slider .ng5-slider .ng5-slider-tick {
     width: 1px;

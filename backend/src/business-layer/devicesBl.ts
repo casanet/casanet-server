@@ -6,96 +6,96 @@ import { LocalNetworkReader } from '../utilities/lanManager';
 import { logger } from '../utilities/logger';
 
 export class DevicesBl {
+  /**
+   * Local devices changes feed.
+   */
+  public devicesUpdate = new BehaviorSubject<LocalNetworkDevice[]>([]);
+  // Dependecies
+  private localNetworkReader: () => Promise<LocalNetworkDevice[]>;
+  private devicesDal: DevicesDal;
+  private modulesManager: ModulesManager;
 
-    // Dependecies
-    private localNetworkReader: () => Promise<LocalNetworkDevice[]>;
-    private devicesDal: DevicesDal;
-    private modulesManager: ModulesManager;
+  /**
+   * local devices.
+   */
+  private localDevices: LocalNetworkDevice[] = [];
 
-    /**
-     * local devices.
-     */
-    private localDevices: LocalNetworkDevice[] = [];
+  /**
+   * Init DevicesBl . using dependecy injection pattern to allow units testings.
+   * @param devicesDal Inject devices dal.
+   * @param localNetworkReader Inject the reader function.
+   */
+  constructor(
+    devicesDal: DevicesDal,
+    localNetworkReader: () => Promise<LocalNetworkDevice[]>,
+    modulesManager: ModulesManager,
+  ) {
+    this.devicesDal = devicesDal;
+    this.localNetworkReader = localNetworkReader;
+    this.modulesManager = modulesManager;
+  }
 
-    /**
-     * Local devices changes feed.
-     */
-    public devicesUpdate = new BehaviorSubject<LocalNetworkDevice[]>([]);
+  /**
+   * Get all local network devices
+   */
+  public async getDevices(): Promise<LocalNetworkDevice[]> {
+    return this.localDevices;
+  }
 
-    /**
-     * Init DevicesBl . using dependecy injection pattern to allow units testings.
-     * @param devicesDal Inject devices dal.
-     * @param localNetworkReader Inject the reader function.
-     */
-    constructor(devicesDal: DevicesDal, localNetworkReader: () => Promise<LocalNetworkDevice[]>, modulesManager: ModulesManager) {
-        this.devicesDal = devicesDal;
-        this.localNetworkReader = localNetworkReader;
-        this.modulesManager = modulesManager;
-    }
+  /**
+   * Set name to device.
+   * @param deviceToSet Device to cached.
+   */
+  public async setDeviceName(deviceToSet: LocalNetworkDevice): Promise<void> {
+    await this.devicesDal.saveDevice(deviceToSet);
+    await this.loadDevicesName();
+    this.devicesUpdate.next(this.localDevices);
+  }
 
-    /**
-     * Load local devices name from saved cache.
-     */
-    private async loadDevicesName(): Promise<void> {
-        const cachedDevices = await this.devicesDal.getDevices();
+  /**
+   * Rescan local network.
+   */
+  public async rescanNetwork(): Promise<void> {
+    await this.loadDevices();
+    this.devicesUpdate.next(this.localDevices);
+  }
 
-        for (const localDevice of this.localDevices) {
-            for (const cachedDevice of cachedDevices) {
-                if (cachedDevice.mac === localDevice.mac) {
-                    localDevice.name = cachedDevice.name;
-                    break;
-                }
-            }
+  /**
+   * Get devices models kinds array.
+   */
+  public async getDevicesKins(): Promise<DeviceKind[]> {
+    return this.modulesManager.devicesKind;
+  }
+
+  /**
+   * Load local devices name from saved cache.
+   */
+  private async loadDevicesName(): Promise<void> {
+    const cachedDevices = await this.devicesDal.getDevices();
+
+    for (const localDevice of this.localDevices) {
+      for (const cachedDevice of cachedDevices) {
+        if (cachedDevice.mac === localDevice.mac) {
+          localDevice.name = cachedDevice.name;
+          break;
         }
+      }
     }
+  }
 
-    /**
-     * Load local network devices data.
-     */
-    private async loadDevices(): Promise<void> {
-        this.localDevices = await this.localNetworkReader()
-            .catch(() => {
-                logger.warn('Loading devices network fail, setting devices as empty array...');
-                this.localDevices = [];
-            }) as LocalNetworkDevice[];
+  /**
+   * Load local network devices data.
+   */
+  private async loadDevices(): Promise<void> {
+    this.localDevices = (await this.localNetworkReader().catch(() => {
+      logger.warn('Loading devices network fail, setting devices as empty array...');
+      this.localDevices = [];
+    })) as LocalNetworkDevice[];
 
-        await this.loadDevicesName()
-            .catch(() => {
-                logger.warn('Loading devices names fail');
-            });
-    }
-
-    /**
-     * Get all local network devices
-     */
-    public async getDevices(): Promise<LocalNetworkDevice[]> {
-        return this.localDevices;
-    }
-
-    /**
-     * Set name to device.
-     * @param deviceToSet Device to cached.
-     */
-    public async setDeviceName(deviceToSet: LocalNetworkDevice): Promise<void> {
-        await this.devicesDal.saveDevice(deviceToSet);
-        await this.loadDevicesName();
-        this.devicesUpdate.next(this.localDevices);
-    }
-
-    /**
-     * Rescan local network.
-     */
-    public async rescanNetwork(): Promise<void> {
-        await this.loadDevices();
-        this.devicesUpdate.next(this.localDevices);
-    }
-
-    /**
-     * Get devices models kinds array.
-     */
-    public async getDevicesKins(): Promise<DeviceKind[]> {
-        return this.modulesManager.devicesKind;
-    }
+    await this.loadDevicesName().catch(() => {
+      logger.warn('Loading devices names fail');
+    });
+  }
 }
 
 export const DevicesBlSingleton = new DevicesBl(DevicesDalSingleton, LocalNetworkReader, ModulesManagerSingltone);

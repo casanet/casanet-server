@@ -5,6 +5,12 @@ Let's create a smart home, without giving anyone access to our house 😊.
 ## CASA-NET.
 Open-source server to control IoT devices in a local home network.
 
+
+[![Build Status](https://travis-ci.org/casanet/casanet-server.svg?branch=master)](https://travis-ci.org/casanet/casanet-server)
+
+[![Coverage Status](https://coveralls.io/repos/github/casanet/casanet-server/badge.svg?branch=master)](https://coveralls.io/github/casanet/casanet-server?branch=master)
+
+
 ## Philosophy.
 In this project, I wanted to solve a number of troubles. first of all, anyone who uses a number of smart devices (smart IR, smart socket, or anything of that kind) of different companies is familiar with the problem of dealing with a number of different applications;
 holding 10 applications for each home appliance when each is completely different in the interface and operations and authentication.

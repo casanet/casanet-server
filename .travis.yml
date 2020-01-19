@@ -1,0 +1,24 @@
+---
+matrix:
+  include:
+    -
+      before_script:
+        - "cd backend"
+      language: node_js
+      node_js:
+        - stable
+      install:
+        - npm install
+      script:
+        - npm run cover
+      after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    -
+      before_script:
+        - "cd frontend"
+      language: node_js
+      node_js:
+        - stable
+      install:
+        - npm install
+      script:
+        - npm run build

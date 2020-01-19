@@ -4,50 +4,87 @@ import { JoiObject, ObjectSchema, ValidationResult } from 'joi';
 import { ErrorResponse } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
-export const RemoteSettingsSchema: ObjectSchema = Joi.object().keys({
-    host: Joi.string().uri().regex(/^(ws:\/\/|wss:\/\/)/).required(),
-    connectionKey: Joi.string().not('').required(),
-}).required();
+export const RemoteSettingsSchema: ObjectSchema = Joi.object()
+  .keys({
+    host: Joi.string()
+      .uri()
+      .regex(/^(ws:\/\/|wss:\/\/)/)
+      .required(),
+    connectionKey: Joi.string()
+      .not('')
+      .required(),
+  })
+  .required();
 
-export const UserSchema: ObjectSchema = Joi.object().keys({
-    email: Joi.string().email().required(),
-    displayName: Joi.string().not('').required(),
-    password: Joi.string().not('').min(6).max(18).required(),
+export const UserSchema: ObjectSchema = Joi.object()
+  .keys({
+    email: Joi.string()
+      .email()
+      .required(),
+    displayName: Joi.string()
+      .not('')
+      .required(),
+    password: Joi.string()
+      .not('')
+      .min(6)
+      .max(18)
+      .required(),
     ignoreTfa: Joi.boolean().required(),
     scope: Joi.allow('adminAuth', 'userAuth').required(),
-}).required();
+  })
+  .required();
 
-export const UserUpdateSchema: ObjectSchema = Joi.object().keys({
-    email: Joi.string().email().required(),
-    displayName: Joi.string().not('').required(),
-    password: Joi.string().allow('').min(6).max(18),
+export const UserUpdateSchema: ObjectSchema = Joi.object()
+  .keys({
+    email: Joi.string()
+      .email()
+      .required(),
+    displayName: Joi.string()
+      .not('')
+      .required(),
+    password: Joi.string()
+      .allow('')
+      .min(6)
+      .max(18),
     ignoreTfa: Joi.boolean().required(),
     scope: Joi.allow('adminAuth', 'userAuth'),
-}).required();
+  })
+  .required();
 
-export const LoginSchema: ObjectSchema = Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().not('').required(),
+export const LoginSchema: ObjectSchema = Joi.object()
+  .keys({
+    email: Joi.string()
+      .email()
+      .required(),
+    password: Joi.string()
+      .not('')
+      .required(),
     localServerId: Joi.string().allow(''),
-}).required();
+  })
+  .required();
 
-export const ErrorResponseSchema: ObjectSchema = Joi.object().keys({
-    responseCode: Joi.number().min(4000).max(5999).required(),
+export const ErrorResponseSchema: ObjectSchema = Joi.object()
+  .keys({
+    responseCode: Joi.number()
+      .min(4000)
+      .max(5999)
+      .required(),
     message: Joi.string().not(''),
-}).required();
+  })
+  .required();
 
 /**
  * Get request client IP.
  */
 export const GetIp = (req: Request): string => {
-    let ip = req.headers['x-forwarded-for'] as string;
-    if (ip) {
-        const ipParts = ip.split(',');
-        ip = ipParts[ipParts.length - 1];
-    } else {
-        ip = req.connection.remoteAddress;
-    }
-    return ip;
+  let ip = req.headers['x-forwarded-for'] as string;
+  if (ip) {
+    const ipParts = ip.split(',');
+    ip = ipParts[ipParts.length - 1];
+  } else {
+    ip = req.connection.remoteAddress;
+  }
+  return ip;
 };
 
 /**
@@ -59,17 +96,15 @@ export const GetIp = (req: Request): string => {
  * @returns {Promise<any|ErrorResponse>} Promise when seccess with cleaned data.
  */
 export const RequestSchemaValidator = async (req: Request, schema: JoiObject): Promise<any | ErrorResponse> => {
-    return await SchemaValidator(req.body, schema)
-        .catch((result: ValidationResult<any>) => {
-            logger.warn(`wrong scema data rrrived ` +
-                `from ${GetIp(req)}, error: ${result.error.message}`);
-            const error: ErrorResponse = {
-                responseCode: 2422,
-                message: result.error.message,
-            };
+  return await SchemaValidator(req.body, schema).catch((result: ValidationResult<any>) => {
+    logger.warn(`wrong scema data rrrived ` + `from ${GetIp(req)}, error: ${result.error.message}`);
+    const error: ErrorResponse = {
+      responseCode: 2422,
+      message: result.error.message,
+    };
 
-            throw error;
-        });
+    throw error;
+  });
 };
 
 /**
@@ -80,10 +115,10 @@ export const RequestSchemaValidator = async (req: Request, schema: JoiObject): P
  * @param {JoiObject} schema The Joi schema object
  */
 export const SchemaValidator = async (data: any, scema: JoiObject): Promise<any | ValidationResult<any>> => {
-    const result: ValidationResult<any> = Joi.validate(data, scema);
-    if (!result.error) {
-        return result.value;
-    }
+  const result: ValidationResult<any> = Joi.validate(data, scema);
+  if (!result.error) {
+    return result.value;
+  }
 
-    throw result;
+  throw result;
 };

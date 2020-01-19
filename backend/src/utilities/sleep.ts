@@ -5,9 +5,9 @@ import { Duration } from 'moment';
  * @param delayDuration Time duration to delay.
  */
 export const Delay = (delayDuration: Duration): Promise<void> => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve();
-        }, delayDuration.asMilliseconds());
-    });
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, delayDuration.asMilliseconds());
+  });
 };
