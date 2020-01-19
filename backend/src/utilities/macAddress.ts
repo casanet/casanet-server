@@ -9,34 +9,32 @@ let machineMacAddress: string;
  * @returns the mac address.
  */
 export const GetMachinMacAddress = (): Promise<string> => {
-    return new Promise<string>((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
+    /** If mac address already known, send it */
+    if (machineMacAddress) {
+      resolve(machineMacAddress);
+      return;
+    }
 
-        /** If mac address already known, send it */
-        if (machineMacAddress) {
-            resolve(machineMacAddress);
-            return;
-        }
+    /** If MAC address passed by env var, just use it */
+    if (process.env.PHYSICAL_ADDRESS) {
+      machineMacAddress = process.env.PHYSICAL_ADDRESS;
+      logger.info(`Using '${machineMacAddress}' physical address, loadded from env var.`);
+      resolve(machineMacAddress);
+      return;
+    }
 
-        /** If MAC address passed by env var, just use it */
-        if (process.env.PHYSICAL_ADDRESS) {
-            machineMacAddress = process.env.PHYSICAL_ADDRESS;
-            logger.info(`Using '${machineMacAddress}' physical address, loadded from env var.`);
-            resolve(machineMacAddress);
-            return;
-        }
+    /** Read the machine mac address */
+    getMac.getMac((err: Error, rawMacAddress: string) => {
+      if (err) {
+        logger.error('Cant read local MAC address');
+        reject(err);
+        return;
+      }
 
-        /** Read the machine mac address */
-        getMac.getMac((err: Error, rawMacAddress: string) => {
-
-            if (err) {
-                logger.error('Cant read local MAC address');
-                reject(err);
-                return;
-            }
-
-            /** Format mac address to correct format. */
-            machineMacAddress = rawMacAddress.replace(/:|-|_| /g, '').toLowerCase();
-            resolve(machineMacAddress);
-        });
+      /** Format mac address to correct format. */
+      machineMacAddress = rawMacAddress.replace(/:|-|_| /g, '').toLowerCase();
+      resolve(machineMacAddress);
     });
+  });
 };

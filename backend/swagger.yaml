@@ -74,7 +74,7 @@ definitions:
             - model
         type: object
     Toggle:
-        description: "A toggle value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off \r\nbut there is no way to know the real light status if someone changes the light status using physical switche."
+        description: "A toggle value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off\r\nbut there is no way to know the real light status if someone changes the light status using physical switche."
         properties:
             status:
                 type: string
@@ -292,7 +292,7 @@ definitions:
                 x-nullable: true
         type: object
     Minion:
-        description: "Represents a minion in system.\r\nMinion is a logic device in the system, meaning that a device is a physical device and minion is a logic device \r\nthat uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device \r\nfor a few minions, one to central AC control and second for secondary AC control \r\nso in it will be two totally different minions that use one physical device."
+        description: "Represents a minion in system.\r\nMinion is a logic device in the system, meaning that a device is a physical device and minion is a logic device\r\nthat uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device\r\nfor a few minions, one to central AC control and second for secondary AC control\r\nso in it will be two totally different minions that use one physical device."
         properties:
             minionId:
                 type: string
@@ -326,12 +326,12 @@ definitions:
             minionAutoTurnOffMS:
                 type: number
                 format: double
-                description: "Auto turns  off duration, *if* set member value then the minion will turn off in X ms after turning it on, \r\nUsed for example in boiler minion etc."
+                description: "Auto turns  off duration, *if* set member value then the minion will turn off in X ms after turning it on,\r\nUsed for example in boiler minion etc."
                 x-nullable: true
             calibrationCycleMinutes:
                 type: number
                 format: double
-                description: "Calibrate the physical device with the server known status, in a periodic cycle, \r\nif not set or set to 0, never calibrate."
+                description: "Calibrate the physical device with the server known status, in a periodic cycle,\r\nif not set or set to 0, never calibrate."
                 x-nullable: true
         required:
             - name
@@ -373,7 +373,7 @@ definitions:
             durationMinutes:
                 type: number
                 format: double
-                description: "Minutes from the sun trigger.\r\ncan be before or after the sun triggers.\r\nFor example, to invoke 40 minutes before sunset set -40 and to invoke 40 minutes after sunset set 40.\r\n\r\nNOTE! if the duration is more then minutes available in the day from the sun trigger time, the timing will not activate. \r\nfor example if the sunset is in 18:00 and the duration set to 7*60 minutes, \r\nthe activate time is not on the same day, so it will not activate at all."
+                description: "Minutes from the sun trigger.\r\ncan be before or after the sun triggers.\r\nFor example, to invoke 40 minutes before sunset set -40 and to invoke 40 minutes after sunset set 40.\r\n\r\nNOTE! if the duration is more then minutes available in the day from the sun trigger time, the timing will not activate.\r\nfor example if the sunset is in 18:00 and the duration set to 7*60 minutes,\r\nthe activate time is not on the same day, so it will not activate at all."
             sunTrigger:
                 type: string
                 enum:
@@ -531,7 +531,7 @@ definitions:
             minionsPerDevice:
                 type: number
                 format: double
-                description: "The max minions that can be in one device, or -1 if unlimited.\r\nFor example, a simple smart socket can be 1 minion per device, \r\nWall switch with 3 switches can be 3 minions per device,\r\nAnd IR transmitter can be unlimited minions per device."
+                description: "The max minions that can be in one device, or -1 if unlimited.\r\nFor example, a simple smart socket can be 1 minion per device,\r\nWall switch with 3 switches can be 3 minions per device,\r\nAnd IR transmitter can be unlimited minions per device."
             isTokenRequierd:
                 type: boolean
                 description: 'Is the device require a token for communication API.'
@@ -653,7 +653,7 @@ definitions:
             - minionStatus
         type: object
     Operation:
-        description: "Represents an operation in the system.\r\nAn operation is a set of activities to do.\r\nFor example, to turn on all home light operation \r\nsets an array of activity for each light in the home to set light status 'on'."
+        description: "Represents an operation in the system.\r\nAn operation is a set of activities to do.\r\nFor example, to turn on all home light operation\r\nsets an array of activity for each light in the home to set light status 'on'."
         properties:
             operationId:
                 type: string
@@ -2241,7 +2241,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Ifttt webhooks triggering casa-net action API.\r\nwhen all details in body only, to allow send all data ion one text line.\r\nExample to use: SMS trigger has only simple text that can pass to IFTTT activity,\r\nand by current request, it is possible to control any minion by one single line of text. \r\nso fill the SMS text with JSON and by IFTTT set it to be the request body."
+            description: "Ifttt webhooks triggering casa-net action API.\r\nwhen all details in body only, to allow send all data ion one text line.\r\nExample to use: SMS trigger has only simple text that can pass to IFTTT activity,\r\nand by current request, it is possible to control any minion by one single line of text.\r\nso fill the SMS text with JSON and by IFTTT set it to be the request body."
             tags:
                 - Ifttt
             security:

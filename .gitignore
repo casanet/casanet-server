@@ -3,3 +3,5 @@ encryption/
 data/
 logs/
 .env
+coverage
+.nyc_output
