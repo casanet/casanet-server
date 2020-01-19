@@ -23,6 +23,102 @@ class OrviboHandler extends brandModuleBase_1.BrandModuleBase {
         ];
         this.initOrviboCommunication();
     }
+    async getStatus(minion) {
+        return new Promise((resolve, reject) => {
+            /** create timeout, case device not responsing */
+            const timeoutTimer = setTimeout(() => {
+                this.queryCallback = undefined;
+                logger_1.logger.warn(`Fail to get orvibo device ${minion.minionId} state, timeout`);
+                reject({
+                    responseCode: 1503,
+                    message: 'receive UDP answer from device fail',
+                });
+            }, moment.duration(5, 'seconds').asMilliseconds());
+            /** Set callback to subscribe event */
+            this.subscribeCallback = deviceResult => {
+                if (deviceResult.macAddress !== minion.device.pysicalDevice.mac) {
+                    return;
+                }
+                this.queryCallback = undefined;
+                clearTimeout(timeoutTimer);
+                resolve({
+                    switch: {
+                        status: deviceResult.state ? 'on' : 'off',
+                    },
+                });
+            };
+            /** Then resubscribe to get the current status */
+            this.reSubsribeOrvibo(minion).catch(error => {
+                reject({
+                    responseCode: 7503,
+                    message: 'Getting status fail',
+                });
+            });
+        });
+    }
+    async setStatus(minion, setStatus) {
+        await this.reSubsribeOrvibo(minion);
+        return new Promise((resolve, reject) => {
+            /** Create set status message */
+            const message = this.orviboCommunication.prepareMessage({
+                commandID: '6463',
+                macAddress: minion.device.pysicalDevice.mac,
+                macPadding: '202020202020',
+                data: {
+                    // Session ID?
+                    blank: '00000000',
+                    // Ternary operators are cool, but hard to read.
+                    // This one says "if state is true, set state to 01, otherwise, set to 00"
+                    state: setStatus.switch.status === 'on' ? '01' : '00',
+                },
+            });
+            /** Send status message to device */
+            this.orviboCommunication.sendMessage(message, minion.device.pysicalDevice.ip);
+            /** create timeout, case device not responsing */
+            const timeoutTimer = setTimeout(() => {
+                this.queryCallback = undefined;
+                logger_1.logger.warn(`Fail to set orvibo device ${minion.minionId} ${setStatus.switch.status} state, timeout`);
+                reject({
+                    responseCode: 1503,
+                    message: 'receive UDP answer from device fail',
+                });
+            }, moment.duration(5, 'seconds').asMilliseconds());
+            /** set callback to query event */
+            this.queryCallback = deviceResult => {
+                if (deviceResult.macAddress !== minion.device.pysicalDevice.mac) {
+                    return;
+                }
+                this.queryCallback = undefined;
+                clearTimeout(timeoutTimer);
+                if (setStatus.switch.status === (deviceResult.state ? 'on' : 'off')) {
+                    resolve();
+                    return;
+                }
+                reject({
+                    responseCode: 6503,
+                    message: 'Setting status fail',
+                });
+            };
+        });
+    }
+    async enterRecordMode(miniom, statusToRecordFor) {
+        throw {
+            responseCode: 5010,
+            message: 'the orvibo module not support any recording mode',
+        };
+    }
+    async generateCommand(miniom, statusToRecordFor) {
+        throw {
+            responseCode: 6409,
+            message: 'the orvibo module not support any recording mode',
+        };
+    }
+    async setFetchedCommands(minion, commandsSet) {
+        // There's nothing to do.
+    }
+    async refreshCommunication() {
+        // There's nothing to do.
+    }
     /**
      * Check if UDP port binded to other application.
      * @param port port to check.
@@ -30,7 +126,7 @@ class OrviboHandler extends brandModuleBase_1.BrandModuleBase {
     checkPortAvailability(port) {
         return new Promise((resolve, reject) => {
             const socket = dgram.createSocket('udp4');
-            socket.on('error', (e) => {
+            socket.on('error', e => {
                 reject(e);
             });
             socket.bind(port, () => {
@@ -135,103 +231,6 @@ class OrviboHandler extends brandModuleBase_1.BrandModuleBase {
         this.orviboCommunication.subscribe(orvibo);
         /** Let UDP to be sent */
         await sleep_1.Delay(moment.duration(0.5, 'seconds'));
-    }
-    async getStatus(minion) {
-        return new Promise((resolve, reject) => {
-            /** create timeout, case device not responsing */
-            const timeoutTimer = setTimeout(() => {
-                this.queryCallback = undefined;
-                logger_1.logger.warn(`Fail to get orvibo device ${minion.minionId} state, timeout`);
-                reject({
-                    responseCode: 1503,
-                    message: 'receive UDP answer from device fail',
-                });
-            }, moment.duration(5, 'seconds').asMilliseconds());
-            /** Set callback to subscribe event */
-            this.subscribeCallback = (deviceResult) => {
-                if (deviceResult.macAddress !== minion.device.pysicalDevice.mac) {
-                    return;
-                }
-                this.queryCallback = undefined;
-                clearTimeout(timeoutTimer);
-                resolve({
-                    switch: {
-                        status: deviceResult.state ? 'on' : 'off',
-                    },
-                });
-            };
-            /** Then resubscribe to get the current status */
-            this.reSubsribeOrvibo(minion)
-                .catch((error) => {
-                reject({
-                    responseCode: 7503,
-                    message: 'Getting status fail',
-                });
-            });
-        });
-    }
-    async setStatus(minion, setStatus) {
-        await this.reSubsribeOrvibo(minion);
-        return new Promise((resolve, reject) => {
-            /** Create set status message */
-            const message = this.orviboCommunication.prepareMessage({
-                commandID: '6463',
-                macAddress: minion.device.pysicalDevice.mac,
-                macPadding: '202020202020',
-                data: {
-                    // Session ID?
-                    blank: '00000000',
-                    // Ternary operators are cool, but hard to read.
-                    // This one says "if state is true, set state to 01, otherwise, set to 00"
-                    state: setStatus.switch.status === 'on' ? '01' : '00',
-                },
-            });
-            /** Send status message to device */
-            this.orviboCommunication.sendMessage(message, minion.device.pysicalDevice.ip);
-            /** create timeout, case device not responsing */
-            const timeoutTimer = setTimeout(() => {
-                this.queryCallback = undefined;
-                logger_1.logger.warn(`Fail to set orvibo device ${minion.minionId} ${setStatus.switch.status} state, timeout`);
-                reject({
-                    responseCode: 1503,
-                    message: 'receive UDP answer from device fail',
-                });
-            }, moment.duration(5, 'seconds').asMilliseconds());
-            /** set callback to query event */
-            this.queryCallback = (deviceResult) => {
-                if (deviceResult.macAddress !== minion.device.pysicalDevice.mac) {
-                    return;
-                }
-                this.queryCallback = undefined;
-                clearTimeout(timeoutTimer);
-                if (setStatus.switch.status === (deviceResult.state ? 'on' : 'off')) {
-                    resolve();
-                    return;
-                }
-                reject({
-                    responseCode: 6503,
-                    message: 'Setting status fail',
-                });
-            };
-        });
-    }
-    async enterRecordMode(miniom, statusToRecordFor) {
-        throw {
-            responseCode: 5010,
-            message: 'the orvibo module not support any recording mode',
-        };
-    }
-    async generateCommand(miniom, statusToRecordFor) {
-        throw {
-            responseCode: 6409,
-            message: 'the orvibo module not support any recording mode',
-        };
-    }
-    async setFetchedCommands(minion, commandsSet) {
-        // There's nothing to do.
-    }
-    async refreshCommunication() {
-        // There's nothing to do.
     }
 }
 exports.OrviboHandler = OrviboHandler;

@@ -19,6 +19,73 @@ class UsersDal {
         }
     }
     /**
+     * Get all users as array.
+     */
+    async getUsers() {
+        return this.users;
+    }
+    /**
+     * Get users by user email.
+     * @param email Find user by key.
+     */
+    async getUser(email) {
+        const user = this.findUser(email);
+        if (!user) {
+            throw {
+                responseCode: 5404,
+                message: 'user not exist',
+            };
+        }
+        return user;
+    }
+    /**
+     * Save new users.
+     */
+    async createUser(newUser) {
+        this.users.push(newUser);
+        await this.dataIo.setData(this.users).catch(() => {
+            this.users.splice(this.users.indexOf(newUser), 1);
+            throw new Error('fail to save user');
+        });
+    }
+    /**
+     * Delete users.
+     */
+    async deleteUser(userEmail) {
+        const originalUser = this.findUser(userEmail);
+        if (!originalUser) {
+            throw {
+                responseCode: 5404,
+                message: 'user not exist',
+            };
+        }
+        this.users.splice(this.users.indexOf(originalUser), 1);
+        await this.dataIo.setData(this.users).catch(() => {
+            this.users.push(originalUser);
+            throw new Error('fail to save user delete request');
+        });
+    }
+    /**
+     * Update User.
+     * @param userToUpdate User to update to.
+     */
+    async updateUser(userToUpdate) {
+        const originalUser = this.findUser(userToUpdate.email);
+        if (!originalUser) {
+            throw {
+                responseCode: 5404,
+                message: 'user not exist',
+            };
+        }
+        this.users.splice(this.users.indexOf(originalUser), 1);
+        this.users.push(userToUpdate);
+        await this.dataIo.setData(this.users).catch(() => {
+            this.users.splice(this.users.indexOf(userToUpdate), 1);
+            this.users.push(originalUser);
+            throw new Error('fail to save user update request');
+        });
+    }
+    /**
      * Set default user.
      * used when system in first use and there is no any user in system, yet.
      */
@@ -55,76 +122,6 @@ class UsersDal {
                 return user;
             }
         }
-    }
-    /**
-     * Get all users as array.
-     */
-    async getUsers() {
-        return this.users;
-    }
-    /**
-     * Get users by user email.
-     * @param email Find user by key.
-     */
-    async getUser(email) {
-        const user = this.findUser(email);
-        if (!user) {
-            throw {
-                responseCode: 5404,
-                message: 'user not exist',
-            };
-        }
-        return user;
-    }
-    /**
-     * Save new users.
-     */
-    async createUser(newUser) {
-        this.users.push(newUser);
-        await this.dataIo.setData(this.users)
-            .catch(() => {
-            this.users.splice(this.users.indexOf(newUser), 1);
-            throw new Error('fail to save user');
-        });
-    }
-    /**
-     * Delete users.
-     */
-    async deleteUser(userEmail) {
-        const originalUser = this.findUser(userEmail);
-        if (!originalUser) {
-            throw {
-                responseCode: 5404,
-                message: 'user not exist',
-            };
-        }
-        this.users.splice(this.users.indexOf(originalUser), 1);
-        await this.dataIo.setData(this.users)
-            .catch(() => {
-            this.users.push(originalUser);
-            throw new Error('fail to save user delete request');
-        });
-    }
-    /**
-     * Update User.
-     * @param userToUpdate User to update to.
-     */
-    async updateUser(userToUpdate) {
-        const originalUser = this.findUser(userToUpdate.email);
-        if (!originalUser) {
-            throw {
-                responseCode: 5404,
-                message: 'user not exist',
-            };
-        }
-        this.users.splice(this.users.indexOf(originalUser), 1);
-        this.users.push(userToUpdate);
-        await this.dataIo.setData(this.users)
-            .catch(() => {
-            this.users.splice(this.users.indexOf(userToUpdate), 1);
-            this.users.push(originalUser);
-            throw new Error('fail to save user update request');
-        });
     }
 }
 exports.UsersDal = UsersDal;

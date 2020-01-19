@@ -10,19 +10,19 @@ const sleep_1 = require("../utilities/sleep");
 const devicesBl_1 = require("./devicesBl");
 class MinionsBl {
     /**
-     * Init minions bl. using dependecy injection pattern to allow units testings.
+     * Init minions bl. using dependency injection pattern to allow units testings.
      * @param minionsDal Inject the dal instance.
      */
     constructor(minionsDal, devicesBl, modulesManager) {
+        /**
+         * Minions status update feed.
+         */
+        this.minionFeed = new rxjs_1.BehaviorSubject(undefined);
         this.scanningStatus = 'finished';
         /**
          * minions
          */
         this.minions = [];
-        /**
-         * Minions status update feed.
-         */
-        this.minionFeed = new rxjs_1.BehaviorSubject(undefined);
         this.minionsDal = minionsDal;
         this.devicesBl = devicesBl;
         this.modulesManager = modulesManager;
@@ -36,10 +36,311 @@ class MinionsBl {
         });
     }
     /**
+     * API
+     */
+    /**
+     * Gets minions array.
+     */
+    async getMinions() {
+        return this.minions;
+    }
+    /**
+     * Get minion by id.
+     * @param minionId minion id.
+     */
+    async getMinionById(minionId) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        return minion;
+    }
+    /**
+     * Scan all minions real status.
+     * mean, update minions cache by request each device what is the real status.
+     * @param scanNetwork Whenever scan also the local networks IP's map or not.
+     */
+    async scanMinionsStatus(scanNetwork = false) {
+        if (this.scanningStatus !== 'inProgress') {
+            this.scanMinioinsNetworkAndStatuses(scanNetwork);
+        }
+    }
+    /**
+     * Get the current scanning status
+     */
+    getScaningStatus() {
+        return this.scanningStatus;
+    }
+    /**
+     * Scan minion real status.
+     * mean update minions cache by request the device what is the real status.
+     */
+    async scanMinionStatus(minionId) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        await this.readMinionStatus(minion);
+    }
+    /**
+     * Rename minion.
+     * @param minionId minion id.
+     * @param nameToSet the new name to set.
+     */
+    async renameMinion(minionId, nameToSet) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        minion.name = nameToSet;
+        try {
+            await this.minionsDal.renameMinion(minionId, nameToSet);
+        }
+        catch (error) {
+            logger_1.logger.warn(`Fail to update minion ${minionId} with new name ${error.message}`);
+        }
+        /**
+         * Send minions feed update.
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
+    /**
+     * Set minion status
+     * @param minionId minion to set new status to.
+     * @param minionStatus the status to set.
+     */
+    async setMinionStatus(minionId, minionStatus) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        /**
+         * The minion status is depend on minion type.
+         */
+        if (!minionStatus[minion.minionType]) {
+            throw {
+                responseCode: 1405,
+                message: 'incorrect minion status for current minion type',
+            };
+        }
+        /**
+         * set the status.
+         */
+        await this.modulesManager.setStatus(minion, minionStatus).catch(err => {
+            minion.isProperlyCommunicated = false;
+            this.minionFeed.next({
+                event: 'update',
+                minion,
+            });
+            throw err;
+        });
+        /** If there is no change from the last minion status */
+        if (minion.isProperlyCommunicated && JSON.stringify(minion.minionStatus) === JSON.stringify(minionStatus)) {
+            return;
+        }
+        minion.isProperlyCommunicated = true;
+        /**
+         * If success, update minion to new status.
+         */
+        minion.minionStatus = minionStatus;
+        /**
+         * Send minions feed update.
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
+    /**
+     * Set minion timeout property.
+     */
+    async setMinionTimeout(minionId, setAutoTurnOffMS) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        minion.minionAutoTurnOffMS = setAutoTurnOffMS;
+        /**
+         * Save timeout update in Dal for next app running.
+         */
+        this.minionsDal.updateMinionAutoTurnOff(minionId, setAutoTurnOffMS).catch((error) => {
+            logger_1.logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
+        });
+        /**
+         * Send minion feed update
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
+    /**
+     * Set minion calibrate property.
+     */
+    async setMinionCalibrate(minionId, calibrationCycleMinutes) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        minion.calibrationCycleMinutes = calibrationCycleMinutes;
+        /**
+         * Save timeout update in Dal for next app running.
+         */
+        this.minionsDal.updateMinionCalibrate(minionId, calibrationCycleMinutes).catch((error) => {
+            logger_1.logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
+        });
+        /**
+         * Send minion feed update
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
+    /**
+     * Create new minion
+     * @param minion minion to create.
+     */
+    async createMinion(minion) {
+        /**
+         * check if minion valid.
+         */
+        const error = this.validateNewMinion(minion);
+        if (error) {
+            throw error;
+        }
+        /**
+         * get local devices (to load current physical info such as ip)
+         */
+        const localDevices = await this.devicesBl.getDevices();
+        let foundLocalDevice = false;
+        for (const localDevice of localDevices) {
+            if (localDevice.mac === minion.device.pysicalDevice.mac) {
+                minion.device.pysicalDevice = localDevice;
+                foundLocalDevice = true;
+                break;
+            }
+        }
+        if (!foundLocalDevice) {
+            throw {
+                responseCode: 2404,
+                message: 'device not exist in lan network',
+            };
+        }
+        /**
+         * Generate new id. (never trust client....)
+         */
+        minion.minionId = randomstring.generate(6);
+        /**
+         * Create new minion in dal.
+         */
+        await this.minionsDal.createMinion(minion);
+        /**
+         * Send create new minion feed update (*before* try to get the status!!!)
+         */
+        this.minionFeed.next({
+            event: 'created',
+            minion,
+        });
+        /**
+         * Try to get current status.
+         */
+        try {
+            await this.readMinionStatus(minion);
+        }
+        catch (error) { }
+    }
+    /**
+     * Delete minion
+     * @param minionId minion id to delete
+     */
+    async deleteMinion(minionId) {
+        const originalMinion = this.findMinion(minionId);
+        if (!originalMinion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        await this.minionsDal.deleteMinion(originalMinion);
+        // The minions array is given from DAL by ref, mean if removed
+        // from dal it will removed from BL too, so check if exist
+        // (if in next someone will copy by val) and then remove.
+        if (this.minions.indexOf(originalMinion) !== -1) {
+            this.minions.splice(this.minions.indexOf(originalMinion), 1);
+        }
+        this.minionFeed.next({
+            event: 'removed',
+            minion: originalMinion,
+        });
+        // Finally clean module communication
+        await this.modulesManager.refreshModule(originalMinion.device.brand);
+    }
+    /**
+     * Notify minion status changed by ifttt
+     * @param minionId Minion id.
+     * @param iftttOnChanged Minion key amd status to set.
+     */
+    async notifyMinionChangedByIfttt(minionId, iftttOnChanged) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        /** Make sure the deviceId match to minion deviceId (there is no other authentication!!!) */
+        if (iftttOnChanged.deviceId !== minion.device.deviceId) {
+            throw {
+                responseCode: 5403,
+                message: 'invalid device id',
+            };
+        }
+        /** Case it's first time update. */
+        if (!minion.minionStatus[minion.minionType]) {
+            const initStatus = {
+                status: 'on',
+            };
+            const initMinionStatus = {};
+            initMinionStatus[minion.minionType] = initStatus;
+            minion.minionStatus = initMinionStatus;
+        }
+        /** Update the minion status */
+        minion.minionStatus[minion.minionType].status = iftttOnChanged.newStatus;
+        /**
+         * Send minions feed update.
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
+    /**
      * Init minions.
      */
     async initData() {
-        /** Mark scannig as 'inProgress' */
+        /** Mark scanning as 'inProgress' */
         this.scanningStatus = 'inProgress';
         /**
          * Gets all minions
@@ -54,7 +355,7 @@ class MinionsBl {
          */
         const localDevices = await this.devicesBl.getDevices();
         /**
-         * Then load minion with new pysical network data
+         * Then load minion with new physical network data
          */
         await this.loadMinionsLocalDeviceData(localDevices);
         /**
@@ -79,7 +380,7 @@ class MinionsBl {
             }
         });
         /**
-         * And also Registar to devices pysical data update (name or ip).
+         * And also register to devices pysical data update (name or ip).
          */
         this.devicesBl.devicesUpdate.subscribe((localsDevices) => {
             this.loadMinionsLocalDeviceData(localsDevices);
@@ -113,7 +414,7 @@ class MinionsBl {
      */
     async readMinionStatus(minion) {
         try {
-            const currentStatus = await this.modulesManager.getStatus(minion);
+            const currentStatus = (await this.modulesManager.getStatus(minion));
             await this.onMinionUpdated(minion, currentStatus);
         }
         catch (error) {
@@ -130,8 +431,7 @@ class MinionsBl {
             /**
              * Read current minion status.
              */
-            await this.readMinionStatus(minion)
-                .catch(() => {
+            await this.readMinionStatus(minion).catch(() => {
                 /**
                  * Fail, do nothing....
                  */
@@ -156,8 +456,7 @@ class MinionsBl {
     }
     async onMinionUpdated(minion, updateToStatus) {
         /** If there is no change from last minion status */
-        if (minion.isProperlyCommunicated &&
-            JSON.stringify(minion.minionStatus) === JSON.stringify(updateToStatus)) {
+        if (minion.isProperlyCommunicated && JSON.stringify(minion.minionStatus) === JSON.stringify(updateToStatus)) {
             return;
         }
         minion.isProperlyCommunicated = true;
@@ -177,8 +476,7 @@ class MinionsBl {
          */
         let deviceKind;
         for (const kind of this.modulesManager.devicesKind) {
-            if (kind.brand === minionToCheck.device.brand &&
-                kind.model === minionToCheck.device.model) {
+            if (kind.brand === minionToCheck.device.brand && kind.model === minionToCheck.device.model) {
                 deviceKind = kind;
             }
         }
@@ -253,311 +551,6 @@ class MinionsBl {
             return;
         }
         this.scanningStatus = 'finished';
-    }
-    /**
-     * API
-     */
-    /**
-     * Gets minons array.
-     */
-    async getMinions() {
-        return this.minions;
-    }
-    /**
-     * Get minion by id.
-     * @param minionId minion id.
-     */
-    async getMinionById(minionId) {
-        const minion = this.findMinion(minionId);
-        if (!minion) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            };
-        }
-        return minion;
-    }
-    /**
-     * Scan all minions real status.
-     * mean, update minions cache by request each device what is the real status.
-     * @param scanNetwork Whenever scan also the local networks IP's map or not.
-     */
-    async scanMinionsStatus(scanNetwork = false) {
-        if (this.scanningStatus !== 'inProgress')
-            this.scanMinioinsNetworkAndStatuses(scanNetwork);
-    }
-    /**
-     * Get the current scanning status
-     */
-    getScaningStatus() {
-        return this.scanningStatus;
-    }
-    /**
-     * Scan minion real status.
-     * mean update minions cache by request the device what is the real status.
-     */
-    async scanMinionStatus(minionId) {
-        const minioin = this.findMinion(minionId);
-        if (!minioin) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            };
-        }
-        await this.readMinionStatus(minioin);
-    }
-    /**
-     * Rename minion.
-     * @param minionId minion id.
-     * @param nameToSet the new name to set.
-     */
-    async renameMinion(minionId, nameToSet) {
-        const minion = this.findMinion(minionId);
-        if (!minion) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            };
-        }
-        minion.name = nameToSet;
-        try {
-            await this.minionsDal.renameMinion(minionId, nameToSet);
-        }
-        catch (error) {
-            logger_1.logger.warn(`Fail to update minion ${minionId} with new name ${error.message}`);
-        }
-        /**
-         * Send minions feed update.
-         */
-        this.minionFeed.next({
-            event: 'update',
-            minion,
-        });
-    }
-    /**
-     * Set minon status
-     * @param minionId minion to set new status to.
-     * @param minionStatus the status to set.
-     */
-    async setMinionStatus(minionId, minionStatus) {
-        const minion = this.findMinion(minionId);
-        if (!minion) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            };
-        }
-        /**
-         * The minion status is depend on minion type.
-         */
-        if (!minionStatus[minion.minionType]) {
-            throw {
-                responseCode: 1405,
-                message: 'incorrect minion status for current minion type',
-            };
-        }
-        /**
-         * set the status.
-         */
-        await this.modulesManager.setStatus(minion, minionStatus)
-            .catch((err) => {
-            minion.isProperlyCommunicated = false;
-            this.minionFeed.next({
-                event: 'update',
-                minion,
-            });
-            throw err;
-        });
-        /** If there is no change from the last minion status */
-        if (minion.isProperlyCommunicated &&
-            JSON.stringify(minion.minionStatus) === JSON.stringify(minionStatus)) {
-            return;
-        }
-        minion.isProperlyCommunicated = true;
-        /**
-         * If success, update minion to new status.
-         */
-        minion.minionStatus = minionStatus;
-        /**
-         * Send minions feed update.
-         */
-        this.minionFeed.next({
-            event: 'update',
-            minion,
-        });
-    }
-    /**
-     * Set minoin timeout property.
-     */
-    async setMinionTimeout(minionId, setAutoTurnOffMS) {
-        const minion = this.findMinion(minionId);
-        if (!minion) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            };
-        }
-        minion.minionAutoTurnOffMS = setAutoTurnOffMS;
-        /**
-         * Save timeout update in Dal for next app running.
-         */
-        this.minionsDal.updateMinionAutoTurnOff(minionId, setAutoTurnOffMS)
-            .catch((error) => {
-            logger_1.logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
-        });
-        /**
-         * Send minion feed update
-         */
-        this.minionFeed.next({
-            event: 'update',
-            minion,
-        });
-    }
-    /**
-     * Set minoin calibrate property.
-     */
-    async setMinionCalibrate(minionId, calibrationCycleMinutes) {
-        const minion = this.findMinion(minionId);
-        if (!minion) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            };
-        }
-        minion.calibrationCycleMinutes = calibrationCycleMinutes;
-        /**
-         * Save timeout update in Dal for next app running.
-         */
-        this.minionsDal.updateMinionCalibrate(minionId, calibrationCycleMinutes)
-            .catch((error) => {
-            logger_1.logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
-        });
-        /**
-         * Send minion feed update
-         */
-        this.minionFeed.next({
-            event: 'update',
-            minion,
-        });
-    }
-    /**
-     * Create new minon
-     * @param minion minon to create.
-     */
-    async createMinion(minion) {
-        /**
-         * check if minion valid.
-         */
-        const error = this.validateNewMinion(minion);
-        if (error) {
-            throw error;
-        }
-        /**
-         * get local devices (to load corrent pysical info such as ip)
-         */
-        const localDevices = await this.devicesBl.getDevices();
-        let foundLocalDevice = false;
-        for (const localDevice of localDevices) {
-            if (localDevice.mac === minion.device.pysicalDevice.mac) {
-                minion.device.pysicalDevice = localDevice;
-                foundLocalDevice = true;
-                break;
-            }
-        }
-        if (!foundLocalDevice) {
-            throw {
-                responseCode: 2404,
-                message: 'device not exist in lan network',
-            };
-        }
-        /**
-         * Generate new id. (never trust client....)
-         */
-        minion.minionId = randomstring.generate(6);
-        /**
-         * Create new minion in dal.
-         */
-        await this.minionsDal.createMinion(minion);
-        /**
-         * Send create new minion feed update (*befor* try to get the status!!!)
-         */
-        this.minionFeed.next({
-            event: 'created',
-            minion,
-        });
-        /**
-         * Try to get current status.
-         */
-        try {
-            await this.readMinionStatus(minion);
-        }
-        catch (error) {
-        }
-    }
-    /**
-     * Delete minoin
-     * @param minionId minion id to delete
-     */
-    async deleteMinion(minionId) {
-        const originalMinion = this.findMinion(minionId);
-        if (!originalMinion) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            };
-        }
-        await this.minionsDal.deleteMinion(originalMinion);
-        // The minoins arrat is given from DAL by ref, mean if removed
-        // from dal it will removed from BL too, so check if exist
-        // (if in next someone will copy by val) and then remove.
-        if (this.minions.indexOf(originalMinion) !== -1) {
-            this.minions.splice(this.minions.indexOf(originalMinion), 1);
-        }
-        this.minionFeed.next({
-            event: 'removed',
-            minion: originalMinion,
-        });
-        // Finally clean module communication
-        await this.modulesManager.refreshModule(originalMinion.device.brand);
-    }
-    /**
-     * Notify minion status changed by ifttt
-     * @param minionId Minon id.
-     * @param iftttOnChanged Minion key amd status to set.
-     */
-    async notifyMinionChangedByIfttt(minionId, iftttOnChanged) {
-        const minion = this.findMinion(minionId);
-        if (!minion) {
-            throw {
-                responseCode: 1404,
-                message: 'minion not exist',
-            };
-        }
-        /** Make sure the deviceId match to minion deviceId (there is no other authentication!!!) */
-        if (iftttOnChanged.deviceId !== minion.device.deviceId) {
-            throw {
-                responseCode: 5403,
-                message: 'invalid device id',
-            };
-        }
-        /** Case it's first time update. */
-        if (!minion.minionStatus[minion.minionType]) {
-            const initStatus = {
-                status: 'on',
-            };
-            const initMinionStatus = {};
-            initMinionStatus[minion.minionType] = initStatus;
-            minion.minionStatus = initMinionStatus;
-        }
-        /** Update the minion status */
-        minion.minionStatus[minion.minionType].status = iftttOnChanged.newStatus;
-        /**
-         * Send minions feed update.
-         */
-        this.minionFeed.next({
-            event: 'update',
-            minion,
-        });
     }
 }
 exports.MinionsBl = MinionsBl;

@@ -9,8 +9,7 @@ class AuthenticationRouter {
         this.authController = new authController_1.AuthController();
     }
     routes(app) {
-        app.route('/API/auth/login')
-            .post(async (req, res) => {
+        app.route('/API/auth/login').post(async (req, res) => {
             let loginData;
             try {
                 loginData = await schemaValidator_1.RequestSchemaValidator(req, schemaValidator_1.LoginSchema);
@@ -29,8 +28,7 @@ class AuthenticationRouter {
                 res.status(403).send();
             }
         });
-        app.route('/API/auth/login/tfa')
-            .post(async (req, res) => {
+        app.route('/API/auth/login/tfa').post(async (req, res) => {
             let loginData;
             try {
                 loginData = await schemaValidator_1.RequestSchemaValidator(req, schemaValidator_1.LoginSchema);
@@ -49,22 +47,20 @@ class AuthenticationRouter {
                 res.status(403).send();
             }
         });
-        app.route('/API/auth/logout')
-            .post(async (req, res) => {
+        app.route('/API/auth/logout').post(async (req, res) => {
             /**
              * Because there is not use in TSOA security, needs to call middelwhere manualy.
              */
-            req.user = await authentication_2.expressAuthentication(req, [authentication_1.SystemAuthScopes.userScope,
-                authentication_1.SystemAuthScopes.adminScope])
-                .catch((error) => {
+            req.user = (await authentication_2.expressAuthentication(req, [authentication_1.SystemAuthScopes.userScope, authentication_1.SystemAuthScopes.adminScope]).catch((error) => {
                 res.status(403).send(error);
-            });
+            }));
             // If auth fail abort the request
             if (!req.user) {
                 res.status(403).send();
                 return;
             }
-            this.authController.logout(req, res)
+            this.authController
+                .logout(req, res)
                 .then(() => {
                 res.send();
             })

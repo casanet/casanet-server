@@ -18,7 +18,10 @@ class FeedRouter {
                 /**
                  * Because there is no use in TSOA security, needs to call middelwhere manualy.
                  */
-                const user = await authentication_2.expressAuthentication(req, [authentication_1.SystemAuthScopes.userScope, authentication_1.SystemAuthScopes.adminScope]);
+                const user = (await authentication_2.expressAuthentication(req, [
+                    authentication_1.SystemAuthScopes.userScope,
+                    authentication_1.SystemAuthScopes.adminScope,
+                ]));
                 logger_1.logger.debug(`user ${user.email} connected to feed ${req.path}`);
                 next();
             }

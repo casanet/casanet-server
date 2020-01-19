@@ -17,19 +17,64 @@ class TimingsBl {
      */
     constructor(timingsDal, operationBl) {
         /**
+         * Timing trigger feed.
+         */
+        this.timingFeed = new rxjs_1.BehaviorSubject(undefined);
+        /**
          * The real avtivation is in minute.
          * So only if minute changed trigger the timing logic.
          */
         this.lastActivationMoment = moment(1);
-        /**
-         * Timing trigger feed.
-         */
-        this.timingFeed = new rxjs_1.BehaviorSubject(undefined);
         this.timingsDal = timingsDal;
         this.operationBl = operationBl;
         setInterval(async () => {
             await this.timingActivation();
         }, TIMING_INTERVAL_ACTIVATION.asMilliseconds());
+    }
+    /**
+     * API
+     */
+    /**
+     * Get all timings array.
+     */
+    async getTimings() {
+        return await this.timingsDal.getTimings();
+    }
+    /**
+     * Get timing by id.
+     * @param timingId timing id.
+     */
+    async getTimingById(timingId) {
+        return await this.timingsDal.getTimingById(timingId);
+    }
+    /**
+     * Set timing properties.
+     * @param timingId timing id.
+     * @param timing timing props to set.
+     */
+    async SetTiming(timingId, timing) {
+        await this.validateNewTimingOperation(timing);
+        timing.timingId = timingId;
+        return await this.timingsDal.updateTiming(timing);
+    }
+    /**
+     * Create timing.
+     * @param timing timing to create.
+     */
+    async CreateTiming(timing) {
+        await this.validateNewTimingOperation(timing);
+        /**
+         * Generate new id. (never trust client....)
+         */
+        timing.timingId = randomstring.generate(6);
+        return await this.timingsDal.createTiming(timing);
+    }
+    /**
+     * Delete timing.
+     * @param timingId timing id to delete.
+     */
+    async DeleteTiming(timingId) {
+        return await this.timingsDal.deleteTiming(timingId);
     }
     /**
      * Active timing.
@@ -201,51 +246,6 @@ class TimingsBl {
             };
         }
         return;
-    }
-    /**
-     * API
-     */
-    /**
-     * Get all timings array.
-     */
-    async getTimings() {
-        return await this.timingsDal.getTimings();
-    }
-    /**
-     * Get timing by id.
-     * @param timingId timing id.
-     */
-    async getTimingById(timingId) {
-        return await this.timingsDal.getTimingById(timingId);
-    }
-    /**
-     * Set timing properties.
-     * @param timingId timing id.
-     * @param timing timing props to set.
-     */
-    async SetTiming(timingId, timing) {
-        await this.validateNewTimingOperation(timing);
-        timing.timingId = timingId;
-        return await this.timingsDal.updateTiming(timing);
-    }
-    /**
-     * Create timing.
-     * @param timing timing to create.
-     */
-    async CreateTiming(timing) {
-        await this.validateNewTimingOperation(timing);
-        /**
-         * Generate new id. (never trust client....)
-         */
-        timing.timingId = randomstring.generate(6);
-        return await this.timingsDal.createTiming(timing);
-    }
-    /**
-     * Delete timing.
-     * @param timingId timing id to delete.
-     */
-    async DeleteTiming(timingId) {
-        return await this.timingsDal.deleteTiming(timingId);
     }
 }
 exports.TimingsBl = TimingsBl;

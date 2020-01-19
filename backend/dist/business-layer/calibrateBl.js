@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
+const deepCopy_1 = require("../utilities/deepCopy");
 const logger_1 = require("../utilities/logger");
 const sleep_1 = require("../utilities/sleep");
 const minionsBl_1 = require("./minionsBl");
-const deepCopy_1 = require("../utilities/deepCopy");
 const CALIBRATE_INTERVAL_ACTIVATION = moment.duration(30, 'seconds');
 class CalibrateBl {
     /**
@@ -29,7 +29,8 @@ class CalibrateBl {
             }
             /** If minion calibration time not arrived yet, ignore it. */
             if (this.lastCalibrateMap[minion.minionId] &&
-                now.getTime() - this.lastCalibrateMap[minion.minionId].getTime() < moment.duration(minion.calibrationCycleMinutes, 'minutes').asMilliseconds()) {
+                now.getTime() - this.lastCalibrateMap[minion.minionId].getTime() <
+                    moment.duration(minion.calibrationCycleMinutes, 'minutes').asMilliseconds()) {
                 continue;
             }
             /** Calibrate minion status */

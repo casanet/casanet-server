@@ -5,8 +5,7 @@ const mosca = require("mosca");
 const logger_1 = require("../../utilities/logger");
 /** Simple Mqtt server */
 class MqttBroker {
-    constructor() {
-    }
+    constructor() { }
     /**
      * Init broker
      * @param port broker listening port.
@@ -19,7 +18,7 @@ class MqttBroker {
         this.server.on('ready', () => {
             logger_1.logger.info(`Mosca mqtt server on ${ip.address()}:${port} is up and running`);
         });
-        this.server.on('clientConnected', (client) => {
+        this.server.on('clientConnected', client => {
             logger_1.logger.info(`Mqtt ${client.id} client connected`);
         });
         return ip.address();

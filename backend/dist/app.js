@@ -28,8 +28,8 @@ require("./controllers/timingsController");
 require("./controllers/usersController");
 require("./controllers/versionsController");
 // also import other moduls that not imported in other place.
-require("./business-layer/timeoutBl");
 require("./business-layer/calibrateBl");
+require("./business-layer/timeoutBl");
 class App {
     constructor() {
         this.authenticationRouter = new authenticationRoute_1.AuthenticationRouter();

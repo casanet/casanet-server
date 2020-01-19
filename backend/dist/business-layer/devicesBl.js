@@ -13,44 +13,16 @@ class DevicesBl {
      */
     constructor(devicesDal, localNetworkReader, modulesManager) {
         /**
-         * local devices.
-         */
-        this.localDevices = [];
-        /**
          * Local devices changes feed.
          */
         this.devicesUpdate = new rxjs_1.BehaviorSubject([]);
+        /**
+         * local devices.
+         */
+        this.localDevices = [];
         this.devicesDal = devicesDal;
         this.localNetworkReader = localNetworkReader;
         this.modulesManager = modulesManager;
-    }
-    /**
-     * Load local devices name from saved cache.
-     */
-    async loadDevicesName() {
-        const cachedDevices = await this.devicesDal.getDevices();
-        for (const localDevice of this.localDevices) {
-            for (const cachedDevice of cachedDevices) {
-                if (cachedDevice.mac === localDevice.mac) {
-                    localDevice.name = cachedDevice.name;
-                    break;
-                }
-            }
-        }
-    }
-    /**
-     * Load local network devices data.
-     */
-    async loadDevices() {
-        this.localDevices = await this.localNetworkReader()
-            .catch(() => {
-            logger_1.logger.warn('Loading devices network fail, setting devices as empty array...');
-            this.localDevices = [];
-        });
-        await this.loadDevicesName()
-            .catch(() => {
-            logger_1.logger.warn('Loading devices names fail');
-        });
     }
     /**
      * Get all local network devices
@@ -79,6 +51,32 @@ class DevicesBl {
      */
     async getDevicesKins() {
         return this.modulesManager.devicesKind;
+    }
+    /**
+     * Load local devices name from saved cache.
+     */
+    async loadDevicesName() {
+        const cachedDevices = await this.devicesDal.getDevices();
+        for (const localDevice of this.localDevices) {
+            for (const cachedDevice of cachedDevices) {
+                if (cachedDevice.mac === localDevice.mac) {
+                    localDevice.name = cachedDevice.name;
+                    break;
+                }
+            }
+        }
+    }
+    /**
+     * Load local network devices data.
+     */
+    async loadDevices() {
+        this.localDevices = (await this.localNetworkReader().catch(() => {
+            logger_1.logger.warn('Loading devices network fail, setting devices as empty array...');
+            this.localDevices = [];
+        }));
+        await this.loadDevicesName().catch(() => {
+            logger_1.logger.warn('Loading devices names fail');
+        });
     }
 }
 exports.DevicesBl = DevicesBl;

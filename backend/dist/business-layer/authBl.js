@@ -24,20 +24,6 @@ class AuthBl {
         this.sessionsBl = sessionsBl;
         this.usersBl = usersBl;
     }
-    async activeSession(response, user) {
-        const sessionKey = await this.sessionsBl.generateSession(user);
-        /**
-         * Finally load session on cookies response.
-         */
-        response.cookie('session', sessionKey, {
-            sameSite: true,
-            httpOnly: true,
-            secure: config_1.Configuration.http.useHttps,
-            maxAge: exports.sessionExpiresMs,
-        });
-        /** All OK, no additional info */
-        response.statusCode = 200;
-    }
     /**
      * Login to system.
      */
@@ -53,7 +39,7 @@ class AuthBl {
             return this.GENERIC_ERROR_RESPONSE;
         }
         /** If User not fauld or password not match  */
-        if (!await bcrypt.compare(login.password, userTryToLogin.password)) {
+        if (!(await bcrypt.compare(login.password, userTryToLogin.password))) {
             /** Case password incorrect return generic error. */
             response.statusCode = 403;
             return this.GENERIC_ERROR_RESPONSE;
@@ -141,6 +127,20 @@ class AuthBl {
             secure: config_1.Configuration.http.useHttps,
             maxAge: 1,
         });
+    }
+    async activeSession(response, user) {
+        const sessionKey = await this.sessionsBl.generateSession(user);
+        /**
+         * Finally load session on cookies response.
+         */
+        response.cookie('session', sessionKey, {
+            sameSite: true,
+            httpOnly: true,
+            secure: config_1.Configuration.http.useHttps,
+            maxAge: exports.sessionExpiresMs,
+        });
+        /** All OK, no additional info */
+        response.statusCode = 200;
     }
 }
 exports.AuthBl = AuthBl;

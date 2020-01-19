@@ -79,6 +79,33 @@ class MqttHandler extends brandModuleBase_1.BrandModuleBase {
         this.mqttConverters = [];
         this.loadMqttBroker();
     }
+    async getStatus(miniom) {
+        await this.mqttClient.publish(`get/casanet/${miniom.minionId}`, '');
+        /** Current there is no option to 'ask' and wait for respone, only to send request and the update will arrive by status topic. */
+        return miniom.minionStatus;
+    }
+    async setStatus(miniom, setStatus) {
+        /** Publish set status topic */
+        await this.mqttClient.publish(`set/casanet/${miniom.minionId}`, JSON.stringify(setStatus));
+    }
+    async enterRecordMode(miniom, statusToRecordFor) {
+        throw {
+            responseCode: 6409,
+            message: 'the mqtt module not support any recording mode',
+        };
+    }
+    async generateCommand(miniom, statusToRecordFor) {
+        throw {
+            responseCode: 6409,
+            message: 'the mqtt module not support any recording mode',
+        };
+    }
+    async setFetchedCommands(minion, commandsSet) {
+        // There's nothing to do.
+    }
+    async refreshCommunication() {
+        // There's nothing to do.
+    }
     /**
      * Load all mqtt converters
      */
@@ -104,9 +131,7 @@ class MqttHandler extends brandModuleBase_1.BrandModuleBase {
         logger_1.logger.info(`There is no MQTT_BROKER_IP env var, invokeing internal mqtt broker.`);
         this.mqttBroker = new mqttBroker_1.MqttBroker();
         /** Get broker port */
-        const internalBrokerPort = mqttInternalBrokerPort
-            ? parseInt(mqttInternalBrokerPort, 10)
-            : 1883;
+        const internalBrokerPort = mqttInternalBrokerPort ? parseInt(mqttInternalBrokerPort, 10) : 1883;
         /** Invoke the internal broker and keep the ip */
         const internalBrokerIp = await this.mqttBroker.invokeBroker(internalBrokerPort);
         this.brokerUri = `mqtt://${internalBrokerIp}:${internalBrokerPort}`;
@@ -156,33 +181,6 @@ class MqttHandler extends brandModuleBase_1.BrandModuleBase {
         });
         /** Load the converters */
         await this.loadMqttConverters();
-    }
-    async getStatus(miniom) {
-        await this.mqttClient.publish(`get/casanet/${miniom.minionId}`, '');
-        /** Current there is no option to 'ask' and wait for respone, only to send request and the update will arrive by status topic. */
-        return miniom.minionStatus;
-    }
-    async setStatus(miniom, setStatus) {
-        /** Publish set status topic */
-        await this.mqttClient.publish(`set/casanet/${miniom.minionId}`, JSON.stringify(setStatus));
-    }
-    async enterRecordMode(miniom, statusToRecordFor) {
-        throw {
-            responseCode: 6409,
-            message: 'the mqtt module not support any recording mode',
-        };
-    }
-    async generateCommand(miniom, statusToRecordFor) {
-        throw {
-            responseCode: 6409,
-            message: 'the mqtt module not support any recording mode',
-        };
-    }
-    async setFetchedCommands(minion, commandsSet) {
-        // There's nothing to do.
-    }
-    async refreshCommunication() {
-        // There's nothing to do.
     }
 }
 exports.MqttHandler = MqttHandler;

@@ -12,16 +12,6 @@ class MinionsDal {
         this.minions = dataIo.getDataSync();
     }
     /**
-     * Find minion in minions array
-     */
-    findMinion(minionId) {
-        for (const minion of this.minions) {
-            if (minion.minionId === minionId) {
-                return minion;
-            }
-        }
-    }
-    /**
      * Get all minions as array.
      */
     async getMinions() {
@@ -47,8 +37,7 @@ class MinionsDal {
      */
     async createMinion(newMinion) {
         this.minions.push(newMinion);
-        await this.dataIo.setData(this.minions)
-            .catch(() => {
+        await this.dataIo.setData(this.minions).catch(() => {
             this.minions.splice(this.minions.indexOf(newMinion), 1);
             throw new Error('fail to save minion');
         });
@@ -66,8 +55,7 @@ class MinionsDal {
             };
         }
         this.minions.splice(this.minions.indexOf(originalMinion), 1);
-        await this.dataIo.setData(this.minions)
-            .catch(() => {
+        await this.dataIo.setData(this.minions).catch(() => {
             this.minions.push(originalMinion);
             throw new Error('fail to save minion delete request');
         });
@@ -86,8 +74,7 @@ class MinionsDal {
             };
         }
         originalMinion.name = nameToSet;
-        await this.dataIo.setData(this.minions)
-            .catch(() => {
+        await this.dataIo.setData(this.minions).catch(() => {
             throw new Error('fail to save minion new name update request');
         });
     }
@@ -105,8 +92,7 @@ class MinionsDal {
             };
         }
         originalMinion.minionAutoTurnOffMS = setAutoTurnOffMS;
-        await this.dataIo.setData(this.minions)
-            .catch(() => {
+        await this.dataIo.setData(this.minions).catch(() => {
             throw new Error('fail to save minion timeout update request');
         });
     }
@@ -124,10 +110,19 @@ class MinionsDal {
             };
         }
         originalMinion.calibrationCycleMinutes = calibrationCycleMinutes;
-        await this.dataIo.setData(this.minions)
-            .catch(() => {
+        await this.dataIo.setData(this.minions).catch(() => {
             throw new Error('fail to save minion calibrate update request');
         });
+    }
+    /**
+     * Find minion in minions array
+     */
+    findMinion(minionId) {
+        for (const minion of this.minions) {
+            if (minion.minionId === minionId) {
+                return minion;
+            }
+        }
     }
 }
 exports.MinionsDal = MinionsDal;

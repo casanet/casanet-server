@@ -54,6 +54,158 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
         /** Cache last status, to ignore unnececary updates.  */
         this.devicesStatusCache = {};
     }
+    async getStatus(miniom) {
+        /**
+         * Get tuya device instance
+         */
+        const tuyaDevice = await this.getTuyaDevice(miniom.device);
+        if (miniom.device.model.indexOf('curtain') !== -1) {
+            try {
+                const rowStatus = await tuyaDevice.get();
+                return {
+                    roller: {
+                        status: rowStatus !== '3' ? 'on' : 'off',
+                        direction: rowStatus === '1' ? 'up' : 'down',
+                    },
+                };
+            }
+            catch (err) {
+                logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+                if (typeof err === 'object' && err.message === 'fffffffffffffff') {
+                    throw {
+                        responseCode: 9503,
+                        message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                    };
+                }
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with tuya device fail',
+                };
+            }
+        }
+        const stausResult = await tuyaDevice.get({ schema: true }).catch((err) => {
+            logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+            if (typeof err === 'object' &&
+                err.message ===
+                    'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                throw {
+                    responseCode: 9503,
+                    message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                };
+            }
+            throw {
+                responseCode: 1503,
+                message: 'communication with tuya device fail',
+            };
+        });
+        /** Case stausResult get a garbage value */
+        if (typeof stausResult !== 'object' || !stausResult.dps) {
+            throw {
+                responseCode: 10503,
+                message: 'tuya device gives garbage values.',
+            };
+        }
+        /**
+         * Extract the current minion status.
+         */
+        let currentGangStatus;
+        switch (miniom.device.model) {
+            case 'wall switch, 3 gangs, first one':
+                currentGangStatus = stausResult.dps[1];
+                break;
+            case 'wall switch, 3 gangs, second one':
+                currentGangStatus = stausResult.dps[2];
+                break;
+            case 'wall switch, 3 gangs, third one':
+                currentGangStatus = stausResult.dps[3];
+                break;
+        }
+        return {
+            switch: {
+                status: currentGangStatus ? 'on' : 'off',
+            },
+        };
+    }
+    async setStatus(miniom, setStatus) {
+        /**
+         * Get tuya device instance
+         */
+        const tuyaDevice = await this.getTuyaDevice(miniom.device);
+        if (miniom.device.model.indexOf('curtain') !== -1) {
+            try {
+                await tuyaDevice.set({
+                    set: setStatus.roller.status === 'off' ? '3' : setStatus.roller.direction === 'up' ? '1' : '2',
+                });
+                return;
+            }
+            catch (err) {
+                logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+                if (typeof err === 'object' &&
+                    err.message ===
+                        'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                    throw {
+                        responseCode: 9503,
+                        message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                    };
+                }
+                throw {
+                    responseCode: 1503,
+                    message: 'communication with tuya device fail',
+                };
+            }
+        }
+        /**
+         * Get current minion gang index.
+         */
+        let gangIndex;
+        switch (miniom.device.model) {
+            case 'wall switch, 3 gangs, first one':
+                gangIndex = 1;
+                break;
+            case 'wall switch, 3 gangs, second one':
+                gangIndex = 2;
+                break;
+            case 'wall switch, 3 gangs, third one':
+                gangIndex = 3;
+                break;
+        }
+        await tuyaDevice.set({ set: setStatus.switch.status === 'on', dps: gangIndex }).catch(err => {
+            logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+            if (typeof err === 'object' &&
+                err.message ===
+                    'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
+                throw {
+                    responseCode: 9503,
+                    message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
+                };
+            }
+            throw {
+                responseCode: 1503,
+                message: 'communication with tuya device fail',
+            };
+        });
+    }
+    async enterRecordMode(miniom, statusToRecordFor) {
+        throw {
+            responseCode: 6409,
+            message: 'the tuya module not support any recording mode',
+        };
+    }
+    async generateCommand(miniom, statusToRecordFor) {
+        throw {
+            responseCode: 6409,
+            message: 'the tuya module not support any recording mode',
+        };
+    }
+    async setFetchedCommands(minion, commandsSet) {
+        // There's nothing to do.
+    }
+    async refreshCommunication() {
+        for (const tuyaApi of Object.values(this.pysicalDevicesMap)) {
+            tuyaApi.disconnect();
+        }
+        this.pysicalDevicesMap = {};
+    }
     /**
      * Create new tuya communication device api.
      * and also listen to data arrived from device.
@@ -108,14 +260,13 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
                         });
                     }
                 }
-                catch (error) {
-                }
+                catch (error) { }
                 return;
             }
             /**
              * Get the current status (the 'data' paramerer is invalid)
              */
-            tuyaDevice.get({ schema: true }).then((status) => {
+            tuyaDevice.get({ schema: true }).then(status => {
                 /** Case status get a garbage value */
                 if (typeof status !== 'object' || !status.dps) {
                     return;
@@ -123,8 +274,7 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
                 /**
                  * Pull the current minions array in system.
                  */
-                this.retrieveMinions.pull()
-                    .then((minions) => {
+                this.retrieveMinions.pull().then(minions => {
                     for (const minion of minions) {
                         /**
                          * Find the minions that used current pysical tuya device
@@ -204,158 +354,6 @@ class TuyaHandler extends brandModuleBase_1.BrandModuleBase {
             await this.createTuyaDevice(minionDevice);
         }
         return this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
-    }
-    async getStatus(miniom) {
-        /**
-         * Get tuya device instance
-         */
-        const tuyaDevice = await this.getTuyaDevice(miniom.device);
-        if (miniom.device.model.indexOf('curtain') !== -1) {
-            try {
-                const rowStatus = await tuyaDevice.get();
-                return {
-                    roller: {
-                        status: rowStatus !== '3' ? 'on' : 'off',
-                        direction: rowStatus === '1' ? 'up' : 'down',
-                    },
-                };
-            }
-            catch (err) {
-                logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
-                if (typeof err === 'object' &&
-                    err.message === 'fffffffffffffff') {
-                    throw {
-                        responseCode: 9503,
-                        message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
-                    };
-                }
-                throw {
-                    responseCode: 1503,
-                    message: 'communication with tuya device fail',
-                };
-            }
-        }
-        const stausResult = await tuyaDevice.get({ schema: true })
-            .catch((err) => {
-            logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
-            if (typeof err === 'object' &&
-                err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
-                throw {
-                    responseCode: 9503,
-                    message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
-                };
-            }
-            throw {
-                responseCode: 1503,
-                message: 'communication with tuya device fail',
-            };
-        });
-        /** Case stausResult get a garbage value */
-        if (typeof stausResult !== 'object' || !stausResult.dps) {
-            throw {
-                responseCode: 10503,
-                message: 'tuya device gives garbage values.',
-            };
-        }
-        /**
-         * Extract the current minion status.
-         */
-        let currentGangStatus;
-        switch (miniom.device.model) {
-            case 'wall switch, 3 gangs, first one':
-                currentGangStatus = stausResult.dps[1];
-                break;
-            case 'wall switch, 3 gangs, second one':
-                currentGangStatus = stausResult.dps[2];
-                break;
-            case 'wall switch, 3 gangs, third one':
-                currentGangStatus = stausResult.dps[3];
-                break;
-        }
-        return {
-            switch: {
-                status: currentGangStatus ? 'on' : 'off',
-            },
-        };
-    }
-    async setStatus(miniom, setStatus) {
-        /**
-         * Get tuya device instance
-         */
-        const tuyaDevice = await this.getTuyaDevice(miniom.device);
-        if (miniom.device.model.indexOf('curtain') !== -1) {
-            try {
-                await tuyaDevice.set({
-                    set: setStatus.roller.status === 'off' ? '3' : (setStatus.roller.direction === 'up' ? '1' : '2'),
-                });
-                return;
-            }
-            catch (err) {
-                logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
-                if (typeof err === 'object' &&
-                    err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
-                    throw {
-                        responseCode: 9503,
-                        message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
-                    };
-                }
-                throw {
-                    responseCode: 1503,
-                    message: 'communication with tuya device fail',
-                };
-            }
-        }
-        /**
-         * Get current minion gang index.
-         */
-        let gangIndex;
-        switch (miniom.device.model) {
-            case 'wall switch, 3 gangs, first one':
-                gangIndex = 1;
-                break;
-            case 'wall switch, 3 gangs, second one':
-                gangIndex = 2;
-                break;
-            case 'wall switch, 3 gangs, third one':
-                gangIndex = 3;
-                break;
-        }
-        await tuyaDevice.set({ set: setStatus.switch.status === 'on', dps: gangIndex })
-            .catch((err) => {
-            logger_1.logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
-            if (typeof err === 'object' &&
-                err.message === 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.') {
-                throw {
-                    responseCode: 9503,
-                    message: 'Error communicating with device. Make sure nothing else is trying to control it or connected to it.',
-                };
-            }
-            throw {
-                responseCode: 1503,
-                message: 'communication with tuya device fail',
-            };
-        });
-    }
-    async enterRecordMode(miniom, statusToRecordFor) {
-        throw {
-            responseCode: 6409,
-            message: 'the tuya module not support any recording mode',
-        };
-    }
-    async generateCommand(miniom, statusToRecordFor) {
-        throw {
-            responseCode: 6409,
-            message: 'the tuya module not support any recording mode',
-        };
-    }
-    async setFetchedCommands(minion, commandsSet) {
-        // There's nothing to do.
-    }
-    async refreshCommunication() {
-        for (const tuyaApi of Object.values(this.pysicalDevicesMap)) {
-            tuyaApi.disconnect();
-        }
-        this.pysicalDevicesMap = {};
     }
 }
 exports.TuyaHandler = TuyaHandler;

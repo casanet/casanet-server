@@ -13,35 +13,6 @@ class UsersBl {
         this.usersDal = usersDal;
     }
     /**
-     * Validatete and senitize user from client.
-     * @param user user to validate.
-     * @param isNewUser is user sent to create new one (it's little difference schemas update/create user)
-     * @returns A sanitizeUser object.
-     */
-    async validateUser(user, isNewUser) {
-        /**
-         * Valid data by validator.
-         */
-        const sanitizeUser = await schemaValidator_1.SchemaValidator(user, isNewUser ? schemaValidator_1.UserSchema : schemaValidator_1.UserUpdateSchema)
-            .catch((validationError) => {
-            throw {
-                responseCode: 2422,
-                message: validationError.error.message,
-            };
-        });
-        /**
-         * If there is password to hash, hash it, else load the original password hash.
-         */
-        if (sanitizeUser.password) {
-            sanitizeUser.password = await bcrypt.hash(sanitizeUser.password, config_1.Configuration.keysHandling.bcryptSaltRounds);
-        }
-        else {
-            const originalUser = await this.usersDal.getUser(sanitizeUser.email);
-            sanitizeUser.password = originalUser.password;
-        }
-        return sanitizeUser;
-    }
-    /**
      * Get all users.
      */
     async getUsers() {
@@ -60,7 +31,7 @@ class UsersBl {
      * @param user User to create.
      */
     async createUser(user) {
-        const sanitizeUser = await this.validateUser(user, true);
+        const sanitizeUser = (await this.validateUser(user, true));
         /**
          * make sure there is no other user with same email in system.
          */
@@ -81,7 +52,7 @@ class UsersBl {
      * @param userToUpdate User object to update.
      */
     async updateUser(userToUpdate) {
-        const sanitizeUser = await this.validateUser(userToUpdate, false);
+        const sanitizeUser = (await this.validateUser(userToUpdate, false));
         await this.usersDal.updateUser(sanitizeUser);
     }
     /**
@@ -90,6 +61,34 @@ class UsersBl {
      */
     async deleteUser(userEmail) {
         return await this.usersDal.deleteUser(userEmail);
+    }
+    /**
+     * Validatete and senitize user from client.
+     * @param user user to validate.
+     * @param isNewUser is user sent to create new one (it's little difference schemas update/create user)
+     * @returns A sanitizeUser object.
+     */
+    async validateUser(user, isNewUser) {
+        /**
+         * Valid data by validator.
+         */
+        const sanitizeUser = await schemaValidator_1.SchemaValidator(user, isNewUser ? schemaValidator_1.UserSchema : schemaValidator_1.UserUpdateSchema).catch((validationError) => {
+            throw {
+                responseCode: 2422,
+                message: validationError.error.message,
+            };
+        });
+        /**
+         * If there is password to hash, hash it, else load the original password hash.
+         */
+        if (sanitizeUser.password) {
+            sanitizeUser.password = await bcrypt.hash(sanitizeUser.password, config_1.Configuration.keysHandling.bcryptSaltRounds);
+        }
+        else {
+            const originalUser = await this.usersDal.getUser(sanitizeUser.email);
+            sanitizeUser.password = originalUser.password;
+        }
+        return sanitizeUser;
     }
 }
 exports.UsersBl = UsersBl;

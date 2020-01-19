@@ -15,27 +15,6 @@ const timelineBl_1 = require("../business-layer/timelineBl");
 const deepCopy_1 = require("../utilities/deepCopy");
 let MinionsController = class MinionsController extends tsoa_1.Controller {
     /**
-     * NEVER let anyone get device API keys.
-     * @param minion minion to remove keys from.
-     */
-    cleanUpMinionBeforRelease(minion) {
-        const minionCopy = deepCopy_1.DeepCopy(minion);
-        delete minionCopy.device.deviceId;
-        delete minionCopy.device.token;
-        return minionCopy;
-    }
-    /**
-     * NEVER let anyone get device API keys.
-     * @param minions minions to remove keys from.
-     */
-    cleanUpMinionsBeforRelease(minions) {
-        const minionsCopy = [];
-        for (const minion of minions) {
-            minionsCopy.push(this.cleanUpMinionBeforRelease(minion));
-        }
-        return minionsCopy;
-    }
-    /**
      * Get the timeline of minions status.
      */
     async getMinionsTimeline() {
@@ -85,7 +64,7 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
      */
     async getSescaningMinionsStatus() {
         return {
-            scaningStatus: await minionsBl_1.MinionsBlSingleton.getScaningStatus()
+            scaningStatus: await minionsBl_1.MinionsBlSingleton.getScaningStatus(),
         };
     }
     /**
@@ -111,9 +90,9 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
         return await minionsBl_1.MinionsBlSingleton.notifyMinionChangedByIfttt(minionId, iftttOnChanged);
     }
     /**
-  * Get all minions in the system.
-  * @returns Minions array.
-  */
+     * Get all minions in the system.
+     * @returns Minions array.
+     */
     async getMinions() {
         return this.cleanUpMinionsBeforRelease(await minionsBl_1.MinionsBlSingleton.getMinions());
     }
@@ -131,6 +110,27 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
      */
     async setMinion(minionId, setStatus) {
         return await minionsBl_1.MinionsBlSingleton.setMinionStatus(minionId, setStatus);
+    }
+    /**
+     * NEVER let anyone get device API keys.
+     * @param minion minion to remove keys from.
+     */
+    cleanUpMinionBeforRelease(minion) {
+        const minionCopy = deepCopy_1.DeepCopy(minion);
+        delete minionCopy.device.deviceId;
+        delete minionCopy.device.token;
+        return minionCopy;
+    }
+    /**
+     * NEVER let anyone get device API keys.
+     * @param minions minions to remove keys from.
+     */
+    cleanUpMinionsBeforRelease(minions) {
+        const minionsCopy = [];
+        for (const minion of minions) {
+            minionsCopy.push(this.cleanUpMinionBeforRelease(minion));
+        }
+        return minionsCopy;
     }
 };
 __decorate([

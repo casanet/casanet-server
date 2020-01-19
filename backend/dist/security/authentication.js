@@ -50,7 +50,7 @@ exports.expressAuthentication = async (request, scopes) => {
         /**
          * Make sure that session not expired.
          */
-        if ((new Date().getTime() - session.timeStamp) > authBl_1.sessionExpiresMs) {
+        if (new Date().getTime() - session.timeStamp > authBl_1.sessionExpiresMs) {
             await sessionsBl_1.SessionsBlSingleton.deleteSession(session);
             throw {
                 responseCode: 1403,
@@ -59,8 +59,7 @@ exports.expressAuthentication = async (request, scopes) => {
         /**
          * Pass only in user scope in requierd scopes and the scope is valid.
          */
-        if (scopes.indexOf(user.scope) !== -1 &&
-            Object.values(exports.SystemAuthScopes).indexOf(user.scope) !== -1) {
+        if (scopes.indexOf(user.scope) !== -1 && Object.values(exports.SystemAuthScopes).indexOf(user.scope) !== -1) {
             return user;
         }
         logger_1.logger.info(`user ${user.email} try to access ${request.method} ${request.path} above his scope ${user.scope}`);

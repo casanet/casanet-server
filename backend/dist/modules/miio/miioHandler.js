@@ -27,76 +27,6 @@ class MiioHandler extends brandModuleBase_1.BrandModuleBase {
             },
         ];
     }
-    async getFanSpeed(device) {
-        const rawSpeed = await device.fanSpeed();
-        switch (rawSpeed) {
-            case 38: return 'low';
-            case 60: return 'med';
-            case 77: return 'high';
-        }
-        return 'auto';
-    }
-    async setFanSpeed(device, fanStrengt) {
-        let rawSpeed = 60;
-        switch (fanStrengt) {
-            case 'low':
-                rawSpeed = 38;
-                break;
-            case 'med':
-                rawSpeed = 60;
-                break;
-            case 'high':
-                rawSpeed = 77;
-                break;
-        }
-        await device.call('set_custom_mode', [rawSpeed]);
-    }
-    async setVaccumStatus(device, setStatus) {
-        if (setStatus.status === 'off') {
-            await await device.call('app_pause');
-            return;
-        }
-        await this.setFanSpeed(device, setStatus.fanSpeed);
-        switch (setStatus.mode) {
-            case 'clean':
-                await device.call('app_start');
-                break;
-            case 'dock':
-                await device.call('app_pause');
-                await device.call('app_charge');
-                break;
-        }
-    }
-    async getVaccumStatus(device) {
-        const statuses = (await device.call('get_status'))[0];
-        const status = statuses.in_cleaning ? 'on' : 'off';
-        const fanSpeed = await this.getFanSpeed(device);
-        /** 8 == charging, 6 == going to the dock */
-        const mode = statuses.state === 8 || statuses.state === 6
-            ? 'dock'
-            : 'clean';
-        return {
-            fanSpeed,
-            mode,
-            status,
-        };
-    }
-    async setTempLightStatus(device, setStatus) {
-        await device.call('set_power', [setStatus.status]);
-        if (setStatus.status === 'on') {
-            await device.call('set_bricct', [setStatus.brightness, setStatus.temperature]);
-        }
-    }
-    async getTempLightStatus(device) {
-        const status = (await device.call('get_prop', ['power']))[0];
-        const brightness = (await device.call('get_prop', ['bright']))[0];
-        const temperature = (await device.call('get_prop', ['cct']))[0];
-        return {
-            temperature,
-            brightness,
-            status,
-        };
-    }
     async getStatus(miniom) {
         try {
             const device = await miio.device({ address: miniom.device.pysicalDevice.ip, token: miniom.device.token });
@@ -170,6 +100,77 @@ class MiioHandler extends brandModuleBase_1.BrandModuleBase {
     }
     async refreshCommunication() {
         // There's nothing to do.
+    }
+    async getFanSpeed(device) {
+        const rawSpeed = await device.fanSpeed();
+        switch (rawSpeed) {
+            case 38:
+                return 'low';
+            case 60:
+                return 'med';
+            case 77:
+                return 'high';
+        }
+        return 'auto';
+    }
+    async setFanSpeed(device, fanStrengt) {
+        let rawSpeed = 60;
+        switch (fanStrengt) {
+            case 'low':
+                rawSpeed = 38;
+                break;
+            case 'med':
+                rawSpeed = 60;
+                break;
+            case 'high':
+                rawSpeed = 77;
+                break;
+        }
+        await device.call('set_custom_mode', [rawSpeed]);
+    }
+    async setVaccumStatus(device, setStatus) {
+        if (setStatus.status === 'off') {
+            await await device.call('app_pause');
+            return;
+        }
+        await this.setFanSpeed(device, setStatus.fanSpeed);
+        switch (setStatus.mode) {
+            case 'clean':
+                await device.call('app_start');
+                break;
+            case 'dock':
+                await device.call('app_pause');
+                await device.call('app_charge');
+                break;
+        }
+    }
+    async getVaccumStatus(device) {
+        const statuses = (await device.call('get_status'))[0];
+        const status = statuses.in_cleaning ? 'on' : 'off';
+        const fanSpeed = await this.getFanSpeed(device);
+        /** 8 == charging, 6 == going to the dock */
+        const mode = statuses.state === 8 || statuses.state === 6 ? 'dock' : 'clean';
+        return {
+            fanSpeed,
+            mode,
+            status,
+        };
+    }
+    async setTempLightStatus(device, setStatus) {
+        await device.call('set_power', [setStatus.status]);
+        if (setStatus.status === 'on') {
+            await device.call('set_bricct', [setStatus.brightness, setStatus.temperature]);
+        }
+    }
+    async getTempLightStatus(device) {
+        const status = (await device.call('get_prop', ['power']))[0];
+        const brightness = (await device.call('get_prop', ['bright']))[0];
+        const temperature = (await device.call('get_prop', ['cct']))[0];
+        return {
+            temperature,
+            brightness,
+            status,
+        };
     }
 }
 exports.MiioHandler = MiioHandler;

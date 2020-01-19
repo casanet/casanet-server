@@ -24,12 +24,13 @@ class IftttIntergrationDal {
      * Delete / Disable Integration Settings.
      */
     async disableIntegrationSettings() {
-        this.iftttIntegrationSettings = [{
+        this.iftttIntegrationSettings = [
+            {
                 apiKey: '',
                 enableIntegration: false,
-            }];
-        await this.dataIo.setData(this.iftttIntegrationSettings)
-            .catch(() => {
+            },
+        ];
+        await this.dataIo.setData(this.iftttIntegrationSettings).catch(() => {
             throw new Error('fail to save iftttIntegrationSettings delete request');
         });
     }
@@ -39,8 +40,7 @@ class IftttIntergrationDal {
      */
     async setIntegrationSettings(iftttIntegrationSettings) {
         this.iftttIntegrationSettings = [iftttIntegrationSettings];
-        await this.dataIo.setData(this.iftttIntegrationSettings)
-            .catch(() => {
+        await this.dataIo.setData(this.iftttIntegrationSettings).catch(() => {
             throw new Error('fail to save set iftttIntegrationSettings request');
         });
     }
