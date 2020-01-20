@@ -187,7 +187,7 @@ evtSource.onmessage = e => {
 };
 
 /** PWA */
-if ("serviceWorker" in navigator) {
+if (localStorage.getItem('use-sw') === 'true' && "serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/light-app/service-worker.js")
     .then(function(registration) {
