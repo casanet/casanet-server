@@ -60,14 +60,13 @@ let getMinionsFail = msg => {
  * @param {*} minions Minions array
  */
 let generateMinions = minions => {
-  
   minions.sort((m1, m2) => {
     return m1.name < m2.name ? -1 : 1;
   });
 
   /** Get the list holder element */
   const welcomeElement = document.getElementById("welcome-message");
-  welcomeElement.innerHTML = '';
+  welcomeElement.innerHTML = "";
 
   /** Get the list holder element */
   const listElement = document.getElementById("minions-container");
@@ -183,11 +182,14 @@ var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
 });
 
 evtSource.onmessage = e => {
+  if (e.data === '"init"') {
+    return;
+  }
   patchMinions();
 };
 
 /** PWA */
-if (localStorage.getItem('use-sw') === 'true' && "serviceWorker" in navigator) {
+if (localStorage.getItem("use-sw") === "true" && "serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/light-app/service-worker.js")
     .then(function(registration) {
