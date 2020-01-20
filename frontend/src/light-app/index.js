@@ -15,7 +15,7 @@ let domainAlert = () => {
   if (!result) {
     return;
   }
-  window.location.href = `${environments.DASHBOARD_DOMAIN}/light-app/index.html`
+  window.location.href = `${environments.DASHBOARD_DOMAIN}/light-app/index.html`;
 };
 
 let fetchEnvironments = () => {
@@ -65,28 +65,36 @@ let generateMinions = minions => {
   });
 
   /** Get the list holder element */
-  const listElement = document.getElementById("minions-list");
+  const welcomeElement = document.getElementById("welcome-message");
+  welcomeElement.innerHTML = "";
+
+  /** Get the list holder element */
+  const listElement = document.getElementById("minions-container");
 
   /** Set list empty */
   listElement.innerHTML = "";
 
   for (const minion of minions) {
     /** Create button element */
-    const minionButton = document.createElement("button");
+    const minionButton = document.createElement("a");
 
-    /** Inaert name */
+    /** Insert name */
     minionButton.innerText = minion.name;
 
     try {
       /** Set correct class for current status */
-      minionButton.className = `minion-button minion-${
+      minionButton.className = `button button--ghost button--ghost--${
         minion.minionStatus[minion.minionType].status
       }`;
+
+      if (!minion.isProperlyCommunicated) {
+        minionButton.className = `button button--ghost button--ghost--err`;
+      }
     } catch (error) {
       minion.minionStatus[minion.minionType] = {
         status: "off"
       };
-      minionButton.className = `minion-button minion-unknown`;
+      minionButton.className = `button button--ghost button--ghost--err`;
     }
 
     /** Toggle status on click */
@@ -95,9 +103,7 @@ let generateMinions = minions => {
     };
 
     /** Add it to buttons list */
-    const item = document.createElement("li");
-    item.appendChild(minionButton);
-    listElement.appendChild(item);
+    listElement.appendChild(minionButton);
   }
 };
 
@@ -125,7 +131,11 @@ let patchMinions = () => {
 
 /** Toggle minion status on click */
 let buttonClicked = (element, minion) => {
-  element.className = "minion-button minion-sync";
+  if (minion.sync) {
+    return;
+  }
+  minion.sync = true;
+  element.className = element.className + " button--slicein--sync";
 
   const setStatus = JSON.parse(JSON.stringify(minion.minionStatus));
   setStatus[minion.minionType].status =
@@ -145,7 +155,7 @@ let buttonClicked = (element, minion) => {
       return;
     }
 
-    element.className = `minion-button minion-${
+    element.className = `button button--ghost button--ghost--${
       minion.minionStatus[minion.minionType].status
     }`;
 
@@ -172,11 +182,14 @@ var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
 });
 
 evtSource.onmessage = e => {
+  if (e.data === '"init"') {
+    return;
+  }
   patchMinions();
 };
 
 /** PWA */
-if ("serviceWorker" in navigator) {
+if (localStorage.getItem("use-sw") === "true" && "serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/light-app/service-worker.js")
     .then(function(registration) {
