@@ -43,12 +43,16 @@ body {
 }
 
 .dashboard-link {
-  color: rgb(155, 155, 232);
+  color: rgb(124, 124, 182);
   font-family: helvetica;
   text-decoration: none;
   text-transform: uppercase;
 }
 
+.dashboard-link:hover {
+  color: rgb(155, 155, 232);
+  cursor: pointer;
+}
 .room {
   margin-top: 3em;
 }
@@ -102,4 +106,20 @@ body {
   background: none;
   background-image: linear-gradient(to right, #363642, #3b3b47);
   box-shadow: inset 1px 0 1px #33333d;
+}
+
+.sw-container {
+  position: absolute;
+  bottom: 0;
+  text-align: left;
+  color: rgb(155, 155, 232);
+  font-family: helvetica;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: xx-small;
+}
+
+.sw-command:hover {
+  color: rgb(97, 97, 192);
+  cursor: pointer;
 }
