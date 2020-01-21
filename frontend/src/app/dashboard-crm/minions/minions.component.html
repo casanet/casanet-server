@@ -111,6 +111,10 @@
                         <mat-icon>format_italic</mat-icon>
                         <span>{{ 'RENAME' | translate}}</span>
                     </button>
+                    <button mat-menu-item (click)="setMinionRoom(minion)">
+                        <mat-icon>view_quilt</mat-icon>
+                        <span>{{ 'SET_ROOM' | translate}}</span>
+                    </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item style="color: salmon;" (click)="deleteMinion(minion)">
                         <mat-icon style="color: salmon;">delete_forever</mat-icon>

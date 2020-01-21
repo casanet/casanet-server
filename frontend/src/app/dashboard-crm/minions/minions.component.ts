@@ -81,6 +81,7 @@ export class MinionsComponent implements OnInit, OnDestroy {
 					/** Set all possible changes to current minion properties */
 					existMinion.isProperlyCommunicated = minion.isProperlyCommunicated;
 					existMinion.name = minion.name;
+					existMinion.room = minion.room;
 					existMinion.minionAutoTurnOffMS = minion.minionAutoTurnOffMS;
 					existMinion.calibrationCycleMinutes = minion.calibrationCycleMinutes;
 					existMinion.device = minion.device;
@@ -212,7 +213,7 @@ export class MinionsComponent implements OnInit, OnDestroy {
 			cancelButtonText: this.translatePipe.transform('CANCEL')
 		});
 
-		// Case user select 'cancel' cancel the delete.
+		// Case user select 'cancel' cancel.
 		if (swalResult && swalResult.dismiss) {
 			return;
 		}
@@ -223,6 +224,33 @@ export class MinionsComponent implements OnInit, OnDestroy {
 
 		minion['sync'] = false;
 	}
+
+	public async setMinionRoom(minion: Minion) {
+
+		// TODO set autocomplete
+		const swalResult: void | SweetAlertResult = await swal({
+			title: `${this.translatePipe.transform('SET_A_NEW_ROOM')}`,
+			text: minion.room ? `${this.translatePipe.transform('CURRENT_ROOM')}: ${minion.room}` : ``,
+			input: 'text',
+			showConfirmButton: true,
+			showCancelButton: true,
+			confirmButtonText: this.translatePipe.transform('SUBMIT'),
+			cancelButtonText: this.translatePipe.transform('CANCEL')
+		});
+
+		// Case user select 'cancel' cancel.
+		if (swalResult && swalResult.dismiss) {
+			return;
+		}
+
+		minion['sync'] = true;
+
+		await this.minionsService.setMinionRoom(minion, swalResult.value);
+
+		minion['sync'] = false;
+	}
+
+
 	public async setStatus(minion: Minion, setStatus: MinionStatus) {
 		if (minion['recordMode']) {
 			return;
