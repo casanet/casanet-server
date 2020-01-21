@@ -248,6 +248,7 @@ let powerAllOff = () => {
   setViewPowerSync();
 
   const xmlhttp = new XMLHttpRequest();
+  xmlhttp.withCredentials = true;
   xmlhttp.onload = () => {
     if (xmlhttp.readyState === 4 && xmlhttp.status == 204) {
       isSync = false;
@@ -255,6 +256,7 @@ let powerAllOff = () => {
       return;
     }
 
+    setViewPowerOn();
     alert('POWER OFF FAIL');
   };
   xmlhttp.open('PUT', `${environments.API_URL}/minions/power-off`, true);
