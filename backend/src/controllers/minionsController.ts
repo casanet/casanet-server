@@ -46,6 +46,17 @@ export class MinionsController extends Controller {
   }
 
   /**
+   * Power off all minions
+   */
+  @Security('userAuth')
+  @Security('adminAuth')
+  @Response<ErrorResponse>(501, 'Server error')
+  @Put('power-off')
+  public async powerAllOff(): Promise<void> {
+    return await MinionsBlSingleton.powerAllOff();
+  }
+
+  /**
    * Update minion name.
    * @param minionId Minion id.
    * @param name Minion new name to set.
@@ -86,7 +97,7 @@ export class MinionsController extends Controller {
 
   /**
    * Update minion auto turns off timeout.
-   * @param minionId Minon id.
+   * @param minionId Minion id.
    * @param setCalibrate Timeout property.
    */
   @Security('userAuth')
@@ -137,7 +148,7 @@ export class MinionsController extends Controller {
 
   /**
    * Delete minion from the system.
-   * @param minionId Minon id.
+   * @param minionId Minion id.
    */
   @Security('userAuth')
   @Security('adminAuth')
@@ -161,7 +172,7 @@ export class MinionsController extends Controller {
 
   /**
    * Notify minion status changed by ifttt webhook (https://ifttt.com/maker_webhooks).
-   * @param minionId Minon id.
+   * @param minionId Minion id.
    * @param iftttOnChanged Minion key amd status to set.
    */
   @Response<ErrorResponse>(501, 'Server error')

@@ -553,7 +553,7 @@ export declare interface Minion {
 }
 
 /**
- * Represents acivity.
+ * Represents activity.
  */
 export declare interface OperationActivity {
   /** Minion id to set */
@@ -693,7 +693,7 @@ export declare interface VersionInfo {
   version: string;
   /** Current local master/HEAD commit hash */
   commintHash: string;
-  /** Time stamp of HEAD commint in UTC format */
+  /** Time stamp of HEAD commit in UTC format */
   timestamp: number;
 }
 

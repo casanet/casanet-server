@@ -13,6 +13,7 @@ import {
   ProgressStatus,
 } from '../models/sharedInterfaces';
 import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
+import { DeepCopy } from '../utilities/deepCopy';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
 import { DevicesBl, DevicesBlSingleton } from './devicesBl';
@@ -289,6 +290,27 @@ export class MinionsBl {
       event: 'update',
       minion,
     });
+  }
+
+  /**
+   * Set all minions status off.
+   */
+  public async powerAllOff() {
+    logger.info(`Setting all minions power off ...`);
+
+    for (const minion of this.minions) {
+      try {
+        if (minion.minionStatus[minion.minionType].status === 'off') {
+          continue;
+        }
+
+        const statusToSet = DeepCopy<MinionStatus>(minion.minionStatus);
+        statusToSet[minion.minionType].status = 'off';
+        await this.setMinionStatus(minion.minionId, statusToSet);
+      } catch (error) {
+        logger.warn(`Set minion ${minion.minionId} power off failed, ${error ? error.message : 'unknown'}`);
+      }
+    }
   }
 
   /**
