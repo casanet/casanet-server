@@ -8,7 +8,7 @@
     },
     "timelineDaysLength": 15,
     "http": {
-        "httpPort": 3000,
+        "httpPort": 80,
         "httpsPort": 443,
         "useHttps": false
     },

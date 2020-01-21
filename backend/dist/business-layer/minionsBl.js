@@ -5,6 +5,7 @@ const randomstring = require("randomstring");
 const rxjs_1 = require("rxjs");
 const minionsDal_1 = require("../data-layer/minionsDal");
 const modulesManager_1 = require("../modules/modulesManager");
+const deepCopy_1 = require("../utilities/deepCopy");
 const logger_1 = require("../utilities/logger");
 const sleep_1 = require("../utilities/sleep");
 const devicesBl_1 = require("./devicesBl");
@@ -117,6 +118,34 @@ class MinionsBl {
         });
     }
     /**
+     * Set minion room.
+     * @param minionId minion id.
+     * @param nameToSet the new room name to set.
+     */
+    async setMinionRoom(minionId, nameToSet) {
+        const minion = this.findMinion(minionId);
+        if (!minion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        minion.room = nameToSet;
+        try {
+            await this.minionsDal.setMinionRoom(minionId, nameToSet);
+        }
+        catch (error) {
+            logger_1.logger.warn(`Fail to update room of minion ${minionId} with new name ${error.message}`);
+        }
+        /**
+         * Send minions feed update.
+         */
+        this.minionFeed.next({
+            event: 'update',
+            minion,
+        });
+    }
+    /**
      * Set minion status
      * @param minionId minion to set new status to.
      * @param minionStatus the status to set.
@@ -217,6 +246,25 @@ class MinionsBl {
             event: 'update',
             minion,
         });
+    }
+    /**
+     * Set all minions status off.
+     */
+    async powerAllOff() {
+        logger_1.logger.info(`Setting all minions power off ...`);
+        for (const minion of this.minions) {
+            try {
+                if (minion.minionStatus[minion.minionType].status === 'off') {
+                    continue;
+                }
+                const statusToSet = deepCopy_1.DeepCopy(minion.minionStatus);
+                statusToSet[minion.minionType].status = 'off';
+                await this.setMinionStatus(minion.minionId, statusToSet);
+            }
+            catch (error) {
+                logger_1.logger.warn(`Set minion ${minion.minionId} power off failed, ${error ? error.message : 'unknown'}`);
+            }
+        }
     }
     /**
      * Create new minion

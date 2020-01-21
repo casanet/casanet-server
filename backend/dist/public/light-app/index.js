@@ -4,6 +4,9 @@ let environments = {
   DASHBOARD_DOMAIN: ""
 };
 
+/** Flag to know if the 'power off' syncing */
+let isSync = false;
+
 let domainAlert = () => {
   if (document.baseURI.includes(environments.DASHBOARD_DOMAIN)) {
     return;
@@ -15,7 +18,7 @@ let domainAlert = () => {
   if (!result) {
     return;
   }
-  window.location.href = `${environments.DASHBOARD_DOMAIN}/light-app/index.html`
+  window.location.href = `${environments.DASHBOARD_DOMAIN}/light-app/index.html`;
 };
 
 let fetchEnvironments = () => {
@@ -51,8 +54,49 @@ let accessFail = () => {
 
 let getMinionsFail = msg => {
   if (confirm(`GET MINIONS FAIL: \n${msg},\n\n\nPress "OK" to retry`)) {
-    patchMinions();
+    petchMinions();
   }
+};
+
+/**
+ * Generate HTML button for given minion
+ * @param {*} minion A minion
+ * @returns A DOM button object for the given minion
+ */
+let generateMinionButton = minion => {
+  /** Create button element */
+  const minionButton = document.createElement("a");
+
+  /** Insert name */
+  minionButton.innerText = minion.name;
+
+  try {
+    /** Set correct class for current status */
+    minionButton.className = `button button--ghost button--ghost--${
+      minion.minionStatus[minion.minionType].status
+    }`;
+
+    if (!isSync && minion.minionStatus[minion.minionType].status === "on") {
+      // In case the minion status are 'on' allow 'power-all-off' button
+      setViewPowerOn();
+    }
+
+    if (!minion.isProperlyCommunicated) {
+      minionButton.className = `button button--ghost button--ghost--err`;
+    }
+  } catch (error) {
+    minion.minionStatus[minion.minionType] = {
+      status: "off"
+    };
+    minionButton.className = `button button--ghost button--ghost--err`;
+  }
+
+  /** Toggle status on click */
+  minionButton.onclick = () => {
+    buttonClicked(minionButton, minion);
+  };
+
+  return minionButton;
 };
 
 /**
@@ -61,48 +105,56 @@ let getMinionsFail = msg => {
  */
 let generateMinions = minions => {
   minions.sort((m1, m2) => {
+    if (m1.room !== m2.room) {
+      return m1.room < m2.room ? -1 : 1;
+    }
     return m1.name < m2.name ? -1 : 1;
   });
 
+  const rooms = minions.reduce((rooms, minion) => {
+    minion.room = minion.room ? minion.room : "";
+    rooms[minion.room] = rooms[minion.room] ? rooms[minion.room] : [];
+    rooms[minion.room].push(minion);
+    return rooms;
+  }, {});
+
   /** Get the list holder element */
-  const listElement = document.getElementById("minions-list");
+  const welcomeElement = document.getElementById("welcome-message");
+  welcomeElement.innerHTML = "";
+
+  /** Get the list holder element */
+  const listElement = document.getElementById("minions-container");
 
   /** Set list empty */
   listElement.innerHTML = "";
 
-  for (const minion of minions) {
-    /** Create button element */
-    const minionButton = document.createElement("button");
+  if (!isSync) {
+    // If the power off not currently sync, set power off,
+    // and in case any of the minion status are 'on' then call to 'setViewPowerOn()'
+    setViewPowerOff();
+  }
 
-    /** Inaert name */
-    minionButton.innerText = minion.name;
+  for (const [roomName, roomMinions] of Object.entries(rooms)) {
+    const roomDiv = document.createElement("div");
+    roomDiv.className = "room";
 
-    try {
-      /** Set correct class for current status */
-      minionButton.className = `minion-button minion-${
-        minion.minionStatus[minion.minionType].status
-      }`;
-    } catch (error) {
-      minion.minionStatus[minion.minionType] = {
-        status: "off"
-      };
-      minionButton.className = `minion-button minion-unknown`;
+    const roomTitle = document.createElement("h3");
+    roomTitle.className = "room-name";
+    roomTitle.innerText = roomName;
+
+    roomDiv.appendChild(roomTitle);
+
+    for (const minion of roomMinions) {
+      roomDiv.appendChild(generateMinionButton(minion));
     }
 
-    /** Toggle status on click */
-    minionButton.onclick = () => {
-      buttonClicked(minionButton, minion);
-    };
-
     /** Add it to buttons list */
-    const item = document.createElement("li");
-    item.appendChild(minionButton);
-    listElement.appendChild(item);
+    listElement.appendChild(roomDiv);
   }
 };
 
 /** Get minions from server */
-let patchMinions = () => {
+let petchMinions = () => {
   // compatible with IE7+, Firefox, Chrome, Opera, Safari
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.withCredentials = true;
@@ -125,7 +177,12 @@ let patchMinions = () => {
 
 /** Toggle minion status on click */
 let buttonClicked = (element, minion) => {
-  element.className = "minion-button minion-sync";
+  if (minion.sync || isSync) {
+    return;
+  }
+
+  minion.sync = true;
+  element.className = element.className + " button--slicein--sync";
 
   const setStatus = JSON.parse(JSON.stringify(minion.minionStatus));
   setStatus[minion.minionType].status =
@@ -141,11 +198,11 @@ let buttonClicked = (element, minion) => {
     }
 
     if (xmlhttp.status === 204) {
-      patchMinions();
+      petchMinions();
       return;
     }
 
-    element.className = `minion-button minion-${
+    element.className = `button button--ghost button--ghost--${
       minion.minionStatus[minion.minionType].status
     }`;
 
@@ -163,8 +220,58 @@ let buttonClicked = (element, minion) => {
   xmlhttp.send(JSON.stringify(setStatus));
 };
 
+let setViewPowerOn = () => {
+  const powerOnContainer = document.getElementById("power-on");
+  const powerOffContainer = document.getElementById("power-off");
+  const powerSyncContainer = document.getElementById("power-sync");
+
+  powerOnContainer.className = "";
+  powerOffContainer.className = "hide";
+  powerSyncContainer.className = "hide";
+};
+
+let setViewPowerOff = () => {
+  const powerOnContainer = document.getElementById("power-on");
+  const powerOffContainer = document.getElementById("power-off");
+  const powerSyncContainer = document.getElementById("power-sync");
+
+  powerOnContainer.className = "hide";
+  powerOffContainer.className = "";
+  powerSyncContainer.className = "hide";
+};
+
+let setViewPowerSync = () => {
+  const powerOnContainer = document.getElementById("power-on");
+  const powerOffContainer = document.getElementById("power-off");
+  const powerSyncContainer = document.getElementById("power-sync");
+
+  powerOnContainer.className = "hide";
+  powerOffContainer.className = "hide";
+  powerSyncContainer.className = "";
+};
+
+let powerAllOff = () => {
+  isSync = true;
+
+  // Mark view as sync
+  setViewPowerSync();
+
+  const xmlhttp = new XMLHttpRequest();
+  xmlhttp.onload = () => {
+    if (xmlhttp.readyState === 4 && xmlhttp.status == 204) {
+      isSync = false;
+      petchMinions();
+      return;
+    }
+
+    alert("POWER OFF FAIL");
+  };
+  xmlhttp.open("PUT", `${environments.API_URL}/minions/power-off`, true);
+  xmlhttp.send();
+};
+
 /** On start. get and generate minions */
-patchMinions();
+petchMinions();
 
 /** SSE */
 var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
@@ -172,17 +279,29 @@ var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
 });
 
 evtSource.onmessage = e => {
-  patchMinions();
+  if (e.data === '"init"') {
+    return;
+  }
+  petchMinions();
 };
 
-/** PWA */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/light-app/service-worker.js")
-    .then(function(registration) {
-      console.log("Registration successful, scope is:", registration.scope);
-    })
-    .catch(function(error) {
-      console.warn("Service worker registration failed, error:", error);
-    });
-}
+let unRegisterSW = () => {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
+  });
+};
+
+let registerSW = () => {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/light-app/service-worker.js")
+      .then(function(registration) {
+        console.log("Registration successful, scope is:", registration.scope);
+      })
+      .catch(function(error) {
+        console.warn("Service worker registration failed, error:", error);
+      });
+  }
+};

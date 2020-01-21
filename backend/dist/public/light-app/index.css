@@ -1,28 +1,125 @@
-.nobull {
-    list-style-type: none;
-    padding-inline-start: 0;
+body {
+  font: normal 100%/1.5 Verdana, sans-serif;
+  color: #fafafa;
+  background: #3b3b47;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: antialiased;
+  align-items: center;
+  text-align: center;
 }
 
-.minion-button{
-    text-shadow: 3px 2px #0c0e0d;
-    color: #f5f5f8;
-    font-size: 50px;
-    margin: 5px;
-    width: 95%; 
-    height: 120px;
+.hide {
+  display: none;
 }
 
-.minion-on{
-    background: rgb(6,107,20);
-    background: linear-gradient(90deg, rgba(6,107,20,0.9840978627779237) 0%, rgba(9,121,52,1) 45%, rgba(0,255,37,1) 100%);
+.power-off-container {
+  position: absolute;
+  margin: 0;
+  padding: 0;
 }
 
-.minion-off{
-    background: rgb(223,34,25);
-    background: linear-gradient(90deg, rgba(223,34,25,0.9840978627779237) 0%, rgba(159,54,12,1) 45%, rgba(186,98,69,1) 100%);
+#power-on {
+  cursor: pointer;
+  fill: #6dbdb9;
+  color: #6dbdb9;
 }
 
-.minion-sync{
-    background: rgb(25,169,223);
-    background: linear-gradient(90deg, rgba(25,169,223,0.9840978627779237) 0%, rgba(12,156,159,1) 45%, rgba(69,72,186,1) 100%);
+.power-on-text {
+  font-size: xx-small;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+#power-off {
+  fill: #737471;
+  color: #737471;
+}
+
+#power-sync {
+  fill: #737471;
+  color: #737471;
+}
+
+.dashboard-link {
+  color: rgb(124, 124, 182);
+  font-family: helvetica;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.dashboard-link:hover {
+  color: rgb(155, 155, 232);
+  cursor: pointer;
+}
+.room {
+  margin-top: 3em;
+}
+
+.room-name {
+  color: #797990;
+}
+
+.button {
+  text-decoration: none;
+  cursor: pointer;
+  align-self: center;
+  display: inline-block;
+  line-height: 3em;
+  padding: 0 1em;
+  background: #34343e;
+  border-radius: 0.125em;
+  background-clip: padding-box;
+
+  margin-right: 1em;
+  margin-top: 0.5em;
+}
+
+.button--plain {
+  background: #41414e;
+}
+
+.button--ghost {
+  border: 1px solid #eee !important;
+  background: none;
+}
+
+.button--ghost--on {
+  border-color: #6dbdb9 !important;
+  color: #6dbdb9 !important;
+}
+
+.button--ghost--err {
+  border-color: #bb6a6a !important;
+  color: #bb6a6a !important;
+}
+
+.button--ghost--off {
+  border-color: #737471 !important;
+  color: #737471 !important;
+}
+
+.button--slicein--sync {
+  cursor: wait;
+  border-color: transparent !important;
+  background: none;
+  background-image: linear-gradient(to right, #363642, #3b3b47);
+  box-shadow: inset 1px 0 1px #33333d;
+}
+
+.sw-container {
+  position: absolute;
+  bottom: 0;
+  text-align: left;
+  color: rgb(155, 155, 232);
+  font-family: helvetica;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: xx-small;
+}
+
+.sw-command:hover {
+  color: rgb(97, 97, 192);
+  cursor: pointer;
 }
