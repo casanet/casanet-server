@@ -11,7 +11,7 @@ definitions:
                 description: 'error code in system.'
             message:
                 type: string
-                description: 'Readble message.'
+                description: 'Readable message.'
                 x-nullable: true
         required:
             - responseCode
@@ -74,7 +74,7 @@ definitions:
             - model
         type: object
     Toggle:
-        description: "A toggle value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off\r\nbut there is no way to know the real light status if someone changes the light status using physical switche."
+        description: "A toggle value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off\r\nbut there is no way to know the real light status if someone changes the light status using physical switch."
         properties:
             status:
                 type: string
@@ -96,7 +96,7 @@ definitions:
             - status
         type: object
     Roller:
-        description: "A roller switch stauts.\r\nA roller is a switch for curtains or blinds (or for any other needs) that can drag up/down or stop."
+        description: "A roller switch status.\r\nA roller is a switch for curtains or blinds (or for any other needs) that can drag up/down or stop."
         properties:
             status:
                 type: string
@@ -114,7 +114,7 @@ definitions:
             - direction
         type: object
     Cleaner:
-        description: "A Cleaner (robot) stauts.\r\nCleaner is a smart robot for cleaning home."
+        description: "A Cleaner (robot) status.\r\nCleaner is a smart robot for cleaning home."
         properties:
             status:
                 type: string
@@ -151,7 +151,7 @@ definitions:
             temperature:
                 type: integer
                 format: int32
-                description: 'Valid AC temperatur. (minimum 16° maximum 30°).'
+                description: 'Valid AC temperature. (minimum 16° maximum 30°).'
                 minimum: 16
                 maximum: 30
             mode:
@@ -333,6 +333,10 @@ definitions:
                 format: double
                 description: "Calibrate the physical device with the server known status, in a periodic cycle,\r\nif not set or set to 0, never calibrate."
                 x-nullable: true
+            room:
+                type: string
+                description: 'Represents the room where the minion is located at.'
+                x-nullable: true
         required:
             - name
             - device
@@ -419,7 +423,7 @@ definitions:
             - minutes
         type: object
     OnceTiming:
-        description: 'Once timing struct.'
+        description: 'Once timing structure.'
         properties:
             date:
                 type: number
@@ -429,7 +433,7 @@ definitions:
             - date
         type: object
     TimeoutTiming:
-        description: 'Timeout timing struct.'
+        description: 'Timeout timing structure.'
         properties:
             startDate:
                 type: number
@@ -586,6 +590,15 @@ definitions:
         required:
             - name
         type: object
+    MinionSetRoomName:
+        description: 'Used to set minion room name.'
+        properties:
+            room:
+                type: string
+                description: 'The new room name to set.'
+        required:
+            - room
+        type: object
     SetMinionAutoTurnOff:
         description: 'Used to change the minion auto turn off the timeout value.'
         properties:
@@ -602,7 +615,7 @@ definitions:
             calibrationCycleMinutes:
                 type: integer
                 format: int32
-                description: 'Minutes to calibrate stauts, set 0 to turn off calibration'
+                description: 'Minutes to calibrate status, set 0 to turn off calibration'
                 minimum: 0
         required:
             - calibrationCycleMinutes
@@ -1169,6 +1182,40 @@ paths:
                     required: true
                     schema:
                         $ref: '#/definitions/MinionRename'
+    '/minions/room/{minionId}':
+        put:
+            operationId: RenameRoom
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Update minion room name.'
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters:
+                -
+                    description: 'Minion id.'
+                    in: path
+                    name: minionId
+                    required: true
+                    type: string
+                -
+                    description: 'Minion room name to set.'
+                    in: body
+                    name: roomName
+                    required: true
+                    schema:
+                        $ref: '#/definitions/MinionSetRoomName'
     '/minions/timeout/{minionId}':
         put:
             operationId: SetMinionTimeout
@@ -1191,7 +1238,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'Minon id.'
+                    description: 'Minion id.'
                     in: path
                     name: minionId
                     required: true

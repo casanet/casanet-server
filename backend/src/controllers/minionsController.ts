@@ -21,6 +21,7 @@ import {
   IftttOnChanged,
   Minion,
   MinionRename,
+  MinionSetRoomName,
   MinionStatus,
   MinionTimeline,
   ScaningStatus,
@@ -58,8 +59,21 @@ export class MinionsController extends Controller {
   }
 
   /**
+   * Update minion room name.
+   * @param minionId Minion id.
+   * @param roomName Minion room name to set.
+   */
+  @Security('userAuth')
+  @Security('adminAuth')
+  @Response<ErrorResponse>(501, 'Server error')
+  @Put('room/{minionId}')
+  public async renameRoom(minionId: string, @Body() roomName: MinionSetRoomName): Promise<void> {
+    return await MinionsBlSingleton.setMinionRoom(minionId, roomName.room);
+  }
+
+  /**
    * Update minion auto turns off timeout.
-   * @param minionId Minon id.
+   * @param minionId Minion id.
    * @param setTimeout Timeout property.
    */
   @Security('userAuth')
