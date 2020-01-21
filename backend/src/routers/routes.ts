@@ -122,6 +122,7 @@ const models: TsoaRoute.Models = {
             "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
             "calibrationCycleMinutes": { "dataType": "double" },
+            "room": { "dataType": "string" },
         },
     },
     "MinionFeed": {
@@ -206,6 +207,11 @@ const models: TsoaRoute.Models = {
     "MinionRename": {
         "properties": {
             "name": { "dataType": "string", "required": true },
+        },
+    },
+    "MinionSetRoomName": {
+        "properties": {
+            "room": { "dataType": "string", "required": true },
         },
     },
     "SetMinionAutoTurnOff": {
@@ -577,6 +583,29 @@ export function RegisterRoutes(app: express.Express) {
             const promise = controller.getMinionsTimeline.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
+    app.put('/API/minions/power-off',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.powerAllOff.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
     app.put('/API/minions/rename/:minionId',
         authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
@@ -600,6 +629,31 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.renameMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.put('/API/minions/room/:minionId',
+        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+                roomName: { "in": "body", "name": "roomName", "required": true, "ref": "MinionSetRoomName" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.renameRoom.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.put('/API/minions/timeout/:minionId',

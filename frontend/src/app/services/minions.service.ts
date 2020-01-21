@@ -310,9 +310,19 @@ export class MinionsService {
 		}
 	}
 
-	public async renameMinion(minion: Minion, newName: number) {
+	public async renameMinion(minion: Minion, newName: string) {
 		try {
 			await this.httpClient.put(`${environment.baseUrl}/minions/rename/${minion.minionId}`, { name: newName }, {
+				withCredentials: true
+			}).toPromise();
+		} catch (error) {
+			this.toastrAndErrorsService.OnHttpError(error);
+		}
+	}
+
+	public async setMinionRoom(minion: Minion, room: string) {
+		try {
+			await this.httpClient.put(`${environment.baseUrl}/minions/room/${minion.minionId}`, { room }, {
 				withCredentials: true
 			}).toPromise();
 		} catch (error) {

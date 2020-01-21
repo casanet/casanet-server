@@ -13,6 +13,7 @@ import {
   ProgressStatus,
 } from '../models/sharedInterfaces';
 import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
+import { DeepCopy } from '../utilities/deepCopy';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
 import { DevicesBl, DevicesBlSingleton } from './devicesBl';
@@ -144,6 +145,37 @@ export class MinionsBl {
   }
 
   /**
+   * Set minion room.
+   * @param minionId minion id.
+   * @param nameToSet the new room name to set.
+   */
+  public async setMinionRoom(minionId: string, nameToSet: string): Promise<void> {
+    const minion = this.findMinion(minionId);
+    if (!minion) {
+      throw {
+        responseCode: 1404,
+        message: 'minion not exist',
+      } as ErrorResponse;
+    }
+
+    minion.room = nameToSet;
+
+    try {
+      await this.minionsDal.setMinionRoom(minionId, nameToSet);
+    } catch (error) {
+      logger.warn(`Fail to update room of minion ${minionId} with new name ${error.message}`);
+    }
+
+    /**
+     * Send minions feed update.
+     */
+    this.minionFeed.next({
+      event: 'update',
+      minion,
+    });
+  }
+
+  /**
    * Set minion status
    * @param minionId minion to set new status to.
    * @param minionStatus the status to set.
@@ -258,6 +290,27 @@ export class MinionsBl {
       event: 'update',
       minion,
     });
+  }
+
+  /**
+   * Set all minions status off.
+   */
+  public async powerAllOff() {
+    logger.info(`Setting all minions power off ...`);
+
+    for (const minion of this.minions) {
+      try {
+        if (minion.minionStatus[minion.minionType].status === 'off') {
+          continue;
+        }
+
+        const statusToSet = DeepCopy<MinionStatus>(minion.minionStatus);
+        statusToSet[minion.minionType].status = 'off';
+        await this.setMinionStatus(minion.minionId, statusToSet);
+      } catch (error) {
+        logger.warn(`Set minion ${minion.minionId} power off failed, ${error ? error.message : 'unknown'}`);
+      }
+    }
   }
 
   /**

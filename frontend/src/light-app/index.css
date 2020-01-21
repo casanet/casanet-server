@@ -9,11 +9,52 @@ body {
   text-align: center;
 }
 
+.hide {
+  display: none;
+}
+
+.power-off-container {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+}
+
+#power-on {
+  cursor: pointer;
+  fill: #6dbdb9;
+  color: #6dbdb9;
+}
+
+.power-on-text {
+  font-size: xx-small;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+#power-off {
+  fill: #737471;
+  color: #737471;
+}
+
+#power-sync {
+  fill: #737471;
+  color: #737471;
+}
+
 .dashboard-link {
   color: rgb(155, 155, 232);
   font-family: helvetica;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+.room {
+  margin-top: 3em;
+}
+
+.room-name {
+  color: #797990;
 }
 
 .button {
@@ -43,10 +84,6 @@ body {
 .button--ghost--on {
   border-color: #6dbdb9 !important;
   color: #6dbdb9 !important;
-}
-
-.button--ghost--err:before {
-  content: "! ";
 }
 
 .button--ghost--err {

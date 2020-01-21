@@ -8,7 +8,7 @@ export declare interface ErrorResponse {
   responseCode: number;
 
   /**
-   * Readble message.
+   * Readable message.
    */
   message?: string;
 }
@@ -249,7 +249,7 @@ export declare type CleanerMode = 'dock' | 'clean';
 /**
  * A toggle value, the toggle is on way communicated device,
  * For example wall light switches with 433 RF that can turn on or off
- * but there is no way to know the real light status if someone changes the light status using physical switche.
+ * but there is no way to know the real light status if someone changes the light status using physical switch.
  */
 export declare interface Toggle {
   status: SwitchOptions;
@@ -263,7 +263,7 @@ export declare interface Toggle {
 export declare interface Switch extends Toggle {}
 
 /**
- * A roller switch stauts.
+ * A roller switch status.
  * A roller is a switch for curtains or blinds (or for any other needs) that can drag up/down or stop.
  */
 export declare interface Roller extends Switch {
@@ -272,7 +272,7 @@ export declare interface Roller extends Switch {
 }
 
 /**
- * A Cleaner (robot) stauts.
+ * A Cleaner (robot) status.
  * Cleaner is a smart robot for cleaning home.
  */
 export declare interface Cleaner extends Switch {
@@ -287,7 +287,7 @@ export declare interface Cleaner extends Switch {
  */
 export declare interface AirConditioning extends Switch {
   /**
-   * Valid AC temperatur. (minimum 16° maximum 30°).
+   * Valid AC temperature. (minimum 16° maximum 30°).
    * @minimum 16
    * @maximum 30
    * @isInt true
@@ -357,7 +357,7 @@ export declare interface ColorLight extends TemperatureLight {
 }
 
 /**
- * Once timing struct.
+ * Once timing structure.
  */
 export declare interface OnceTiming {
   /**
@@ -367,7 +367,7 @@ export declare interface OnceTiming {
 }
 
 /**
- * Timeout timing struct.
+ * Timeout timing structure.
  */
 export declare interface TimeoutTiming {
   /**
@@ -382,7 +382,7 @@ export declare interface TimeoutTiming {
 }
 
 /**
- * Daily timing struct.
+ * Daily timing structure.
  */
 export declare interface DailyTiming {
   /**
@@ -473,7 +473,7 @@ export declare interface SetMinionAutoTurnOff {
  */
 export declare interface SetMinionCalibrate {
   /**
-   * Minutes to calibrate stauts, set 0 to turn off calibration
+   * Minutes to calibrate status, set 0 to turn off calibration
    * @minimum 0
    * @isInt true
    */
@@ -486,6 +486,14 @@ export declare interface SetMinionCalibrate {
 export declare interface MinionRename {
   /** The new name to set. */
   name: string;
+}
+
+/**
+ * Used to set minion room name.
+ */
+export declare interface MinionSetRoomName {
+  /** The new room name to set. */
+  room: string;
 }
 
 /**
@@ -537,10 +545,15 @@ export declare interface Minion {
    * if not set or set to 0, never calibrate.
    */
   calibrationCycleMinutes?: number;
+
+  /**
+   * Represents the room where the minion is located at.
+   */
+  room?: string;
 }
 
 /**
- * Represents acivity.
+ * Represents activity.
  */
 export declare interface OperationActivity {
   /** Minion id to set */
@@ -680,7 +693,7 @@ export declare interface VersionInfo {
   version: string;
   /** Current local master/HEAD commit hash */
   commintHash: string;
-  /** Time stamp of HEAD commint in UTC format */
+  /** Time stamp of HEAD commit in UTC format */
   timestamp: number;
 }
 
