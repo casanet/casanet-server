@@ -122,6 +122,7 @@ const models = {
             "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
             "calibrationCycleMinutes": { "dataType": "double" },
+            "room": { "dataType": "string" },
         },
     },
     "MinionFeed": {
@@ -206,6 +207,11 @@ const models = {
     "MinionRename": {
         "properties": {
             "name": { "dataType": "string", "required": true },
+        },
+    },
+    "MinionSetRoomName": {
+        "properties": {
+            "room": { "dataType": "string", "required": true },
         },
     },
     "SetMinionAutoTurnOff": {
@@ -516,6 +522,23 @@ function RegisterRoutes(app) {
         const promise = controller.getMinionsTimeline.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
+    app.put('/API/minions/power-off', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {
+        const args = {};
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new minionsController_1.MinionsController();
+        const promise = controller.powerAllOff.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
     app.put('/API/minions/rename/:minionId', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {
         const args = {
             minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
@@ -534,6 +557,26 @@ function RegisterRoutes(app) {
         }
         const controller = new minionsController_1.MinionsController();
         const promise = controller.renameMinion.apply(controller, validatedArgs);
+        promiseHandler(controller, promise, response, next);
+    });
+    app.put('/API/minions/room/:minionId', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {
+        const args = {
+            minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
+            roomName: { "in": "body", "name": "roomName", "required": true, "ref": "MinionSetRoomName" },
+        };
+        let validatedArgs = [];
+        try {
+            validatedArgs = getValidatedArgs(args, request);
+        }
+        catch (err) {
+            response.status(422).send({
+                responseCode: 1422,
+                message: JSON.stringify(err.fields),
+            });
+            return;
+        }
+        const controller = new minionsController_1.MinionsController();
+        const promise = controller.renameRoom.apply(controller, validatedArgs);
         promiseHandler(controller, promise, response, next);
     });
     app.put('/API/minions/timeout/:minionId', authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]), function (request, response, next) {

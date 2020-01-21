@@ -653,7 +653,7 @@ definitions:
             - newStatus
         type: object
     OperationActivity:
-        description: 'Represents acivity.'
+        description: 'Represents activity.'
         properties:
             minionId:
                 type: string
@@ -836,7 +836,7 @@ definitions:
             timestamp:
                 type: number
                 format: double
-                description: 'Time stamp of HEAD commint in UTC format'
+                description: 'Time stamp of HEAD commit in UTC format'
         required:
             - version
             - commintHash
@@ -1149,6 +1149,27 @@ paths:
                 -
                     adminAuth: []
             parameters: []
+    /minions/power-off:
+        put:
+            operationId: PowerAllOff
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Power off all minions'
+            tags:
+                - Minions
+            security:
+                -
+                    userAuth: []
+                -
+                    adminAuth: []
+            parameters: []
     '/minions/rename/{minionId}':
         put:
             operationId: RenameMinion
@@ -1272,7 +1293,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'Minon id.'
+                    description: 'Minion id.'
                     in: path
                     name: minionId
                     required: true
@@ -1382,7 +1403,7 @@ paths:
                     adminAuth: []
             parameters:
                 -
-                    description: 'Minon id.'
+                    description: 'Minion id.'
                     in: path
                     name: minionId
                     required: true
@@ -1515,7 +1536,7 @@ paths:
                     iftttAuth: []
             parameters:
                 -
-                    description: 'Minon id.'
+                    description: 'Minion id.'
                     in: path
                     name: minionId
                     required: true

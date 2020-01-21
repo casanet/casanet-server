@@ -79,6 +79,24 @@ class MinionsDal {
         });
     }
     /**
+     * Set minion a new room.
+     * @param minionId minion id.
+     * @param nameToSet the new room name to set.
+     */
+    async setMinionRoom(minionId, nameToSet) {
+        const originalMinion = this.findMinion(minionId);
+        if (!originalMinion) {
+            throw {
+                responseCode: 1404,
+                message: 'minion not exist',
+            };
+        }
+        originalMinion.room = nameToSet;
+        await this.dataIo.setData(this.minions).catch(() => {
+            throw new Error('fail to save minion new room name update request');
+        });
+    }
+    /**
      * Update minion auto turn off timeout.
      * @param minionId minion to timeout.
      * @param setAutoTurnOffMS ms to set (or -1/undefined to disable).

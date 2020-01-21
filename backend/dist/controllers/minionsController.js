@@ -21,6 +21,12 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
         return await timelineBl_1.TimelineBlSingleton.getTimeline();
     }
     /**
+     * Power off all minions
+     */
+    async powerAllOff() {
+        return await minionsBl_1.MinionsBlSingleton.powerAllOff();
+    }
+    /**
      * Update minion name.
      * @param minionId Minion id.
      * @param name Minion new name to set.
@@ -29,8 +35,16 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
         return await minionsBl_1.MinionsBlSingleton.renameMinion(minionId, minionRename.name);
     }
     /**
+     * Update minion room name.
+     * @param minionId Minion id.
+     * @param roomName Minion room name to set.
+     */
+    async renameRoom(minionId, roomName) {
+        return await minionsBl_1.MinionsBlSingleton.setMinionRoom(minionId, roomName.room);
+    }
+    /**
      * Update minion auto turns off timeout.
-     * @param minionId Minon id.
+     * @param minionId Minion id.
      * @param setTimeout Timeout property.
      */
     async setMinionTimeout(minionId, setTimeout) {
@@ -38,7 +52,7 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
     }
     /**
      * Update minion auto turns off timeout.
-     * @param minionId Minon id.
+     * @param minionId Minion id.
      * @param setCalibrate Timeout property.
      */
     async setMinionCalibrate(minionId, setCalibrate) {
@@ -69,7 +83,7 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
     }
     /**
      * Delete minion from the system.
-     * @param minionId Minon id.
+     * @param minionId Minion id.
      */
     async deleteMinion(minionId) {
         return await minionsBl_1.MinionsBlSingleton.deleteMinion(minionId);
@@ -83,7 +97,7 @@ let MinionsController = class MinionsController extends tsoa_1.Controller {
     }
     /**
      * Notify minion status changed by ifttt webhook (https://ifttt.com/maker_webhooks).
-     * @param minionId Minon id.
+     * @param minionId Minion id.
      * @param iftttOnChanged Minion key amd status to set.
      */
     async notifyMinionStatusChanged(minionId, iftttOnChanged) {
@@ -143,9 +157,22 @@ __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),
     tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Put('power-off')
+], MinionsController.prototype, "powerAllOff", null);
+__decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
     tsoa_1.Put('rename/{minionId}'),
     __param(1, tsoa_1.Body())
 ], MinionsController.prototype, "renameMinion", null);
+__decorate([
+    tsoa_1.Security('userAuth'),
+    tsoa_1.Security('adminAuth'),
+    tsoa_1.Response(501, 'Server error'),
+    tsoa_1.Put('room/{minionId}'),
+    __param(1, tsoa_1.Body())
+], MinionsController.prototype, "renameRoom", null);
 __decorate([
     tsoa_1.Security('userAuth'),
     tsoa_1.Security('adminAuth'),
