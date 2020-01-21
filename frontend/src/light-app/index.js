@@ -56,13 +56,59 @@ let getMinionsFail = msg => {
 };
 
 /**
+ * Generate HTML button for given minion
+ * @param {*} minion A minion
+ * @returns A DOM button object for the given minion   
+ */
+let generateMinionButton = minion => {
+  /** Create button element */
+  const minionButton = document.createElement("a");
+
+  /** Insert name */
+  minionButton.innerText = minion.name;
+
+  try {
+    /** Set correct class for current status */
+    minionButton.className = `button button--ghost button--ghost--${
+      minion.minionStatus[minion.minionType].status
+    }`;
+
+    if (!minion.isProperlyCommunicated) {
+      minionButton.className = `button button--ghost button--ghost--err`;
+    }
+  } catch (error) {
+    minion.minionStatus[minion.minionType] = {
+      status: "off"
+    };
+    minionButton.className = `button button--ghost button--ghost--err`;
+  }
+
+  /** Toggle status on click */
+  minionButton.onclick = () => {
+    buttonClicked(minionButton, minion);
+  };
+
+  return minionButton;
+};
+
+/**
  * Generate buttons of each minion.
  * @param {*} minions Minions array
  */
 let generateMinions = minions => {
   minions.sort((m1, m2) => {
+    if (m1.room !== m2.room) {
+      return m1.room < m2.room ? -1 : 1;
+    }
     return m1.name < m2.name ? -1 : 1;
   });
+
+  const rooms = minions.reduce((rooms, minion) => {
+    minion.room = minion.room ? minion.room : "";
+    rooms[minion.room] = rooms[minion.room] ? rooms[minion.room] : [];
+    rooms[minion.room].push(minion);
+    return rooms;
+  }, {});
 
   /** Get the list holder element */
   const welcomeElement = document.getElementById("welcome-message");
@@ -74,36 +120,22 @@ let generateMinions = minions => {
   /** Set list empty */
   listElement.innerHTML = "";
 
-  for (const minion of minions) {
-    /** Create button element */
-    const minionButton = document.createElement("a");
+  for (const [roomName, roomMinions] of Object.entries(rooms)) {
+    const roomDiv = document.createElement("div");
+    roomDiv.className = "room";
 
-    /** Insert name */
-    minionButton.innerText = minion.name;
+    const roomTitle = document.createElement("h3");
+    roomTitle.className = "room-name";
+    roomTitle.innerText = roomName;
 
-    try {
-      /** Set correct class for current status */
-      minionButton.className = `button button--ghost button--ghost--${
-        minion.minionStatus[minion.minionType].status
-      }`;
+    roomDiv.appendChild(roomTitle);
 
-      if (!minion.isProperlyCommunicated) {
-        minionButton.className = `button button--ghost button--ghost--err`;
-      }
-    } catch (error) {
-      minion.minionStatus[minion.minionType] = {
-        status: "off"
-      };
-      minionButton.className = `button button--ghost button--ghost--err`;
+    for (const minion of roomMinions) {
+      roomDiv.appendChild(generateMinionButton(minion));
     }
 
-    /** Toggle status on click */
-    minionButton.onclick = () => {
-      buttonClicked(minionButton, minion);
-    };
-
     /** Add it to buttons list */
-    listElement.appendChild(minionButton);
+    listElement.appendChild(roomDiv);
   }
 };
 

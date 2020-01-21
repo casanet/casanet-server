@@ -16,6 +16,14 @@ body {
   text-transform: uppercase;
 }
 
+.room {
+  margin-top: 3em;
+}
+
+.room-name {
+  color: #797990;
+}
+
 .button {
   text-decoration: none;
   cursor: pointer;
@@ -43,10 +51,6 @@ body {
 .button--ghost--on {
   border-color: #6dbdb9 !important;
   color: #6dbdb9 !important;
-}
-
-.button--ghost--err:before {
-  content: "! ";
 }
 
 .button--ghost--err {
