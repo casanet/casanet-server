@@ -266,6 +266,7 @@ let powerAllOff = () => {
     }
 
     alert("POWER OFF FAIL");
+    setViewPowerOn();
   };
   xmlhttp.open("PUT", `${environments.API_URL}/minions/power-off`, true);
   xmlhttp.send();
