@@ -257,6 +257,7 @@ let powerAllOff = () => {
   setViewPowerSync();
 
   const xmlhttp = new XMLHttpRequest();
+  xmlhttp.withCredentials = true;
   xmlhttp.onload = () => {
     if (xmlhttp.readyState === 4 && xmlhttp.status == 204) {
       isSync = false;
