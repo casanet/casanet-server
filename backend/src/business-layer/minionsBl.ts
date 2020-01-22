@@ -300,10 +300,6 @@ export class MinionsBl {
 
     for (const minion of this.minions) {
       try {
-        if (minion.minionStatus[minion.minionType].status === 'off') {
-          continue;
-        }
-
         const statusToSet = DeepCopy<MinionStatus>(minion.minionStatus);
         statusToSet[minion.minionType].status = 'off';
         await this.setMinionStatus(minion.minionId, statusToSet);
