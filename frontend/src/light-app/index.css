@@ -75,6 +75,14 @@ body {
   color: #737471;
 }
 
+#welcome-message {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 20vh;
+  color: #6dbdb9;
+}
+
 .room {
   margin-top: 30px;
 }
