@@ -5,6 +5,7 @@
 ## Getting started
 
 - Create a new branch and commit changes into it.
+- Run `npm run test` command, to make sure that everything is OK.
 - Open a PR to the `development` branch (not master).
 
-Thank a lot!
+Thanks a lot!
