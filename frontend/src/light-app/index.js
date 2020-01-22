@@ -120,7 +120,7 @@ let generateMinions = minions => {
 
   /** Get the list holder element */
   const welcomeElement = document.getElementById("welcome-message");
-  welcomeElement.innerHTML = "";
+  welcomeElement.className = "hide";
 
   /** Get the list holder element */
   const listElement = document.getElementById("minions-container");
