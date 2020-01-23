@@ -169,20 +169,20 @@ export class SettingsService {
   }
 
   public async waitForVersionUpdate(): Promise<ProgressStatus> {
-    try {
-      let updateStatus: ProgressStatus = 'inProgress';
-      while (updateStatus === 'inProgress') {
+    let updateStatus: ProgressStatus = 'inProgress';
+    while (updateStatus === 'inProgress') {
+      try {
         const currentStatus = await this.httpClient.get<VersionUpdateStatus>(`${environment.baseUrl}/version/update-status`, {
           withCredentials: true
         }).toPromise();
         updateStatus = currentStatus.updateStatus;
-        await this.sleep(5000);
+      } catch (error) {
+        // In case the server is temporary offline consider it as 'inProgress'
+        updateStatus = 'inProgress';
       }
-
-      return updateStatus;
-    } catch (error) {
-
+      await this.sleep(5000);
     }
+    return updateStatus;
   }
 
   private sleep(delayMs: number): Promise<void> {

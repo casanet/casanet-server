@@ -302,7 +302,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
         await swal({
             type: 'success',
             title: `${this.translatePipe.transform('SUCCESSFULLY_UPDATED_TO')} ${this.currentVersionName}`,
-            text: this.translatePipe.transform('RESTART_REQUIRED_FOR_THE_VERSION_UPDATE_COMPLETE'),
             confirmButtonText: 'OK'
         });
     }
