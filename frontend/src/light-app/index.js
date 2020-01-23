@@ -107,7 +107,7 @@ let generateMinions = minions => {
   /** Set empty room to the undefined rooms */
   minions = minions.map(m => {
     m.room = m.room ? m.room : "";
-    return;
+    return m;
   });
 
   /** Sort minions by room and name */
