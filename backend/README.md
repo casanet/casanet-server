@@ -13,7 +13,7 @@ This is the casa-net local server to communicate and control IoT devices in a ho
 1. Navigate in a command line to `$/casanet-server/backend` and press `npm ci`.
 1. Press `node dist/index.js` to run the server.
 
-Then open the browser in `http://127.0.0.1:3000`.
+Then open the browser in `http://127.0.0.1`.
 
 ### Configure server
 
@@ -99,6 +99,15 @@ So to avoid recording a lot of commands one by one there is another project to s
 The `rf-commands-repo` URL placed in the `casanet.json` configuration file.
 
 If you want to update my repo, feel free to contact me.
+
+## Version update
+There is an API to update the version to the last commit in the `master` branch.
+
+To run a command after the files update to apply changes,
+set your command in `RESET_MACHINE_ON_VERSION_UPDATE` environment, and the backend will invoke it after version update.
+Usually, it is something like `sudo reboot` etc.
+
+*THIS IS A DANGEROUS ACTION! BE SURE THAT KNOW WHAT IT WILL HAPPENED WHEN THIS COMMAND WILL EXECUTED*
 
 ## API
 
