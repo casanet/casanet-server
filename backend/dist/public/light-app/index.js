@@ -104,6 +104,13 @@ let generateMinionButton = minion => {
  * @param {*} minions Minions array
  */
 let generateMinions = minions => {
+  /** Set empty room to the undefined rooms */
+  minions = minions.map(m => {
+    m.room = m.room ? m.room : "";
+    return m;
+  });
+
+  /** Sort minions by room and name */
   minions.sort((m1, m2) => {
     if (m1.room !== m2.room) {
       return m1.room < m2.room ? -1 : 1;
@@ -111,6 +118,7 @@ let generateMinions = minions => {
     return m1.name < m2.name ? -1 : 1;
   });
 
+  /** Reduce minions to room groups */
   const rooms = minions.reduce((rooms, minion) => {
     minion.room = minion.room ? minion.room : "";
     rooms[minion.room] = rooms[minion.room] ? rooms[minion.room] : [];
@@ -120,7 +128,7 @@ let generateMinions = minions => {
 
   /** Get the list holder element */
   const welcomeElement = document.getElementById("welcome-message");
-  welcomeElement.innerHTML = "";
+  welcomeElement.className = "hide";
 
   /** Get the list holder element */
   const listElement = document.getElementById("minions-container");
@@ -257,6 +265,7 @@ let powerAllOff = () => {
   setViewPowerSync();
 
   const xmlhttp = new XMLHttpRequest();
+  xmlhttp.withCredentials = true;
   xmlhttp.onload = () => {
     if (xmlhttp.readyState === 4 && xmlhttp.status == 204) {
       isSync = false;
@@ -265,6 +274,7 @@ let powerAllOff = () => {
     }
 
     alert("POWER OFF FAIL");
+    setViewPowerOn();
   };
   xmlhttp.open("PUT", `${environments.API_URL}/minions/power-off`, true);
   xmlhttp.send();

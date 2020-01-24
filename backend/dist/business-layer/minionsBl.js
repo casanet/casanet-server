@@ -254,9 +254,6 @@ class MinionsBl {
         logger_1.logger.info(`Setting all minions power off ...`);
         for (const minion of this.minions) {
             try {
-                if (minion.minionStatus[minion.minionType].status === 'off') {
-                    continue;
-                }
                 const statusToSet = deepCopy_1.DeepCopy(minion.minionStatus);
                 statusToSet[minion.minionType].status = 'off';
                 await this.setMinionStatus(minion.minionId, statusToSet);

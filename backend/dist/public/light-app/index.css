@@ -13,10 +13,43 @@ body {
   display: none;
 }
 
+.app-bar-container {
+  background-color: #3b3b47;
+  display: inline-flex;
+  position: fixed;
+  height: 80px;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  align-items: center;
+  text-align: center;
+}
+
 .power-off-container {
   position: absolute;
-  margin: 0;
+  margin: 10px;
   padding: 0;
+}
+
+.dashboard-link-container {
+  position: absolute;
+  margin-left: calc(50vw - 70px);
+}
+
+.casanet-title {
+  color: #6dbdb9;
+  font-family: helvetica;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.casanet-title:hover {
+  color: #126d68;
+  cursor: pointer;
+}
+
+#minions-container {
+  margin-top: 80px;
 }
 
 #power-on {
@@ -42,23 +75,21 @@ body {
   color: #737471;
 }
 
-.dashboard-link {
-  color: rgb(124, 124, 182);
-  font-family: helvetica;
-  text-decoration: none;
-  text-transform: uppercase;
+#welcome-message {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 20vh;
+  color: #6dbdb9;
 }
 
-.dashboard-link:hover {
-  color: rgb(155, 155, 232);
-  cursor: pointer;
-}
 .room {
-  margin-top: 3em;
+  margin-top: 30px;
 }
 
 .room-name {
   color: #797990;
+  margin-bottom: 2px;
 }
 
 .button {
@@ -108,10 +139,10 @@ body {
   box-shadow: inset 1px 0 1px #33333d;
 }
 
-.sw-container {
-  position: absolute;
-  bottom: 0;
-  text-align: left;
+.bottom-bar {
+  display: inline-block;
+  position: fixed;
+  bottom: 5px;
   color: rgb(155, 155, 232);
   font-family: helvetica;
   text-decoration: none;
@@ -119,7 +150,12 @@ body {
   font-size: xx-small;
 }
 
-.sw-command:hover {
+.sw-container {
+  left: 10px;
+  text-align: left;
+}
+
+.bottom-bar-command:hover {
   color: rgb(97, 97, 192);
   cursor: pointer;
 }

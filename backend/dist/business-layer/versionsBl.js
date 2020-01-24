@@ -13,6 +13,7 @@ class VersionsBl {
      * Update CASA-net application to the latest version.
      * Step 1: pull changes from remote repo.
      * Step 2: install the new dependencies update via npm.
+     * Step 3: if there is a command to apply the changes (such as 'reboot'), run it.
      */
     async updateToLastVersion() {
         /** Get last update from git repo */
@@ -31,8 +32,8 @@ class VersionsBl {
             }
             /** Pull last version from the GitHub repo. */
             const pullResults = await this.git.pull('origin', 'master', { '--rebase': 'false' });
-            logger_1.logger.info(`pull last version pulld ${pullResults.summary.changes} changes`);
-            /** If thers is no any change just return. */
+            logger_1.logger.info(`pull last version pulled ${pullResults.summary.changes} changes`);
+            /** If there is no any change just return. */
             if (pullResults.summary.changes === 0) {
                 this.updateStatus = 'finished';
                 return {
@@ -63,7 +64,7 @@ class VersionsBl {
         };
     }
     /**
-     * Get current *localy* version.
+     * Get current *locally* version.
      * @returns Current version.
      */
     async getCurrentVersion() {
@@ -94,11 +95,33 @@ class VersionsBl {
             logger_1.logger.info(`starting NPM install, it's can take a while`);
             const installationResults = await child_process_promise_1.exec('npm ci');
             logger_1.logger.info(`installing last dependencies results: ${installationResults.stdout}`);
+            /** Apply version changes */
+            await this.applyVersionChanges();
             this.updateStatus = 'finished';
         }
         catch (error) {
             this.updateStatus = 'fail';
             logger_1.logger.warn(`Installing last dependencies fail ${error.stdout}`);
+        }
+    }
+    /**
+     * Apply the version update changes, usually its by restarting machine/process
+     */
+    async applyVersionChanges() {
+        /** THIS IS A DANGERS ACTION! BE SURE THAT USER KNOW WHAT IT IS SET AS RESET COMMAND */
+        const { RESET_MACHINE_ON_VERSION_UPDATE } = process.env;
+        if (RESET_MACHINE_ON_VERSION_UPDATE) {
+            try {
+                logger_1.logger.info(`executing RESET_MACHINE_ON_VERSION_UPDATE='${RESET_MACHINE_ON_VERSION_UPDATE}' command...`);
+                /**
+                 * Execute a command to apply the version changes
+                 * For example in raspberry pi machine the command can be 'sudo reboot'.
+                 */
+                await child_process_promise_1.exec(RESET_MACHINE_ON_VERSION_UPDATE);
+            }
+            catch (error) {
+                logger_1.logger.warn(`executing RESET_MACHINE_ON_VERSION_UPDATE=${RESET_MACHINE_ON_VERSION_UPDATE}' command failed ${JSON.stringify(error)}`);
+            }
         }
     }
 }
