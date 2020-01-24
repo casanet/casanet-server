@@ -147,7 +147,8 @@ To see a simple using scenario go to [using scenario](./docs/using-scenario.md) 
 To explorer the full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/swagger.yaml` in explorer input.
 
 ## IFTTT integration
-The [IFTTT](https://ifttt.com/discover) ecosystem is great ;). 
+The [IFTTT](https://ifttt.com/discover) ecosystem is great ;)
+
 Now, invoking triggers when a minion turned on/off or turning on/off minion when any IFTTT trigger invoked is possible.
 
 The integration is using [WebHooks](https://ifttt.com/maker_webhooks) API.
