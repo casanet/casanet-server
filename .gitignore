@@ -1,6 +1,7 @@
 node_modules/
 encryption/
 data/
+dist/
 logs/
 .env
 coverage
