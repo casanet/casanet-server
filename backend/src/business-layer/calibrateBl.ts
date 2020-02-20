@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { MinionStatus } from '../models/sharedInterfaces';
+import { CalibrationMode, Minion, MinionFeed, MinionStatus } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
@@ -7,8 +7,8 @@ import { MinionsBl, MinionsBlSingleton } from './minionsBl';
 
 const CALIBRATE_INTERVAL_ACTIVATION = moment.duration(30, 'seconds');
 
-export class CalibrateBl {
-  // Dependecies
+class CalibrateBl {
+  // Dependencies
   private minionsBl: MinionsBl;
 
   /** Map last minion calibrate timestamp */
@@ -32,7 +32,7 @@ export class CalibrateBl {
 
     for (const minion of await this.minionsBl.getMinions()) {
       /** If minion set calibrate to off (undefined/0), pass it. */
-      if (!minion.calibrationCycleMinutes) {
+      if (!minion.calibration || !minion.calibration.calibrationCycleMinutes) {
         continue;
       }
 
@@ -40,24 +40,13 @@ export class CalibrateBl {
       if (
         this.lastCalibrateMap[minion.minionId] &&
         now.getTime() - this.lastCalibrateMap[minion.minionId].getTime() <
-          moment.duration(minion.calibrationCycleMinutes, 'minutes').asMilliseconds()
+          moment.duration(minion.calibration.calibrationCycleMinutes, 'minutes').asMilliseconds()
       ) {
         continue;
       }
 
       /** Calibrate minion status */
-
-      /**
-       * Get the minion current status, then copy status *by val*
-       */
-      const minionStatus = DeepCopy<MinionStatus>(minion.minionStatus);
-
-      try {
-        await this.minionsBl.setMinionStatus(minion.minionId, minionStatus);
-        logger.debug(`Calibrate minion ${minion.minionId} successfully acvtivated`);
-      } catch (error) {
-        logger.warn(`Calibrate minion ${minion.minionId} fail, ${JSON.stringify(error)}`);
-      }
+      await this.calibrateMinion(minion);
 
       /** Then keep the calibrate timestamp */
       this.lastCalibrateMap[minion.minionId] = now;
@@ -69,7 +58,32 @@ export class CalibrateBl {
     }
   }
 
-  private async initActivation(): Promise<void> {
+  private async calibrateMinion(minion: Minion) {
+    /**
+     * Get the minion current status, then copy status *by val*
+     */
+    const minionStatus = DeepCopy<MinionStatus>(minion.minionStatus);
+
+    switch (minion.calibration.calibrationMode) {
+      case 'LOCK_ON':
+        minionStatus[minion.minionType].status = 'on';
+        break;
+      case 'LOCK_OFF':
+        minionStatus[minion.minionType].status = 'off';
+        break;
+      default:
+        break;
+    }
+
+    try {
+      await this.minionsBl.setMinionStatus(minion.minionId, minionStatus);
+      logger.debug(`Calibrate minion ${minion.minionId} successfully acvtivated`);
+    } catch (error) {
+      logger.warn(`Calibrate minion ${minion.minionId} fail, ${JSON.stringify(error)}`);
+    }
+  }
+
+  private initActivation() {
     /**
      * Finally start timeout activation
      */
@@ -82,6 +96,17 @@ export class CalibrateBl {
     }, CALIBRATE_INTERVAL_ACTIVATION.asMilliseconds());
 
     logger.info('Calibrate module init done.');
+
+    /**
+     * If a status update arrived from the physical devices that not match the current
+     * LOCK value, sent back the LOCKed status.
+     */
+    this.minionsBl.minionFeed.subscribe((minionFeed: MinionFeed) => {
+      if (!minionFeed || minionFeed.event !== 'update') {
+        return;
+      }
+      this.calibrateMinion(minionFeed.minion);
+    });
   }
 }
 
