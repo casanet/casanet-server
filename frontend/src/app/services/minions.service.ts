@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Minion, MinionStatus, MinionFeed, DeviceKind, MinionTimeline, CommandsRepoDevice, ProgressStatus, ScaningStatus } from '../../../../backend/src/models/sharedInterfaces';
+import {
+	Minion,
+	MinionStatus,
+	MinionFeed,
+	MinionTimeline,
+	CommandsRepoDevice,
+	ProgressStatus,
+	ScaningStatus,
+	MinionCalibrate
+} from '../../../../backend/src/models/sharedInterfaces';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
@@ -300,9 +309,9 @@ export class MinionsService {
 		}
 	}
 
-	public async setCalibrate(minion: Minion, calibrate: number) {
+	public async setCalibrate(minion: Minion, calibration: MinionCalibrate) {
 		try {
-			await this.httpClient.put(`${environment.baseUrl}/minions/calibrate/${minion.minionId}`, { calibrationCycleMinutes: calibrate }, {
+			await this.httpClient.put(`${environment.baseUrl}/minions/calibrate/${minion.minionId}`, calibration, {
 				withCredentials: true
 			}).toPromise();
 		} catch (error) {
