@@ -20,13 +20,13 @@ import {
   ErrorResponse,
   IftttOnChanged,
   Minion,
+  MinionCalibrate,
   MinionRename,
   MinionSetRoomName,
   MinionStatus,
   MinionTimeline,
   ScaningStatus,
   SetMinionAutoTurnOff,
-  SetMinionCalibrate,
   VersionUpdateStatus,
 } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
@@ -98,14 +98,14 @@ export class MinionsController extends Controller {
   /**
    * Update minion auto turns off timeout.
    * @param minionId Minion id.
-   * @param setCalibrate Timeout property.
+   * @param MinionCalibrate Timeout property.
    */
   @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Put('calibrate/{minionId}')
-  public async setMinionCalibrate(minionId: string, @Body() setCalibrate: SetMinionCalibrate): Promise<void> {
-    return await MinionsBlSingleton.setMinionCalibrate(minionId, setCalibrate.calibrationCycleMinutes);
+  public async setMinionCalibrate(minionId: string, @Body() calibration: MinionCalibrate): Promise<void> {
+    return await MinionsBlSingleton.setMinionCalibrate(minionId, calibration);
   }
 
   /**
