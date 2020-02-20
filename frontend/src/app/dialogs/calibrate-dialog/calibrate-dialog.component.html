@@ -6,12 +6,28 @@
   <br>
   <br>
 
-  <mat-form-field>
-    <input [disabled]="!isCalibrateActive" matInput type="number" min="1"
-      placeholder="{{ 'MINUTES_CYCLE' | translate }}" [(ngModel)]="minutes">
-  </mat-form-field>
+  <div *ngIf="isCalibrateActive">
+    <div>
+      <p>{{ 'CALIBRATION_MODE' | translate }} </p>
+      <mat-radio-group class="mode-radio-group" aria-label="Select calibration mode" [(ngModel)]="mode">
+        <mat-radio-button class="mode-radio-button" color="primary" value="AUTO">{{ 'AUTO' | translate }}
+        </mat-radio-button>
+        <mat-radio-button class="mode-radio-button" color="primary" value="LOCK_ON">{{ 'LOCK_ON' | translate }}
+        </mat-radio-button>
+        <mat-radio-button class="mode-radio-button" color="primary" value="LOCK_OFF">{{ 'LOCK_OFF' | translate }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>{{ 'MINUTES_CYCLE' | translate }}</mat-label>
+        <input [disabled]="!isCalibrateActive" matInput type="number" min="1" step="1" [(ngModel)]="minutes">
+      </mat-form-field>
+    </div>
+  </div>
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]="data">{{ 'CLOSE' | translate }}</button>
-  <button mat-button cdkFocusInitial (click)="saveCalibrate()">{{ 'SUBMIT' | translate }}</button>
+  <button mat-button cdkFocusInitial [disabled]="!minutes && isCalibrateActive"
+    (click)="saveCalibrate()">{{ 'SUBMIT' | translate }}</button>
 </div>

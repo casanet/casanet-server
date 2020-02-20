@@ -83,7 +83,7 @@ export class MinionsComponent implements OnInit, OnDestroy {
 					existMinion.name = minion.name;
 					existMinion.room = minion.room;
 					existMinion.minionAutoTurnOffMS = minion.minionAutoTurnOffMS;
-					existMinion.calibrationCycleMinutes = minion.calibrationCycleMinutes;
+					existMinion.calibration = minion.calibration;
 					existMinion.device = minion.device;
 					existMinion.minionStatus = minion.minionStatus;
 					this.createUpdateSet(existMinion);
