@@ -468,16 +468,32 @@ export declare interface SetMinionAutoTurnOff {
   setAutoTurnOffMS: number;
 }
 
+export declare type CalibrationMode =
+  /** Lock device to 'on' mode even if its will changed by the physical interface */
+  | 'LOCK_ON'
+  /** Lock device to 'off' mode even if its will changed by the physical interface */
+  | 'LOCK_OFF'
+  /**
+   * Just make sure that casanet and the physical device have the same status
+   * By sending the last casanet status to the device.
+   */
+  | 'AUTO';
+
 /**
  * Used to change the minion calibration property value.
  */
-export declare interface SetMinionCalibrate {
+export declare interface MinionCalibrate {
   /**
    * Minutes to calibrate status, set 0 to turn off calibration
    * @minimum 0
    * @isInt true
    */
   calibrationCycleMinutes: number;
+
+  /**
+   * The calibration mode to calibrate
+   */
+  calibrationMode: CalibrationMode;
 }
 
 /**
@@ -542,9 +558,9 @@ export declare interface Minion {
 
   /**
    * Calibrate the physical device with the server known status, in a periodic cycle,
-   * if not set or set to 0, never calibrate.
+   * and allow locking the status.
    */
-  calibrationCycleMinutes?: number;
+  calibration?: MinionCalibrate;
 
   /**
    * Represents the room where the minion is located at.

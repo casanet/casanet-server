@@ -291,6 +291,25 @@ definitions:
                 $ref: '#/definitions/ColorLight'
                 x-nullable: true
         type: object
+    MinionCalibrate:
+        description: 'Used to change the minion calibration property value.'
+        properties:
+            calibrationCycleMinutes:
+                type: integer
+                format: int32
+                description: 'Minutes to calibrate status, set 0 to turn off calibration'
+                minimum: 0
+            calibrationMode:
+                type: string
+                enum:
+                    - LOCK_ON
+                    - LOCK_OFF
+                    - AUTO
+                description: 'The calibration mode to calibrate'
+        required:
+            - calibrationCycleMinutes
+            - calibrationMode
+        type: object
     Minion:
         description: "Represents a minion in system.\r\nMinion is a logic device in the system, meaning that a device is a physical device and minion is a logic device\r\nthat uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device\r\nfor a few minions, one to central AC control and second for secondary AC control\r\nso in it will be two totally different minions that use one physical device."
         properties:
@@ -328,10 +347,9 @@ definitions:
                 format: double
                 description: "Auto turns  off duration, *if* set member value then the minion will turn off in X ms after turning it on,\r\nUsed for example in boiler minion etc."
                 x-nullable: true
-            calibrationCycleMinutes:
-                type: number
-                format: double
-                description: "Calibrate the physical device with the server known status, in a periodic cycle,\r\nif not set or set to 0, never calibrate."
+            calibration:
+                $ref: '#/definitions/MinionCalibrate'
+                description: "Calibrate the physical device with the server known status, in a periodic cycle,\r\nand allow locking the status."
                 x-nullable: true
             room:
                 type: string
@@ -608,17 +626,6 @@ definitions:
                 description: 'The timeout duration in ms, to turn off set 0 as valse.'
         required:
             - setAutoTurnOffMS
-        type: object
-    SetMinionCalibrate:
-        description: 'Used to change the minion calibration property value.'
-        properties:
-            calibrationCycleMinutes:
-                type: integer
-                format: int32
-                description: 'Minutes to calibrate status, set 0 to turn off calibration'
-                minimum: 0
-        required:
-            - calibrationCycleMinutes
         type: object
     ScaningStatus:
         description: 'Scanning progress status'
@@ -1299,12 +1306,11 @@ paths:
                     required: true
                     type: string
                 -
-                    description: 'Timeout property.'
                     in: body
-                    name: setCalibrate
+                    name: calibration
                     required: true
                     schema:
-                        $ref: '#/definitions/SetMinionCalibrate'
+                        $ref: '#/definitions/MinionCalibrate'
     '/minions/rescan/{minionId}':
         post:
             operationId: RescanMinionStatus

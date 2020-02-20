@@ -1,5 +1,5 @@
 import { IDataIO } from '../models/backendInterfaces';
-import { ErrorResponse, Minion } from '../models/sharedInterfaces';
+import { ErrorResponse, Minion, MinionCalibrate } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
 const MINIONS_FILE_NAME = 'minions.json';
@@ -144,9 +144,9 @@ export class MinionsDal {
   /**
    * Update minion calibration property.
    * @param minionId minion to edit.
-   * @param calibrationCycleMinutes seconds to set (or 0 to disable).
+   * @param minionCalibrate seconds to set (or 0 to disable).
    */
-  public async updateMinionCalibrate(minionId: string, calibrationCycleMinutes: number): Promise<void> {
+  public async updateMinionCalibrate(minionId: string, minionCalibrate: MinionCalibrate): Promise<void> {
     const originalMinion = this.findMinion(minionId);
 
     if (!originalMinion) {
@@ -156,7 +156,7 @@ export class MinionsDal {
       } as ErrorResponse;
     }
 
-    originalMinion.calibrationCycleMinutes = calibrationCycleMinutes;
+    originalMinion.calibration = minionCalibrate;
 
     await this.dataIo.setData(this.minions).catch(() => {
       throw new Error('fail to save minion calibrate update request');

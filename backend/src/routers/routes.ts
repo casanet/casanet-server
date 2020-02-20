@@ -112,6 +112,12 @@ const models: TsoaRoute.Models = {
             "colorLight": { "ref": "ColorLight" },
         },
     },
+    "MinionCalibrate": {
+        "properties": {
+            "calibrationCycleMinutes": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "isInt": { "errorMsg": "true" } } },
+            "calibrationMode": { "dataType": "enum", "enums": ["LOCK_ON", "LOCK_OFF", "AUTO"], "required": true },
+        },
+    },
     "Minion": {
         "properties": {
             "minionId": { "dataType": "string" },
@@ -121,7 +127,7 @@ const models: TsoaRoute.Models = {
             "minionStatus": { "ref": "MinionStatus", "required": true },
             "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "minionAutoTurnOffMS": { "dataType": "double" },
-            "calibrationCycleMinutes": { "dataType": "double" },
+            "calibration": { "ref": "MinionCalibrate" },
             "room": { "dataType": "string" },
         },
     },
@@ -217,11 +223,6 @@ const models: TsoaRoute.Models = {
     "SetMinionAutoTurnOff": {
         "properties": {
             "setAutoTurnOffMS": { "dataType": "double", "required": true },
-        },
-    },
-    "SetMinionCalibrate": {
-        "properties": {
-            "calibrationCycleMinutes": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "isInt": { "errorMsg": "true" } } },
         },
     },
     "ScaningStatus": {
@@ -686,7 +687,7 @@ export function RegisterRoutes(app: express.Express) {
         function(request: any, response: any, next: any) {
             const args = {
                 minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                setCalibrate: { "in": "body", "name": "setCalibrate", "required": true, "ref": "SetMinionCalibrate" },
+                calibration: { "in": "body", "name": "calibration", "required": true, "ref": "MinionCalibrate" },
             };
 
             let validatedArgs: any[] = [];
