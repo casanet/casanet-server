@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { CalibrationMode, Minion, MinionFeed, MinionStatus } from '../models/sharedInterfaces';
+import { CalibrationMode, Minion, MinionFeed, MinionStatus, SwitchOptions } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
@@ -105,7 +105,37 @@ class CalibrateBl {
       if (!minionFeed || minionFeed.event !== 'update') {
         return;
       }
-      this.calibrateMinion(minionFeed.minion);
+
+      const minion = minionFeed.minion;
+
+      // Continue only if minion have a calibration property.
+      if (!minion.calibration || !minion.calibration.calibrationCycleMinutes) {
+        return;
+      }
+
+      // Calibrate only in case the update are violated the lock.
+
+      let legalStatus: SwitchOptions = 'on';
+      switch (minion.calibration.calibrationMode) {
+        case 'LOCK_ON':
+          legalStatus = 'on';
+          break;
+        case 'LOCK_OFF':
+          legalStatus = 'off';
+          break;
+        case 'AUTO':
+          legalStatus = minion.minionStatus[minion.minionType].status;
+          break;
+        default:
+          break;
+      }
+
+      // Only if the update is violated the lock
+      if (legalStatus === minion.minionStatus[minion.minionType].status) {
+        return;
+      }
+
+      this.calibrateMinion(minion);
     });
   }
 }
