@@ -14,7 +14,7 @@ export class VersionsBl {
   private git = simplegit();
   private updateStatus: ProgressStatus = 'finished';
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Update CASA-net application to the latest version.
@@ -41,7 +41,7 @@ export class VersionsBl {
         this.updateStatus = 'finished';
         return {
           alreadyUpToDate: true,
-        }
+        };
       }
     } catch (error) {
       this.updateStatus = 'fail';
@@ -103,8 +103,14 @@ export class VersionsBl {
       await this.git.reset('hard');
     }
 
+    /** Get the correct branch */
+    const branch = Configuration.runningMode === 'prod' ? 'master' : 'development';
+
+    /** switch the correct branch */
+    await this.git.checkout(branch);
+
     /** Pull last version from the GitHub repo. */
-    const pullResults = await this.git.pull('origin', 'master', { '--rebase': 'false' });
+    const pullResults = await this.git.pull('origin', branch, { '--rebase': 'false' });
 
     logger.info(`pull last version pulled ${pullResults.summary.changes} changes`);
 
@@ -197,7 +203,7 @@ export class VersionsBl {
     } catch (error) {
       logger.warn(
         `executing RESET_MACHINE_ON_VERSION_UPDATE=${RESET_MACHINE_ON_VERSION_UPDATE}' command failed ${error.stdout ||
-        error.message}`,
+          error.message}`,
       );
     }
   }
