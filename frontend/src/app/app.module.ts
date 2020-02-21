@@ -35,6 +35,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MglTimelineModule } from 'angular-mgl-timeline';
+import { MatRadioModule } from '@angular/material/radio';
 
 export function setupTranslateFactory(
   service: TranslateService): Function {
@@ -95,8 +96,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MatButtonModule,
     MatStepperModule,
     MatSelectModule,
+    MatRadioModule,
     MglTimelineModule,
-    localStorage.getItem('use-sw') !== 'true' ?  [] : ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    localStorage.getItem('use-sw') !== 'true' ? [] : ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     MinionsService,

@@ -8,6 +8,7 @@ import {
   IftttOnChanged,
   LocalNetworkDevice,
   Minion,
+  MinionCalibrate,
   MinionFeed,
   MinionStatus,
   ProgressStatus,
@@ -199,6 +200,23 @@ export class MinionsBl {
       } as ErrorResponse;
     }
 
+    /** Make sure the calibration lock are not ignored */
+    if (minion.calibration && minion.calibration.calibrationCycleMinutes) {
+      if (minionStatus[minion.minionType].status === 'on' && minion.calibration.calibrationMode === 'LOCK_OFF') {
+        throw {
+          responseCode: 7405,
+          message: 'cant change status, the current status are locked',
+        } as ErrorResponse;
+      }
+
+      if (minionStatus[minion.minionType].status === 'off' && minion.calibration.calibrationMode === 'LOCK_ON') {
+        throw {
+          responseCode: 7405,
+          message: 'cant change status, the current status are locked',
+        } as ErrorResponse;
+      }
+    }
+
     /**
      * set the status.
      */
@@ -265,7 +283,7 @@ export class MinionsBl {
   /**
    * Set minion calibrate property.
    */
-  public async setMinionCalibrate(minionId: string, calibrationCycleMinutes: number): Promise<void> {
+  public async setMinionCalibrate(minionId: string, minionCalibrate: MinionCalibrate): Promise<void> {
     const minion = this.findMinion(minionId);
     if (!minion) {
       throw {
@@ -274,12 +292,12 @@ export class MinionsBl {
       } as ErrorResponse;
     }
 
-    minion.calibrationCycleMinutes = calibrationCycleMinutes;
+    minion.calibration = minionCalibrate;
 
     /**
      * Save timeout update in Dal for next app running.
      */
-    this.minionsDal.updateMinionCalibrate(minionId, calibrationCycleMinutes).catch((error: ErrorResponse) => {
+    this.minionsDal.updateMinionCalibrate(minionId, minionCalibrate).catch((error: ErrorResponse) => {
       logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
     });
 
@@ -634,7 +652,7 @@ export class MinionsBl {
     if (deviceKind.isIdRequierd && !minionToCheck.device.deviceId) {
       return {
         responseCode: 3409,
-        message: 'id is requird',
+        message: 'id is required',
       };
     }
 
@@ -679,7 +697,7 @@ export class MinionsBl {
       await this.modulesManager.refreshModules();
       await this.readMinionsStatus();
     } catch (error) {
-      logger.warn(`Scannig minions ${scanNetwork ? 'with network' : ''} faild ${JSON.stringify(error)}`);
+      logger.warn(`Scanning minions ${scanNetwork ? 'with network' : ''} failed ${JSON.stringify(error)}`);
       this.scanningStatus = 'fail';
       return;
     }

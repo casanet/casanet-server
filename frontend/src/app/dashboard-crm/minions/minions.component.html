@@ -64,8 +64,8 @@
 
                 <div [style.margin-left]="('DIR' | translate) === 'ltr'? 'auto' : '0'"
                     [style.margin-right]="('DIR' | translate) === 'ltr'? '0' : 'auto'">
-                    <button *ngIf="minion.calibrationCycleMinutes" (mouseleave)="minion.other_keyup = false"
-                    matTooltip="{{'CALIBRATE_EACH' | translate}} {{ minion.calibrationCycleMinutes }} {{'MINUTES' | translate}}" (mousedown)="minion.other_keyup = true"
+                    <button *ngIf="minion.calibration && minion.calibration.calibrationCycleMinutes" (mouseleave)="minion.other_keyup = false"
+                    matTooltip="{{'CALIBRATION_MODE' | translate}}: '{{ minion.calibration.calibrationMode | translate}}', {{'CALIBRATE_EACH' | translate}} {{ minion.calibration.calibrationCycleMinutes }} {{'MINUTES' | translate}}" (mousedown)="minion.other_keyup = true"
                         mat-icon-button (click)="editCalibrate(minion)">
                         <mat-icon>slow_motion_video</mat-icon>
                     </button>
