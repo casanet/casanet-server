@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { CalibrationMode, Minion, MinionFeed, MinionStatus, SwitchOptions } from '../models/sharedInterfaces';
+import { Minion, MinionFeed, MinionStatus, SwitchOptions } from '../models/sharedInterfaces';
 import { DeepCopy } from '../utilities/deepCopy';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
@@ -40,7 +40,7 @@ class CalibrateBl {
       if (
         this.lastCalibrateMap[minion.minionId] &&
         now.getTime() - this.lastCalibrateMap[minion.minionId].getTime() <
-          moment.duration(minion.calibration.calibrationCycleMinutes, 'minutes').asMilliseconds()
+        moment.duration(minion.calibration.calibrationCycleMinutes, 'minutes').asMilliseconds()
       ) {
         continue;
       }
@@ -59,10 +59,16 @@ class CalibrateBl {
   }
 
   private async calibrateMinion(minion: Minion) {
+
+    // In case that minion dont have any status
+    const emptyStatus: MinionStatus = {};
+    emptyStatus[minion.minionType] = {} as unknown as any;
+    emptyStatus[minion.minionType].status = 'off';
+
     /**
      * Get the minion current status, then copy status *by val*
      */
-    const minionStatus = DeepCopy<MinionStatus>(minion.minionStatus);
+    const minionStatus = DeepCopy<MinionStatus>(minion.minionStatus || emptyStatus);
 
     switch (minion.calibration.calibrationMode) {
       case 'LOCK_ON':
@@ -77,7 +83,7 @@ class CalibrateBl {
 
     try {
       await this.minionsBl.setMinionStatus(minion.minionId, minionStatus);
-      logger.debug(`Calibrate minion ${minion.minionId} successfully acvtivated`);
+      logger.debug(`Calibrate minion ${minion.minionId} successfully activated`);
     } catch (error) {
       logger.warn(`Calibrate minion ${minion.minionId} fail, ${JSON.stringify(error)}`);
     }
@@ -91,7 +97,7 @@ class CalibrateBl {
       try {
         await this.calibrateActivation();
       } catch (error) {
-        logger.error(`Invoking calibration on minions fail, ${JSON.stringify(error)}`);
+        logger.error(`Invoking calibration on minions fail, ${error}`);
       }
     }, CALIBRATE_INTERVAL_ACTIVATION.asMilliseconds());
 
@@ -124,14 +130,14 @@ class CalibrateBl {
           legalStatus = 'off';
           break;
         case 'AUTO':
-          legalStatus = minion.minionStatus[minion.minionType].status;
+          legalStatus = minion.minionStatus[minion.minionType]?.status || 'on';
           break;
         default:
           break;
       }
 
       // Only if the update is violated the lock
-      if (legalStatus === minion.minionStatus[minion.minionType].status) {
+      if (legalStatus === minion.minionStatus[minion.minionType]?.status || 'on') {
         return;
       }
 
