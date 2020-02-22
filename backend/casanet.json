@@ -1,7 +1,7 @@
 {
     "defaultUser": {
         "displayName": "default user",
-        "email": "[machine-mac-address]@casa-net.online",
+        "email": "[machine-mac-address]@casanet.casa",
         "password": "casanet",
         "ignoreTfa": true,
         "scope": "adminAuth"
