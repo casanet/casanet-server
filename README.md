@@ -39,7 +39,7 @@ Link to the minimal page exist in the settings 'light version' section, or just 
 
 ## Project parts + technologies
 * **[Casanet server](./backend):**
-	* **Purpose:** control the IoT devices in a local home network.
+	* **Purpose:** Control the IoT devices in a local home network.
 	* **Technologies:** [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
 * **[Dashboard](./frontend):**
 	* **Purpose:** The dashboard app (frontend) to control the IoT devices (using casanet server API). 
@@ -65,10 +65,6 @@ Current supported Languages:
 
 Any support for other languages will be welcome.
 
-## How to use it?
-* Run casa-net server in a home network [see documentation](./backend/README.md).
-* Run casa-net remote server in cloud service [see documentation](https://github.com/casanet/remote-server).
-
 ## Accessing casanet server from the internet
 The server needs to run on local home network. So how does one access it via the local home network? How does one get access to the casanet local server from the internet?
 
@@ -79,6 +75,12 @@ Make sure that the IP address of your home is public and redirect ports in-home 
 
 #### Method 2: Using casa remote server
 The casa remote server is built for this, [casanet-remote](https://github.com/casanet/remote-server) run on cloud service and used to redirect API requests to the local server.
+
+## Runinng local casanet server in my computer
+
+To make it easy to use there are ready to use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file, It's recommanded to read the configuration section [here](./backend/README.md#configure-server). 
+
+In addination I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
 
 ## Supported IoT devices / protocols
 
@@ -167,10 +169,6 @@ See [step by step instruction ](./docs/IFTTT.md) to use IFTTT.
 Feel free to open an issue with a bug report or feature to develop for the next version.
 
 For any suggestions or help feel free to contact me.
-
-## Casanet server deployment
-Although there is no way to run the server in a docker container because the app should scan the real local network.
-I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
 
 ### The casanet server tested on
 * Windows 7
