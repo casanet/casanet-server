@@ -1,5 +1,7 @@
 import { exec } from 'child-process-promise';
-import * as simplegit from 'simple-git/promise';
+import * as fse from 'fs-extra';
+import * as path from 'path';
+import * as rp from 'request-promise';
 import { Configuration } from '../config';
 import {
   ErrorResponse,
@@ -11,17 +13,17 @@ import {
 import { logger } from '../utilities/logger';
 
 export class VersionsBl {
-  private git = simplegit();
   private updateStatus: ProgressStatus = 'finished';
 
-  constructor() {}
+  constructor() {
+  }
 
   /**
    * Update CASA-net application to the latest version.
-   * Step 1: Pull changes from remote repo.
-   * Step 2: Install the new dependencies update via npm (backend + frontend).
-   * Step 3: Rebuild project (backend + frontend).
-   * Step 4: if there is a command to apply the changes (such as 'reboot'), run it.
+   * Step 1: Check if there is a new version.
+   * Step 2: Download from GitHub releases the latest version bin file.
+   * Step 3: Replace the current bin file.
+   * Step 4: If there is a command to apply the changes (such as 'reboot'), run it.
    */
   public async updateToLastVersion(): Promise<UpdateResults> {
     /** Skip process if updating application already in progress */
@@ -32,12 +34,11 @@ export class VersionsBl {
     }
     this.updateStatus = 'inProgress';
 
-    /** Get last update from git repo */
+    let latestVersion: string;
     try {
-      const hasVersionUpdate = await this.fetchLastGitCommit();
-
-      /** If there was no any commit to update to */
-      if (!hasVersionUpdate) {
+      latestVersion = await this.getLatestVersionName();
+      const currentVersionInfo = await this.getCurrentVersion();
+      if (latestVersion === currentVersionInfo.version) {
         this.updateStatus = 'finished';
         return {
           alreadyUpToDate: true,
@@ -45,15 +46,15 @@ export class VersionsBl {
       }
     } catch (error) {
       this.updateStatus = 'fail';
-      logger.warn(`Pulling last change from remote repo fail ${error.message}`);
+      logger.warn(`Pulling last change from remote repo releases fail ${error.message}`);
       throw {
         responseCode: 7501,
-        message: 'Pulling last change from remote repo fail',
+        message: 'Pulling last change from remote releases repo fail',
       } as ErrorResponse;
     }
 
     /** Run async function *without* awaiting for it, to process the update build in the background */
-    this.updateVersionInBackground();
+    this.updateVersionInBackground(latestVersion);
 
     return {
       alreadyUpToDate: false,
@@ -73,16 +74,14 @@ export class VersionsBl {
    */
   public async getCurrentVersion(): Promise<VersionInfo> {
     try {
-      const tags = await this.git.tags();
-      const commintHash = await this.git.revparse(['--short', 'HEAD']);
-      const rawTimestamp = await this.git.show(['-s', '--format=%ct']);
+      let versionFilePath: string;
+      if (Configuration.runningMode === 'prod') {
+        versionFilePath = path.join(__dirname, '../', 'versionInfo.json');
+      } else {
+        versionFilePath = path.join(__dirname, '../../dist', 'versionInfo.json');
+      }
 
-      const timestamp = +rawTimestamp * 1000;
-      return {
-        version: tags.latest,
-        commintHash,
-        timestamp,
-      };
+      return await fse.readJSON(versionFilePath);
     } catch (error) {
       logger.warn(`Getting latest version (tag) fail ${error.message}`);
       throw {
@@ -92,94 +91,85 @@ export class VersionsBl {
     }
   }
 
-  /**
-   * Fetch last git commit from the remote repo.
-   * @returns True if there was version update.
-   */
-  private async fetchLastGitCommit(): Promise<boolean> {
-    /** Clean up the workspace, this is a dangerous part!!! it will remove any files change. */
-    if (Configuration.runningMode === 'prod') {
-      /** clean all workstation to the HEAD image. to allow the git pull. */
-      await this.git.reset('hard');
+  private getOperationSystemExecutionName(): string {
+    let osExtension: string;
+    switch (process.platform) {
+      case 'darwin':
+        osExtension = 'macos';
+        break;
+      case 'win32':
+        osExtension = 'win.exe';
+        break;
+      case 'linux':
+        osExtension = 'linux';
+        break;
     }
+    return `casanet-local-server-${osExtension}`;
+  }
 
-    /** Get the correct branch */
-    const branch = Configuration.runningMode === 'prod' ? 'master' : 'development';
-
-    /** switch the correct branch */
-    await this.git.checkout(branch);
-
-    /** Pull last version from the GitHub repo. */
-    const pullResults = await this.git.pull('origin', branch, { '--rebase': 'false' });
-
-    logger.info(`pull last version pulled ${pullResults.summary.changes} changes`);
-
-    /** If there is no any change just return. */
-    if (pullResults.summary.changes === 0) {
-      /** Mark that there is no commit to update to */
-      return false;
+  private async downloadNewVersion(newVersion: string) {
+    const tempDir = './temp';
+    if (fse.existsSync(tempDir)) {
+      await fse.remove(tempDir);
+      logger.info(`[version] "${tempDir}" directory successfully deleted`);
     }
+    await fse.mkdir(tempDir);
+    logger.info(`[version] directory "${tempDir}" successfully created`);
 
-    /** Fetch new tags if exist in remote. */
-    await this.git.fetch(['--tags', '--force']);
+    const options = {
+      uri: '',
+      headers: {
+        'User-Agent': 'Request-Promise',
+      },
+      encoding: null,
+    };
+    const executionName = this.getOperationSystemExecutionName();
+    options.uri = `https://github.com/casanet/casanet-server/releases/download/${newVersion}/${executionName}`;
+    logger.info(`[version] downloading "${executionName}" of "${newVersion}" version bin file...`);
+    const resExecution = await rp.get(options);
+    logger.info(`[version] download "${executionName}" bin file finished successfully`);
 
-    /** Mark that git HEAD updated */
-    return true;
+    logger.info(`[version] writing "${executionName}" bin file to "${tempDir}" directory`);
+    await fse.writeFile(`${tempDir}/${executionName}`, resExecution);
+
+    logger.info(`[version] coping "${executionName}" bin file from "${tempDir}" to the execution directory`);
+    await fse.copy(`${tempDir}/${executionName}`, `./${executionName}`);
+
+    // Set execution permission if necessary
+    if (process.platform !== 'win32') {
+      await fse.chmod(`./${executionName}`, '0777');
+    }
+  }
+
+  private async getLatestVersionName(): Promise<string> {
+    const options = {
+      uri: 'https://api.github.com/repos/casanet/casanet-server/releases/latest',
+      headers: {
+        'User-Agent': 'Request-Promise',
+      },
+      json: true, // Automatically parses the JSON string in the response
+    };
+    const res = await rp(options);
+    return res.tag_name;
   }
 
   /**
    * Run the version update process work async.
    */
-  private async updateVersionInBackground() {
-    /** Install the last dependencies updates in the background */
+  private async updateVersionInBackground(latestVersion: string) {
     try {
-      await this.updateVersionDependencies();
+      await this.downloadNewVersion(latestVersion);
     } catch (error) {
       this.updateStatus = 'fail';
-      logger.warn(`Installing last dependencies fail ${error.stdout || error.message}`);
-      return;
-    }
-
-    /** Build the last version in the background */
-    try {
-      await this.buildNewVersion();
-    } catch (error) {
-      this.updateStatus = 'fail';
-      logger.warn(`Installing last dependencies fail ${error.stdout || error.message}`);
+      logger.warn(`Downloading last version bin failed, ${error.message || error}`);
       return;
     }
 
     /** Apply version changes */
     await this.applyVersionChanges();
 
-    logger.info(`Updating to last version '${(await this.getCurrentVersion()).commintHash}' successfully done`);
+    logger.info(`Updating to last version '${latestVersion}' successfully done`);
     this.updateStatus = 'finished';
-  }
-
-  /**
-   * Install/update NPM dependencies in the background. it's can take a while.
-   */
-  private async updateVersionDependencies() {
-    logger.info(`starting NPM install, it's can take a while`);
-
-    const backendDepInstallResults = await exec('npm ci');
-    logger.info(`installing last backend dependencies results: ${backendDepInstallResults.stdout}`);
-
-    const frontendDepInstallResults = await exec('npm ci', { cwd: '../frontend' });
-    logger.info(`installing last frontend dependencies results: ${frontendDepInstallResults.stdout}`);
-  }
-
-  /**
-   * Build the project in the background. it's can take a while.
-   */
-  private async buildNewVersion() {
-    logger.info(`Starting project build, it's can take a while`);
-
-    const backendBuildResults = await exec('npm run build');
-    logger.info(`Building last backend project results: ${backendBuildResults.stdout}`);
-
-    const frontendBuildResults = await exec('npm run build', { cwd: '../frontend' });
-    logger.info(`Building last frontend project results: ${frontendBuildResults.stdout}`);
   }
 
   /**
@@ -189,7 +179,7 @@ export class VersionsBl {
     /** THIS IS A DANGERS ACTION! BE SURE THAT USER KNOW WHAT IT IS SET AS RESET COMMAND */
     const { RESET_MACHINE_ON_VERSION_UPDATE } = process.env;
     if (!RESET_MACHINE_ON_VERSION_UPDATE) {
-      logger.info(`There is no RESET_MACHINE_ON_VERSION_UPDATE env var, skipping after version update command`);
+      logger.info(`There is no "RESET_MACHINE_ON_VERSION_UPDATE" env var, skipping after version update command`);
       return;
     }
 
