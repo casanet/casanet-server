@@ -14,14 +14,14 @@ Then
 ### Set correct Time Zone
 ```sudo dpkg-reconfigure tzdata``` 
 
-### Install Node.js + NPM
+### Install Node.js + NPM (In case you wish to use the binary execution file, skip)
 ```sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -``` 
 
 Then
 
 ```sudo apt-get install -y nodejs```
 
-### Install Git (if not installed yet on the image)
+### Install Git (In case you wish to use the binary execution file, skip)
 ```sudo apt-get install -y git```
 
 ### Install tmux 
@@ -35,12 +35,20 @@ Then
 ```tmux new -s casanet -d```
 ### Connect to the new window
 ```tmux a -t casanet```
-### Clone the casanet server project
-```git clone https://github.com/casanet/casanet-server.git```
-### Go to the backend directory
-```cd casanet-server/backend/```
-### Install casanet server dependencies
-```npm ci```
+### Get the server
+- Download the linux binary execution (`casanet-local-server-linux` file) from [here](https://github.com/casanet/casanet-server/releases)
+- Download the `casanet.json` configuration file from [here](https://github.com/casanet/casanet-server/releases)
+- Download the environments example file from [here](https://github.com/casanet/casanet-server/releases)
+- Give `casanet-local-server-linux` file an execute permission (using `chmod -R 0777 ./casanet-local-server-linux`)
+
+#### If you wish to build the source-code
+- Run ```git clone https://github.com/casanet/casanet-server.git```
+- Go to the frontend directory ```cd casanet-server/frontend/```
+- Install casanet server dependencies ```npm ci```
+- Build the forntend by ```npm run build```
+- Go to the backend directory ```cd ../backend/``
+- Install casanet server dependencies ```npm ci```
+- Build the backend by ```npm run build```
 
 It is recommended to check the default environments of the server and change it by demand.
 for it copy the .env.example file and edit the real env:
@@ -71,8 +79,8 @@ case "$1" in
         killall node 
         tmux kill-session -t "casanet" 
         tmux new -s "casanet" -d 
-        tmux send-keys -t "casanet" "cd /root/casanet-server/backend" C-m 
-        tmux send-keys -t "casanet" "sudo node dist/index.js" C-m 
+        tmux send-keys -t "casanet" "cd /root" C-m m # Or the "./casanet-server/backend" if you use the source-code 
+        tmux send-keys -t "casanet" "sudo node ./casanet-local-server-linux" C-m # Or the "./dist/index.js" if you use the source-code
 ;; 
 'stop') 
         killall node 
