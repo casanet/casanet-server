@@ -26,7 +26,7 @@ The configuration is based on the environment variable.
 
 All variables with example value placed in the [.env.example](./.env.example) file.
 
-You can load the environment using a .env file.
+You can load the environment using a `.env` file.
 
 Also in the `casanet.json` file, you can edit the configuration of a few stuff (if not set by the environments variables).
 
@@ -106,7 +106,7 @@ The `rf-commands-repo` URL placed in the `casanet.json` configuration file.
 If you want to update my repo, feel free to contact me.
 
 ## Version update
-There is an API to update the version to the last commit in the `master` branch.
+There is an API to update the version to the latest release.
 
 To run a command after the files update to apply changes,
 set your command in `RESET_MACHINE_ON_VERSION_UPDATE` environment, and the backend will invoke it after version update.
