@@ -3,6 +3,7 @@ import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
 import * as forceSsl from 'express-force-ssl';
 import * as rateLimit from 'express-rate-limit';
+import * as fse from 'fs-extra';
 import { sanitizeExpressMiddleware } from 'generic-json-sanitizer';
 import * as helmet from 'helmet';
 import * as path from 'path';
@@ -70,8 +71,18 @@ class App {
     this.express.get('/', (req: express.Request, res: express.Response) =>
       res.sendFile(path.join(__dirname, '/public/index.html')),
     );
+
     /** Get any file in public directory */
-    this.express.use(express.static(path.join(__dirname, '/public/')));
+    this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+      const filePath = path.join(__dirname, '/public/', req.url);
+      fse.exists(filePath, exists => {
+        if (exists) {
+          res.sendFile(filePath);
+        } else {
+          next();
+        }
+      });
+    });
   }
 
   /**

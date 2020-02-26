@@ -6,7 +6,7 @@
       "request": "launch",
       "name": "Debug TypeScript",
       "program": "${workspaceFolder}\\src\\index.ts",
-      "preLaunchTask": "npm: build:dev",
+      "preLaunchTask": "npm: build",
       "sourceMaps": true,
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
