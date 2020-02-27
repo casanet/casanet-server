@@ -1,4 +1,4 @@
-import * as getMac from 'getmac';
+import * as macaddress from 'macaddress';
 import { logger } from '../utilities/logger';
 
 /** Hold machine mac address, using lazy loading style. */
@@ -25,7 +25,7 @@ export const GetMachinMacAddress = (): Promise<string> => {
     }
 
     /** Read the machine mac address */
-    getMac.getMac((err: Error, rawMacAddress: string) => {
+    macaddress.one((err: Error, rawMacAddress: string) => {
       if (err) {
         logger.error('Cant read local MAC address');
         reject(err);
