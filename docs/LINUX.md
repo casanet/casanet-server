@@ -80,7 +80,7 @@ case "$1" in
         tmux kill-session -t "casanet" 
         tmux new -s "casanet" -d 
         tmux send-keys -t "casanet" "cd /root" C-m m # Or the "./casanet-server/backend" if you use the source-code 
-        tmux send-keys -t "casanet" "sudo node ./casanet-local-server-linux" C-m # Or the "./dist/index.js" if you use the source-code
+        tmux send-keys -t "casanet" "sudo ./casanet-local-server-linux" C-m # Or the "node ./dist/index.js" if you use the source-code
 ;; 
 'stop') 
         killall node 
