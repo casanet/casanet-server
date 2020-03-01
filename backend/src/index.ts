@@ -37,9 +37,9 @@ http.createServer(app).listen(Configuration.http.httpPort, () => {
 // SSL/HTTPS
 if (Configuration.http.useHttps) {
   try {
-    const key = fs.readFileSync(path.join(__dirname, '/../encryption/private.key'));
-    const cert = fs.readFileSync(path.join(__dirname, '/../encryption/certificate.crt'));
-    const ca = fs.readFileSync(path.join(__dirname, '/../encryption/ca_bundle.crt'));
+    const key = fs.readFileSync('./encryption/private.key');
+    const cert = fs.readFileSync('./encryption/certificate.crt');
+    const ca = fs.readFileSync('./encryption/ca_bundle.crt');
 
     const sslOptions: https.ServerOptions = {
       key,

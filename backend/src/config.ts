@@ -6,7 +6,7 @@ import { Config, RunningMode } from './models/backendInterfaces';
 import { logger } from './utilities/logger';
 
 // load environment variable from .env file
-if (existsSync('.env')) {
+if (existsSync('./.env')) {
   dotenv.config();
 }
 
@@ -28,7 +28,7 @@ const rawSubnetToScan = process.env.SUBNET_TO_SCAN;
  */
 let configuration: Config;
 try {
-  configuration = fse.readJSONSync('casanet.json');
+  configuration = fse.readJSONSync('./casanet.json');
 } catch (error) {
   logger.error('Fail to read casanet.json configuration file. exit...');
   process.exit();

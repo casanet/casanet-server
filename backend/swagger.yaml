@@ -868,7 +868,7 @@ info:
     version: 2.0.0
     description: 'IoT server for local home network. hosted in [GitHub repo](https://github.com/casanet/casanet-server).'
     license:
-        name: GNU
+        name: ISC
 paths:
     '/auth/logout-sessions/{userId}':
         post:

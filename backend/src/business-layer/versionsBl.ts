@@ -15,8 +15,7 @@ import { logger } from '../utilities/logger';
 export class VersionsBl {
   private updateStatus: ProgressStatus = 'finished';
 
-  constructor() {
-  }
+  constructor() {}
 
   /**
    * Update CASA-net application to the latest version.
@@ -98,13 +97,14 @@ export class VersionsBl {
         osExtension = 'macos';
         break;
       case 'win32':
-        osExtension = 'win.exe';
+        osExtension = 'win';
         break;
       case 'linux':
         osExtension = 'linux';
         break;
     }
-    return `casanet-local-server-${osExtension}`;
+
+    return `casanet_${osExtension}_${process.arch}${process.platform === 'win32' ? '.exe' : ''}`;
   }
 
   private async downloadNewVersion(newVersion: string) {
