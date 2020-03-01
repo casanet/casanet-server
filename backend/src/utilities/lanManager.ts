@@ -1,5 +1,5 @@
-import * as checkInternetConnected from 'check-internet-connected';
 import * as ip from 'ip';
+import * as isOnline from 'is-online';
 import * as networkList2 from 'network-list2';
 import { Configuration } from '../config';
 import { LocalNetworkDevice } from '../models/sharedInterfaces';
@@ -15,7 +15,7 @@ export const LocalNetworkReader = (): Promise<LocalNetworkDevice[]> => {
     const ops: { ip?: string; vendor?: boolean } = {};
 
     /** Check if internet connection is online, otherwise don't try to get vendor name. */
-    const isInternetOnline = await checkInternetConnected();
+    const isInternetOnline = await isOnline();
 
     if (Configuration.scanSubnet) {
       ops.ip = Configuration.scanSubnet;
