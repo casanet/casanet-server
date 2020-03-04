@@ -114,6 +114,12 @@ Usually, it is something like `sudo reboot` etc.
 
 *THIS IS A DANGEROUS ACTION! BE SURE THAT KNOW WHAT IT WILL HAPPENED WHEN THIS COMMAND WILL EXECUTED*
 
+## Default Lock Calibration Sampling 
+
+The default lock calibration activation (used by timings and operation set lock).
+
+You can edit in the `defaultLockCalibrationMinutes` field in the `casanet.json` configuration file.
+
 ## API
 
 The UI should wrap API.

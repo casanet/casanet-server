@@ -24,7 +24,13 @@ declare interface Session {
  */
 export declare type RunningMode = 'prod' | 'test' | 'debug';
 
-/** Config staruct for all system */
+/** Set lock to timing/operation options */
+export declare interface SetLockOptions {
+  lockStatus?: boolean;
+  overrideLock?: boolean;
+}
+
+/** Config structure for all system */
 export declare interface Config {
   /**
    * Default user to allow login in first use.
@@ -49,6 +55,8 @@ export declare interface Config {
   runningMode: RunningMode;
   /** Timeline length to keep statuses history, in days */
   timelineDaysLength: number;
+  /** The default lock calibration activation (used by timings and operation set lock) */
+  defaultLockCalibrationMinutes: number;
   /**
    * 2-step verification config. access to mail using SMTP protocol.
    * *for keys use environment variables only!!!*
