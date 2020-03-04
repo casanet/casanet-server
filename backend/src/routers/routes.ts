@@ -178,6 +178,8 @@ const models: TsoaRoute.Models = {
             "isActive": { "dataType": "boolean", "required": true },
             "timingType": { "dataType": "enum", "enums": ["dailySunTrigger", "dailyTimeTrigger", "once", "timeout"], "required": true },
             "timingProperties": { "ref": "TimingProperties", "required": true },
+            "lockStatus": { "dataType": "boolean" },
+            "overrideLock": { "dataType": "boolean" },
         },
     },
     "OperationResult": {
