@@ -507,6 +507,14 @@ definitions:
             timingProperties:
                 $ref: '#/definitions/TimingProperties'
                 description: 'The timing properties.'
+            lockStatus:
+                type: boolean
+                description: 'Lock the status that changed by the timing (default false)'
+                x-nullable: true
+            overrideLock:
+                type: boolean
+                description: 'Override lock, if exists (default false)'
+                x-nullable: true
         required:
             - timingId
             - timingName

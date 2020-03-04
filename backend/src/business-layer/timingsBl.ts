@@ -27,25 +27,19 @@ export class TimingsBl {
    * Timing trigger feed.
    */
   public timingFeed = new BehaviorSubject<TimingFeed>(undefined);
-  // Dependecies
-  private timingsDal: TimingsDal;
-  private operationBl: OperationsBl;
 
   /**
-   * The real avtivation is in minute.
+   * The real activation is in minute.
    * So only if minute changed trigger the timing logic.
    */
   private lastActivationMoment: Moment = moment(1);
 
   /**
-   * Init TimingsBl . using dependecy injection pattern to allow units testings.
+   * Init TimingsBl . using dependency injection pattern to allow units testings.
    * @param timingsDal Inject timings dal.
    * @param localNetworkReader Inject the reader function.
    */
-  constructor(timingsDal: TimingsDal, operationBl: OperationsBl) {
-    this.timingsDal = timingsDal;
-    this.operationBl = operationBl;
-
+  constructor(private timingsDal: TimingsDal, private operationBl: OperationsBl) {
     setInterval(async () => {
       await this.timingActivation();
     }, TIMING_INTERVAL_ACTIVATION.asMilliseconds());
@@ -109,8 +103,9 @@ export class TimingsBl {
   private async activeTiming(timing: Timing): Promise<void> {
     logger.info(`Invoke ${timing.timingName} id: ${timing.timingId} timing starting...`);
 
+    const { overrideLock, lockStatus } = timing;
     try {
-      const results = await this.operationBl.triggerOperation(timing.triggerOperationId);
+      const results = await this.operationBl.triggerOperation(timing.triggerOperationId, { overrideLock, lockStatus });
       logger.info(`Invoke ${timing.timingName} id: ${timing.timingId} timing done`);
 
       this.timingFeed.next({

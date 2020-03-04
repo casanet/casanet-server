@@ -1,26 +1,21 @@
 import * as moment from 'moment';
 import * as randomstring from 'randomstring';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import { Configuration } from '../config';
 import { OperationsDal, OperationsDalSingleton } from '../data-layer/operationsDal';
+import { SetLockOptions } from '../models/backendInterfaces';
 import { ErrorResponse, MinionStatus, Operation, OperationActivity, OperationResult } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
 import { MinionsBl, MinionsBlSingleton } from './minionsBl';
 
 export class OperationsBl {
-  // Dependecies
-  private operationsDal: OperationsDal;
-  private minionsBl: MinionsBl;
-
   /**
-   * Init OperationsBl . using dependecy injection pattern to allow units testings.
+   * Init OperationsBl . using dependency injection pattern to allow units testings.
    * @param operationsDal Inject operations dal.
    * @param localNetworkReader Inject the reader function.
    */
-  constructor(operationsDal: OperationsDal, minionsBl: MinionsBl) {
-    this.operationsDal = operationsDal;
-    this.minionsBl = minionsBl;
-  }
+  constructor(private operationsDal: OperationsDal, private minionsBl: MinionsBl) {}
 
   /**
    * API
@@ -78,11 +73,11 @@ export class OperationsBl {
    * @param operationId operation to trigger.
    * @returns Set status erros if will be any.
    */
-  public async triggerOperation(operationId: string): Promise<OperationResult[]> {
+  public async triggerOperation(operationId: string, options: SetLockOptions = {}): Promise<OperationResult[]> {
     const operation = await this.operationsDal.getOperationById(operationId);
-    logger.info(`Invokeing operation ${operation.operationName}, id: ${operationId} ...`);
-    const errors = await this.invokeOperationActivities(operation.activities);
-    logger.info(`Invokeing operation ${operation.operationName}, id: ${operationId} done`);
+    logger.info(`Invoking operation ${operation.operationName}, id: ${operationId} ...`);
+    const errors = await this.invokeOperationActivities(operation.activities, options);
+    logger.info(`Invoking operation ${operation.operationName}, id: ${operationId} done`);
     return errors;
   }
 
@@ -109,15 +104,43 @@ export class OperationsBl {
    * Invoke each activity.
    * @param operationActiviries activities to invoke.
    */
-  private async invokeOperationActivities(operationActiviries: OperationActivity[]): Promise<OperationResult[]> {
+  private async invokeOperationActivities(
+    operationActiviries: OperationActivity[],
+    options: SetLockOptions,
+  ): Promise<OperationResult[]> {
     const errors: OperationResult[] = [];
     for (const activity of operationActiviries) {
       /**
-       * wait 1 sec between one minion to other, becuase of broadcasting mismatch in some brands communication protocol.
+       * wait 1 sec between one minion to other, because of broadcasting mismatch in some brands communication protocol.
        */
       await Delay(moment.duration(1, 'seconds'));
 
       logger.info(`Setting minion ${activity.minionId} a new status by operation activity...`);
+
+      const minion = await this.minionsBl.getMinionById(activity.minionId);
+
+      // If need to override, just remove any lock
+      if (options.overrideLock) {
+        try {
+          await this.minionsBl.setMinionCalibrate(activity.minionId, {
+            calibrationCycleMinutes: 0,
+            calibrationMode: minion.calibration ? minion.calibration.calibrationMode : 'AUTO',
+          });
+        } catch (error) {
+          logger.error(`[operation] Fail to override minion "${activity.minionId}" lock`);
+        }
+      }
+
+      if (options.lockStatus) {
+        try {
+          await this.minionsBl.setMinionCalibrate(activity.minionId, {
+            calibrationCycleMinutes: Configuration.defaultLockCalibrationMinutes,
+            calibrationMode: activity.minionStatus[minion.minionType].status === 'on' ? 'LOCK_ON' : 'LOCK_OFF',
+          });
+        } catch (error) {
+          logger.error(`[operation] Fail to set minion "${activity.minionId}" operation activity lock`);
+        }
+      }
 
       try {
         await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);

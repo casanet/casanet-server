@@ -108,5 +108,12 @@ if (!rawSubnetToScan) {
 
 configuration.scanSubnet = rawSubnetToScan;
 
+if (!configuration.defaultLockCalibrationMinutes) {
+  logger.warn(
+    `[config] Please add "defaultLockCalibrationMinutes" key to your casanet.json configuration, currently using 10 minutes as default `,
+  );
+  configuration.defaultLockCalibrationMinutes = 10;
+}
+
 /** System configuration */
 export const Configuration: Config = configuration;

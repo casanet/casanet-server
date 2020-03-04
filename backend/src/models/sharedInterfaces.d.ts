@@ -655,6 +655,16 @@ export declare interface Timing {
    * The timing properties.
    */
   timingProperties: TimingProperties;
+
+  /**
+   * Lock the status that changed by the timing (default false)
+   */
+  lockStatus?: boolean;
+
+  /**
+   * Override lock, if exists (default false)
+   */
+  overrideLock?: boolean;
 }
 
 /**

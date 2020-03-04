@@ -7,7 +7,7 @@ import { MinionsBl, MinionsBlSingleton } from './minionsBl';
 
 const CALIBRATE_INTERVAL_ACTIVATION = moment.duration(30, 'seconds');
 
-class CalibrateBl {
+export class CalibrateBl {
   // Dependencies
   private minionsBl: MinionsBl;
 
@@ -15,7 +15,7 @@ class CalibrateBl {
   private lastCalibrateMap: { [key: string]: Date } = {};
 
   /**
-   * Init CalibrateBl . using dependecy injection pattern to allow units testings.
+   * Init CalibrateBl . using dependency injection pattern to allow units testings.
    * @param minionsBl Inject minionsBl instance.
    */
   constructor(minionsBl: MinionsBl) {
@@ -40,7 +40,7 @@ class CalibrateBl {
       if (
         this.lastCalibrateMap[minion.minionId] &&
         now.getTime() - this.lastCalibrateMap[minion.minionId].getTime() <
-        moment.duration(minion.calibration.calibrationCycleMinutes, 'minutes').asMilliseconds()
+          moment.duration(minion.calibration.calibrationCycleMinutes, 'minutes').asMilliseconds()
       ) {
         continue;
       }
@@ -59,10 +59,9 @@ class CalibrateBl {
   }
 
   private async calibrateMinion(minion: Minion) {
-
     // In case that minion dont have any status
     const emptyStatus: MinionStatus = {};
-    emptyStatus[minion.minionType] = {} as unknown as any;
+    emptyStatus[minion.minionType] = ({} as unknown) as any;
     emptyStatus[minion.minionType].status = 'off';
 
     /**
