@@ -295,19 +295,54 @@ export class MinionsBl {
     minion.calibration = minionCalibrate;
 
     /**
-     * Save timeout update in Dal for next app running.
+     * .
      */
-    this.minionsDal.updateMinionCalibrate(minionId, minionCalibrate).catch((error: ErrorResponse) => {
-      logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
-    });
+    try {
+      /** Save calibration update in Dal for next calibration activation */
+      this.minionsDal.updateMinionCalibrate(minionId, minionCalibrate);
 
-    /**
-     * Send minion feed update
-     */
-    this.minionFeed.next({
-      event: 'update',
-      minion,
-    });
+      /**
+       * Send minion feed update
+       */
+      this.minionFeed.next({
+        event: 'update',
+        minion,
+      });
+
+      // Change minion status only if the current is violated the new lock
+      if (minionCalibrate.calibrationMode === 'AUTO' || !minionCalibrate.calibrationCycleMinutes) {
+        return;
+      }
+
+      const currentStatus = minion.minionStatus[minion.minionType].status;
+
+      const statusToSet = DeepCopy<MinionStatus>(minion.minionStatus);
+      let needToSetStatus = false;
+
+      if (currentStatus === 'on' && minionCalibrate.calibrationMode === 'LOCK_OFF') {
+        statusToSet[minion.minionType].status = 'off';
+        needToSetStatus = true;
+      }
+
+      if (currentStatus === 'off' && minionCalibrate.calibrationMode === 'LOCK_ON') {
+        statusToSet[minion.minionType].status = 'on';
+        needToSetStatus = true;
+      }
+
+      if (needToSetStatus) {
+        try {
+          await this.setMinionStatus(minionId, statusToSet);
+        } catch (error) {
+          logger.warn(`[MinionsBL] Failed to change minion "${minionId}" status, according to the new lock`);
+        }
+      }
+    } catch (error) {
+      logger.warn(`Fail to update minion ${minionId} auto turn off ${error.message}`);
+      throw {
+        responseCode: 12501,
+        message: 'Setting calibration failed',
+      } as ErrorResponse;
+    }
   }
 
   /**
