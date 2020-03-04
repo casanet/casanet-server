@@ -169,7 +169,6 @@ export class VersionsBl {
     await this.applyVersionChanges();
 
     logger.info(`Updating to last version '${latestVersion}' successfully done`);
-    this.updateStatus = 'finished';
   }
 
   /**
@@ -180,6 +179,7 @@ export class VersionsBl {
     const { RESET_MACHINE_ON_VERSION_UPDATE } = process.env;
     if (!RESET_MACHINE_ON_VERSION_UPDATE) {
       logger.info(`There is no "RESET_MACHINE_ON_VERSION_UPDATE" env var, skipping after version update command`);
+      this.updateStatus = 'finished';
       return;
     }
 
@@ -190,7 +190,9 @@ export class VersionsBl {
        * For example in raspberry pi machine the command can be 'sudo reboot'.
        */
       await exec(RESET_MACHINE_ON_VERSION_UPDATE);
+      this.updateStatus = 'finished';
     } catch (error) {
+      this.updateStatus = 'fail';
       logger.warn(
         `executing RESET_MACHINE_ON_VERSION_UPDATE=${RESET_MACHINE_ON_VERSION_UPDATE}' command failed ${error.stdout ||
           error.message}`,
