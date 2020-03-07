@@ -185,6 +185,10 @@ export class SettingsService {
     return updateStatus;
   }
 
+  public async downloadLogs() {
+    window.open(`${environment.baseUrl}/logs/last`);
+  }
+
   private sleep(delayMs: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

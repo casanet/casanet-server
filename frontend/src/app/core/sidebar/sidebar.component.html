@@ -79,11 +79,21 @@
     </div>
 </div>
 
+<div *ngIf="userProfile.scope === 'adminAuth'" class="settings-viewer-wrapper">
+    <div class="settings-viewer-title">
+        <div class="settings-viewer-title-spacer"> {{ 'DOWNLOAD_LOGS' | translate }}</div>
+        <button mat-icon-button matTooltipPosition="below" (click)="downloadLogs()"
+            matTooltip="{{'DOWNLOAD_LOGS' | translate}}">
+            <mat-icon>get_app</mat-icon>
+        </button>
+    </div>
+</div>
+
 <div class="settings-viewer-wrapper">
     <div class="settings-viewer-title">
         <div class="settings-viewer-title-spacer"> {{ 'PWA' | translate }}</div>
         <button mat-icon-button matTooltipPosition="below">
-            <mat-icon>get_app</mat-icon>
+            <mat-icon>widgets</mat-icon>
         </button>
     </div>
     <div class="settings-viewer-body form-container">
