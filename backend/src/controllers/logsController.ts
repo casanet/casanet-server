@@ -12,7 +12,7 @@ export class LogsController extends Controller {
    */
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
-  @Get('last')
+  @Get()
   public async getLastLogs(@Request() request: express.Request) {
     const res = request.res as express.Response;
     logger.info('[logs controller] Downloading log file...');
