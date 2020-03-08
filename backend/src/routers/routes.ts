@@ -1859,7 +1859,7 @@ export function RegisterRoutes(app: express.Express) {
             const promise = controller.generateMinionCommand.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
-    app.get('/API/logs/last',
+    app.get('/API/logs',
         authenticateMiddleware([{ "adminAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {

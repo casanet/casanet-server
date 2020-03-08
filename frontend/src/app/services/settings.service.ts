@@ -186,7 +186,7 @@ export class SettingsService {
   }
 
   public async downloadLogs() {
-    window.open(`${environment.baseUrl}/logs/last`);
+    window.open(`${environment.baseUrl}/logs`);
   }
 
   private sleep(delayMs: number): Promise<void> {

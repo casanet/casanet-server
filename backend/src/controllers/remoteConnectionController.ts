@@ -40,6 +40,7 @@ export class RemoteConnectionController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Get()
   public async getRemoteHost(): Promise<string> {
+    this.setHeader('content-type', 'text/html; charset=UTF-8');
     return await RemoteConnectionBlSingleton.getRemoteHost();
   }
 

@@ -2592,7 +2592,7 @@ paths:
                     required: true
                     schema:
                         $ref: '#/definitions/MinionStatus'
-    /logs/last:
+    /logs:
         get:
             operationId: GetLastLogs
             produces:
