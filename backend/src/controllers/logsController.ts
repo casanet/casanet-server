@@ -18,6 +18,6 @@ export class LogsController extends Controller {
     logger.info('[logs controller] Downloading log file...');
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Content-Disposition', `attachment; filename=casalogs_${new Date().toLocaleDateString()}.log`);
-    res.end(await fse.promises.readFile('./logs/tech_log.log'));
+    res.end(await fse.promises.readFile('./logs/casalogs.log'));
   }
 }
