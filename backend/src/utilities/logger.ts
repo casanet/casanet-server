@@ -1,26 +1,24 @@
-import * as log4js from 'log4js';
 import * as path from 'path';
+import * as winston from 'winston';
 
-const LOG_FILE_NAME: string = path.join('logs', 'tech_log.log');
+const LOG_FILE_NAME: string = path.join('logs', 'casalogs.log');
 
-log4js.configure({
-  appenders: {
-    file_log: {
-      type: 'file',
+const logFormat = winston.format.printf(info => `[${new Date().toLocaleString()}] [${info.level}] ${info.message}`);
+
+const casanetLogger = winston.createLogger({
+  level: 'silly',
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.combine(winston.format.colorize(), logFormat),
+    }),
+    new winston.transports.File({
+      format: logFormat,
       filename: LOG_FILE_NAME,
-      maxLogSize: 10 * 1000000, // 10 mb
-      backups: 50,
-    },
-    console_log: {
-      type: 'console',
-    },
-  },
-  categories: {
-    default: {
-      appenders: ['file_log', 'console_log'],
-      level: process.env.NODE_ENV !== 'test' ? 'debug' : 'warn',
-    },
-  },
+      maxsize: 1e6,
+      maxFiles: 30,
+      eol: `\r\n \n`, // For windows & linux new-lines flags
+    }),
+  ],
 });
 
-export const logger: log4js.Logger = log4js.getLogger();
+export const logger = casanetLogger;

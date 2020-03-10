@@ -51,7 +51,7 @@ if (Configuration.http.useHttps) {
       logger.info('HTTPS/SSL listen on port ' + Configuration.http.httpsPort);
     });
   } catch (error) {
-    logger.fatal(`Faild to load SSL certificate ${error}, exit...`);
+    logger.error(`Faild to load SSL certificate ${error}, exit...`);
     process.exit();
   }
 }
