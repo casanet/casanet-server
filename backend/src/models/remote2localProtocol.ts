@@ -84,6 +84,8 @@ export declare interface HttpResponse {
     /** Session expires time in seconds. */
     maxAge: number;
   };
+  /** Http headers */
+  httpHeaders?: { [key: string]: string };
 }
 
 export declare interface LocalServerFeed {

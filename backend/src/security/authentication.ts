@@ -38,7 +38,7 @@ export const expressAuthentication = async (
 ): Promise<User | ErrorResponse> => {
   // If the routing security sent wrong security scope.
   if (!scopes || scopes.length < 1) {
-    logger.fatal('invalid or empty security scope');
+    logger.error('invalid or empty security scope');
     throw {
       responseCode: 1501,
     } as ErrorResponse;

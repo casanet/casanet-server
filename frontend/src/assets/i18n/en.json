@@ -245,6 +245,7 @@
   "OVERRIDE_LOCK_IF_EXISTS" : "Override Lock Is exists",
   "LOCK_STATUSES" : "Lock Status",
   "OVERRIDE_LOCKS" : "Override Locks",
+  "DOWNLOAD_LOGS" : "Download Logs",
   "notConfigured": "Remote server not configured",
   "cantReachRemoteServer": "Remote server offline",
   "authorizationFail": "Local server fail to authenticate",

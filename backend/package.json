@@ -61,7 +61,6 @@
     "ip": "^1.1.5",
     "is-online": "^8.2.1",
     "joi": "^14.3.0",
-    "log4js": "^3.0.6",
     "macaddress": "^0.2.9",
     "miio": "^0.15.6",
     "moment": "^2.23.0",
@@ -81,6 +80,7 @@
     "suncalc": "^1.8.0",
     "tsoa": "2.4.3",
     "tuyapi": "^5.1.2",
+    "winston": "^3.2.1",
     "yeelight-awesome": "^1.0.12"
   },
   "devDependencies": {
@@ -109,9 +109,9 @@
     "del-cli": "^1.1.0",
     "mocha": "^6.1.4",
     "nyc": "^15.0.0",
+    "pkg": "^4.4.3",
     "prettier": "^1.19.1",
     "simple-git": "^1.121.0",
-    "pkg": "^4.4.3",
     "ts-node": "^7.0.1",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",

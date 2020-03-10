@@ -104,8 +104,8 @@ export class RemoteConnectionBl {
     /** Start sending ack message interval */
     setInterval(() => {
       /** If status is not OK or Connection problem
-       * dont send ack message.
-       * (If remote server not set yet, ther is no point to try sending ack).
+       * don't send ack message.
+       * (If remote server not set yet, there is no point to try sending ack).
        */
       if (this.remoteConnectionStatus !== 'connectionOK' && this.remoteConnectionStatus !== 'cantReachRemoteServer') {
         return;
@@ -204,7 +204,7 @@ export class RemoteConnectionBl {
     }
 
     return new Promise<void | ErrorResponse>(async (resolve, reject) => {
-      await this.sendMessage({
+      this.sendMessage({
         localMessagesType: 'unregisterAccount',
         message: {
           unregisterAccount: {
@@ -306,7 +306,7 @@ export class RemoteConnectionBl {
     } catch (error) {}
   }
 
-  /** Close manualy web socket to remote server */
+  /** Close manually web socket to remote server */
   private closeRemoteConnection() {
     try {
       this.webSocketClient.disconnect();
@@ -504,6 +504,7 @@ export class RemoteConnectionBl {
     request.set('Cookie', `session=${httpRequest.httpSession}`);
     /** send request and wait for response */
     const response = await request.send(httpRequest.httpBody);
+
     /** send response back to remote server */
     this.sendMessage({
       localMessagesType: 'httpResponse',
@@ -511,8 +512,9 @@ export class RemoteConnectionBl {
         httpResponse: {
           requestId: httpRequest.requestId,
           httpStatus: response.status,
-          httpBody: response.body,
+          httpBody: response.type === 'application/json' ? response.body : response.text,
           httpSession: this.extractCookie(response.header),
+          httpHeaders: response.header,
         },
       },
     });

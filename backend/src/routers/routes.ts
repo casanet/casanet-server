@@ -13,6 +13,7 @@ import { StaticAssetsController } from './../controllers/staticAssetsController'
 import { IftttController } from './../controllers/iftttController';
 import { VersionsController } from './../controllers/versionsController';
 import { RfController } from './../controllers/radioFrequencyController';
+import { LogsController } from './../controllers/logsController';
 import { expressAuthentication } from './../security/authentication';
 import * as express from 'express';
 import { ErrorResponse, User } from '../../../backend/src/models/sharedInterfaces';
@@ -1858,6 +1859,30 @@ export function RegisterRoutes(app: express.Express) {
             const promise = controller.generateMinionCommand.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
+    app.get('/API/logs',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new LogsController();
+
+
+            const promise = controller.getLastLogs.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
 
     function authenticateMiddleware(security: TsoaRoute.Security[] = []) {
         return (request: any, _response: any, next: any) => {
@@ -1904,7 +1929,11 @@ export function RegisterRoutes(app: express.Express) {
                     statusCode = controllerObj.getStatus();
                 }
 
-                if (data || data === false) { // === false allows boolean result
+                // If the controller ends the request by own code, ignore any action. 
+                if (response.finished) {
+                    return;
+                } else if (data || data === false) {
+                    // === false allows boolean result
                     response.status(statusCode || 200).json(data);
                 } else {
                     response.status(statusCode || 204).end();
