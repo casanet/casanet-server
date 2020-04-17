@@ -106,7 +106,7 @@ export class CalibrateBl {
      * If a status update arrived from the physical devices that not match the current
      * LOCK value, sent back the LOCKed status.
      */
-    this.minionsBl.minionFeed.subscribe((minionFeed: MinionFeed) => {
+    this.minionsBl.minionFeed.subscribe(async (minionFeed: MinionFeed) => {
       if (!minionFeed || minionFeed.event !== 'update') {
         return;
       }
@@ -139,6 +139,9 @@ export class CalibrateBl {
       if (legalStatus === minion.minionStatus[minion.minionType]?.status || 'on') {
         return;
       }
+
+      // Wait in case the device don't like quick status changes
+      await Delay(moment.duration(1, 'seconds'));
 
       this.calibrateMinion(minion);
     });
