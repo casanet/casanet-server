@@ -4,6 +4,7 @@ import { PullBehavior } from 'pull-behavior';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { Configuration } from '../config';
 import { DeviceKind, ErrorResponse, Minion, MinionDevice, MinionStatus } from '../models/sharedInterfaces';
+import { MutexMinionsAccess } from '../utilities/mutex';
 import { BrandModuleBase } from './brandModuleBase';
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,6 +65,7 @@ export class ModulesManager {
   /**
    * Get current status of minion. (such as minion status on off etc.)
    */
+  @MutexMinionsAccess
   public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
     const minionModule = this.getMinionModule(miniom.device.brand);
 
@@ -94,6 +96,7 @@ export class ModulesManager {
    * @param miniom minion to set status for.
    * @param setStatus the new status to set.
    */
+  @MutexMinionsAccess
   public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     const minionModule = this.getMinionModule(miniom.device.brand);
 
@@ -129,6 +132,7 @@ export class ModulesManager {
    * @param minion minion to record for.
    * @param statusToRecordFor the specific status to record for.
    */
+  @MutexMinionsAccess
   public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     const minionModule = this.getMinionModule(minion.device.brand);
 
@@ -174,6 +178,7 @@ export class ModulesManager {
    * @param minion minion to generate for.
    * @param statusToGenerateFor the specific status to record for.
    */
+  @MutexMinionsAccess
   public async generateCommand(minion: Minion, statusToGenerateFor: MinionStatus): Promise<void | ErrorResponse> {
     const minionModule = this.getMinionModule(minion.device.brand);
 
@@ -218,6 +223,7 @@ export class ModulesManager {
    * @param minion minioin to update commands by fetched commands set.
    * @param commandsSet Fetched RF commands set.
    */
+  @MutexMinionsAccess
   public async setFetchedCommands(minion: Minion, commandsSet: CommandsSet): Promise<void | ErrorResponse> {
     const minionModule = this.getMinionModule(minion.device.brand);
 
@@ -259,11 +265,12 @@ export class ModulesManager {
    * Refresh and reset all module communications.
    * Used for cleaning up communication before re-reading data, after communication auth changed or just hard reset module etc.
    */
+  @MutexMinionsAccess
   public async refreshModules(): Promise<void> {
     for (const brandHandler of this.modulesHandlers) {
       try {
         await withTimeout(brandHandler.refreshCommunication(), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
-      } catch (error) {}
+      } catch (error) { }
     }
   }
 
@@ -271,6 +278,7 @@ export class ModulesManager {
    * Reset module communication.
    * @param brand Brand module to reset.
    */
+  @MutexMinionsAccess
   public async refreshModule(brand: string): Promise<void> {
     const minionModule = this.getMinionModule(brand);
 
