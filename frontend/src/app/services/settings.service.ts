@@ -19,7 +19,7 @@ import { environment } from '../../environments/environment';
 })
 export class SettingsService {
 
-  public onlineFeed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public onlineFeed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public remoteStatusFeed: BehaviorSubject<RemoteConnectionStatus> = new BehaviorSubject<RemoteConnectionStatus>('notConfigured');
 
   constructor(private toastrAndErrorsService: ToasterAndErrorsService,
