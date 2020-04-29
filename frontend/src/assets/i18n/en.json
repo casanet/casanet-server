@@ -247,6 +247,7 @@
   "OVERRIDE_LOCKS" : "Override Locks",
   "DOWNLOAD_LOGS" : "Download Logs",
   "MUSIC" : "Music", 
+  "DOWNLOAD_BACKUP" : "Download backup copy",
   "notConfigured": "Remote server not configured",
   "cantReachRemoteServer": "Remote server offline",
   "authorizationFail": "Local server fail to authenticate",

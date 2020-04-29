@@ -14,6 +14,7 @@ import { IftttController } from './../controllers/iftttController';
 import { VersionsController } from './../controllers/versionsController';
 import { RfController } from './../controllers/radioFrequencyController';
 import { LogsController } from './../controllers/logsController';
+import { BackupController } from './../controllers/backupController';
 import { expressAuthentication } from './../security/authentication';
 import * as express from 'express';
 import { ErrorResponse, User } from '../../../backend/src/models/sharedInterfaces';
@@ -1881,6 +1882,30 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.getLastLogs.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/API/backup',
+        authenticateMiddleware([{ "adminAuth": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                response.status(422).send({
+                    responseCode: 1422,
+                    message: JSON.stringify(err.fields),
+                } as ErrorResponse);
+                return;
+            }
+
+            const controller = new BackupController();
+
+
+            const promise = controller.getSettingsBackup.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 

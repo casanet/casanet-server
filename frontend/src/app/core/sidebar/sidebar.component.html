@@ -89,6 +89,16 @@
     </div>
 </div>
 
+<div *ngIf="userProfile.scope === 'adminAuth'" class="settings-viewer-wrapper">
+    <div class="settings-viewer-title">
+        <div class="settings-viewer-title-spacer"> {{ 'DOWNLOAD_BACKUP' | translate }}</div>
+        <button mat-icon-button matTooltipPosition="below" (click)="downloadBackup()"
+            matTooltip="{{'DOWNLOAD_BACKUP' | translate}}">
+            <mat-icon>settings_backup_restore</mat-icon>
+        </button>
+    </div>
+</div>
+
 <div class="settings-viewer-wrapper">
     <div class="settings-viewer-title">
         <div class="settings-viewer-title-spacer"> {{ 'PWA' | translate }}</div>

@@ -189,6 +189,10 @@ export class SettingsService {
     window.open(`${environment.baseUrl}/logs`);
   }
 
+  public async downloadBackup() {
+    window.open(`${environment.baseUrl}/backup`);
+  }
+
   private sleep(delayMs: number): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

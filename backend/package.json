@@ -39,6 +39,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.4.14",
     "async-mqtt": "^2.3.0",
     "await-semaphore": "^0.1.3",
     "bcryptjs": "^2.4.3",

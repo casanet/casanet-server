@@ -16,6 +16,7 @@ import { logger } from './utilities/logger';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
 import './controllers/authController';
+import './controllers/backupController';
 import './controllers/devicesController';
 import './controllers/feedController';
 import './controllers/iftttController';

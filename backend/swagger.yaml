@@ -2609,6 +2609,23 @@ paths:
                 -
                     adminAuth: []
             parameters: []
+    /backup:
+        get:
+            operationId: GetSettingsBackup
+            produces:
+                - application/json
+            responses:
+                '204':
+                    description: 'No content'
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Get the last logs of the local-server (download as text file)'
+            security:
+                -
+                    adminAuth: []
+            parameters: []
 produces:
     - application/json
 swagger: '2.0'
