@@ -329,4 +329,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
     public async downloadLogs() {
         await this.settingsService.downloadLogs();
     }
+
+    public async downloadBackup() {
+        await this.settingsService.downloadBackup();
+    }
 }

@@ -247,6 +247,7 @@
   "DOWNLOAD_LOGS" : "הורדת לוגים",
   "OVERRIDE_LOCKS" : "דרוס נעילות",
   "MUSIC" : "מוזיקה", 
+  "DOWNLOAD_BACKUP" : "הורד עותק גיבוי",
   "notConfigured": "לא הוגדר שרת מרוחק",
   "cantReachRemoteServer": "שרת מרוחק לא נגיש",
   "authorizationFail": "אימות מול שרת מרוחק נכשל",
