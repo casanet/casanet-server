@@ -2621,7 +2621,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: 'Get the last logs of the local-server (download as text file)'
+            description: 'Get the current server data as a ZIP file'
             security:
                 -
                     adminAuth: []

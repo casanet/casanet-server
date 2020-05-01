@@ -14,6 +14,7 @@ import {
   RemoteSettings,
   TimingFeed,
 } from '../models/sharedInterfaces';
+import { binaryResponseParser } from '../utilities/binaryParser';
 import { logger } from '../utilities/logger';
 import { GetMachinMacAddress } from '../utilities/macAddress';
 import { MinionsBl } from './minionsBl';
@@ -303,14 +304,14 @@ export class RemoteConnectionBl {
     }
     try {
       this.webSocketClient.sendData(JSON.stringify(localMessage));
-    } catch (error) {}
+    } catch (error) { }
   }
 
   /** Close manually web socket to remote server */
   private closeRemoteConnection() {
     try {
       this.webSocketClient.disconnect();
-    } catch (error) {}
+    } catch (error) { }
   }
 
   /** Connect to remote server by web sockets */
@@ -502,8 +503,24 @@ export class RemoteConnectionBl {
     }
     /** set cookie header */
     request.set('Cookie', `session=${httpRequest.httpSession}`);
+
     /** send request and wait for response */
-    const response = await request.send(httpRequest.httpBody);
+    const response = await request.send(httpRequest.httpBody).buffer().parse(binaryResponseParser);
+
+    /** Send the body as string, so select the string encoding based on the response type */
+    let httpBody = '';
+    switch (response.type) {
+      case 'application/octet-stream': {
+        httpBody = response.body.toString('base64');
+        break;
+      }
+      case 'application/json': {
+        httpBody = response.body.toString('utf8');
+        break;
+      }
+      default:
+        httpBody = response.body.toString('utf8');
+    }
 
     /** send response back to remote server */
     this.sendMessage({
@@ -512,7 +529,7 @@ export class RemoteConnectionBl {
         httpResponse: {
           requestId: httpRequest.requestId,
           httpStatus: response.status,
-          httpBody: response.type === 'application/json' ? response.body : response.text,
+          httpBody,
           httpSession: this.extractCookie(response.header),
           httpHeaders: response.header,
         },
