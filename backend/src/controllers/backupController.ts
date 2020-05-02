@@ -22,26 +22,29 @@ export class BackupController extends Controller {
   public async getSettingsBackup(@Request() request: express.Request) {
     const zip = new AdmZip();
 
-    const minions = await MinionsBlSingleton.getMinions();
-    const minionsData = JSON.stringify(minions, null, 2);
-    zip.addFile("minions.json", Buffer.alloc(minionsData.length, minionsData), "minions");
+    const dataToZip: Array<{ name: string, data: any }> = [{
+      name: 'minions',
+      data: await MinionsBlSingleton.getMinions()
+    }, {
+      name: 'operations',
+      data: await OperationsBlSingleton.getOperations()
+    }, {
+      name: 'timings',
+      data: await TimingsBlSingleton.getTimings()
+    }, {
+      name: 'timeline',
+      data: await TimelineBlSingleton.getTimeline()
+    }]
 
-    const operations = await OperationsBlSingleton.getOperations();
-    const operationsData = JSON.stringify(operations, null, 2);
-    zip.addFile("operations.json", Buffer.alloc(operationsData.length, operationsData), "operations");
-
-    const timings = await TimingsBlSingleton.getTimings();
-    const timingsData = JSON.stringify(timings, null, 2);
-    zip.addFile("timings.json", Buffer.alloc(timingsData.length, timingsData), "timings");
-
-    const timeline = await TimelineBlSingleton.getTimeline();
-    const timelineData = JSON.stringify(timeline, null, 2);
-    zip.addFile("timeline.json", Buffer.alloc(timelineData.length, timelineData), "timeline");
+    for (const data of dataToZip) {
+      const dataAsString = JSON.stringify(data.data, null, 2);
+      zip.addFile(`${data.name}.json`, Buffer.from(dataAsString), data.name);
+    }
 
     const res = request.res as express.Response;
     res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', `attachment; filename=casanet_backup_${new Date().toLocaleDateString()}.zip`);
-    
+
     res.end(zip.toBuffer());
     logger.info(`[backup ctrl] The backup sent successfully to the admin ${request.user}`);
   }
