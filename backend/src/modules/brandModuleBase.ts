@@ -7,6 +7,8 @@ import { AcCommands, CommandsSet, RollerCommands, ToggleCommands } from '../mode
 import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
+export const CACHE_DIRECTORY = path.join('./data/', Configuration.runningMode, '/cache/');
+
 /**
  * Any smart devices brand communication module needs to inherit..
  */
@@ -15,9 +17,8 @@ export abstract class BrandModuleBase {
    * Cache file pull path.
    */
   private get cacheFilePath(): string {
-    return `${path.join(BrandModuleBase.CACHE_DIRACTORY, this.brandName)}.json`;
+    return `${path.join(CACHE_DIRECTORY, this.brandName)}.json`;
   }
-  public static readonly CACHE_DIRACTORY = path.join('./data/', Configuration.runningMode, '/cache/');
 
   /**
    * Brand name, should be unique in system.
