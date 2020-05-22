@@ -61,7 +61,7 @@ export class TimingsComponent implements OnInit, OnDestroy {
   }
 
   private parseTimings() {
-     this.rawTimings.map((timing): DisplayTiming => {
+     this.rawTimings.forEach((timing): DisplayTiming => {
       const {
         overrideLock,
         lockStatus,
@@ -101,6 +101,8 @@ export class TimingsComponent implements OnInit, OnDestroy {
       this.timings.push(displayTiming);
       // return displayTiming;
     });
+
+    this.timings = this.timings.filter((t) => this.rawTimings.some(rt => rt.timingId === t.timingId));
 
     this.timings.sort((itemA, itemB) => {
       /** If type is the same, sort by display name */
