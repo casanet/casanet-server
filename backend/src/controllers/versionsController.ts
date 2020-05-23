@@ -52,4 +52,16 @@ export class VersionsController extends Controller {
   public async getCurrentVersion(): Promise<VersionInfo> {
     return await VersionsBlSingleton.getCurrentVersion();
   }
+
+  /**
+   * Detect if the current version is last, and if not return the latest version.
+   * @returns Empty if latest, if not the version name.
+   */
+  @Security('adminAuth')
+  @Security('userAuth')
+  @Response<ErrorResponse>(501, 'Server error')
+  @Get('is-up-date')
+  public async isLatestVersion(): Promise<string> {
+    return await VersionsBlSingleton.isVersionNotUpToDate();
+  }
 }
