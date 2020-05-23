@@ -120,11 +120,15 @@
             <table style="margin: auto; text-align: right">
                 <tr>
                     <td><b>{{ 'VERSION' | translate }} </b></td>
-                    <td><i dir="ltr">{{ currentVersionName }}</i></td>
+                    <td><i dir="ltr"><a target="_blank" href="https://github.com/casanet/casanet-server/releases/tag/{{currentVersionName}}">{{ currentVersionName }}</a><a target="_blank" href="https://github.com/casanet/casanet-server/commit/{{currentVersionCommitHash}}"> ({{currentVersionCommitHash}})</a></i></td>
                 </tr>
                 <tr>
                     <td><b>{{ 'RELEASE_DATE' | translate }} </b></td>
                     <td><i>{{ currentVersionReleaseDate }}</i></td>
+                </tr>
+                <tr *ngIf="latestVersion">
+                    <td><b style="color: crimson;">{{ 'AVAILABLE_VERSION' | translate }} </b></td>
+                    <td><i dir="ltr"><a target="_blank" href="https://github.com/casanet/casanet-server/releases/tag/{{latestVersion}}">{{latestVersion}}</a></i></td>
                 </tr>
             </table>
         </div>
