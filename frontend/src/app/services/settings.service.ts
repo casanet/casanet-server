@@ -27,7 +27,7 @@ export class SettingsService {
   public isUpToDateFeed: BehaviorSubject<string> = new BehaviorSubject<string>('');
   public remoteStatusFeed: BehaviorSubject<RemoteConnectionStatus> = new BehaviorSubject<RemoteConnectionStatus>('notConfigured');
 
-  private intervalHandler: NodeJS.Timer;
+  private intervalHandler: number;
 
   constructor(private toastrAndErrorsService: ToasterAndErrorsService,
     private authService: AuthService,
