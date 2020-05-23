@@ -7,27 +7,47 @@ import {
   UpdateResults,
   VersionInfo,
   VersionUpdateStatus,
-  ProgressStatus
+  ProgressStatus,
+  User
 } from '../../../../backend/src/models/sharedInterfaces';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { DeepCopy } from '../../../../backend/src/utilities/deepCopy';
 import { ToasterAndErrorsService } from './toaster-and-errors.service';
 import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
 
+  private readonly DETECT_LATEST_VERSION_ACTIVATION_MS = 1000 * 60 * 60 * 24 * 7; // ms s m h d w
+
   public onlineFeed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  public isUpToDateFeed: BehaviorSubject<string> = new BehaviorSubject<string>('');
   public remoteStatusFeed: BehaviorSubject<RemoteConnectionStatus> = new BehaviorSubject<RemoteConnectionStatus>('notConfigured');
 
+  private intervalHandler: NodeJS.Timer;
+
   constructor(private toastrAndErrorsService: ToasterAndErrorsService,
+    private authService: AuthService,
     private httpClient: HttpClient) {
     this.onlineAck();
+
+    authService.userProfile.subscribe(async (user: User) => {
+      if (this.intervalHandler) {
+        clearInterval(this.intervalHandler);
+      }
+
+      if (user.scope === 'adminAuth') {
+        await this.detectIsVersionUpToDate();
+        this.intervalHandler = setInterval(async () => {
+          await this.detectIsVersionUpToDate();
+        },
+          this.DETECT_LATEST_VERSION_ACTIVATION_MS);
+      }
+    });
   }
-
-
 
   private async onlineAck() {
 
@@ -187,6 +207,17 @@ export class SettingsService {
 
   public async downloadLogs() {
     window.open(`${environment.baseUrl}/logs`);
+  }
+
+  public async detectIsVersionUpToDate() {
+    try {
+      const latestVersion = await this.httpClient.get<string>(`${environment.baseUrl}/version/is-up-date`, {
+        withCredentials: true
+      }).toPromise();
+      this.isUpToDateFeed.next(latestVersion ? latestVersion : '');
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public async downloadBackup() {

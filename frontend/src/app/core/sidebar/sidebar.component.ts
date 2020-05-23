@@ -26,6 +26,8 @@ import { TranslatePipe } from '../../translate.pipe';
 })
 export class SidebarComponent implements OnInit, OnDestroy {
 
+    private updateToast: typeof swal;
+
     remoteConnectionSubscription: Subscription;
     remoteConnection: RemoteConnectionStatus;
     iftttIntegration: boolean;
@@ -36,8 +38,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
     userProfileSubscription: Subscription;
 
     currentVersionName: string;
+    currentVersionCommitHash: string;
     currentVersionReleaseDate: string;
 
+    latestVersion = '';
+    LatestVersionSubscription: Subscription;
 
     private translatePipe: TranslatePipe;
 
@@ -48,6 +53,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
         this.translatePipe = new TranslatePipe(this.translateService);
 
+        this.updateToast = swal.mixin({
+            toast: true,
+            position: 'bottom-start',
+            confirmButtonText: this.translatePipe.transform('UPDATE_NOW'),
+            cancelButtonText: this.translatePipe.transform('CLOSE'),
+            showConfirmButton: true,
+            showCancelButton: true,
+            timer: 1000 * 60 * 2
+        });
 
         this.remoteConnectionSubscription =
             this.settingsService.remoteStatusFeed.subscribe((remoteConnection) => {
@@ -58,6 +72,26 @@ export class SidebarComponent implements OnInit, OnDestroy {
             this.authService.userProfile.subscribe((userProfile) => {
                 this.userProfile = userProfile;
             });
+
+        this.LatestVersionSubscription =
+            this.settingsService.isUpToDateFeed.subscribe((latestVersion) => {
+                if (latestVersion) {
+                    setTimeout(async () => {
+                        const update = await this.updateToast({
+                            type: 'info',
+                            title: this.translatePipe.transform('NEW_VERSION_AVAILABLE'),
+                            // tslint:disable-next-line: max-line-length
+                            html: `${this.translatePipe.transform('VERSION')} <a target="_blank" href="https://github.com/casanet/casanet-server/releases/tag/${latestVersion}">${latestVersion}</a> ${this.translatePipe.transform('IS_AVAILABLE')}`,
+                        });
+
+                        if (!update.dismiss) {
+                            this.updateVertionToLast();
+                        }
+                    }, 1000 * 10);
+                }
+                this.latestVersion = latestVersion;
+            });
+
         this.loadRemoteHostName();
         this.loadIftttIntegration();
         this.loadCurrentVersion();
@@ -69,12 +103,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.remoteConnectionSubscription.unsubscribe();
         this.userProfileSubscription.unsubscribe();
+        this.LatestVersionSubscription.unsubscribe();
     }
 
     private async loadCurrentVersion() {
         try {
             const currVersion = await this.settingsService.getCurrentVersion();
-            this.currentVersionName = `${currVersion.version} (${currVersion.commintHash})`;
+            this.currentVersionName = currVersion.version;
+            this.currentVersionCommitHash = currVersion.commintHash;
             this.currentVersionReleaseDate = new Date(currVersion.timestamp).toLocaleDateString();
         } catch (error) {
             this.currentVersionName = 'unknown';
@@ -255,7 +291,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
             text: this.translatePipe.transform('UPDATING_WARNING'),
             showLoaderOnConfirm: true,
             confirmButtonText: this.translatePipe.transform('UPDATE'),
-            showCancelButton: false,
+            cancelButtonText: this.translatePipe.transform('CANCEL'),
+            showCancelButton: true,
             allowOutsideClick: () => !swal.isLoading(),
             preConfirm: async () => {
                 try {
