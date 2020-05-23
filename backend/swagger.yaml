@@ -2465,6 +2465,29 @@ paths:
                 -
                     userAuth: []
             parameters: []
+    /version/is-up-date:
+        get:
+            operationId: IsLatestVersion
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        type: string
+                '501':
+                    description: 'Server error'
+                    schema:
+                        $ref: '#/definitions/ErrorResponse'
+            description: 'Detect if the current version is last, and if not return the latest version.'
+            tags:
+                - Version
+            security:
+                -
+                    adminAuth: []
+                -
+                    userAuth: []
+            parameters: []
     /rf/devices:
         get:
             operationId: GetCommandsRepoAvailableDevices
