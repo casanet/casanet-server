@@ -15,7 +15,7 @@ export class OperationsBl {
    * @param operationsDal Inject operations dal.
    * @param localNetworkReader Inject the reader function.
    */
-  constructor(private operationsDal: OperationsDal, private minionsBl: MinionsBl) {}
+  constructor(private operationsDal: OperationsDal, private minionsBl: MinionsBl) { }
 
   /**
    * API
@@ -131,11 +131,24 @@ export class OperationsBl {
         }
       }
 
-      if (options.lockStatus) {
+      // If need to set 'Sabbat' lock, set it.
+      if (options.shabbatMode) {
         try {
           await this.minionsBl.setMinionCalibrate(activity.minionId, {
             calibrationCycleMinutes: Configuration.defaultLockCalibrationMinutes,
-            calibrationMode: activity.minionStatus[minion.minionType].status === 'on' ? 'LOCK_ON' : 'LOCK_OFF',
+            calibrationMode: 'SHABBAT',
+          });
+        } catch (error) {
+          logger.error(`[operation] Fail to set minion "${activity.minionId}" operation activity lock`);
+        }
+      // Else if need to set a 'lock', select the correct lock depend on the 'set status' value
+      } else if (options.lockStatus) {
+        try {
+          await this.minionsBl.setMinionCalibrate(activity.minionId, {
+            calibrationCycleMinutes: Configuration.defaultLockCalibrationMinutes,
+            calibrationMode: activity.minionStatus[minion.minionType].status === 'on'
+              ? 'LOCK_ON'
+              : 'LOCK_OFF',
           });
         } catch (error) {
           logger.error(`[operation] Fail to set minion "${activity.minionId}" operation activity lock`);
@@ -148,8 +161,8 @@ export class OperationsBl {
       } catch (error) {
         logger.warn(
           `Setting minion ${activity.minionId} a new status by operation activity data: ` +
-            `${JSON.stringify(activity.minionStatus)} fail, ` +
-            `${JSON.stringify(error)}`,
+          `${JSON.stringify(activity.minionStatus)} fail, ` +
+          `${JSON.stringify(error)}`,
         );
       }
 

@@ -117,7 +117,7 @@ const models: TsoaRoute.Models = {
     "MinionCalibrate": {
         "properties": {
             "calibrationCycleMinutes": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "isInt": { "errorMsg": "true" } } },
-            "calibrationMode": { "dataType": "enum", "enums": ["LOCK_ON", "LOCK_OFF", "AUTO"], "required": true },
+            "calibrationMode": { "dataType": "enum", "enums": ["LOCK_ON", "LOCK_OFF", "SHABBAT", "AUTO"], "required": true },
         },
     },
     "Minion": {
@@ -181,6 +181,7 @@ const models: TsoaRoute.Models = {
             "timingType": { "dataType": "enum", "enums": ["dailySunTrigger", "dailyTimeTrigger", "once", "timeout"], "required": true },
             "timingProperties": { "ref": "TimingProperties", "required": true },
             "lockStatus": { "dataType": "boolean" },
+            "shabbatMode": { "dataType": "boolean" },
             "overrideLock": { "dataType": "boolean" },
         },
     },

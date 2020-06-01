@@ -103,9 +103,9 @@ export class TimingsBl {
   private async activeTiming(timing: Timing): Promise<void> {
     logger.info(`Invoke ${timing.timingName} id: ${timing.timingId} timing starting...`);
 
-    const { overrideLock, lockStatus } = timing;
+    const { overrideLock, lockStatus, shabbatMode } = timing;
     try {
-      const results = await this.operationBl.triggerOperation(timing.triggerOperationId, { overrideLock, lockStatus });
+      const results = await this.operationBl.triggerOperation(timing.triggerOperationId, { overrideLock, lockStatus, shabbatMode });
       logger.info(`Invoke ${timing.timingName} id: ${timing.timingId} timing done`);
 
       this.timingFeed.next({

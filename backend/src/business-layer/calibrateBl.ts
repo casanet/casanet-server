@@ -40,7 +40,7 @@ export class CalibrateBl {
       if (
         this.lastCalibrateMap[minion.minionId] &&
         now.getTime() - this.lastCalibrateMap[minion.minionId].getTime() <
-          moment.duration(minion.calibration.calibrationCycleMinutes, 'minutes').asMilliseconds()
+        moment.duration(minion.calibration.calibrationCycleMinutes, 'minutes').asMilliseconds()
       ) {
         continue;
       }
@@ -59,7 +59,7 @@ export class CalibrateBl {
   }
 
   private async calibrateMinion(minion: Minion) {
-    // In case that minion dont have any status
+    // In case that minion don't have any status
     const emptyStatus: MinionStatus = {};
     emptyStatus[minion.minionType] = ({} as unknown) as any;
     emptyStatus[minion.minionType].status = 'off';
@@ -75,6 +75,9 @@ export class CalibrateBl {
         break;
       case 'LOCK_OFF':
         minionStatus[minion.minionType].status = 'off';
+        break;
+      case 'SHABBAT':
+        minionStatus[minion.minionType].status = minionStatus[minion.minionType].status === 'off' ? 'on' : 'off';
         break;
       default:
         break;
@@ -129,6 +132,7 @@ export class CalibrateBl {
           legalStatus = 'off';
           break;
         case 'AUTO':
+        case 'SHABBAT':
           legalStatus = minion.minionStatus[minion.minionType]?.status || 'on';
           break;
         default:

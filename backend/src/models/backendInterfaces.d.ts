@@ -28,6 +28,7 @@ export declare type RunningMode = 'prod' | 'test' | 'debug';
 export declare interface SetLockOptions {
   lockStatus?: boolean;
   overrideLock?: boolean;
+  shabbatMode?: boolean;
 }
 
 /** Config structure for all system */
