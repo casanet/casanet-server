@@ -68,7 +68,9 @@
                     matTooltip="{{'CALIBRATION_MODE' | translate}}: '{{ minion.calibration.calibrationMode | translate}}', {{'CALIBRATE_EACH' | translate}} {{ minion.calibration.calibrationCycleMinutes }} {{'MINUTES' | translate}}" (mousedown)="minion.other_keyup = true"
                         mat-icon-button (click)="editCalibrate(minion)">
                         <mat-icon *ngIf="minion.calibration.calibrationMode === 'AUTO'">slow_motion_video</mat-icon>
-                        <mat-icon *ngIf="minion.calibration.calibrationMode !== 'AUTO'">lock</mat-icon>
+                        <mat-icon *ngIf="minion.calibration.calibrationMode === 'SHABBAT'">hourglass_full</mat-icon>
+                        <mat-icon *ngIf="minion.calibration.calibrationMode === 'LOCK_ON'">lock</mat-icon>
+                        <mat-icon *ngIf="minion.calibration.calibrationMode === 'LOCK_OFF'">lock</mat-icon>
                     </button>
 
                     <button (mouseleave)="minion.other_keyup = false" (mousedown)="minion.other_keyup = true"

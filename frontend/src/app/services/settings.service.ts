@@ -44,7 +44,7 @@ export class SettingsService {
         this.intervalHandler = setInterval(async () => {
           await this.detectIsVersionUpToDate();
         },
-          this.DETECT_LATEST_VERSION_ACTIVATION_MS);
+          this.DETECT_LATEST_VERSION_ACTIVATION_MS) as unknown as number;
       }
     });
   }

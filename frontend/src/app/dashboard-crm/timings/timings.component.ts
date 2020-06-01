@@ -61,7 +61,7 @@ export class TimingsComponent implements OnInit, OnDestroy {
   }
 
   private parseTimings() {
-     this.rawTimings.forEach((timing): DisplayTiming => {
+    this.rawTimings.forEach((timing): DisplayTiming => {
       const {
         overrideLock,
         lockStatus,
@@ -70,7 +70,8 @@ export class TimingsComponent implements OnInit, OnDestroy {
         timingName,
         timingProperties,
         timingType,
-        triggerOperationId
+        triggerOperationId,
+        shabbatMode
       } = timing;
       const operation = this.operationService.getOperation(timing.triggerOperationId);
       const operationName =
@@ -88,6 +89,7 @@ export class TimingsComponent implements OnInit, OnDestroy {
         triggerOperationId,
         overrideLock,
         lockStatus,
+        shabbatMode
       };
 
       // Try get the original timing if already exists
@@ -121,10 +123,11 @@ export class TimingsComponent implements OnInit, OnDestroy {
 
   public async setTimingActive(timing: Timing, setActive: boolean) {
 
-    const { overrideLock, lockStatus, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
+    const { shabbatMode, overrideLock, lockStatus, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
     timing['sync'] = true;
 
     await this.timingsService.editTimings({
+      shabbatMode,
       overrideLock,
       lockStatus,
       isActive: setActive,
@@ -140,10 +143,11 @@ export class TimingsComponent implements OnInit, OnDestroy {
 
   public async setLockStatus(timing: Timing, lockStatus: boolean) {
 
-    const { isActive, overrideLock, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
+    const { isActive, overrideLock, shabbatMode, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
     timing['sync'] = true;
 
     await this.timingsService.editTimings({
+      shabbatMode,
       overrideLock,
       lockStatus,
       isActive,
@@ -159,7 +163,27 @@ export class TimingsComponent implements OnInit, OnDestroy {
 
   public async setOverrideLock(timing: Timing, overrideLock: boolean) {
 
-    const { isActive, lockStatus, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
+    const { isActive, lockStatus, shabbatMode, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
+    timing['sync'] = true;
+
+    await this.timingsService.editTimings({
+      shabbatMode,
+      overrideLock,
+      lockStatus,
+      isActive,
+      timingId,
+      timingName,
+      timingProperties,
+      timingType,
+      triggerOperationId
+    });
+
+    timing['sync'] = false;
+  }
+
+  public async setShabbatMode(timing: Timing, shabbatMode: boolean) {
+
+    const { isActive, lockStatus, overrideLock, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
     timing['sync'] = true;
 
     await this.timingsService.editTimings({
@@ -170,7 +194,8 @@ export class TimingsComponent implements OnInit, OnDestroy {
       timingName,
       timingProperties,
       timingType,
-      triggerOperationId
+      triggerOperationId,
+      shabbatMode,
     });
 
     timing['sync'] = false;
@@ -193,10 +218,11 @@ export class TimingsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { overrideLock, lockStatus, timingId, timingProperties, timingType, triggerOperationId, isActive } = timing;
+    const { overrideLock, shabbatMode, lockStatus, timingId, timingProperties, timingType, triggerOperationId, isActive } = timing;
     timing['sync'] = true;
 
     await this.timingsService.editTimings({
+      shabbatMode,
       overrideLock,
       lockStatus,
       isActive,
@@ -212,10 +238,13 @@ export class TimingsComponent implements OnInit, OnDestroy {
 
   public async editTiming(timing: Timing) {
 
-    const { overrideLock, lockStatus, isActive, timingId, timingProperties, timingName, timingType, triggerOperationId } = timing;
+    const {
+      overrideLock, shabbatMode, lockStatus, isActive, timingId, timingProperties, timingName, timingType, triggerOperationId
+    } = timing;
     timing['sync'] = true;
 
     await this.timingsService.editTimings({
+      shabbatMode,
       overrideLock,
       lockStatus,
       isActive,
@@ -262,10 +291,11 @@ export class TimingsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { overrideLock, lockStatus, isActive, timingId, timingProperties, timingName, timingType } = timing;
+    const { overrideLock, shabbatMode, lockStatus, isActive, timingId, timingProperties, timingName, timingType } = timing;
     timing['sync'] = true;
 
     await this.timingsService.editTimings({
+      shabbatMode,
       overrideLock,
       lockStatus,
       isActive,

@@ -1,7 +1,7 @@
 <app-loader *ngIf="dataLoading"></app-loader>
 <div *ngIf="!dataLoading" fxLayout="row wrap" fxFill>
-    <div fxFlex fxLayout="column" fxLayoutAlign="space-between"
-        *ngFor="let timing of timings" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
+    <div fxFlex fxLayout="column" fxLayoutAlign="space-between" *ngFor="let timing of timings" fxFlex.lt-sm="100"
+        fxFlex.sm="50" fxFlex.md="25">
 
         <mat-card class="timing-text" style="max-width: 500px !important; background: #4f93a8">
             <mat-card-header>
@@ -27,8 +27,8 @@
 
                 <mat-menu #timingMenu="matMenu">
                     <button mat-menu-item (click)=selectOtherOperation(timing)>
-                                <mat-icon>play_circle_filled</mat-icon>
-                                <span>{{ 'REPLACE_OPERATION' | translate}}</span>
+                        <mat-icon>play_circle_filled</mat-icon>
+                        <span>{{ 'REPLACE_OPERATION' | translate}}</span>
                     </button>
                     <button mat-menu-item (click)="renameTiming(timing)">
                         <mat-icon>format_italic</mat-icon>
@@ -50,13 +50,19 @@
                     </mat-expansion-panel-header>
 
                     <!-- Locks section -->
-                    <mat-slide-toggle [color]="primary" [(checked)]="timing.lockStatus"
-                        (change)="setLockStatus(timing, $event.checked)" style="margin: 10px; color: white">{{ 'LOCK_STATUSES' | translate }}
+                    <mat-slide-toggle [color]="primary" [(checked)]="timing.lockStatus && !timing.shabbatMode" [disabled]="timing.shabbatMode"
+                        (change)="setLockStatus(timing, $event.checked)" style="margin: 10px; color: white">
+                        {{ 'LOCK_STATUSES' | translate }}
                     </mat-slide-toggle>
                     <mat-slide-toggle [color]="primary" [(checked)]="timing.overrideLock"
-                        (change)="setOverrideLock(timing, $event.checked)" style="margin: 10px; color: white">{{ 'OVERRIDE_LOCKS' | translate }}
+                        (change)="setOverrideLock(timing, $event.checked)" style="margin: 10px; color: white">
+                        {{ 'OVERRIDE_LOCKS' | translate }}
                     </mat-slide-toggle>
-                    
+                    <mat-slide-toggle [color]="primary" [(checked)]="timing.shabbatMode"
+                        (change)="setShabbatMode(timing, $event.checked)" style="margin: 10px; color: white">
+                        {{ 'SET_SHABBAT_MODE' | translate }}
+                    </mat-slide-toggle>
+
                     <!-- dailySunTrigger -->
                     <ng-container *ngIf="timing.timingType === 'dailySunTrigger'"
                         [style.text-align]="('RIGHT_DIR' | translate)">
@@ -81,14 +87,14 @@
                                 placeholder="{{ 'DURATION_IN_MINUTES' | translate}}">
                         </mat-form-field>
 
-                            <mat-form-field>
-                                <mat-label>{{ 'SUN_TRIGGER' | translate}}</mat-label>
-                                <mat-select [disabled]="!timing.edit"
-                                    [(value)]="timing.timingProperties.dailySunTrigger.sunTrigger">
-                                    <mat-option value="sunrise">{{ 'SUNRISE' | translate}}</mat-option>
-                                    <mat-option value="sunset">{{ 'SUNSET' | translate}}</mat-option>
-                                </mat-select>
-                            </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>{{ 'SUN_TRIGGER' | translate}}</mat-label>
+                            <mat-select [disabled]="!timing.edit"
+                                [(value)]="timing.timingProperties.dailySunTrigger.sunTrigger">
+                                <mat-option value="sunrise">{{ 'SUNRISE' | translate}}</mat-option>
+                                <mat-option value="sunset">{{ 'SUNSET' | translate}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
                     </ng-container>
 
@@ -115,8 +121,8 @@
                                 [(ngModel)]="timing.timingProperties.dailyTimeTrigger.hour">
                         </mat-form-field>
 
-                            <mat-form-field>
-                                <input matInput [disabled]="!timing.edit" type="number" min="0" max="59" step="1"
+                        <mat-form-field>
+                            <input matInput [disabled]="!timing.edit" type="number" min="0" max="59" step="1"
                                 placeholder="{{ 'MINUTES' | translate}}"
                                 [(ngModel)]="timing.timingProperties.dailyTimeTrigger.minutes">
                         </mat-form-field>
@@ -149,8 +155,8 @@
 
                     <!-- Edit button -->
                     <div [style.text-align]="('RIGHT_DIR' | translate)" class="timing-text">
-                        <button *ngIf="!timing.sync && !timing.edit" mat-icon-button (click)="timing.edit = true;" matTooltipPosition="below"
-                                matTooltip="{{'EDIT_PROPERTIES' | translate}}">
+                        <button *ngIf="!timing.sync && !timing.edit" mat-icon-button (click)="timing.edit = true;"
+                            matTooltipPosition="below" matTooltip="{{'EDIT_PROPERTIES' | translate}}">
                             <mat-icon aria-label="Edit">edit</mat-icon>
                         </button>
                         <button *ngIf="!timing.sync && timing.edit" mat-icon-button (click)="editTiming(timing)">
@@ -176,10 +182,10 @@
         </eco-fab-speed-dial-trigger>
 
         <eco-fab-speed-dial-actions>
-            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}" (click)="refreshData()"
-                matTooltip="{{'REFRESH' | translate}}">
+            <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}"
+                (click)="refreshData()" matTooltip="{{'REFRESH' | translate}}">
                 <mat-icon>refresh</mat-icon>
-              </button>
+            </button>
             <button [color]="primary" mat-mini-fab matTooltipPosition="{{'RIGHT_DIR' | translate}}"
                 (click)="createTimings()" matTooltip="{{'CREATE_TIMING' | translate}}">
                 <mat-icon>add</mat-icon>
