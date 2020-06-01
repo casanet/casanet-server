@@ -304,6 +304,7 @@ definitions:
                 enum:
                     - LOCK_ON
                     - LOCK_OFF
+                    - SHABBAT
                     - AUTO
                 description: 'The calibration mode to calibrate'
         required:
@@ -510,6 +511,10 @@ definitions:
             lockStatus:
                 type: boolean
                 description: 'Lock the status that changed by the timing (default false)'
+                x-nullable: true
+            shabbatMode:
+                type: boolean
+                description: 'Set minion lock to be Shabbat mode'
                 x-nullable: true
             overrideLock:
                 type: boolean

@@ -473,6 +473,8 @@ export declare type CalibrationMode =
   | 'LOCK_ON'
   /** Lock device to 'off' mode even if its will changed by the physical interface */
   | 'LOCK_OFF'
+  /** Shabbat mode used to turn off/on in interval, so the Sabbat keepers can wait to the wanted state */
+  | 'SHABBAT'
   /**
    * Just make sure that casanet and the physical device have the same status
    * By sending the last casanet status to the device.
@@ -661,6 +663,10 @@ export declare interface Timing {
    */
   lockStatus?: boolean;
 
+  /**
+   * Set minion lock to be Shabbat mode  
+   */
+  shabbatMode?: boolean;
   /**
    * Override lock, if exists (default false)
    */
