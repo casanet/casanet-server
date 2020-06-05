@@ -78,6 +78,8 @@ export class TuyaHandler extends BrandModuleBase {
       try {
         const rowStatus = await tuyaDevice.get();
 
+        this.releasDevice(tuyaDevice, miniom.device);
+
         return {
           roller: {
             status: rowStatus !== '3' ? 'on' : 'off',
@@ -108,7 +110,7 @@ export class TuyaHandler extends BrandModuleBase {
       if (
         typeof err === 'object' &&
         err.message ===
-          'Error communicating with device. Make sure nothing else is trying to control it or connected to it.'
+        'Error communicating with device. Make sure nothing else is trying to control it or connected to it.'
       ) {
         throw {
           responseCode: 9503,
@@ -147,6 +149,8 @@ export class TuyaHandler extends BrandModuleBase {
         break;
     }
 
+    this.releasDevice(tuyaDevice, miniom.device);
+
     return {
       switch: {
         status: currentGangStatus ? 'on' : 'off',
@@ -165,6 +169,8 @@ export class TuyaHandler extends BrandModuleBase {
         await tuyaDevice.set({
           set: setStatus.roller.status === 'off' ? '3' : setStatus.roller.direction === 'up' ? '1' : '2',
         });
+        this.releasDevice(tuyaDevice, miniom.device);
+
         return;
       } catch (err) {
         logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
@@ -172,7 +178,7 @@ export class TuyaHandler extends BrandModuleBase {
         if (
           typeof err === 'object' &&
           err.message ===
-            'Error communicating with device. Make sure nothing else is trying to control it or connected to it.'
+          'Error communicating with device. Make sure nothing else is trying to control it or connected to it.'
         ) {
           throw {
             responseCode: 9503,
@@ -210,7 +216,7 @@ export class TuyaHandler extends BrandModuleBase {
       if (
         typeof err === 'object' &&
         err.message ===
-          'Error communicating with device. Make sure nothing else is trying to control it or connected to it.'
+        'Error communicating with device. Make sure nothing else is trying to control it or connected to it.'
       ) {
         throw {
           responseCode: 9503,
@@ -224,6 +230,8 @@ export class TuyaHandler extends BrandModuleBase {
         message: 'communication with tuya device fail',
       } as ErrorResponse;
     });
+
+    this.releasDevice(tuyaDevice, miniom.device);
   }
 
   public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
@@ -246,27 +254,54 @@ export class TuyaHandler extends BrandModuleBase {
 
   public async refreshCommunication(): Promise<void> {
     for (const tuyaApi of Object.values(this.pysicalDevicesMap)) {
-      tuyaApi.disconnect();
+      try {
+        tuyaApi.disconnect();
+      } catch (error) {
+      }
     }
     this.pysicalDevicesMap = {};
   }
 
   /**
-   * Create new tuya communication device api.
-   * and also listen to data arrived from device.
-   * @param minionDevice minion device property to create for.
+   * Get tuya device API instance.
+   * @param minionDevice The minion device property. to get tuya instance for.
+   * @returns tuya device API instance
    */
-  private async createTuyaDevice(minionDevice: MinionDevice) {
-    /**
-     * Create tuya device.
-     */
-    const tuyaDevice = new Tuyapi({
+  private async getTuyaDevice(minionDevice: MinionDevice): Promise<any> {
+
+    // If the device is currently running inbackgroud, disconnect it.
+    if (minionDevice.pysicalDevice.mac in this.pysicalDevicesMap) {
+      try {
+        this.pysicalDevicesMap[minionDevice.pysicalDevice.mac].disconnect();
+      } catch (error) { }
+    }
+
+    // Create the new instance
+    const device = new Tuyapi({
       id: minionDevice.deviceId,
       key: minionDevice.token,
       persistentConnection: true,
     });
 
-    await tuyaDevice.find();
+    // Find the device in the network
+    await device.find();
+
+    // Connect to it (TCP channel)
+    await device.connect();
+
+    // Retunr the instance, ready to use.
+    return device;
+  }
+
+  /**
+   * On the se/get/ finished, call to this method to keep device and subscribe status events
+   * @param tuyaDevice 
+   * @param minionDevice 
+   */
+  private async releasDevice(tuyaDevice: Tuyapi, minionDevice: MinionDevice) {
+
+    // Keep the device
+    this.pysicalDevicesMap[minionDevice.pysicalDevice.mac] = tuyaDevice;
 
     /**
      * Subscribe to status changed event.
@@ -313,7 +348,7 @@ export class TuyaHandler extends BrandModuleBase {
               },
             });
           }
-        } catch (error) {}
+        } catch (error) { }
         return;
       }
       /**
@@ -388,7 +423,7 @@ export class TuyaHandler extends BrandModuleBase {
         tuyaDevice.disconnect();
         delete this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
 
-        Delay(moment.duration(5, 'seconds'));
+        await Delay(moment.duration(5, 'seconds'));
         await this.getTuyaDevice(minionDevice);
       } catch (error) {
         logger.warn(
@@ -396,27 +431,7 @@ export class TuyaHandler extends BrandModuleBase {
         );
       }
     });
-
-    /**
-     * Establish connection
-     */
-    await tuyaDevice.connect();
-
-    /**
-     * Save the device API in map. to allow instance useing.
-     */
-    this.pysicalDevicesMap[minionDevice.pysicalDevice.mac] = tuyaDevice;
   }
 
-  /**
-   * Get tuya device API instance.
-   * @param minionDevice The minion device property. to get tuya instance for.
-   * @returns tuya device API instance
-   */
-  private async getTuyaDevice(minionDevice: MinionDevice): Promise<any> {
-    if (!(minionDevice.pysicalDevice.mac in this.pysicalDevicesMap)) {
-      await this.createTuyaDevice(minionDevice);
-    }
-    return this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
-  }
+
 }
