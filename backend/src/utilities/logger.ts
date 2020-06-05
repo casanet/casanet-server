@@ -16,6 +16,7 @@ const casanetLogger = winston.createLogger({
       filename: LOG_FILE_NAME,
       maxsize: 1e6,
       maxFiles: 30,
+      tailable: true,
       eol: `\r\n \n`, // For windows & linux new-lines flags
     }),
   ],
