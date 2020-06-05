@@ -22,7 +22,6 @@ console.info('\x1b[34m', welcomeMessage, '\x1b[0m');
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
-import * as path from 'path';
 import app from './app';
 import { Configuration } from './config';
 import { logger } from './utilities/logger';
@@ -55,3 +54,20 @@ if (Configuration.http.useHttps) {
     process.exit();
   }
 }
+
+// Catch uncaughtException instead of crashing
+process.on('uncaughtException', (err: any) => {
+  logger.error(`[home-iot-server] app uncaughtException, error: ${JSON.stringify(err)}`);
+});
+process.on('exit', (code) => {
+  logger.warn(`[home-iot-server] About to exit with code: ${code}`);
+});
+process.on('SIGINT', () => {
+  logger.warn(`[home-iot-server] About to exit SIGINT`);
+});
+process.on('SIGTERM', () => {
+  logger.warn(`[home-iot-server] About to exit SIGTERM`);
+});
+process.on('SIGTERM', () => {
+  logger.warn(`[home-iot-server] About to exit SIGTERM`);
+});

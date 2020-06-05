@@ -81,7 +81,7 @@
     "rxjs": "^6.5.2",
     "suncalc": "^1.8.0",
     "tsoa": "2.4.3",
-    "tuyapi": "^5.1.2",
+    "tuyapi": "^5.3.1",
     "winston": "^3.2.1",
     "yeelight-awesome": "^1.0.12"
   },
