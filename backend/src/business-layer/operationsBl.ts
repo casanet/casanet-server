@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { Configuration } from '../config';
 import { OperationsDal, OperationsDalSingleton } from '../data-layer/operationsDal';
 import { SetLockOptions } from '../models/backendInterfaces';
-import { ErrorResponse, MinionStatus, Operation, OperationActivity, OperationResult } from '../models/sharedInterfaces';
+import { ErrorResponse, MinionStatus, Operation, OperationActivity, OperationResult, Minion } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
 import { MinionsBl, MinionsBlSingleton } from './minionsBl';
@@ -117,7 +117,13 @@ export class OperationsBl {
 
       logger.info(`Setting minion ${activity.minionId} a new status by operation activity...`);
 
-      const minion = await this.minionsBl.getMinionById(activity.minionId);
+      let minion : Minion;
+      try {
+        minion = await this.minionsBl.getMinionById(activity.minionId);
+      } catch (error) {
+        logger.info(`Getting minion ${activity.minionId} failed, ignoring this minion activity`);
+        continue;
+      }
 
       // If need to override, just remove any lock
       if (options.overrideLock) {
@@ -141,7 +147,7 @@ export class OperationsBl {
         } catch (error) {
           logger.error(`[operation] Fail to set minion "${activity.minionId}" operation activity lock`);
         }
-      // Else if need to set a 'lock', select the correct lock depend on the 'set status' value
+        // Else if need to set a 'lock', select the correct lock depend on the 'set status' value
       } else if (options.lockStatus) {
         try {
           await this.minionsBl.setMinionCalibrate(activity.minionId, {
