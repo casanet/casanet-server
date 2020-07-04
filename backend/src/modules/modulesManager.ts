@@ -66,19 +66,19 @@ export class ModulesManager {
    * Get current status of minion. (such as minion status on off etc.)
    */
   @MutexMinionsAccess
-  public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
-    const minionModule = this.getMinionModule(miniom.device.brand);
+  public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
+    const minionModule = this.getMinionModule(minion.device.brand);
 
     if (!minionModule) {
       const errorResponse: ErrorResponse = {
         responseCode: 7404,
-        message: `there is not module for -${miniom.device.brand}- brand`,
+        message: `there is not module for -${minion.device.brand}- brand`,
       };
       throw errorResponse;
     }
 
     try {
-      return await withTimeout(minionModule.getStatus(miniom), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+      return await withTimeout(minionModule.getStatus(minion), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
     } catch (error) {
       if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
         throw {
@@ -93,24 +93,24 @@ export class ModulesManager {
 
   /**
    * Set minion new status. (such as turn minion on off etc.)
-   * @param miniom minion to set status for.
+   * @param minion minion to set status for.
    * @param setStatus the new status to set.
    */
   @MutexMinionsAccess
-  public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
-    const minionModule = this.getMinionModule(miniom.device.brand);
+  public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+    const minionModule = this.getMinionModule(minion.device.brand);
 
     if (!minionModule) {
       const errorResponse: ErrorResponse = {
         responseCode: 7404,
-        message: `there is not module for -${miniom.device.brand}- brand`,
+        message: `there is not module for -${minion.device.brand}- brand`,
       };
       throw errorResponse;
     }
 
     try {
       return await withTimeout(
-        minionModule.setStatus(miniom, setStatus),
+        minionModule.setStatus(minion, setStatus),
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
     } catch (error) {
@@ -235,12 +235,12 @@ export class ModulesManager {
       throw errorResponse;
     }
 
-    /** Make sure that minion supprt recording */
+    /** Make sure that minion support recording */
     const modelKind = this.getModelKind(minionModule, minion.device);
-    if (!modelKind || !modelKind.isRecordingSupported) {
+    if (!modelKind || !modelKind.isFetchCommandsAvailable) {
       const errorResponse: ErrorResponse = {
         responseCode: 6409,
-        message: `the minioin not support command recording or sending`,
+        message: `the minion not support command recording or sending`,
       };
       throw errorResponse;
     }

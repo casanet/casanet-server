@@ -25,7 +25,7 @@ import {
   MinionSetRoomName,
   MinionStatus,
   MinionTimeline,
-  ScaningStatus,
+  ScanningStatus,
   SetMinionAutoTurnOff,
   VersionUpdateStatus,
 } from '../models/sharedInterfaces';
@@ -140,9 +140,9 @@ export class MinionsController extends Controller {
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Get('rescan')
-  public async getSescaningMinionsStatus(): Promise<ScaningStatus> {
+  public async getSescaningMinionsStatus(): Promise<ScanningStatus> {
     return {
-      scaningStatus: await MinionsBlSingleton.getScaningStatus(),
+      scanningStatus: await MinionsBlSingleton.getScaningStatus(),
     };
   }
 

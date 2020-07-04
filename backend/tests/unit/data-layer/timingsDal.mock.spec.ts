@@ -49,7 +49,7 @@ export class TimingsDalMock {
       timingProperties: {
         timeout: {
           startDate: new Date().getTime(),
-          durationInMimutes: 1,
+          durationInMinutes: 1,
         },
       },
       timingType: 'timeout',

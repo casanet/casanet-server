@@ -127,14 +127,14 @@ export class CreateTimingDialogComponent implements OnInit {
       const timeoutTiming: TimeoutTiming = this.timingProperties;
 
       /** Fix duration to be number */
-      timeoutTiming.durationInMimutes =
-        timeoutTiming.durationInMimutes
-          ? parseFloat(timeoutTiming.durationInMimutes as unknown as string)
+      timeoutTiming.durationInMinutes =
+        timeoutTiming.durationInMinutes
+          ? parseFloat(timeoutTiming.durationInMinutes as unknown as string)
           : undefined;
 
       /** Mark start date as 'now' */
       timeoutTiming.startDate = new Date().getTime();
-      return timeoutTiming.durationInMimutes;
+      return timeoutTiming.durationInMinutes;
     }
   }
 

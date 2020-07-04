@@ -20,7 +20,7 @@ import {
   IftttActionTriggered,
   IftttActionTriggeredRequest,
   IftttIntegrationSettings,
-  IftttRawActionTriggerd,
+  IftttRawActionTriggered,
 } from '../models/sharedInterfaces';
 
 @Tags('Ifttt')
@@ -59,7 +59,7 @@ export class IftttController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Security('iftttAuth')
   @Post('/trigger/minions/raw/')
-  public async triggeredSomeAction(@Body() iftttRawActionTriggerd: IftttRawActionTriggerd): Promise<void> {
+  public async triggeredSomeAction(@Body() iftttRawActionTriggerd: IftttRawActionTriggered): Promise<void> {
     const { apiKey, minionId, setStatus } = iftttRawActionTriggerd;
     await IftttIntegrationBlSingleton.triggeredMinionAction(minionId, {
       apiKey,

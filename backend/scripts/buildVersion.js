@@ -6,14 +6,14 @@ const git = simplegit();
 
 const buildVersionInfo = async() => {
       const tags = await git.tags();
-      const commintHash = await git.revparse(['--short', 'HEAD']);
+      const commitHash = await git.revparse(['--short', 'HEAD']);
       const rawTimestamp = await git.show(['-s', '--format=%ct']);
 
       const timestamp = +rawTimestamp * 1000;
 
       fse.writeFileSync(path.join(__dirname, '../dist', 'versionInfo.json'), JSON.stringify({
         version: tags.latest,
-        commintHash,
+        commitHash,
         timestamp,
       }));
   }

@@ -227,7 +227,7 @@ export class TimingsBl {
    */
   private async timeoutTiming(now: Moment, timing: Timing, timingProperties: TimeoutTiming): Promise<void> {
     const timeoutMoment = moment(timingProperties.startDate);
-    timeoutMoment.add(timingProperties.durationInMimutes, 'minute');
+    timeoutMoment.add(timingProperties.durationInMinutes, 'minute');
 
     /**
      * If its new trigger timing.

@@ -161,7 +161,7 @@ const models: TsoaRoute.Models = {
     "TimeoutTiming": {
         "properties": {
             "startDate": { "dataType": "double", "required": true },
-            "durationInMimutes": { "dataType": "double", "required": true },
+            "durationInMinutes": { "dataType": "double", "required": true },
         },
     },
     "TimingProperties": {
@@ -202,10 +202,11 @@ const models: TsoaRoute.Models = {
             "brand": { "dataType": "string", "required": true },
             "model": { "dataType": "string", "required": true },
             "minionsPerDevice": { "dataType": "double", "required": true },
-            "isTokenRequierd": { "dataType": "boolean", "required": true },
-            "isIdRequierd": { "dataType": "boolean", "required": true },
-            "suppotedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
+            "isTokenRequired": { "dataType": "boolean", "required": true },
+            "isIdRequired": { "dataType": "boolean", "required": true },
+            "supportedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
             "isRecordingSupported": { "dataType": "boolean", "required": true },
+            "isFetchCommandsAvailable": { "dataType": "boolean", "required": true },
         },
     },
     "MinionTimeline": {
@@ -230,9 +231,9 @@ const models: TsoaRoute.Models = {
             "setAutoTurnOffMS": { "dataType": "double", "required": true },
         },
     },
-    "ScaningStatus": {
+    "ScanningStatus": {
         "properties": {
-            "scaningStatus": { "dataType": "enum", "enums": ["inProgress", "finished", "fail"], "required": true },
+            "scanningStatus": { "dataType": "enum", "enums": ["inProgress", "finished", "fail"], "required": true },
         },
     },
     "IftttOnChanged": {
@@ -281,7 +282,7 @@ const models: TsoaRoute.Models = {
             "enableIntegration": { "dataType": "boolean", "required": true },
         },
     },
-    "IftttRawActionTriggerd": {
+    "IftttRawActionTriggered": {
         "properties": {
             "apiKey": { "dataType": "string", "required": true },
             "localMac": { "dataType": "string" },
@@ -315,7 +316,7 @@ const models: TsoaRoute.Models = {
     "VersionInfo": {
         "properties": {
             "version": { "dataType": "string", "required": true },
-            "commintHash": { "dataType": "string", "required": true },
+            "commitHash": { "dataType": "string", "required": true },
             "timestamp": { "dataType": "double", "required": true },
         },
     },
@@ -1624,7 +1625,7 @@ export function RegisterRoutes(app: express.Express) {
         authenticateMiddleware([{ "iftttAuth": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
-                iftttRawActionTriggerd: { "in": "body", "name": "iftttRawActionTriggerd", "required": true, "ref": "IftttRawActionTriggerd" },
+                iftttRawActionTriggerd: { "in": "body", "name": "iftttRawActionTriggerd", "required": true, "ref": "IftttRawActionTriggered" },
             };
 
             let validatedArgs: any[] = [];
