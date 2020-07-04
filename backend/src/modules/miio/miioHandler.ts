@@ -23,33 +23,35 @@ export class MiioHandler extends BrandModuleBase {
   public readonly devices: DeviceKind[] = [
     {
       brand: this.brandName,
-      isTokenRequierd: true,
-      isIdRequierd: false,
+      isTokenRequired: true,
+      isIdRequired: false,
       minionsPerDevice: 1,
       model: 'Robot vacuum',
-      suppotedMinionType: 'cleaner',
+      supportedMinionType: 'cleaner',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: true,
-      isIdRequierd: false,
+      isTokenRequired: true,
+      isIdRequired: false,
       minionsPerDevice: 1,
       model: 'Philips ceiling',
-      suppotedMinionType: 'temperatureLight',
+      supportedMinionType: 'temperatureLight',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
   ];
 
   constructor() {
     super();
   }
-  public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
+  public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     try {
-      const device = await miio.device({ address: miniom.device.pysicalDevice.ip, token: miniom.device.token });
+      const device = await miio.device({ address: minion.device.pysicalDevice.ip, token: minion.device.token });
 
       let currentStatus: MinionStatus;
-      switch (miniom.minionType) {
+      switch (minion.minionType) {
         case 'cleaner':
           currentStatus = {
             cleaner: await this.getVaccumStatus(device),
@@ -78,11 +80,11 @@ export class MiioHandler extends BrandModuleBase {
     }
   }
 
-  public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+  public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     try {
-      const device = await miio.device({ address: miniom.device.pysicalDevice.ip, token: miniom.device.token });
+      const device = await miio.device({ address: minion.device.pysicalDevice.ip, token: minion.device.token });
 
-      switch (miniom.minionType) {
+      switch (minion.minionType) {
         case 'cleaner':
           await this.setVaccumStatus(device, setStatus.cleaner);
           break;
@@ -105,14 +107,14 @@ export class MiioHandler extends BrandModuleBase {
     }
   }
 
-  public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 6409,
       message: 'the miio module not support any recording mode',
     } as ErrorResponse;
   }
 
-  public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async generateCommand(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 6409,
       message: 'the miio module not support any recording mode',

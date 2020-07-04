@@ -112,6 +112,7 @@ In addination I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux 
 - Tasmota
     
     - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363)) 
+    - Air-conditioning (IR Transmitter) (tested with [this](https://www.aliexpress.com/item/33004692351.html) (after [flashing to Tasmota](https://blog.castnet.club/en/blog/flashing-tasmota-on-tuya-ir-bridge))
 
 - [IFTTT](https://ifttt.com/discover) module. [module use documentation](./backend/src/modules/ifttt/README.md)..
 

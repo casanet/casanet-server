@@ -99,8 +99,8 @@ export class CreateMinionDialogComponent implements OnInit {
     if (!selectedKind) {
       return;
     }
-    this.requireToken = selectedKind.isTokenRequierd;
-    this.requireDeviceId = selectedKind.isIdRequierd;
+    this.requireToken = selectedKind.isTokenRequired;
+    this.requireDeviceId = selectedKind.isIdRequired;
   }
 
   public async createMinion() {

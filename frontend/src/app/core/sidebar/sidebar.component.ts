@@ -110,7 +110,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         try {
             const currVersion = await this.settingsService.getCurrentVersion();
             this.currentVersionName = currVersion.version;
-            this.currentVersionCommitHash = currVersion.commintHash;
+            this.currentVersionCommitHash = currVersion.commitHash;
             this.currentVersionReleaseDate = new Date(currVersion.timestamp).toLocaleDateString();
         } catch (error) {
             this.currentVersionName = 'unknown';

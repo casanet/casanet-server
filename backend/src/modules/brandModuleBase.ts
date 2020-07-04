@@ -1,4 +1,3 @@
-import * as fse from 'fs-extra';
 import * as path from 'path';
 import { PullBehavior } from 'pull-behavior';
 import { BehaviorSubject } from 'rxjs';
@@ -16,7 +15,7 @@ export abstract class BrandModuleBase {
   /**
    * Cache file pull path.
    */
-  private get cacheFilePath(): string {
+  protected get cacheFilePath(): string {
     return `${path.join(CACHE_DIRECTORY, this.brandName)}.json`;
   }
 
@@ -47,16 +46,16 @@ export abstract class BrandModuleBase {
 
   /**
    * Get current status of minion. (such as minion status on off etc.)
-   * @param miniom minion to get status for.
+   * @param minion minion to get status for.
    */
-  public abstract getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse>;
+  public abstract getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse>;
 
   /**
    * Set minion new status. (such as turn minion on off etc.)
-   * @param miniom minion to set status for.
+   * @param minion minion to set status for.
    * @param setStatus the new status to set.
    */
-  public abstract setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse>;
+  public abstract setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse>;
 
   /**
    * Record data for currrent minion status.
@@ -89,38 +88,4 @@ export abstract class BrandModuleBase {
    * Used for cleaning up communication before re-reading data, after communication auth changed or just hard reset module etc.
    */
   public abstract refreshCommunication(): Promise<void>;
-
-  /**
-   * Get cache JSON data sync.
-   * Use it in init only. else the app will black until read finish.
-   */
-  protected getCacheDataSync(): any {
-    try {
-      return fse.readJSONSync(this.cacheFilePath);
-    } catch (error) {
-      return undefined;
-    }
-  }
-
-  /**
-   * Get cache JSON data.
-   */
-  protected async getCacheData(): Promise<any> {
-    const data = await fse.readJSON(this.cacheFilePath).catch(err => {
-      logger.warn(`Fail to read ${this.cacheFilePath} cache file, ${err}`);
-      throw new Error('Fail to read cache data');
-    });
-    return data;
-  }
-
-  /**
-   * Save JSON to module cache.
-   * @param data Data to save in cache.
-   */
-  protected async setCacheData(data: any): Promise<void> {
-    await fse.outputFile(this.cacheFilePath, JSON.stringify(data, null, 2)).catch(err => {
-      logger.warn(`Fail to write ${this.cacheFilePath} cache file, ${err}`);
-      throw new Error('Fail to write cache data');
-    });
-  }
 }

@@ -7,7 +7,7 @@ import {
 	MinionTimeline,
 	CommandsRepoDevice,
 	ProgressStatus,
-	ScaningStatus,
+	ScanningStatus,
 	MinionCalibrate
 } from '../../../../backend/src/models/sharedInterfaces';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
@@ -87,10 +87,10 @@ export class MinionsService {
 		try {
 			let updateStatus: ProgressStatus = 'inProgress';
 			while (updateStatus === 'inProgress') {
-				const currentStatus = await this.httpClient.get<ScaningStatus>(`${environment.baseUrl}/minions/rescan`, {
+				const currentStatus = await this.httpClient.get<ScanningStatus>(`${environment.baseUrl}/minions/rescan`, {
 					withCredentials: true
 				}).toPromise();
-				updateStatus = currentStatus.scaningStatus;
+				updateStatus = currentStatus.scanningStatus;
 				await this.sleep(5000);
 			}
 

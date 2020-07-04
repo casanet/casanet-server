@@ -13,66 +13,73 @@ export class MockHandler extends BrandModuleBase {
   public readonly devices: DeviceKind[] = [
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: 1,
       model: 'switch demo',
-      suppotedMinionType: 'switch',
+      supportedMinionType: 'switch',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'ac demo',
-      suppotedMinionType: 'airConditioning',
+      supportedMinionType: 'airConditioning',
       isRecordingSupported: true,
+      isFetchCommandsAvailable: true,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'RF toggle demo',
-      suppotedMinionType: 'toggle',
+      supportedMinionType: 'toggle',
       isRecordingSupported: true,
+      isFetchCommandsAvailable: true,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'Light demo',
-      suppotedMinionType: 'light',
+      supportedMinionType: 'light',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'Temperature Light demo',
-      suppotedMinionType: 'temperatureLight',
+      supportedMinionType: 'temperatureLight',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'Color Light demo',
-      suppotedMinionType: 'colorLight',
+      supportedMinionType: 'colorLight',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'Roller demo',
-      suppotedMinionType: 'roller',
+      supportedMinionType: 'roller',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
   ];
   /**
@@ -122,10 +129,10 @@ export class MockHandler extends BrandModuleBase {
       });
     }, this.AC_CHANGED_INTERVAL.asMilliseconds());
   }
-  public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
+  public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
 
-    switch (miniom.device.model) {
+    switch (minion.device.model) {
       case 'switch demo':
         return {
           switch: {
@@ -182,16 +189,16 @@ export class MockHandler extends BrandModuleBase {
     } as ErrorResponse;
   }
 
-  public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+  public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
     if (
-      miniom.device.model === 'switch demo' ||
-      miniom.device.model === 'ac demo' ||
-      miniom.device.model === 'RF toggle demo' ||
-      miniom.device.model === 'Roller demo' ||
-      miniom.device.model === 'Light demo' ||
-      miniom.device.model === 'Temperature Light demo' ||
-      miniom.device.model === 'Color Light demo'
+      minion.device.model === 'switch demo' ||
+      minion.device.model === 'ac demo' ||
+      minion.device.model === 'RF toggle demo' ||
+      minion.device.model === 'Roller demo' ||
+      minion.device.model === 'Light demo' ||
+      minion.device.model === 'Temperature Light demo' ||
+      minion.device.model === 'Color Light demo'
     ) {
       return;
     }
@@ -202,11 +209,11 @@ export class MockHandler extends BrandModuleBase {
     } as ErrorResponse;
   }
 
-  public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
   }
 
-  public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async generateCommand(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real command generation.
   }
 

@@ -121,10 +121,18 @@ export class MinionsComponent implements OnInit, OnDestroy {
 		return minionSwitchStatus.status;
 	}
 
-	public isMinionRecordble(minion: Minion): boolean {
+	public isMinionRecordable(minion: Minion): boolean {
 		for (const deviceKind of this.devicesService.devicesKinds) {
 			if (deviceKind.brand === minion.device.brand && deviceKind.model === minion.device.model) {
 				return deviceKind.isRecordingSupported;
+			}
+		}
+	}
+
+	public isFetchCommandsAvailable(minion: Minion): boolean {
+		for (const deviceKind of this.devicesService.devicesKinds) {
+			if (deviceKind.brand === minion.device.brand && deviceKind.model === minion.device.model) {
+				return deviceKind.isFetchCommandsAvailable;
 			}
 		}
 	}

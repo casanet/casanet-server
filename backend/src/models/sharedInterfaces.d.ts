@@ -139,22 +139,28 @@ export declare interface DeviceKind {
   /**
    * Is the device require a token for communication API.
    */
-  isTokenRequierd: boolean;
+  isTokenRequired: boolean;
 
   /**
    * Is device require id for communication API.
    */
-  isIdRequierd: boolean;
+  isIdRequired: boolean;
 
   /**
    * Supported minion type for the current device.
    */
-  suppotedMinionType: MinionTypes;
+  supportedMinionType: MinionTypes;
 
   /**
    * Some of the devices supported recording (for example IR transmitter).
    */
   isRecordingSupported: boolean;
+
+  /**
+   * Whenever the device and module supported fetching commands data from 
+   * the https://github.com/casanet/rf-commands-repo project
+   */
+  isFetchCommandsAvailable: boolean;
 }
 
 /**
@@ -378,7 +384,7 @@ export declare interface TimeoutTiming {
   /**
    *  Duration to activate timing from the start timeout time in minutes.
    */
-  durationInMimutes: number;
+  durationInMinutes: number;
 }
 
 /**
@@ -707,8 +713,8 @@ export declare interface IftttActionTriggered extends IftttActionTriggeredReques
   setStatus: SwitchOptions;
 }
 
-/** Ifttt trigger with all request data in one JSON struct. */
-export declare interface IftttRawActionTriggerd extends IftttActionTriggeredRequest {
+/** Ifttt trigger with all request data in one JSON structure. */
+export declare interface IftttRawActionTriggered extends IftttActionTriggeredRequest {
   minionId: string;
   setStatus: SwitchOptions;
 }
@@ -724,7 +730,7 @@ export declare interface VersionInfo {
   /** Latest version (Git Tag) name */
   version: string;
   /** Current local master/HEAD commit hash */
-  commintHash: string;
+  commitHash: string;
   /** Time stamp of HEAD commit in UTC format */
   timestamp: number;
 }
@@ -733,8 +739,8 @@ export declare interface VersionInfo {
 export declare type ProgressStatus = 'inProgress' | 'finished' | 'fail';
 
 /** Scanning progress status */
-export declare interface ScaningStatus {
-  scaningStatus: ProgressStatus;
+export declare interface ScanningStatus {
+  scanningStatus: ProgressStatus;
 }
 
 /** Version update progress status */

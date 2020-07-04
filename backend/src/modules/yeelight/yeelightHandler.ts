@@ -25,21 +25,23 @@ export class YeelightHandler extends BrandModuleBase {
   public readonly devices: DeviceKind[] = [
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: 1,
       model: 'Temperature light',
-      suppotedMinionType: 'temperatureLight',
+      supportedMinionType: 'temperatureLight',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: 1,
       model: 'RGBW light',
-      suppotedMinionType: 'colorLight',
+      supportedMinionType: 'colorLight',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
   ];
 
@@ -159,14 +161,14 @@ export class YeelightHandler extends BrandModuleBase {
     }
   }
 
-  public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 6409,
       message: 'the yeelight module not support any recording mode',
     } as ErrorResponse;
   }
 
-  public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async generateCommand(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 6409,
       message: 'the yeelight module not support any recording mode',

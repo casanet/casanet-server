@@ -13,12 +13,13 @@ export class OrviboHandler extends BrandModuleBase {
   public readonly devices: DeviceKind[] = [
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: 1,
       model: 'S20',
-      suppotedMinionType: 'switch',
+      supportedMinionType: 'switch',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
   ];
 
@@ -123,14 +124,14 @@ export class OrviboHandler extends BrandModuleBase {
     });
   }
 
-  public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 5010,
       message: 'the orvibo module not support any recording mode',
     } as ErrorResponse;
   }
 
-  public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async generateCommand(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 6409,
       message: 'the orvibo module not support any recording mode',
@@ -232,9 +233,9 @@ export class OrviboHandler extends BrandModuleBase {
   /**
    * Re-subscribe to current orivbo device, use to know the status
    * (orvibo send it by subscribe and button pressed only) and also to alow set status.
-   * @param miniom The minion of device.
+   * @param minion The minion of device.
    */
-  private async reSubsribeOrvibo(miniom: Minion) {
+  private async reSubsribeOrvibo(minion: Minion) {
     /** If there is no connection, try to init it */
     if (!this.orviboCommunication) {
       try {
@@ -249,17 +250,17 @@ export class OrviboHandler extends BrandModuleBase {
     }
 
     /** Reload device each time befor sending data using UDP */
-    const currentOrviboDevice = this.orviboCommunication.getDevice(miniom.device.pysicalDevice.mac);
+    const currentOrviboDevice = this.orviboCommunication.getDevice(minion.device.pysicalDevice.mac);
     if (currentOrviboDevice) {
       this.orviboCommunication.devices.splice(this.orviboCommunication.devices.indexOf(currentOrviboDevice), 1);
     }
 
     /** Create device object */
     const orvibo = {
-      macAddress: miniom.device.pysicalDevice.mac,
+      macAddress: minion.device.pysicalDevice.mac,
       macPadding: '202020202020',
       type: 'Socket',
-      ip: miniom.device.pysicalDevice.ip,
+      ip: minion.device.pysicalDevice.ip,
       // Takes the last character from the message and turns it into a boolean.
       // This is our socket's initial state
       state: false,
