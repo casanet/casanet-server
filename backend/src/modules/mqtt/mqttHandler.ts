@@ -16,66 +16,73 @@ export class MqttHandler extends BrandModuleBase {
   public readonly devices: DeviceKind[] = [
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'toggle',
-      suppotedMinionType: 'toggle',
+      supportedMinionType: 'toggle',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'switch',
-      suppotedMinionType: 'switch',
+      supportedMinionType: 'switch',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'air conditioning',
-      suppotedMinionType: 'airConditioning',
+      supportedMinionType: 'airConditioning',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'light',
-      suppotedMinionType: 'light',
+      supportedMinionType: 'light',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'temperature light',
-      suppotedMinionType: 'temperatureLight',
+      supportedMinionType: 'temperatureLight',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'color light',
-      suppotedMinionType: 'colorLight',
+      supportedMinionType: 'colorLight',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: false,
-      isIdRequierd: false,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: -1,
       model: 'roller',
-      suppotedMinionType: 'roller',
+      supportedMinionType: 'roller',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
   ];
 
@@ -92,25 +99,25 @@ export class MqttHandler extends BrandModuleBase {
     this.loadMqttBroker();
   }
 
-  public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
-    await this.mqttClient.publish(`get/casanet/${miniom.minionId}`, '');
+  public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
+    await this.mqttClient.publish(`get/casanet/${minion.minionId}`, '');
     /** Current there is no option to 'ask' and wait for respone, only to send request and the update will arrive by status topic. */
-    return miniom.minionStatus;
+    return minion.minionStatus;
   }
 
-  public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+  public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     /** Publish set status topic */
-    await this.mqttClient.publish(`set/casanet/${miniom.minionId}`, JSON.stringify(setStatus));
+    await this.mqttClient.publish(`set/casanet/${minion.minionId}`, JSON.stringify(setStatus));
   }
 
-  public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 6409,
       message: 'the mqtt module not support any recording mode',
     } as ErrorResponse;
   }
 
-  public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async generateCommand(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 6409,
       message: 'the mqtt module not support any recording mode',
@@ -140,7 +147,7 @@ export class MqttHandler extends BrandModuleBase {
     }
   }
 
-  /** Load broker (or init new one if not configurate one) */
+  /** Load broker (or init new one if not configured one) */
   private async loadMqttBroker() {
     /** If there is broker set by env vars */
     if (mqttBrokerUri) {
@@ -150,7 +157,7 @@ export class MqttHandler extends BrandModuleBase {
       return;
     }
 
-    logger.info(`There is no MQTT_BROKER_IP env var, invokeing internal mqtt broker.`);
+    logger.info(`There is no MQTT_BROKER_IP env var, invoking internal mqtt broker.`);
     this.mqttBroker = new MqttBroker();
 
     /** Get broker port */
@@ -196,7 +203,7 @@ export class MqttHandler extends BrandModuleBase {
           }
 
           if (!status[minion.minionType]) {
-            logger.warn(`MQTT message for ${topic}:${payload.toString()} data not matchs the minion type`);
+            logger.warn(`MQTT message for ${topic}:${payload.toString()} data not match's the minion type`);
             return;
           }
 

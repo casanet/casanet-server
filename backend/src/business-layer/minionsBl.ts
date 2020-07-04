@@ -674,7 +674,7 @@ export class MinionsBl {
     /**
      * Check if token reqired and not exist.
      */
-    if (deviceKind.isTokenRequierd && !minionToCheck.device.token) {
+    if (deviceKind.isTokenRequired && !minionToCheck.device.token) {
       return {
         responseCode: 2409,
         message: 'token is requird',
@@ -684,7 +684,7 @@ export class MinionsBl {
     /**
      * Check if id reqired and not exist.
      */
-    if (deviceKind.isIdRequierd && !minionToCheck.device.deviceId) {
+    if (deviceKind.isIdRequired && !minionToCheck.device.deviceId) {
       return {
         responseCode: 3409,
         message: 'id is required',
@@ -716,7 +716,7 @@ export class MinionsBl {
     /**
      * ignore user selection and set corrent minion type based on model.
      */
-    minionToCheck.minionType = deviceKind.suppotedMinionType;
+    minionToCheck.minionType = deviceKind.supportedMinionType;
   }
 
   /**

@@ -20,39 +20,43 @@ export class TuyaHandler extends BrandModuleBase {
   public readonly devices: DeviceKind[] = [
     {
       brand: this.brandName,
-      isTokenRequierd: true,
-      isIdRequierd: true,
+      isTokenRequired: true,
+      isIdRequired: true,
       minionsPerDevice: 3,
       model: 'wall switch, 3 gangs, first one',
-      suppotedMinionType: 'switch',
+      supportedMinionType: 'switch',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: true,
-      isIdRequierd: true,
+      isTokenRequired: true,
+      isIdRequired: true,
       minionsPerDevice: 3,
       model: 'wall switch, 3 gangs, second one',
-      suppotedMinionType: 'switch',
+      supportedMinionType: 'switch',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: true,
-      isIdRequierd: true,
+      isTokenRequired: true,
+      isIdRequired: true,
       minionsPerDevice: 3,
       model: 'wall switch, 3 gangs, third one',
-      suppotedMinionType: 'switch',
+      supportedMinionType: 'switch',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
     {
       brand: this.brandName,
-      isTokenRequierd: true,
-      isIdRequierd: true,
+      isTokenRequired: true,
+      isIdRequired: true,
       minionsPerDevice: 1,
       model: 'curtain',
-      suppotedMinionType: 'roller',
+      supportedMinionType: 'roller',
       isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
     },
   ];
 
@@ -68,17 +72,17 @@ export class TuyaHandler extends BrandModuleBase {
     super();
   }
 
-  public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
+  public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     /**
      * Get tuya device instance
      */
-    const tuyaDevice = await this.getTuyaDevice(miniom.device);
+    const tuyaDevice = await this.getTuyaDevice(minion.device);
 
-    if (miniom.device.model.indexOf('curtain') !== -1) {
+    if (minion.device.model.indexOf('curtain') !== -1) {
       try {
         const rowStatus = await tuyaDevice.get();
 
-        this.releasDevice(tuyaDevice, miniom.device);
+        this.releaseDevice(tuyaDevice, minion.device);
 
         return {
           roller: {
@@ -87,7 +91,7 @@ export class TuyaHandler extends BrandModuleBase {
           },
         };
       } catch (err) {
-        logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+        logger.warn(`Fail to get status of ${minion.minionId}, ${err}`);
 
         if (typeof err === 'object' && err.message === 'fffffffffffffff') {
           throw {
@@ -105,7 +109,7 @@ export class TuyaHandler extends BrandModuleBase {
     }
 
     const stausResult = await tuyaDevice.get({ schema: true }).catch((err: Error) => {
-      logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+      logger.warn(`Fail to get status of ${minion.minionId}, ${err}`);
 
       if (
         typeof err === 'object' &&
@@ -137,7 +141,7 @@ export class TuyaHandler extends BrandModuleBase {
      * Extract the current minion status.
      */
     let currentGangStatus: boolean;
-    switch (miniom.device.model) {
+    switch (minion.device.model) {
       case 'wall switch, 3 gangs, first one':
         currentGangStatus = stausResult.dps[1];
         break;
@@ -149,7 +153,7 @@ export class TuyaHandler extends BrandModuleBase {
         break;
     }
 
-    this.releasDevice(tuyaDevice, miniom.device);
+    this.releaseDevice(tuyaDevice, minion.device);
 
     return {
       switch: {
@@ -158,22 +162,22 @@ export class TuyaHandler extends BrandModuleBase {
     };
   }
 
-  public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+  public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     /**
      * Get tuya device instance
      */
-    const tuyaDevice = await this.getTuyaDevice(miniom.device);
+    const tuyaDevice = await this.getTuyaDevice(minion.device);
 
-    if (miniom.device.model.indexOf('curtain') !== -1) {
+    if (minion.device.model.indexOf('curtain') !== -1) {
       try {
         await tuyaDevice.set({
           set: setStatus.roller.status === 'off' ? '3' : setStatus.roller.direction === 'up' ? '1' : '2',
         });
-        this.releasDevice(tuyaDevice, miniom.device);
+        this.releaseDevice(tuyaDevice, minion.device);
 
         return;
       } catch (err) {
-        logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+        logger.warn(`Fail to get status of ${minion.minionId}, ${err}`);
 
         if (
           typeof err === 'object' &&
@@ -198,7 +202,7 @@ export class TuyaHandler extends BrandModuleBase {
      * Get current minion gang index.
      */
     let gangIndex: number;
-    switch (miniom.device.model) {
+    switch (minion.device.model) {
       case 'wall switch, 3 gangs, first one':
         gangIndex = 1;
         break;
@@ -211,7 +215,7 @@ export class TuyaHandler extends BrandModuleBase {
     }
 
     await tuyaDevice.set({ set: setStatus.switch.status === 'on', dps: gangIndex }).catch(err => {
-      logger.warn(`Fail to get status of ${miniom.minionId}, ${err}`);
+      logger.warn(`Fail to get status of ${minion.minionId}, ${err}`);
 
       if (
         typeof err === 'object' &&
@@ -231,17 +235,17 @@ export class TuyaHandler extends BrandModuleBase {
       } as ErrorResponse;
     });
 
-    this.releasDevice(tuyaDevice, miniom.device);
+    this.releaseDevice(tuyaDevice, minion.device);
   }
 
-  public async enterRecordMode(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 6409,
       message: 'the tuya module not support any recording mode',
     } as ErrorResponse;
   }
 
-  public async generateCommand(miniom: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+  public async generateCommand(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     throw {
       responseCode: 6409,
       message: 'the tuya module not support any recording mode',
@@ -298,7 +302,7 @@ export class TuyaHandler extends BrandModuleBase {
    * @param tuyaDevice 
    * @param minionDevice 
    */
-  private async releasDevice(tuyaDevice: Tuyapi, minionDevice: MinionDevice) {
+  private async releaseDevice(tuyaDevice: Tuyapi, minionDevice: MinionDevice) {
 
     // Keep the device
     this.pysicalDevicesMap[minionDevice.pysicalDevice.mac] = tuyaDevice;

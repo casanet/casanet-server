@@ -19,52 +19,56 @@ export class ModulesManagerMock {
     return [
       {
         brand: 'test mock',
-        isTokenRequierd: false,
-        isIdRequierd: false,
+        isTokenRequired: false,
+        isIdRequired: false,
         minionsPerDevice: 1,
         model: 'switch demo',
-        suppotedMinionType: 'switch',
+        supportedMinionType: 'switch',
         isRecordingSupported: false,
+        isFetchCommandsAvailable: false,
       },
       {
         brand: 'test mock',
-        isTokenRequierd: true,
-        isIdRequierd: false,
+        isTokenRequired: true,
+        isIdRequired: false,
         minionsPerDevice: 1,
         model: 'switch demo with token',
-        suppotedMinionType: 'switch',
+        supportedMinionType: 'switch',
         isRecordingSupported: false,
+        isFetchCommandsAvailable: false,
       },
       {
         brand: 'test mock',
-        isTokenRequierd: false,
-        isIdRequierd: false,
+        isTokenRequired: false,
+        isIdRequired: false,
         minionsPerDevice: -1,
         model: 'ac demo',
-        suppotedMinionType: 'airConditioning',
+        supportedMinionType: 'airConditioning',
         isRecordingSupported: true,
+        isFetchCommandsAvailable: true,
       },
       {
         brand: 'test mock',
-        isTokenRequierd: false,
-        isIdRequierd: false,
+        isTokenRequired: false,
+        isIdRequired: false,
         minionsPerDevice: -1,
         model: 'ac 2 demo',
-        suppotedMinionType: 'airConditioning',
+        supportedMinionType: 'airConditioning',
         isRecordingSupported: true,
+        isFetchCommandsAvailable: false,
       },
     ];
   }
 
-  public async getStatus(miniom: Minion): Promise<MinionStatus | ErrorResponse> {
+  public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     await Delay(moment.duration(1, 'seconds'));
-    if (miniom.device.model === 'switch demo') {
+    if (minion.device.model === 'switch demo') {
       return {
         switch: {
           status: 'on',
         },
       };
-    } else if (miniom.device.model === 'ac demo') {
+    } else if (minion.device.model === 'ac demo') {
       return {
         airConditioning: {
           fanStrength: 'med',
@@ -80,12 +84,12 @@ export class ModulesManagerMock {
     } as ErrorResponse;
   }
 
-  public async setStatus(miniom: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+  public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     await Delay(moment.duration(0.5, 'seconds')); // Here shuold be the real communication with device.
     return;
   }
 
-  public async refreshModules(): Promise<void> {}
+  public async refreshModules(): Promise<void> { }
 
-  public async refreshModule(brand: string): Promise<void> {}
+  public async refreshModule(brand: string): Promise<void> { }
 }

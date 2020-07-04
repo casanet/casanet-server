@@ -458,13 +458,13 @@ definitions:
                 type: number
                 format: double
                 description: 'UTC time.'
-            durationInMimutes:
+            durationInMinutes:
                 type: number
                 format: double
                 description: 'Duration to activate timing from the start timeout time in minutes.'
         required:
             - startDate
-            - durationInMimutes
+            - durationInMinutes
         type: object
     TimingProperties:
         description: 'Timing properties, values depend on timing type.'
@@ -567,13 +567,13 @@ definitions:
                 type: number
                 format: double
                 description: "The max minions that can be in one device, or -1 if unlimited.\r\nFor example, a simple smart socket can be 1 minion per device,\r\nWall switch with 3 switches can be 3 minions per device,\r\nAnd IR transmitter can be unlimited minions per device."
-            isTokenRequierd:
+            isTokenRequired:
                 type: boolean
                 description: 'Is the device require a token for communication API.'
-            isIdRequierd:
+            isIdRequired:
                 type: boolean
                 description: 'Is device require id for communication API.'
-            suppotedMinionType:
+            supportedMinionType:
                 type: string
                 enum:
                     - toggle
@@ -588,14 +588,18 @@ definitions:
             isRecordingSupported:
                 type: boolean
                 description: 'Some of the devices supported recording (for example IR transmitter).'
+            isFetchCommandsAvailable:
+                type: boolean
+                description: "Whenever the device and module supported fetching commands data from \r\nthe https://github.com/casanet/rf-commands-repo project"
         required:
             - brand
             - model
             - minionsPerDevice
-            - isTokenRequierd
-            - isIdRequierd
-            - suppotedMinionType
+            - isTokenRequired
+            - isIdRequired
+            - supportedMinionType
             - isRecordingSupported
+            - isFetchCommandsAvailable
         type: object
     MinionTimeline:
         description: 'Minion timeline node'
@@ -640,17 +644,17 @@ definitions:
         required:
             - setAutoTurnOffMS
         type: object
-    ScaningStatus:
+    ScanningStatus:
         description: 'Scanning progress status'
         properties:
-            scaningStatus:
+            scanningStatus:
                 type: string
                 enum:
                     - inProgress
                     - finished
                     - fail
         required:
-            - scaningStatus
+            - scanningStatus
         type: object
     IftttOnChanged:
         description: "Ifttt webhook request body to notify minion status changed.\r\n*Used in ifttt module interface only*"
@@ -769,8 +773,8 @@ definitions:
         required:
             - enableIntegration
         type: object
-    IftttRawActionTriggerd:
-        description: 'Ifttt trigger with all request data in one JSON struct.'
+    IftttRawActionTriggered:
+        description: 'Ifttt trigger with all request data in one JSON structure.'
         properties:
             apiKey:
                 type: string
@@ -850,7 +854,7 @@ definitions:
             version:
                 type: string
                 description: 'Latest version (Git Tag) name'
-            commintHash:
+            commitHash:
                 type: string
                 description: 'Current local master/HEAD commit hash'
             timestamp:
@@ -859,7 +863,7 @@ definitions:
                 description: 'Time stamp of HEAD commit in UTC format'
         required:
             - version
-            - commintHash
+            - commitHash
             - timestamp
         type: object
     CommandsRepoDevice:
@@ -1386,7 +1390,7 @@ paths:
                 '200':
                     description: Ok
                     schema:
-                        $ref: '#/definitions/ScaningStatus'
+                        $ref: '#/definitions/ScanningStatus'
                 '501':
                     description: 'Server error'
                     schema:
@@ -2340,7 +2344,7 @@ paths:
                     name: iftttRawActionTriggerd
                     required: true
                     schema:
-                        $ref: '#/definitions/IftttRawActionTriggerd'
+                        $ref: '#/definitions/IftttRawActionTriggered'
     '/ifttt/trigger/minions/{minionId}':
         post:
             operationId: TriggeredMinionAction
