@@ -104,7 +104,6 @@ export class TasmotaHandler extends BrandModuleBase {
   private async getAcStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     try {
       await request(`http://${minion.device.pysicalDevice.ip}/cm?cmnd=State`);
-      return await this.commandsCacheManager.getCachedStatus(minion);
 
     } catch (error) {
       logger.warn(`Sent Tasmota command ${minion.minionId} fail, ${JSON.stringify(error.message)}`);
@@ -113,6 +112,7 @@ export class TasmotaHandler extends BrandModuleBase {
         message: 'tasmota request fail.',
       } as ErrorResponse;
     }
+    return await this.commandsCacheManager.getCachedStatus(minion);
   }
 
   private async setSwitchStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
@@ -128,8 +128,8 @@ export class TasmotaHandler extends BrandModuleBase {
   }
 
   private async setAcStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+    const hexCommandCode = await this.commandsCacheManager.getIrCommand(minion, setStatus) as string;
     try {
-      const hexCommandCode = await this.commandsCacheManager.getIrCommand(minion, setStatus) as string;
       // Convert the broadlink command format to the pules array
       const pulesArray = broadlinkToPulesArray(hexCommandCode);
 
