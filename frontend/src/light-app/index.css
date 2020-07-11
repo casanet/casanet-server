@@ -36,6 +36,13 @@ body {
   margin-left: calc(50vw - 70px);
 }
 
+.date-clock-container {
+  color: #6dbdb9;
+  font-size: medium;
+  position: absolute;
+  margin-left: calc(100vw - 110px);
+}
+
 .casanet-title {
   color: #6dbdb9;
   font-family: helvetica;

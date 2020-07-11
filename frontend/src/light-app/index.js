@@ -1,7 +1,7 @@
 /** Get the environments */
 let environments = {
   API_URL: "http://127.0.0.1:3000/API",
-  DASHBOARD_DOMAIN: ""
+  DASHBOARD_DOMAIN: "",
 };
 
 /** Flag to know if the 'power off' syncing */
@@ -52,7 +52,7 @@ let accessFail = () => {
   window.location.href = "/#/login";
 };
 
-let getMinionsFail = msg => {
+let getMinionsFail = (msg) => {
   if (confirm(`GET MINIONS FAIL: \n${msg},\n\n\nPress "OK" to retry`)) {
     petchMinions();
   }
@@ -63,7 +63,7 @@ let getMinionsFail = msg => {
  * @param {*} minion A minion
  * @returns A DOM button object for the given minion
  */
-let generateMinionButton = minion => {
+let generateMinionButton = (minion) => {
   /** Create button element */
   const minionButton = document.createElement("a");
 
@@ -86,7 +86,7 @@ let generateMinionButton = minion => {
     }
   } catch (error) {
     minion.minionStatus[minion.minionType] = {
-      status: "off"
+      status: "off",
     };
     minionButton.className = `button button--ghost button--ghost--err`;
   }
@@ -103,9 +103,9 @@ let generateMinionButton = minion => {
  * Generate buttons of each minion.
  * @param {*} minions Minions array
  */
-let generateMinions = minions => {
+let generateMinions = (minions) => {
   /** Set empty room to the undefined rooms */
-  minions = minions.map(m => {
+  minions = minions.map((m) => {
     m.room = m.room ? m.room : "";
     return m;
   });
@@ -285,10 +285,10 @@ petchMinions();
 
 /** SSE */
 var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
-  withCredentials: true
+  withCredentials: true,
 });
 
-evtSource.onmessage = e => {
+evtSource.onmessage = (e) => {
   if (e.data === '"init"') {
     return;
   }
@@ -296,7 +296,7 @@ evtSource.onmessage = e => {
 };
 
 let unRegisterSW = () => {
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+  navigator.serviceWorker.getRegistrations().then(function (registrations) {
     for (let registration of registrations) {
       registration.unregister();
     }
@@ -307,11 +307,26 @@ let registerSW = () => {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("/light-app/service-worker.js")
-      .then(function(registration) {
+      .then(function (registration) {
         console.log("Registration successful, scope is:", registration.scope);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.warn("Service worker registration failed, error:", error);
       });
   }
 };
+
+// Clock interval
+setInterval(() => {
+  const dateClockParagraph = document.getElementById("date-clock");
+  const now = new Date();
+  dateClockParagraph.innerText = `${now.getDate()}/${
+    now.getMonth() + 1
+  }/${now.getFullYear()} ${now
+    .getHours()
+    .toString()
+    .padStart(2, "0")}:${now
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+}, 1000);
