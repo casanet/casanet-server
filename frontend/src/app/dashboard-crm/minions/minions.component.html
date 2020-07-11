@@ -1,5 +1,5 @@
 <app-loader *ngIf="dataLoading"></app-loader>
-<div *ngIf="!dataLoading" fxLayout="row wrap" fxFill>
+<div *ngIf="!dataLoading" fxLayout="row wrap" fxFill style="overflow: auto;">
     <div fxFlex fxLayout="column" fxLayoutAlign="space-between" 
         *ngFor="let minion of minions" fxFlex.lt-sm="100" fxFlex.sm="50" fxFlex.md="25">
 
