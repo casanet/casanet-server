@@ -6,7 +6,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-smoothing: antialiased;
   align-items: center;
-  text-align: center;
+  text-align: center; 
+}
+
+*::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
+}
+*::-webkit-scrollbar-track {
+  background: #3b3b47;        /* color of the tracking area */
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #6dbdb9;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid #3b3b47;  /* creates padding around scroll thumb */
 }
 
 .hide {
@@ -57,6 +69,8 @@ body {
 
 #minions-container {
   margin-top: 80px;
+  overflow: auto;
+  max-height: calc(100vh - 100px);
 }
 
 #power-on {
