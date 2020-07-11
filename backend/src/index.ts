@@ -64,6 +64,7 @@ process.on('exit', (code) => {
 });
 process.on('SIGINT', () => {
   logger.warn(`[home-iot-server] About to exit SIGINT`);
+  process.exit(1);
 });
 process.on('SIGTERM', () => {
   logger.warn(`[home-iot-server] About to exit SIGTERM`);
