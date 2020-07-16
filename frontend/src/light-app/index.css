@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'VarelaRound';
+  src: url('./VarelaRound-Regular.ttf') 
+}
+
 body {
   font: normal 100%/1.5 Verdana, sans-serif;
   color: #fafafa;
@@ -7,6 +12,7 @@ body {
   font-smoothing: antialiased;
   align-items: center;
   text-align: center; 
+  font-family: 'VarelaRound';
 }
 
 *::-webkit-scrollbar {
@@ -45,7 +51,7 @@ body {
 
 .dashboard-link-container {
   position: absolute;
-  margin-left: calc(50vw - 70px);
+  margin-left: calc(50vw - 100px);
 }
 
 .date-clock-container {
