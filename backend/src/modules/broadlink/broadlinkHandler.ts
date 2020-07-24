@@ -271,17 +271,17 @@ export class BroadlinkHandler extends BrandModuleBase {
 
     await this.sendBeamCommand(broadlink, hexCommandCode);
 
-    await this.commandsCacheManager.setLastStatus(minion, setStatus);
+    await this.commandsCacheManager.cacheLastStatus(minion, setStatus);
   }
 
   private async setRFRollerStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     const broadlink = (await this.getBroadlinkInstance(minion)) as BroadlinkAPI;
 
-    const hexCommandCode = await this.commandsCacheManager.getRFToggleCommand(minion, setStatus) as string;
+    const hexCommandCode = await this.commandsCacheManager.getRFRollerCommand(minion, setStatus) as string;
 
     await this.sendBeamCommand(broadlink, hexCommandCode);
 
-    await this.commandsCacheManager.setLastStatus(minion, setStatus);
+    await this.commandsCacheManager.cacheLastStatus(minion, setStatus);
   }
 
   private async setIrAcStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
@@ -294,7 +294,7 @@ export class BroadlinkHandler extends BrandModuleBase {
     await Delay(moment.duration(1, 'seconds'));
     await this.sendBeamCommand(broadlink, hexCommandCode);
 
-    await this.commandsCacheManager.setLastStatus(minion, setStatus);
+    await this.commandsCacheManager.cacheLastStatus(minion, setStatus);
   }
 
   private async recordIRACommands(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
@@ -302,13 +302,13 @@ export class BroadlinkHandler extends BrandModuleBase {
 
     const hexIRCommand = await this.enterBeamLearningMode(broadlink);
 
-    await this.commandsCacheManager.setIRACommands(minion, statusToRecordFor, hexIRCommand);
+    await this.commandsCacheManager.cacheIRACommand(minion, statusToRecordFor, hexIRCommand);
   }
 
   private async recordRollerRFCommand(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     const broadlink = (await this.getBroadlinkInstance(minion)) as BroadlinkAPI;
     const hexIRCommand = await this.enterBeamLearningMode(broadlink);
-    await this.commandsCacheManager.setRollerRFCommand(minion, statusToRecordFor, hexIRCommand);
+    await this.commandsCacheManager.cacheRFRollerCommand(minion, statusToRecordFor, hexIRCommand);
   }
 
   private async generateToggleRFCommand(
@@ -316,7 +316,7 @@ export class BroadlinkHandler extends BrandModuleBase {
     statusToRecordFor: MinionStatus,
   ): Promise<void | ErrorResponse> {
     const generatedCode = BroadlinkCodeGeneration.generate('RF433');
-    await this.commandsCacheManager.setToggleRFCommand(minion, statusToRecordFor, generatedCode);
+    await this.commandsCacheManager.cacheRFToggleCommand(minion, statusToRecordFor, generatedCode);
   }
 
   private async generateRollerRFCommand(
@@ -324,7 +324,7 @@ export class BroadlinkHandler extends BrandModuleBase {
     statusToRecordFor: MinionStatus,
   ): Promise<void | ErrorResponse> {
     const generatedCode = BroadlinkCodeGeneration.generate('RF433');
-    await this.commandsCacheManager.setRollerRFCommand(minion, statusToRecordFor, generatedCode);
+    await this.commandsCacheManager.cacheRFRollerCommand(minion, statusToRecordFor, generatedCode);
   }
 
   private async recordRFToggleCommands(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
