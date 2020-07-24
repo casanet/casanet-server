@@ -149,7 +149,7 @@ export class TasmotaHandler extends BrandModuleBase {
       if (results.IRSend !== 'Done') {
         throw new Error(`[tasmotaHandler.setAcStatus] Sending IR command failed ${JSON.stringify(results)}`);
       }
-      await this.commandsCacheManager.setLastStatus(minion, setStatus);
+      await this.commandsCacheManager.cacheLastStatus(minion, setStatus);
     } catch (error) {
       logger.warn(`Sent Tasmota command ${minion.minionId} fail, ${JSON.stringify(error.message)}`);
       throw {
