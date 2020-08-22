@@ -16,6 +16,7 @@ import {
   SwitchOptions,
 } from '../../models/sharedInterfaces';
 import { CommandsCacheManager } from '../../utilities/cacheManager';
+import { logger } from '../../utilities/logger';
 import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 
@@ -80,6 +81,11 @@ export class BroadlinkHandler extends BrandModuleBase {
   ];
 
   private commandsCacheManager = new CommandsCacheManager(super.cacheFilePath)
+
+  public constructor() {
+    super();
+    this.fetchDevicesStateInterval()
+  }
 
   public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     switch (minion.device.model) {
@@ -333,5 +339,38 @@ export class BroadlinkHandler extends BrandModuleBase {
       responseCode: 5501,
       message: 'Not implemented yet.',
     } as ErrorResponse;
+  }
+
+  /** Fetch the SP2's status interval  */
+  private async fetchDevicesStateInterval() {
+    while (true) {
+      try {
+        await Delay(moment.duration(30, 'seconds'));
+
+        // get all minions in system
+        const minions = await this.retrieveMinions.pull();
+
+        for (const minion of minions) {
+          // Look for SP2 only
+          if (!(minion.device.brand === this.brandName && minion.device.model === 'SP2')) {
+            continue;
+          }
+
+          // Get the curr state
+          const currStatus = await this.getStatus(minion) as MinionStatus;
+
+          if (minion.minionStatus[minion.minionType].status === currStatus[minion.minionType].status) {
+            continue;
+          }
+
+          this.minionStatusChangedEvent.next({
+            minionId: minion.minionId,
+            status: currStatus
+          });
+        }
+      } catch (error) {
+        logger.debug(`[broadlinkHandler.fetchDevicesStateInterval] Fetching curr state fail, error : ${JSON.stringify(error)}`);
+      }
+    }
   }
 }
