@@ -19,6 +19,16 @@ export class TasmotaHandler extends BrandModuleBase {
       brand: this.brandName,
       isTokenRequired: false,
       isIdRequired: false,
+      minionsPerDevice: -1,
+      model: 'toggle',
+      supportedMinionType: 'toggle',
+      isRecordingSupported: true,
+      isFetchCommandsAvailable: true,
+    },
+    {
+      brand: this.brandName,
+      isTokenRequired: false,
+      isIdRequired: false,
       minionsPerDevice: 1,
       model: 'switch',
       supportedMinionType: 'switch',
@@ -45,15 +55,19 @@ export class TasmotaHandler extends BrandModuleBase {
 
   public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     switch (minion.minionType) {
+      case 'toggle':
+        return await this.getBeamStatus(minion);
       case 'switch':
         return await this.getSwitchStatus(minion);
       case 'airConditioning':
-        return await this.getAcStatus(minion);
+        return await this.getBeamStatus(minion);
     }
   }
 
   public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     switch (minion.minionType) {
+      case 'toggle':
+        return await this.setToggleStatus(minion, setStatus);
       case 'switch':
         return await this.setSwitchStatus(minion, setStatus);
       case 'airConditioning':
@@ -62,9 +76,15 @@ export class TasmotaHandler extends BrandModuleBase {
   }
 
   public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+    switch (minion.device.model) {
+      case 'toggle':
+        return await this.recordRFToggleCommands(minion, statusToRecordFor);
+      case 'IR Transmitter':
+        return await this.recordIRACommands(minion, statusToRecordFor);
+    }
     throw {
-      responseCode: 6409,
-      message: 'the tasmota module not support any recording mode',
+      responseCode: 8404,
+      message: 'unknown minion model',
     } as ErrorResponse;
   }
 
@@ -101,7 +121,7 @@ export class TasmotaHandler extends BrandModuleBase {
     }
   }
 
-  private async getAcStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
+  private async getBeamStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     try {
       await request(`http://${minion.device.pysicalDevice.ip}/cm?cmnd=State`);
 
@@ -127,8 +147,7 @@ export class TasmotaHandler extends BrandModuleBase {
     }
   }
 
-  private async setAcStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
-    const hexCommandCode = await this.commandsCacheManager.getIrCommand(minion, setStatus) as string;
+  private async sendIrCommand(minion: Minion, setStatus: MinionStatus, hexCommandCode: string) {
     try {
       // Convert the broadlink command format to the pules array
       const pulesArray = broadlinkToPulesArray(hexCommandCode);
@@ -141,13 +160,13 @@ export class TasmotaHandler extends BrandModuleBase {
       // Remove the last coma
       pulsString = pulsString.substring(0, pulsString.length - 1);
 
-      const irSendFullUrl = `http://${minion.device.pysicalDevice.ip}/cm?cmnd=IRsend%20${pulsString}`; 
+      const irSendFullUrl = `http://${minion.device.pysicalDevice.ip}/cm?cmnd=IRsend%20${pulsString}`;
       await request(irSendFullUrl);
       await Delay(moment.duration(1, 'seconds'));
       const rawResults = await request(irSendFullUrl);
       const results = JSON.parse(rawResults);
       if (results.IRSend !== 'Done') {
-        throw new Error(`[tasmotaHandler.setAcStatus] Sending IR command failed ${JSON.stringify(results)}`);
+        throw new Error(`[tasmotaHandler.sendIrCommand] Sending IR command failed ${JSON.stringify(results)}`);
       }
       await this.commandsCacheManager.cacheLastStatus(minion, setStatus);
     } catch (error) {
@@ -157,5 +176,60 @@ export class TasmotaHandler extends BrandModuleBase {
         message: 'tosmota request fail.',
       } as ErrorResponse;
     }
+  }
+
+  private async setToggleStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+    const hexCommandCode = await this.commandsCacheManager.getRFToggleCommand(minion, setStatus) as string;
+    await this.sendIrCommand(minion, setStatus, hexCommandCode);
+  }
+
+  private async setAcStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
+    const hexCommandCode = await this.commandsCacheManager.getIrCommand(minion, setStatus) as string;
+    await this.sendIrCommand(minion, setStatus, hexCommandCode);
+  }
+
+  private async recordIRACommands(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+    const hexIRCommand = await this.recordCommand(minion);
+    await this.commandsCacheManager.cacheIRACommand(minion, statusToRecordFor, hexIRCommand);
+  }
+
+  private async recordRFToggleCommands(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
+    const hexIRCommand = await this.recordCommand(minion);
+    await this.commandsCacheManager.cacheRFToggleCommand(minion, statusToRecordFor, hexIRCommand);
+  }
+
+  /**
+   * Try fetch last IrReceived raw data from the tasmota console
+   * Note that this is works way better by the MQTT protocol, without a payload size limitation etc.
+   * @param minion The minion to get the code from
+   * @returns The HexCommand code in the broadlink format
+   */
+  private async recordCommand(minion: Minion): Promise<string> {
+
+    const getRawConsoleDataRequest = `http://${minion.device.pysicalDevice.ip}/cs?c2=0`;
+
+    for (let index = 0; index < 5; index++) {
+      try {
+        await Delay(moment.duration(2, 'seconds'));
+        const rawConsoleDataRequest = await request(getRawConsoleDataRequest) as string;
+        let rawConsoleLines = rawConsoleDataRequest.split('\n');
+        rawConsoleLines = rawConsoleLines.slice(Math.max(rawConsoleLines.length - 3, 0)).reverse();
+
+        for (const rawConsoleLine of rawConsoleLines) {
+          const rawData = rawConsoleLine.split(' = ')[1];
+          const data = JSON.parse(rawData.endsWith('}1') ? rawData.substring(0, rawData.length - 2) : rawData);
+          if (data.IrReceived && data.IrReceived.RawData) {
+            return pulesArrayToBroadlink([0, ...data.IrReceived.RawData]);
+          }
+        }
+      } catch (error) {
+        logger.debug(`[TasmotaHandler.recordCommand] failed to read or parse IR results, try ${index}, error ${JSON.stringify(error)}`);
+      }
+    }
+
+    throw {
+      responseCode: 6409,
+      message: 'fail to get the command',
+    } as ErrorResponse;
   }
 }

@@ -1,7 +1,7 @@
 import * as fse from 'fs-extra';
+import { AcCommands, AirConditioningCommand, CommandsSet, RollerCommands, ToggleCommands } from '../models/backendInterfaces';
+import { AirConditioning, ErrorResponse, Minion, MinionStatus } from '../models/sharedInterfaces';
 import { logger } from './logger';
-import { MinionStatus, Minion, ErrorResponse, AirConditioning } from '../models/sharedInterfaces';
-import { ToggleCommands, AcCommands, RollerCommands, CommandsSet, AirConditioningCommand } from '../models/backendInterfaces';
 
 
 export interface CommandsCache {
@@ -20,7 +20,7 @@ export class CacheManager {
 
   }
 
-  /**
+/**
  * Get cache JSON data sync.
  * Use it in init only. else the app will black until read finish.
  */
@@ -32,7 +32,7 @@ export class CacheManager {
     }
   }
 
-  /**
+/**
  * Get cache JSON data.
  */
   public async getCacheData(): Promise<any> {
@@ -59,6 +59,7 @@ export class CacheManager {
  * Ir/Rf commands cache manager, used to get and update devices commands 
  * and get and update last devices status 
  */
+// tslint:disable-next-line: max-classes-per-file
 export class CommandsCacheManager extends CacheManager {
   // The commands of a device
   public cache: CommandsCache[] = [];
@@ -68,58 +69,6 @@ export class CommandsCacheManager extends CacheManager {
     const cache = super.getCacheDataSync();
     if (cache) {
       this.cache = cache;
-    }
-  }
-
-  /** Save the current cache json to the cache json file */
-  private async saveCache() {
-    try {
-      await this.setCacheData(this.cache);
-    } catch (error) {
-
-    }
-  }
-
-  /**
-   * Get minion cache commands and status, if not exists create it.
-   * @param minion 
-   */
-  private getOrCreateMinionCache(minion: Minion): CommandsCache {
-    for (const minionCache of this.cache) {
-      if (minionCache.minionId === minion.minionId) {
-        return minionCache;
-      }
-    }
-
-    /** Case there is not cache structure for minion, create it */
-    const newMinionCache: CommandsCache = {
-      minionId: minion.minionId,
-      lastStatus: undefined,
-    };
-
-    this.cache.push(newMinionCache);
-    this.saveCache();
-    return newMinionCache;
-  }
-
-  /**
-   * Get IR command (HEX string) for given status. for AC only.
-   * @param airConditioningCommands array of all commands to find command in.
-   * @param airConditioningStatus The AC status to get command for.
-   * @returns IR code struct or undefined if not exist.
-   */
-  private getMinionACStatusCommand(
-    airConditioningCommands: AirConditioningCommand[],
-    airConditioningStatus: AirConditioning,
-  ): AirConditioningCommand {
-    for (const airConditioningCommand of airConditioningCommands) {
-      if (
-        airConditioningCommand.status.fanStrength === airConditioningStatus.fanStrength &&
-        airConditioningCommand.status.mode === airConditioningStatus.mode &&
-        airConditioningCommand.status.temperature === airConditioningStatus.temperature
-      ) {
-        return airConditioningCommand;
-      }
     }
   }
 
@@ -145,7 +94,7 @@ export class CommandsCacheManager extends CacheManager {
     await this.saveCache();
   }
 
-  /**
+ /**
   * Get last status, use in all devices that not holing any data, such as IR transmitter.
   * @param minion minion to get last status for.
   */
@@ -331,5 +280,57 @@ export class CommandsCacheManager extends CacheManager {
     }
 
     await this.saveCache();
+  }
+
+  /** Save the current cache json to the cache json file */
+  private async saveCache() {
+    try {
+      await this.setCacheData(this.cache);
+    } catch (error) {
+
+    }
+  }
+
+  /**
+   * Get minion cache commands and status, if not exists create it.
+   * @param minion 
+   */
+  private getOrCreateMinionCache(minion: Minion): CommandsCache {
+    for (const minionCache of this.cache) {
+      if (minionCache.minionId === minion.minionId) {
+        return minionCache;
+      }
+    }
+
+    /** Case there is not cache structure for minion, create it */
+    const newMinionCache: CommandsCache = {
+      minionId: minion.minionId,
+      lastStatus: undefined,
+    };
+
+    this.cache.push(newMinionCache);
+    this.saveCache();
+    return newMinionCache;
+  }
+
+  /**
+   * Get IR command (HEX string) for given status. for AC only.
+   * @param airConditioningCommands array of all commands to find command in.
+   * @param airConditioningStatus The AC status to get command for.
+   * @returns IR code struct or undefined if not exist.
+   */
+  private getMinionACStatusCommand(
+    airConditioningCommands: AirConditioningCommand[],
+    airConditioningStatus: AirConditioning,
+  ): AirConditioningCommand {
+    for (const airConditioningCommand of airConditioningCommands) {
+      if (
+        airConditioningCommand.status.fanStrength === airConditioningStatus.fanStrength &&
+        airConditioningCommand.status.mode === airConditioningStatus.mode &&
+        airConditioningCommand.status.temperature === airConditioningStatus.temperature
+      ) {
+        return airConditioningCommand;
+      }
+    }
   }
 }
