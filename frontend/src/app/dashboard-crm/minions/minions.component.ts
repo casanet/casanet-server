@@ -274,7 +274,10 @@ export class MinionsComponent implements OnInit, OnDestroy {
 	public async recordCommand(minion: Minion) {
 		minion['recording'] = true;
 
-		await this.minionsService.recordCommand(minion, minion['updateSet']);
+		await this.minionsService.recordCommand(
+			minion, minion.minionType === 'toggle' ?
+			minion.minionStatus : // Toggle has no update set since it's not holding any state
+			minion['updateSet']);
 
 		minion['recording'] = false;
 	}
