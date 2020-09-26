@@ -20,7 +20,7 @@ export class TasmotaHandler extends BrandModuleBase {
       isTokenRequired: false,
       isIdRequired: false,
       minionsPerDevice: -1,
-      model: 'toggle',
+      model: 'IR Transmitter as Toggle',
       supportedMinionType: 'toggle',
       isRecordingSupported: true,
       isFetchCommandsAvailable: true,
@@ -40,7 +40,7 @@ export class TasmotaHandler extends BrandModuleBase {
       isTokenRequired: false,
       isIdRequired: false,
       minionsPerDevice: -1,
-      model: 'IR Transmitter',
+      model: 'IR Transmitter as AC',
       supportedMinionType: 'airConditioning',
       isRecordingSupported: false,
       isFetchCommandsAvailable: true,
@@ -77,9 +77,9 @@ export class TasmotaHandler extends BrandModuleBase {
 
   public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
     switch (minion.device.model) {
-      case 'toggle':
+      case 'IR Transmitter as Toggle':
         return await this.recordRFToggleCommands(minion, statusToRecordFor);
-      case 'IR Transmitter':
+      case 'IR Transmitter as AC':
         return await this.recordIRACommands(minion, statusToRecordFor);
     }
     throw {
