@@ -114,6 +114,15 @@ Usually, it is something like `sudo reboot` etc.
 
 *THIS IS A DANGEROUS ACTION! BE SURE THAT KNOW WHAT IT WILL HAPPENED WHEN THIS COMMAND WILL EXECUTED*
 
+## On app failure
+When an unknown failure thrown in the app, from any reason, there is an option to execute a command to restart the app/process/machine.
+
+To run a command on app failure,
+set your command in `RESET_APP_ON_FAILURE` environment, and the backend will invoke it pn failure.
+Usually, it is something like `sudo reboot` for restarting the machine etc.
+
+*THIS IS A DANGEROUS ACTION! BE SURE THAT KNOW WHAT IT WILL HAPPENED WHEN THIS COMMAND WILL EXECUTED*
+
 ## Default Lock Calibration Sampling 
 
 The default lock calibration activation (used by timings and operation set lock).

@@ -186,7 +186,7 @@ export class VersionsBl {
    */
   private async applyVersionChanges() {
     /** THIS IS A DANGERS ACTION! BE SURE THAT USER KNOW WHAT IT IS SET AS RESET COMMAND */
-    const { RESET_MACHINE_ON_VERSION_UPDATE } = process.env;
+    const RESET_MACHINE_ON_VERSION_UPDATE = process.env.RESET_MACHINE_ON_VERSION_UPDATE;
     if (!RESET_MACHINE_ON_VERSION_UPDATE) {
       logger.info(`There is no "RESET_MACHINE_ON_VERSION_UPDATE" env var, skipping after version update command`);
       this.updateStatus = 'finished';

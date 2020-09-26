@@ -19,6 +19,7 @@ const welcomeMessage = `
 // tslint:disable-next-line: no-console
 console.info('\x1b[34m', welcomeMessage, '\x1b[0m');
 
+import { exec } from 'child-process-promise';
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
@@ -50,14 +51,36 @@ if (Configuration.http.useHttps) {
       logger.info('HTTPS/SSL listen on port ' + Configuration.http.httpsPort);
     });
   } catch (error) {
-    logger.error(`Faild to load SSL certificate ${error}, exit...`);
+    logger.error(`Failed to load SSL certificate ${error}, exit...`);
     process.exit();
   }
 }
 
 // Catch uncaughtException instead of crashing
-process.on('uncaughtException', (err: any) => {
-  logger.error(`[home-iot-server] app uncaughtException, error: ${JSON.stringify(err)}`);
+process.on('uncaughtException', async (err: any) => {
+  logger.error(`[home-iot-server] app uncaughtException, error: ${err} ${err?.message} ${JSON.stringify(err)}`);
+
+  // start restart process....
+  /** THIS IS A DANGERS ACTION! BE SURE THAT USER KNOW WHAT IT IS SET AS RESET COMMAND */
+  const RESET_APP_ON_FAILURE = process.env.RESET_APP_ON_FAILURE;
+  if (!RESET_APP_ON_FAILURE) {
+    logger.info(`There is no "RESET_APP_ON_FAILURE" env var, skipping on failure reset app command`);
+    return;
+  }
+
+  try {
+    logger.info(`executing RESET_APP_ON_FAILURE='${RESET_APP_ON_FAILURE}' command...`);
+    /**
+     * Execute a command to apply the version changes
+     * For example in raspberry pi machine the command can be 'sudo reboot'.
+     */
+    await exec(RESET_APP_ON_FAILURE);
+  } catch (error) {
+    logger.error(
+      `executing RESET_APP_ON_FAILURE=${RESET_APP_ON_FAILURE}' command failed ${error.stdout ||
+      error.message}`,
+    );
+  }
 });
 process.on('exit', (code) => {
   logger.warn(`[home-iot-server] About to exit with code: ${code}`);
