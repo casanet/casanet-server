@@ -3,7 +3,7 @@ import * as fse from 'fs-extra';
 import * as path from 'path';
 import { Controller, Get, Request, Response, Route, Security } from 'tsoa';
 import { ErrorResponse, UpdateResults, VersionInfo, VersionUpdateStatus } from '../models/sharedInterfaces';
-import { logger } from '../utilities/logger';
+import { LOG_FILE_PATH, logger } from '../utilities/logger';
 
 @Route('logs')
 export class LogsController extends Controller {
@@ -18,6 +18,6 @@ export class LogsController extends Controller {
     logger.info('[logs controller] Downloading log file...');
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Content-Disposition', `attachment; filename=casalogs_${new Date().toLocaleDateString()}.log`);
-    res.end(await fse.promises.readFile('./logs/casalogs.log'));
+    res.end(await fse.promises.readFile(LOG_FILE_PATH));
   }
 }

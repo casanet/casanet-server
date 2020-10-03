@@ -4,9 +4,9 @@ import { ErrorResponse, MinionFeed, TimingFeed } from './sharedInterfaces';
 export declare type RemoteMessagesType =
   /** When remote sever ready to authentication message from local */
   | 'readyToInitialization'
-  /** When local server successfult authenticated. */
-  | 'authenticatedSuccessfuly'
-  /** When local server rejected, baucuase auth fail. */
+  /** When local server successfully authenticated. */
+  | 'authenticatedSuccessfully'
+  /** When local server rejected, because of an auth fail. */
   | 'authenticationFail'
   /** Results of register/unregister user to forward from remove server */
   | 'registerUserResults'
@@ -15,7 +15,9 @@ export declare type RemoteMessagesType =
   /** Remote server forwarding http request to local sever */
   | 'httpRequest'
   /** When local ack message arrived to remote server */
-  | 'ackOk';
+  | 'ackOk'
+  /** A log fetch request from the remote server */
+  | 'fetchLogs';
 
 /** Http request data */
 export declare interface HttpRequest {
@@ -28,7 +30,7 @@ export declare interface HttpRequest {
   requestId: string;
   /** Request method (GET,PUT, etc) */
   httpMethod: string;
-  /** Request path (for exampl. /API/Minions) */
+  /** Request path (for example. /API/Minions) */
   httpPath: string;
   /** Request session key */
   httpSession: string;
@@ -36,7 +38,7 @@ export declare interface HttpRequest {
   httpBody: any;
 }
 
-/** WS message from remote to local struct */
+/** WS message from remote to local strut */
 export declare interface RemoteMessage {
   remoteMessagesType: RemoteMessagesType;
   message: {
@@ -67,7 +69,9 @@ export declare type LocalMessagesType =
   /** Empty message to check if connection alive */
   | 'ack'
   /** Update remote server with feed of local server, like minion status changed etc. */
-  | 'feed';
+  | 'feed'
+  /** Send the logs to the remote server */
+  | 'logs';
 
 /** Http response data */
 export declare interface HttpResponse {
@@ -93,14 +97,18 @@ export declare interface LocalServerFeed {
   feedContent: MinionFeed | TimingFeed;
 }
 
-/** WS message from local to remote struct */
+export declare interface InitializationRequest {
+  macAddress: string;
+  remoteAuthKey: string;
+  platform: NodeJS.Platform;
+  version: string;
+}
+
+/** WS message from local to remote strut */
 export declare interface LocalMessage {
   localMessagesType: LocalMessagesType;
   message: {
-    initialization?: {
-      macAddress: string;
-      remoteAuthKey: string;
-    };
+    initialization?: InitializationRequest;
     sendRegistrationCode?: {
       email: string;
     };
@@ -113,5 +121,6 @@ export declare interface LocalMessage {
     };
     httpResponse?: HttpResponse;
     feed?: LocalServerFeed;
+    logs?: string;
   };
 }
