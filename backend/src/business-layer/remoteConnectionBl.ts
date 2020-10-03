@@ -1,3 +1,4 @@
+import AdmZip = require('adm-zip');
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import * as express from 'express';
@@ -15,23 +16,24 @@ import {
   TimingFeed,
 } from '../models/sharedInterfaces';
 import { binaryResponseParser } from '../utilities/binaryParser';
-import { logger } from '../utilities/logger';
+import { logger, LOGS_DIR } from '../utilities/logger';
 import { GetMachinMacAddress } from '../utilities/macAddress';
 import { MinionsBl } from './minionsBl';
 import { MinionsBlSingleton } from './minionsBl';
 import { TimingsBl } from './timingsBl';
 import { TimingsBlSingleton } from './timingsBl';
+import { VersionsBlSingleton } from './versionsBl';
 
 /**
- * Used to connect remote server via web socket, and let`s users acceess
+ * Used to connect remote server via web socket, and let`s users access
  */
 export class RemoteConnectionBl {
   private ACK_INTERVAL = moment.duration(20, 'seconds');
   private REMOTE_REQUEST_TIMEOUT = moment.duration(20, 'seconds');
-  private ackPongRecieved = true;
+  private ackPongReceived = true;
 
-  /** Hold register requests promis functions */
-  private registerAccountsPromisessMap: {
+  /** Hold register requests promise functions */
+  private registerAccountsPromisesMap: {
     [key: string]: {
       resolve: () => {};
       reject: (errorResponse: ErrorResponse) => {};
@@ -39,8 +41,8 @@ export class RemoteConnectionBl {
     };
   } = {};
 
-  /** Hold get register users requests promis */
-  private requestRegisteredUsersPromisess: {
+  /** Hold get register users requests promise */
+  private requestRegisteredUsersPromises: {
     resolve: (registeredUsers: string[]) => {};
     reject: (errorResponse: ErrorResponse) => {};
     timeout: NodeJS.Timeout;
@@ -58,7 +60,7 @@ export class RemoteConnectionBl {
   private webSocketClient: WebSocketClient;
 
   /**
-   * Init remote connection bl. using dependecy injection pattern to allow units testings.
+   * Init remote connection bl. using dependency injection pattern to allow units testings.
    * @param remoteConnectionDal Inject the remote connection dal..
    * @param minionsBl Inject the minions bl instance to used minionsBl.
    * @param timingsBl Inject the timings bl instance to used timingsBl.
@@ -112,13 +114,13 @@ export class RemoteConnectionBl {
         return;
       }
 
-      if (!this.ackPongRecieved) {
+      if (!this.ackPongReceived) {
         this.remoteConnectionStatus = 'cantReachRemoteServer';
       } else {
         this.remoteConnectionStatus = 'connectionOK';
       }
 
-      this.ackPongRecieved = false;
+      this.ackPongReceived = false;
       this.sendMessage({
         localMessagesType: 'ack',
         message: {},
@@ -214,7 +216,7 @@ export class RemoteConnectionBl {
         },
       });
 
-      this.registerAccountsPromisessMap[email] = {
+      this.registerAccountsPromisesMap[email] = {
         resolve: resolve as any,
         reject: reject as any,
         timeout: setTimeout(() => {
@@ -251,7 +253,7 @@ export class RemoteConnectionBl {
         },
       });
 
-      this.registerAccountsPromisessMap[email] = {
+      this.registerAccountsPromisesMap[email] = {
         resolve: resolve as any,
         reject: reject as any,
         timeout: setTimeout(() => {
@@ -281,7 +283,7 @@ export class RemoteConnectionBl {
         message: {},
       });
 
-      this.requestRegisteredUsersPromisess = {
+      this.requestRegisteredUsersPromises = {
         resolve: resolve as any,
         reject: reject as any,
         timeout: setTimeout(() => {
@@ -303,8 +305,11 @@ export class RemoteConnectionBl {
       return;
     }
     try {
+      logger.debug(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}"`);
       this.webSocketClient.sendData(JSON.stringify(localMessage));
-    } catch (error) { }
+    } catch (error) {
+      logger.error(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}" failed, ${error.message}`);
+    }
   }
 
   /** Close manually web socket to remote server */
@@ -337,34 +342,14 @@ export class RemoteConnectionBl {
 
     this.webSocketClient.on('open', () => {
       this.remoteConnectionStatus = 'connectionOK';
-      logger.info(`Ws channel to ${remoteSettings.host} opend succssfuly`);
+      logger.info(`Ws channel to ${remoteSettings.host} opened successfully`);
     });
 
     this.webSocketClient.on('message', async (rawRemoteMessage: string) => {
-      /** Parse message and send to correct method handle */
-      const remoteMessage: RemoteMessage = JSON.parse(rawRemoteMessage);
-      switch (remoteMessage.remoteMessagesType) {
-        case 'readyToInitialization':
-          await this.onInitReady();
-          break;
-        case 'authenticationFail':
-          await this.onAuthenticationFail(remoteMessage.message[remoteMessage.remoteMessagesType]);
-          break;
-        case 'authenticatedSuccessfuly':
-          await this.onAuthenticatedSuccessfuly();
-          break;
-        case 'registerUserResults':
-          await this.onRegisterUserResults(remoteMessage.message[remoteMessage.remoteMessagesType]);
-          break;
-        case 'registeredUsers':
-          await this.onRegisteredUsersDataArrived(remoteMessage.message[remoteMessage.remoteMessagesType]);
-          break;
-        case 'ackOk':
-          await this.OnArkOk();
-          break;
-        case 'httpRequest':
-          await this.onRemoteHttpRequest(remoteMessage.message[remoteMessage.remoteMessagesType]);
-          break;
+      try {
+        await this.onRemoteServerMessage(rawRemoteMessage);
+      } catch (error) {
+        logger.info(`Ws message parsing & handling filed row message: ${rawRemoteMessage}\n error ${error.message || JSON.stringify(error)}`);
       }
     });
 
@@ -377,7 +362,7 @@ export class RemoteConnectionBl {
         return;
       }
       this.remoteConnectionStatus = 'cantReachRemoteServer';
-      logger.info(`Ws channel closed ${remoteSettings.host} code: ${code} reasone: ${reason}`);
+      logger.info(`Ws channel closed ${remoteSettings.host} code: ${code} reason: ${reason}`);
     });
 
     this.webSocketClient.on('reconnect', () => {
@@ -385,20 +370,65 @@ export class RemoteConnectionBl {
     });
   }
 
+  private async onRemoteServerMessage(rawRemoteMessage: string) {
+    /** Parse message and send to correct method handle */
+    const remoteMessage: RemoteMessage = JSON.parse(rawRemoteMessage);
+    logger.debug(`[RemoteServerBl] message arrived "${remoteMessage.remoteMessagesType}"`);
+    switch (remoteMessage.remoteMessagesType) {
+      case 'readyToInitialization':
+        await this.onInitReady();
+        break;
+      case 'authenticationFail':
+        await this.onAuthenticationFail(remoteMessage.message[remoteMessage.remoteMessagesType]);
+        break;
+      case 'authenticatedSuccessfully':
+        await this.onAuthenticatedSuccessfully();
+        break;
+      case 'registerUserResults':
+        await this.onRegisterUserResults(remoteMessage.message[remoteMessage.remoteMessagesType]);
+        break;
+      case 'registeredUsers':
+        await this.onRegisteredUsersDataArrived(remoteMessage.message[remoteMessage.remoteMessagesType]);
+        break;
+      case 'ackOk':
+        await this.OnArkOk();
+        break;
+      case 'httpRequest':
+        await this.onRemoteHttpRequest(remoteMessage.message[remoteMessage.remoteMessagesType]);
+        break;
+      case 'fetchLogs':
+        await this.onLogsRequest();
+        break;
+    }
+  }
+
   private async OnArkOk() {
-    this.ackPongRecieved = true;
+    this.ackPongReceived = true;
     this.remoteConnectionStatus = 'connectionOK';
+  }
+
+  private async onLogsRequest() {
+    const zip = new AdmZip();
+    const now = new Date();
+    zip.addLocalFolder(LOGS_DIR, `${now.getTime()}`);
+    const logsData = zip.toBuffer().toString('base64');
+    this.sendMessage({
+      localMessagesType: 'logs',
+      message: {
+        logs: logsData,
+      }
+    })
   }
 
   private onRegisterUserResults(forwardUserResults: { user: string; results?: ErrorResponse }) {
     const { user, results } = forwardUserResults;
 
-    if (!this.registerAccountsPromisessMap[user]) {
+    if (!this.registerAccountsPromisesMap[user]) {
       return;
     }
 
     /** Get the request promise functions */
-    const requestPromises = this.registerAccountsPromisessMap[user];
+    const requestPromises = this.registerAccountsPromisesMap[user];
 
     /** Clear the timeout function */
     clearTimeout(requestPromises.timeout);
@@ -412,27 +442,27 @@ export class RemoteConnectionBl {
     }
 
     /** remote user from request promises map. */
-    delete this.registerAccountsPromisessMap[user];
+    delete this.registerAccountsPromisesMap[user];
   }
 
   private onRegisteredUsersDataArrived(registeredUsers: string[]) {
-    if (!this.requestRegisteredUsersPromisess) {
+    if (!this.requestRegisteredUsersPromises) {
       return;
     }
 
     /** Clear the timeout function */
-    clearTimeout(this.requestRegisteredUsersPromisess.timeout);
+    clearTimeout(this.requestRegisteredUsersPromises.timeout);
 
-    this.requestRegisteredUsersPromisess.resolve(registeredUsers);
+    this.requestRegisteredUsersPromises.resolve(registeredUsers);
 
     /** Throw promisses away. */
-    this.requestRegisteredUsersPromisess = undefined;
+    this.requestRegisteredUsersPromises = undefined;
   }
 
   /** Handle auth passed messages from remote server */
-  private async onAuthenticatedSuccessfuly() {
+  private async onAuthenticatedSuccessfully() {
     this.remoteConnectionStatus = 'connectionOK';
-    logger.info(`Successfuly authenticated to remote server.`);
+    logger.info(`Successfully authenticated to remote server.`);
   }
 
   /**
@@ -466,6 +496,8 @@ export class RemoteConnectionBl {
           initialization: {
             macAddress: machineAddress,
             remoteAuthKey: remoteSettings.connectionKey,
+            platform: process.platform,
+            version: (await VersionsBlSingleton.getCurrentVersion())?.version || 'unknown',
           },
         },
       });

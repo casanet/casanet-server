@@ -1,7 +1,8 @@
 import * as path from 'path';
 import * as winston from 'winston';
 
-const LOG_FILE_NAME: string = path.join('logs', 'casalogs.log');
+export const LOGS_DIR =  './logs';
+export const LOG_FILE_PATH: string = path.join(LOGS_DIR, 'casalogs.log');
 
 const logFormat = winston.format.printf(info => `[${new Date().toLocaleString()}] [${info.level}] ${info.message}`);
 
@@ -13,7 +14,7 @@ const casanetLogger = winston.createLogger({
     }),
     new winston.transports.File({
       format: logFormat,
-      filename: LOG_FILE_NAME,
+      filename: LOG_FILE_PATH,
       maxsize: 1e6,
       maxFiles: 30,
       tailable: true,
