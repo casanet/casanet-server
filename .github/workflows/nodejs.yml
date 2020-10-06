@@ -1,0 +1,27 @@
+name: Node CI
+
+on: [push]
+
+jobs:  
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install, build, and test
+    - run: cd frontend
+    - run: npm ci
+    - run: cd ../backend
+    - run: npm ci 
+    - run: npm run bundle
+      env:
+        CI: true
