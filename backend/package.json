@@ -21,7 +21,7 @@
     "pack:win64": "pkg . -t node12-win-x64 --output ../bundle/casanet_win_x64.exe",
     "pack:lin64": "pkg . -t node12-linux-x64 --output ../bundle/casanet_linux_x64",
     "pack:mac64": "pkg . -t node12-macos-x64 --output ../bundle/casanet_macos_x64",
-    "pack": "cd dist && npm run pack:lin64 && npm run pack:arm && npm run pack:win64 && npm run pack:mac64",
+    "pack": "cd dist && npm run pack:arm && npm run pack:win64 && npm run pack:lin64 && npm run pack:mac64",
     "prepack": "node ./scripts/fixPkgLicence.js && copyfiles package.json dist && copyfiles .env.example casanet.json bundle",
     "bundle": "npm run build:front && npm run build &&  npm run prepack && npm run pack",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
