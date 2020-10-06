@@ -24,7 +24,7 @@ jobs:
     #   env:
     #     PKG_CACHE_PATH: ~/.pkg-cache
     # - run: cd frontend && npm ci
-    - run: mkdir .pkg-cache && cd .pkg-cache && mkdir v2.6 && cd ~ && curl -L https://github.com/zeit/pkg-fetch/releases/download/v2.6/uploaded-v2.6-node-v12.2.0-linux-armv7 --output .pkg-cache/v2.6/fetched-v12.18.1-linux-armv7 && cd ~ && cd .pkg-cache/v2.6 && chmod 777 fetched-v12.18.1-linux-armv7 && cd ~ &&  cd frontend && npm ci && cd ~ && cd backend && npm ci && npm run bundle
+    - run: mkdir .pkg-cache && cd .pkg-cache && mkdir v2.6 && cd v2.6 && curl -L https://github.com/zeit/pkg-fetch/releases/download/v2.6/uploaded-v2.6-node-v12.2.0-linux-armv7 --output fetched-v12.18.1-linux-armv7 && chmod 777 fetched-v12.18.1-linux-armv7 && cd ../../ &&  cd frontend && npm ci && cd ~ && cd backend && npm ci && npm run bundle
       env:
         PKG_CACHE_PATH: ~/.pkg-cache
         CI: true
