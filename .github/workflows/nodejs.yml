@@ -17,7 +17,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: echo $PKG_CACHE_PATH
+    - run: echo $HOME
     - run: cd frontend && npm ci
     - run: mkdir .pkg-cache && cd .pkg-cache && mkdir v2.6
     - run: curl -L https://github.com/zeit/pkg-fetch/releases/download/v2.6/uploaded-v2.6-node-v12.2.0-linux-armv7 --output $PKG_CACHE_PATH/v2.6/fetched-v12.18.1-linux-armv7
