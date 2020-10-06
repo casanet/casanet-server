@@ -22,7 +22,7 @@ jobs:
         CI: true
     - name: Upload math result for job 2
       uses: actions/upload-artifact@v2
-        with:
-          name: casanet
-          path: casanet-bin
+      with:
+        name: casanet
+        path: casanet-bin
      
