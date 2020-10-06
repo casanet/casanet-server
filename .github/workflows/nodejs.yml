@@ -8,9 +8,10 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
+    if: github.ref != 'refs/heads/master'
     steps:
     - uses: actions/checkout@v1 
-    - name: Build
+    - name: Install node
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
@@ -30,8 +31,10 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
+    if: github.ref != 'refs/heads/master'
     steps:
-    - name: test
+    - uses: actions/checkout@v1 
+    - name: Install node
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
@@ -46,7 +49,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -71,10 +74,10 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     steps:
     - uses: actions/checkout@v1
-    - name: Version
+    - name: Install node
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
@@ -117,7 +120,7 @@ jobs:
         release_name: ${{  steps.get_version.outputs.title }}
         body: ${{  steps.get_version.outputs.body }}
         draft: false
-        prerelease: true
+        prerelease: false
     - name: Upload Release Asset - arm
       id: upload-release-asset_arm
       uses: actions/upload-release-asset@v1
