@@ -17,10 +17,12 @@ jobs:
     - name: build backend
       run: |
         cd backend
+        npm ci
         npm run build
     - name: build frontend
       run: |
         cd frontend
+        npm ci
         npm run build:internal
 
   tests:
@@ -36,6 +38,7 @@ jobs:
     - name: test backend
       run: |
         cd backend
+        npm ci
         npm run test
 
   version:
@@ -75,9 +78,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Get the version
+    - name: Bundle packages
       run: |
-        mkdir casanet-bin
+        mkdir casanet_bin
         mkdir .pkg-cache
         cd .pkg-cache
         export PKG_CACHE_PATH=$(pwd)
@@ -93,7 +96,7 @@ jobs:
         cd backend
         npm ci
         npm run bundle
-        cp -v bundle/* ../casanet-bin
+        cp -v bundle/* ../casanet_bin
     - name: Get the version
       id: get_version
       run: |
