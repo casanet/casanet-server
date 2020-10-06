@@ -1,0 +1,174 @@
+name: casanet server BE+FE CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    if: github.ref != 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v1 
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: build backend
+      run: |
+        cd backend
+        npm ci
+        npm run build
+    - name: build frontend
+      run: |
+        cd frontend
+        npm ci
+        npm run build:internal
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    if: github.ref != 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v1 
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: test backend
+      run: |
+        cd backend
+        npm ci
+        npm run test
+
+  version:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Update version patch
+      id: update_version
+      run: |
+          version=$(cat version.txt)
+          echo $version
+          echo "${version%.*}.$(($(echo $version | tr '.' '\n' | tail -1) + 1))" > version.txt
+          version=$(cat version.txt)
+          echo $version
+          echo ::set-output name=version::$version
+    - name: Commit and push changes
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        commit_message: Update to version ${{ steps.update_version.outputs.version }}
+
+  bundle: 
+    needs: version
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Bundle packages
+      run: |
+        mkdir casanet_bin
+        mkdir .pkg-cache
+        cd .pkg-cache
+        export PKG_CACHE_PATH=$(pwd)
+        echo $PKG_CACHE_PATH
+        mkdir v2.6
+        cd v2.6
+        curl -L https://github.com/zeit/pkg-fetch/releases/download/v2.6/uploaded-v2.6-node-v12.2.0-linux-armv7 --output fetched-v12.18.1-linux-armv7 
+        chmod 777 fetched-v12.18.1-linux-armv7
+        cd ../../
+        cd frontend
+        npm ci
+        cd ../
+        cd backend
+        npm ci
+        npm run bundle
+        cp -v bundle/* ../casanet_bin
+    - name: Get the version
+      id: get_version
+      run: |
+        echo ::set-output name=version::$(cat ./version.txt)
+        echo ::set-output name=title::$( git log -1 --pretty=%B | sed -n '1p')
+        body=$(git log -1 --pretty=%B | sed 1d)
+        body="${body//'%'/'%25'}"
+        body="${body//$'\n'/'%0A'}"
+        body="${body//$'\r'/'%0D'}"
+        echo ::set-output name=body::$body
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.version }}
+        release_name: ${{  steps.get_version.outputs.title }}
+        body: ${{  steps.get_version.outputs.body }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset - arm
+      id: upload-release-asset_arm
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: ./casanet_bin/casanet_linux_arm
+        asset_name: casanet_linux_arm
+        asset_content_type: application/octet-stream
+    - name: Upload Release Asset - win
+      id: upload-release-asset_win
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./casanet_bin/casanet_win_x64.exe
+        asset_name: casanet_win_x64.exe
+        asset_content_type: application/octet-stream
+    - name: Upload Release Asset - macos
+      id: upload-release-asset_macos
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./casanet_bin/casanet_macos_x64
+        asset_name: casanet_macos_x64
+        asset_content_type: application/octet-stream
+    - name: Upload Release Asset - linux x86
+      id: upload-release-asset_linux86
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./casanet_bin/casanet_linux_x64
+        asset_name: casanet_linux_x64
+        asset_content_type: application/octet-stream
+    - name: Upload Release Asset - conf
+      id: upload-release-asset_lconf
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./casanet_bin/casanet.json
+        asset_name: casanet.json
+        asset_content_type: application/octet-stream
+     
