@@ -1,4 +1,4 @@
-name: casanet server BE+FE CI
+name: casanet server CI CD
 
 on: [push]
 
@@ -8,50 +8,8 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-    if: github.ref != 'refs/heads/master'
     steps:
     - uses: actions/checkout@v1 
-    - name: Install node
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: build backend
-      run: |
-        cd backend
-        npm ci
-        npm run build
-    - name: build frontend
-      run: |
-        cd frontend
-        npm ci
-        npm run build:internal
-
-  tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-    if: github.ref != 'refs/heads/master'
-    steps:
-    - uses: actions/checkout@v1 
-    - name: Install node
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: test backend
-      run: |
-        cd backend
-        npm ci
-        npm run test
-
-  bundle: 
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-    if: github.ref == 'refs/heads/master'
-    steps:
-    - uses: actions/checkout@v1
     - name: Install node
       uses: actions/setup-node@v1
       with:
@@ -75,6 +33,42 @@ jobs:
         npm ci
         npm run bundle
         cp -v bundle/* ../casanet_bin
+    - uses: actions/upload-artifact@v2
+      with:
+        name: casanet_bin 
+        path: casanet_bin
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    if: github.ref != 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v1 
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: test backend
+      run: |
+        cd backend
+        npm ci
+        npm run test
+
+  bundle:
+    needs: build 
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/download-artifact@master
+      with:
+        name: casanet_bin
+        path: casanet_bin
     - name: Get the version
       id: get_version
       run: |

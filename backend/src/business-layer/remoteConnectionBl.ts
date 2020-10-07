@@ -78,6 +78,10 @@ export class RemoteConnectionBl {
 
     /** Subscribe to minions feed, to forward remote server */
     this.minionsBl.minionFeed.subscribe((minionFeed: MinionFeed) => {
+      if (this.remoteConnectionStatus !== 'connectionOK') {
+        return;
+      }
+
       const localMessage: LocalMessage = {
         localMessagesType: 'feed',
         message: {
@@ -92,6 +96,10 @@ export class RemoteConnectionBl {
 
     /** Subscribe to timings feed, to forward remote server */
     this.timingsBl.timingFeed.subscribe((timingFeed: TimingFeed) => {
+      if (this.remoteConnectionStatus !== 'connectionOK') {
+        return;
+      }
+
       const localMessage: LocalMessage = {
         localMessagesType: 'feed',
         message: {
@@ -302,10 +310,14 @@ export class RemoteConnectionBl {
    */
   private sendMessage(localMessage: LocalMessage) {
     if (this.remoteConnectionStatus !== 'connectionOK' && this.remoteConnectionStatus !== 'cantReachRemoteServer') {
+      logger.debug(`[RemoteConnection.sendMessage] cant send message "${localMessage.localMessagesType}" to remote since remote status is "${this.remoteConnectionStatus}"`);
       return;
     }
     try {
-      logger.debug(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}"`);
+      // Don't log al ack messages...
+      if (localMessage.localMessagesType !== 'ack') {
+        logger.debug(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}"`);
+      }
       this.webSocketClient.sendData(JSON.stringify(localMessage));
     } catch (error) {
       logger.error(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}" failed, ${error.message}`);
@@ -373,7 +385,10 @@ export class RemoteConnectionBl {
   private async onRemoteServerMessage(rawRemoteMessage: string) {
     /** Parse message and send to correct method handle */
     const remoteMessage: RemoteMessage = JSON.parse(rawRemoteMessage);
-    logger.debug(`[RemoteServerBl] message arrived "${remoteMessage.remoteMessagesType}"`);
+    // Don't log all ack messages...
+    if (remoteMessage.remoteMessagesType !== 'ackOk') {
+      logger.debug(`[RemoteServerBl] message arrived "${remoteMessage.remoteMessagesType}"`);
+    }
     switch (remoteMessage.remoteMessagesType) {
       case 'readyToInitialization':
         await this.onInitReady();
