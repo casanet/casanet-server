@@ -12,7 +12,7 @@ const buildVersionInfo = async() => {
       const timestamp = +rawTimestamp * 1000;
 
       fse.writeFileSync(path.join(__dirname, '../dist', 'versionInfo.json'), JSON.stringify({
-        version: tags.latest,
+        version: fse.readFileSync(path.join(__dirname, '../../', 'version.txt')).toString('utf8').trim(),
         commitHash,
         timestamp,
       }));
