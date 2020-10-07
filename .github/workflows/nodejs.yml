@@ -44,32 +44,7 @@ jobs:
         npm ci
         npm run test
 
-  version:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-    if: github.ref == 'refs/heads/master'
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Update version patch
-      id: update_version
-      run: |
-          version=$(cat version.txt)
-          echo $version
-          echo "${version%.*}.$(($(echo $version | tr '.' '\n' | tail -1) + 1))" > version.txt
-          version=$(cat version.txt)
-          echo $version
-          echo ::set-output name=version::$version
-    - name: Commit and push changes
-      uses: devops-infra/action-commit-push@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        commit_message: Update to version ${{ steps.update_version.outputs.version }}
-
   bundle: 
-    needs: version
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -172,3 +147,27 @@ jobs:
         asset_name: casanet.json
         asset_content_type: application/octet-stream
      
+  bomb_version:
+    needs: bundle
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Update version patch
+      id: update_version
+      run: |
+          version=$(cat version.txt)
+          echo $version
+          echo "${version%.*}.$(($(echo $version | tr '.' '\n' | tail -1) + 1))" > version.txt
+          version=$(cat version.txt)
+          echo $version
+          echo ::set-output name=version::$version
+    - name: Commit and push changes
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        commit_message: Update to version ${{ steps.update_version.outputs.version }}
