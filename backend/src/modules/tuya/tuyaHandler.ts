@@ -82,7 +82,7 @@ export class TuyaHandler extends BrandModuleBase {
       try {
         const rowStatus = await tuyaDevice.get();
 
-        this.releaseDevice(tuyaDevice, minion.device);
+        this.watchDevice(tuyaDevice, minion.device);
 
         return {
           roller: {
@@ -153,7 +153,7 @@ export class TuyaHandler extends BrandModuleBase {
         break;
     }
 
-    this.releaseDevice(tuyaDevice, minion.device);
+    this.watchDevice(tuyaDevice, minion.device);
 
     return {
       switch: {
@@ -173,7 +173,7 @@ export class TuyaHandler extends BrandModuleBase {
         await tuyaDevice.set({
           set: setStatus.roller.status === 'off' ? '3' : setStatus.roller.direction === 'up' ? '1' : '2',
         });
-        this.releaseDevice(tuyaDevice, minion.device);
+        this.watchDevice(tuyaDevice, minion.device);
 
         return;
       } catch (err) {
@@ -235,7 +235,7 @@ export class TuyaHandler extends BrandModuleBase {
       } as ErrorResponse;
     });
 
-    this.releaseDevice(tuyaDevice, minion.device);
+    this.watchDevice(tuyaDevice, minion.device);
   }
 
   public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
@@ -298,11 +298,11 @@ export class TuyaHandler extends BrandModuleBase {
   }
 
   /**
-   * On the se/get/ finished, call to this method to keep device and subscribe status events
+   * On the set/get finished, call to this method to keep device and subscribe status events
    * @param tuyaDevice 
    * @param minionDevice 
    */
-  private async releaseDevice(tuyaDevice: Tuyapi, minionDevice: MinionDevice) {
+  private async watchDevice(tuyaDevice: Tuyapi, minionDevice: MinionDevice) {
 
     // Keep the device
     this.pysicalDevicesMap[minionDevice.pysicalDevice.mac] = tuyaDevice;
@@ -325,7 +325,7 @@ export class TuyaHandler extends BrandModuleBase {
 
       logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} data arrived`);
 
-      if (minionDevice.model.indexOf('curtain') !== -1) {
+      if (minionDevice.model.includes('curtain')) {
         try {
           const rowStatus = await tuyaDevice.get();
 

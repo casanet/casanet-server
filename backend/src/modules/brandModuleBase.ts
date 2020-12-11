@@ -30,7 +30,7 @@ export abstract class BrandModuleBase {
   public abstract readonly devices: DeviceKind[];
 
   /**
-   * Let minions manager to know if any minion status changed by pysical interface of device.
+   * Let minions manager to know if any minion status changed by physical interface of device.
    */
   public minionStatusChangedEvent = new BehaviorSubject<{
     minionId: string;
