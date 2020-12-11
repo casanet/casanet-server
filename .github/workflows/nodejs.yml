@@ -142,7 +142,7 @@ jobs:
         asset_content_type: application/octet-stream
      
   bomb_version:
-    needs: bundle
+    needs: release
     runs-on: ubuntu-latest
     strategy:
       matrix:
