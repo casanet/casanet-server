@@ -86,6 +86,16 @@ body {
   max-height: calc(100vh - 100px);
 }
 
+#connection-issue {
+  fill: #6dbdb9;
+  color: #6dbdb9;
+}
+
+#remote-issue {
+  fill: #6dbdb9;
+  color: #6dbdb9;
+}
+
 #power-on {
   cursor: pointer;
   fill: #6dbdb9;

@@ -7,6 +7,9 @@ let environments = {
 /** Flag to know if the 'power off' syncing */
 let isSync = false;
 
+/** Flag to detect if there is an connection issue, the options 'connection' 'remote-connection' */
+let connectionIssue = '';
+
 let domainAlert = () => {
   if (document.baseURI.includes(environments.DASHBOARD_DOMAIN)) {
     return;
@@ -54,7 +57,7 @@ let accessFail = () => {
 
 let getMinionsFail = (msg) => {
   if (confirm(`GET MINIONS FAIL: \n${msg},\n\n\nPress "OK" to retry`)) {
-    petchMinions();
+    fetchMinions();
   }
 };
 
@@ -72,9 +75,8 @@ let generateMinionButton = (minion) => {
 
   try {
     /** Set correct class for current status */
-    minionButton.className = `button button--ghost button--ghost--${
-      minion.minionStatus[minion.minionType].status
-    }`;
+    minionButton.className = `button button--ghost button--ghost--${minion.minionStatus[minion.minionType].status
+      }`;
 
     if (!isSync && minion.minionStatus[minion.minionType].status === "on") {
       // In case the minion status are 'on' allow 'power-all-off' button
@@ -162,7 +164,7 @@ let generateMinions = (minions) => {
 };
 
 /** Get minions from server */
-let petchMinions = () => {
+let fetchMinions = () => {
   // compatible with IE7+, Firefox, Chrome, Opera, Safari
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.withCredentials = true;
@@ -206,13 +208,12 @@ let buttonClicked = (element, minion) => {
     }
 
     if (xmlhttp.status === 204) {
-      petchMinions();
+      fetchMinions();
       return;
     }
 
-    element.className = `button button--ghost button--ghost--${
-      minion.minionStatus[minion.minionType].status
-    }`;
+    element.className = `button button--ghost button--ghost--${minion.minionStatus[minion.minionType].status
+      }`;
 
     if (xmlhttp.status === 401 || xmlhttp.status === 403) {
       accessFail();
@@ -258,6 +259,45 @@ let setViewPowerSync = () => {
   powerSyncContainer.className = "";
 };
 
+// Hide all power off all components
+let setViewPowerHide = () => {
+  const powerOnContainer = document.getElementById("power-on");
+  const powerOffContainer = document.getElementById("power-off");
+  const powerSyncContainer = document.getElementById("power-sync");
+
+  powerOnContainer.className = "hide";
+  powerOffContainer.className = "hide";
+  powerSyncContainer.className = "hide";
+};
+
+// Show connection issue icon
+let setViewConnectionIssue = () => {
+  setViewPowerHide();
+  const remoteIssueContainer = document.getElementById("remote-issue");
+  const connectionIssueContainer = document.getElementById("connection-issue");
+
+  remoteIssueContainer.className = "hide";
+  connectionIssueContainer.className = "";
+};
+
+// Show remote issue icon
+let setViewRemoteConnectionIssue = () => {
+  setViewPowerHide();
+  const remoteIssueContainer = document.getElementById("remote-issue");
+  const connectionIssueContainer = document.getElementById("connection-issue");
+
+  remoteIssueContainer.className = "";
+  connectionIssueContainer.className = "hide";
+};
+
+let setViewConnectionOK = () => {
+  const remoteIssueContainer = document.getElementById("remote-issue");
+  const connectionIssueContainer = document.getElementById("connection-issue");
+
+  remoteIssueContainer.className = "hide";
+  connectionIssueContainer.className = "hide";
+};
+
 let powerAllOff = () => {
   isSync = true;
 
@@ -269,7 +309,7 @@ let powerAllOff = () => {
   xmlhttp.onload = () => {
     if (xmlhttp.readyState === 4 && xmlhttp.status == 204) {
       isSync = false;
-      petchMinions();
+      fetchMinions();
       return;
     }
 
@@ -281,7 +321,7 @@ let powerAllOff = () => {
 };
 
 /** On start. get and generate minions */
-petchMinions();
+fetchMinions();
 
 /** SSE */
 var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
@@ -292,8 +332,53 @@ evtSource.onmessage = (e) => {
   if (e.data === '"init"') {
     return;
   }
-  petchMinions();
+  fetchMinions();
 };
+
+// Interval to get the liveliness and remote connection status
+setInterval(() => {
+  const xmlhttp = new XMLHttpRequest();
+  xmlhttp.withCredentials = true;
+  xmlhttp.onload = () => {
+    if (xmlhttp.readyState !== 4) {
+      return;
+    }
+    // If response OK
+    if (xmlhttp.status === 200) {
+      // If currently flag had comm issue, remove it and refetch minions
+      if (connectionIssue === 'connection') {
+        connectionIssue = '';
+        setViewConnectionOK();
+        fetchMinions();
+        return;
+      }
+
+      // If currently flag had remote-comm issue, remove it and refetch minions
+      if (xmlhttp.responseText === '"notConfigured"' || xmlhttp.responseText === '"connectionOK"') {
+        if (connectionIssue === 'remote-connection') {
+          connectionIssue = '';
+        }
+        return;
+      }
+
+      // Mark remote connection issue
+      connectionIssue = 'remote-connection';
+      setViewRemoteConnectionIssue()
+      return;
+    }
+
+    // Mark connection issue
+    connectionIssue = 'connection'
+    setViewConnectionIssue();
+  };
+  // In case of communication error
+  xmlhttp.onerror = () => {
+    connectionIssue = 'connection'
+    setViewConnectionIssue();
+  };
+  xmlhttp.open("GET", `${environments.API_URL}/remote/status`, true);
+  xmlhttp.send();
+}, 15000);
 
 let unRegisterSW = () => {
   navigator.serviceWorker.getRegistrations().then(function (registrations) {
@@ -320,13 +405,12 @@ let registerSW = () => {
 setInterval(() => {
   const dateClockParagraph = document.getElementById("date-clock");
   const now = new Date();
-  dateClockParagraph.innerText = `${now.getDate()}/${
-    now.getMonth() + 1
-  }/${now.getFullYear()} ${now
-    .getHours()
-    .toString()
-    .padStart(2, "0")}:${now
-    .getMinutes()
-    .toString()
-    .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+  dateClockParagraph.innerText = `${now.getDate()}/${now.getMonth() + 1
+    }/${now.getFullYear()} ${now
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${now
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
 }, 1000);
