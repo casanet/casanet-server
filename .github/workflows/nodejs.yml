@@ -56,7 +56,7 @@ jobs:
         npm ci
         npm run test
 
-  bundle:
+  release:
     needs: build 
     runs-on: ubuntu-latest
     strategy:
