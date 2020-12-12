@@ -10,7 +10,7 @@ let isSync = false;
 /** Flag to detect if there is an connection issue, the options 'connection' 'remote-connection' */
 let connectionIssue = '';
 
-let domainAlert = () => {
+function domainAlert() {
   if (document.baseURI.includes(environments.DASHBOARD_DOMAIN)) {
     return;
   }
@@ -24,7 +24,7 @@ let domainAlert = () => {
   window.location.href = `${environments.DASHBOARD_DOMAIN}/light-app/index.html`;
 };
 
-let fetchEnvironments = () => {
+function fetchEnvironments() {
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.onload = () => {
     if (xmlhttp.readyState === 4 && xmlhttp.status == 200) {
@@ -44,18 +44,15 @@ let fetchEnvironments = () => {
   xmlhttp.send();
 };
 
-/** Fetch the environments, sync */
-fetchEnvironments();
-
 /**
  * Redirect to auth page.
  */
-let accessFail = () => {
+function accessFail() {
   alert("ACCESS FORBIDDEN, redirecting to auth page...");
   window.location.href = "/#/login";
 };
 
-let getMinionsFail = (msg) => {
+function getMinionsFail(msg) {
   if (confirm(`GET MINIONS FAIL: \n${msg},\n\n\nPress "OK" to retry`)) {
     fetchMinions();
   }
@@ -66,7 +63,7 @@ let getMinionsFail = (msg) => {
  * @param {*} minion A minion
  * @returns A DOM button object for the given minion
  */
-let generateMinionButton = (minion) => {
+function generateMinionButton(minion) {
   /** Create button element */
   const minionButton = document.createElement("a");
 
@@ -80,7 +77,7 @@ let generateMinionButton = (minion) => {
 
     if (!isSync && minion.minionStatus[minion.minionType].status === "on") {
       // In case the minion status are 'on' allow 'power-all-off' button
-      setViewPowerOn();
+      setIconView("power-on");
     }
 
     if (!minion.isProperlyCommunicated) {
@@ -105,7 +102,7 @@ let generateMinionButton = (minion) => {
  * Generate buttons of each minion.
  * @param {*} minions Minions array
  */
-let generateMinions = (minions) => {
+function generateMinions(minions) {
   /** Set empty room to the undefined rooms */
   minions = minions.map((m) => {
     m.room = m.room ? m.room : "";
@@ -140,8 +137,8 @@ let generateMinions = (minions) => {
 
   if (!isSync) {
     // If the power off not currently sync, set power off,
-    // and in case any of the minion status are 'on' then call to 'setViewPowerOn()'
-    setViewPowerOff();
+    // and in case any of the minion status are 'on' then call to 'setIconView("power-on")'
+    setIconView("power-off");
   }
 
   for (const [roomName, roomMinions] of Object.entries(rooms)) {
@@ -164,7 +161,7 @@ let generateMinions = (minions) => {
 };
 
 /** Get minions from server */
-let fetchMinions = () => {
+function fetchMinions() {
   // compatible with IE7+, Firefox, Chrome, Opera, Safari
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.withCredentials = true;
@@ -186,7 +183,7 @@ let fetchMinions = () => {
 };
 
 /** Toggle minion status on click */
-let buttonClicked = (element, minion) => {
+function buttonClicked(element, minion) {
   if (minion.sync || isSync) {
     return;
   }
@@ -229,80 +226,14 @@ let buttonClicked = (element, minion) => {
   xmlhttp.send(JSON.stringify(setStatus));
 };
 
-let setViewPowerOn = () => {
-  const powerOnContainer = document.getElementById("power-on");
-  const powerOffContainer = document.getElementById("power-off");
-  const powerSyncContainer = document.getElementById("power-sync");
-
-  powerOnContainer.className = "";
-  powerOffContainer.className = "hide";
-  powerSyncContainer.className = "hide";
-};
-
-let setViewPowerOff = () => {
-  const powerOnContainer = document.getElementById("power-on");
-  const powerOffContainer = document.getElementById("power-off");
-  const powerSyncContainer = document.getElementById("power-sync");
-
-  powerOnContainer.className = "hide";
-  powerOffContainer.className = "";
-  powerSyncContainer.className = "hide";
-};
-
-let setViewPowerSync = () => {
-  const powerOnContainer = document.getElementById("power-on");
-  const powerOffContainer = document.getElementById("power-off");
-  const powerSyncContainer = document.getElementById("power-sync");
-
-  powerOnContainer.className = "hide";
-  powerOffContainer.className = "hide";
-  powerSyncContainer.className = "";
-};
-
-// Hide all power off all components
-let setViewPowerHide = () => {
-  const powerOnContainer = document.getElementById("power-on");
-  const powerOffContainer = document.getElementById("power-off");
-  const powerSyncContainer = document.getElementById("power-sync");
-
-  powerOnContainer.className = "hide";
-  powerOffContainer.className = "hide";
-  powerSyncContainer.className = "hide";
-};
-
-// Show connection issue icon
-let setViewConnectionIssue = () => {
-  setViewPowerHide();
-  const remoteIssueContainer = document.getElementById("remote-issue");
-  const connectionIssueContainer = document.getElementById("connection-issue");
-
-  remoteIssueContainer.className = "hide";
-  connectionIssueContainer.className = "";
-};
-
-// Show remote issue icon
-let setViewRemoteConnectionIssue = () => {
-  setViewPowerHide();
-  const remoteIssueContainer = document.getElementById("remote-issue");
-  const connectionIssueContainer = document.getElementById("connection-issue");
-
-  remoteIssueContainer.className = "";
-  connectionIssueContainer.className = "hide";
-};
-
-let setViewConnectionOK = () => {
-  const remoteIssueContainer = document.getElementById("remote-issue");
-  const connectionIssueContainer = document.getElementById("connection-issue");
-
-  remoteIssueContainer.className = "hide";
-  connectionIssueContainer.className = "hide";
-};
-
-let powerAllOff = () => {
+/**
+ * Power off all minions in the system
+ */
+function powerAllOff() {
   isSync = true;
 
   // Mark view as sync
-  setViewPowerSync();
+  setIconView("power-sync");
 
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.withCredentials = true;
@@ -314,29 +245,13 @@ let powerAllOff = () => {
     }
 
     alert("POWER OFF FAIL");
-    setViewPowerOn();
+    setIconView("power-on");
   };
   xmlhttp.open("PUT", `${environments.API_URL}/minions/power-off`, true);
   xmlhttp.send();
 };
 
-/** On start. get and generate minions */
-fetchMinions();
-
-/** SSE */
-var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
-  withCredentials: true,
-});
-
-evtSource.onmessage = (e) => {
-  if (e.data === '"init"') {
-    return;
-  }
-  fetchMinions();
-};
-
-// Interval to get the liveliness and remote connection status
-setInterval(() => {
+function detectConnectionStatus() {
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.withCredentials = true;
   xmlhttp.onload = () => {
@@ -345,50 +260,62 @@ setInterval(() => {
     }
     // If response OK
     if (xmlhttp.status === 200) {
-      // If currently flag had comm issue, remove it and refetch minions
-      if (connectionIssue === 'connection') {
-        connectionIssue = '';
-        setViewConnectionOK();
-        fetchMinions();
-        return;
-      }
 
       // If currently flag had remote-comm issue, remove it and refetch minions
-      if (xmlhttp.responseText === '"notConfigured"' || xmlhttp.responseText === '"connectionOK"') {
-        if (connectionIssue === 'remote-connection') {
-          connectionIssue = '';
-        }
+      if (xmlhttp.responseText !== '"notConfigured"' && xmlhttp.responseText !== '"connectionOK"') {
+        // Mark remote connection issue
+        connectionIssue = 'remote-connection';
+        setIconView("remote-issue")
         return;
       }
 
-      // Mark remote connection issue
-      connectionIssue = 'remote-connection';
-      setViewRemoteConnectionIssue()
-      return;
-    }
+      // If currently flag didn't indicate issue, just return
+      if (!connectionIssue) {
+        return;
+      }
 
-    // Mark connection issue
-    connectionIssue = 'connection'
-    setViewConnectionIssue();
+      // If flag indicating on issue, remove it, and refetch minions
+      connectionIssue = '';
+      setIconView("power-on");
+      fetchMinions();
+    }
   };
   // In case of communication error
   xmlhttp.onerror = () => {
     connectionIssue = 'connection'
-    setViewConnectionIssue();
+    setIconView("connection-issue");
   };
   xmlhttp.open("GET", `${environments.API_URL}/remote/status`, true);
   xmlhttp.send();
-}, 15000);
+}
 
-let unRegisterSW = () => {
-  navigator.serviceWorker.getRegistrations().then(function (registrations) {
-    for (let registration of registrations) {
-      registration.unregister();
-    }
-  });
+/**
+ * Set the up-left corner icon view to show
+ * @param {string} showIconView the icon view to show 
+ */
+function setIconView(showIconView) {
+  const powerOnContainer = document.getElementById("power-on");
+  const powerOffContainer = document.getElementById("power-off");
+  const powerSyncContainer = document.getElementById("power-sync");
+  const remoteIssueContainer = document.getElementById("remote-issue");
+  const connectionIssueContainer = document.getElementById("connection-issue");
+
+  powerOnContainer.className = "hide";
+  powerOffContainer.className = "hide";
+  powerSyncContainer.className = "hide";
+  remoteIssueContainer.className = "hide";
+  connectionIssueContainer.className = "hide";
+
+  const iconToShowContainer = document.getElementById(showIconView);
+  if (iconToShowContainer) {
+    iconToShowContainer.className = "";
+  }
 };
 
-let registerSW = () => {
+/**
+ * Register to the browser service worker, so the assets will kept as offline app. 
+ */
+function registerSW() {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("/light-app/service-worker.js")
@@ -401,10 +328,45 @@ let registerSW = () => {
   }
 };
 
+/**
+ * Deregister from the browser service worker, so the assets will removed from the browser apps. 
+ */
+function unRegisterSW() {
+  navigator.serviceWorker.getRegistrations().then(function (registrations) {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
+  });
+};
+
+/** First of all, fetch the environments, in sync */
+fetchEnvironments();
+
+/** On start. get and generate minions */
+fetchMinions();
+
+/** Create a SSE subscription  */
+var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
+  withCredentials: true,
+});
+
+/** Subscribe to the feed message, and on message, refetch minions */
+evtSource.onmessage = (e) => {
+  if (e.data === '"init"') {
+    return;
+  }
+  fetchMinions();
+};
+
+// Interval to get the liveliness and remote connection status
+setInterval(detectConnectionStatus, 5000);
+
 // Clock interval
 setInterval(() => {
+  // get the clock paragraph object
   const dateClockParagraph = document.getElementById("date-clock");
   const now = new Date();
+  // update the clock
   dateClockParagraph.innerText = `${now.getDate()}/${now.getMonth() + 1
     }/${now.getFullYear()} ${now
       .getHours()

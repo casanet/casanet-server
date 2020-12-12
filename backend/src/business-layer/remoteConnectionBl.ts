@@ -343,14 +343,11 @@ export class RemoteConnectionBl {
       return;
     }
 
+    /** Before the channel opened, mark it as 'cantReachRemoteServer' (yet..) */
+    this.remoteConnectionStatus = 'cantReachRemoteServer';
+
     /** create web socket instance */
     this.webSocketClient = new WebSocketClient(3000, false);
-
-    /** Allow *only wss* connections. */
-    /** open connection to remote server. */
-    this.webSocketClient.connect(`${remoteSettings.host}`);
-
-    logger.info(`Opening ws channel to ${remoteSettings.host}`);
 
     this.webSocketClient.on('open', () => {
       this.remoteConnectionStatus = 'connectionOK';
@@ -380,6 +377,12 @@ export class RemoteConnectionBl {
     this.webSocketClient.on('reconnect', () => {
       logger.debug(`Ws channel trying reconnect ${remoteSettings.host}`);
     });
+
+    logger.info(`Opening ws channel to ${remoteSettings.host}`);
+
+    /** Allow *only wss* connections. */
+    /** open connection to remote server. */
+    this.webSocketClient.connect(`${remoteSettings.host}`);
   }
 
   private async onRemoteServerMessage(rawRemoteMessage: string) {
