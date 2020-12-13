@@ -30,6 +30,9 @@ function fetchEnvironments() {
     if (xmlhttp.readyState === 4 && xmlhttp.status == 200) {
       environments = JSON.parse(xmlhttp.responseText);
       domainAlert();
+
+      // After we got the environment URL, start app data fetching and processing
+      initApp();
       return;
     }
 
@@ -40,7 +43,7 @@ function fetchEnvironments() {
 
     getMinionsFail(xmlhttp.responseText);
   };
-  xmlhttp.open("GET", "/light-app/environments.json", false);
+  xmlhttp.open("GET", "/light-app/environments.json");
   xmlhttp.send();
 };
 
@@ -339,27 +342,29 @@ function unRegisterSW() {
   });
 };
 
-/** First of all, fetch the environments, in sync */
-fetchEnvironments();
-
-/** On start. get and generate minions */
-fetchMinions();
-
-/** Create a SSE subscription  */
-var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
-  withCredentials: true,
-});
-
-/** Subscribe to the feed message, and on message, refetch minions */
-evtSource.onmessage = (e) => {
-  if (e.data === '"init"') {
-    return;
-  }
+function initApp() {
+  /** On app ready to start. get and generate minions */
   fetchMinions();
-};
 
-// Interval to get the liveliness and remote connection status
-setInterval(detectConnectionStatus, 5000);
+  /** Create a SSE subscription  */
+  var evtSource = new EventSource(`${environments.API_URL}/feed/minions`, {
+    withCredentials: true,
+  });
+
+  /** Subscribe to the feed message, and on message, refetch minions */
+  evtSource.onmessage = (e) => {
+    if (e.data === '"init"') {
+      return;
+    }
+    fetchMinions();
+  };
+
+  // Interval to get the liveliness and remote connection status
+  setInterval(detectConnectionStatus, 15000);
+}
+
+/** First of all, fetch the environments URL's */
+fetchEnvironments();
 
 // Clock interval
 setInterval(() => {
