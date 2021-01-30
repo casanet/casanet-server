@@ -79,8 +79,9 @@ export class CalibrateBl {
     }
 
     try {
+      logger.debug(`[CalibrateBl.calibrateMinion] Setting minion "${minion.minionId}" status "${JSON.stringify(minionStatus)}" ...`);
       await this.minionsBl.setMinionStatus(minion.minionId, minionStatus);
-      logger.debug(`Calibrate minion ${minion.minionId} successfully activated`);
+      logger.debug(`[CalibrateBl.calibrateMinion] Setting minion ${minion.minionId} calibration successfully activated`);
     } catch (error) {
       logger.warn(`Calibrate minion ${minion.minionId} fail, ${JSON.stringify(error)}`);
     }
