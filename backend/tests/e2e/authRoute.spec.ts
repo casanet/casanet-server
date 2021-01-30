@@ -3,6 +3,12 @@ import { expect } from 'chai';
 import chaiHttp = require('chai-http');
 import * as moment from 'moment';
 import { app } from '../../src/app';
+import { CalibrateBlSingleton } from '../../src/business-layer/calibrateBl';
+import { MinionsBlSingleton } from '../../src/business-layer/minionsBl';
+import { RemoteConnectionBlSingleton } from '../../src/business-layer/remoteConnectionBl';
+import { TimelineBlSingleton } from '../../src/business-layer/timelineBl';
+import { TimeoutBlSingleton } from '../../src/business-layer/timeoutBl';
+import { TimingsBlSingleton } from '../../src/business-layer/timingsBl';
 import { Login } from '../../src/models/sharedInterfaces';
 import {
   validAdminPlainPassword,
@@ -10,6 +16,15 @@ import {
   validSystemUser,
   validUserPlainPassword,
 } from './prepareRoutesSpecTests.spec';
+
+(function initServices() {
+  MinionsBlSingleton.initMinionsModule();
+  TimelineBlSingleton.initTimelineModule();
+  RemoteConnectionBlSingleton.initRemoteConnectionModule();
+  TimingsBlSingleton.initTimingModule();
+  TimeoutBlSingleton.initTimeoutModule();
+  CalibrateBlSingleton.initCalibrateModule();
+})();
 
 chai.use(chaiHttp);
 const agent = chai.request.agent(app);
