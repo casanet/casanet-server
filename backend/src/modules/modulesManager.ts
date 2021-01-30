@@ -81,7 +81,7 @@ export class ModulesManager {
     try {
       logger.debug(`[ModulesManager.getStatus] getting minion "${minion.minionId}" status using "${minionModule.brandName}" module ...`);
       const status = await withTimeout(minionModule.getStatus(minion), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
-      logger.debug(`[ModulesManager.getStatus] getting minion "${minion.minionId}" status succeed`);
+      logger.debug(`[ModulesManager.getStatus] getting minion "${minion.minionId}" status "${JSON.stringify(status)}" succeed`);
       return status;
     } catch (error) {
       logger.warn(`[ModulesManager.getStatus] getting minion "${minion.minionId}" status failed ${error.message || JSON.stringify(error)}`);
