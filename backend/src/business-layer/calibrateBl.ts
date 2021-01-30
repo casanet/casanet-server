@@ -20,11 +20,6 @@ export class CalibrateBl {
    */
   constructor(minionsBl: MinionsBl) {
     this.minionsBl = minionsBl;
-
-    /**
-     * Init module.
-     */
-    this.initActivation();
   }
 
   private async calibrateActivation(): Promise<void> {
@@ -84,16 +79,17 @@ export class CalibrateBl {
     }
 
     try {
+      logger.debug(`[CalibrateBl.calibrateMinion] Setting minion "${minion.minionId}" status "${JSON.stringify(minionStatus)}" ...`);
       await this.minionsBl.setMinionStatus(minion.minionId, minionStatus);
-      logger.debug(`Calibrate minion ${minion.minionId} successfully activated`);
+      logger.debug(`[CalibrateBl.calibrateMinion] Setting minion ${minion.minionId} calibration successfully activated`);
     } catch (error) {
       logger.warn(`Calibrate minion ${minion.minionId} fail, ${JSON.stringify(error)}`);
     }
   }
 
-  private initActivation() {
+  public async initCalibrateModule() {
     /**
-     * Finally start timeout activation
+     * start timeout activation
      */
     setInterval(async () => {
       try {

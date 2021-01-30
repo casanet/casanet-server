@@ -32,7 +32,7 @@ describe('Devices routing API', () => {
         .put(`/API/devices/${device.mac}`)
         .send(device)
         .end((err, res) => {
-          expect(res.statusType).eql(2);
+          expect(res.statusType).eql(5);
           done();
         });
     });

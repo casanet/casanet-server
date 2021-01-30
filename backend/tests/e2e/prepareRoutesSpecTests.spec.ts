@@ -1,11 +1,26 @@
 import * as bcrypt from 'bcryptjs';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
-import app from '../../src/app';
+import { app } from '../../src/app';
+import { MinionsBlSingleton } from '../../src/business-layer/minionsBl';
+import { RemoteConnectionBlSingleton } from '../../src/business-layer/remoteConnectionBl';
+import { TimelineBlSingleton } from '../../src/business-layer/timelineBl';
+import { TimingsBlSingleton } from '../../src/business-layer/timingsBl';
+import { TimeoutBlSingleton } from '../../src/business-layer/timeoutBl';
+import { CalibrateBlSingleton } from '../../src/business-layer/calibrateBl';
 import { Configuration } from '../../src/config';
 import { UsersDalSingleton } from '../../src/data-layer/usersDal';
 import { Login, Minion } from '../../src/models/sharedInterfaces';
 import { User } from '../../src/models/sharedInterfaces';
+
+(function initServices() {
+    MinionsBlSingleton.initMinionsModule();
+    TimelineBlSingleton.initTimelineModule();
+    RemoteConnectionBlSingleton.initRemoteConnectionModule();
+    TimingsBlSingleton.initTimingModule();
+    TimeoutBlSingleton.initTimeoutModule();
+    CalibrateBlSingleton.initCalibrateModule();
+})();
 
 /**
  * Prepare chai session agent.

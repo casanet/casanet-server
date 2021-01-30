@@ -37,6 +37,7 @@ const minionsBl = new MinionsBl(
   devicesBlMock,
   (modulesManagerMock as unknown) as ModulesManager,
 );
+minionsBl.initMinionsModule();
 
 describe('Minions BL tests', () => {
   describe('Get minions', () => {

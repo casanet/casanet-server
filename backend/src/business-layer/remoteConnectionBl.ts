@@ -70,6 +70,10 @@ export class RemoteConnectionBl {
     private minionsBl: MinionsBl,
     private timingsBl: TimingsBl,
   ) {
+
+  }
+
+  public async initRemoteConnectionModule() {
     /** Use chai testing lib, to mock http requests */
     chai.use(chaiHttp);
 
@@ -310,13 +314,11 @@ export class RemoteConnectionBl {
    */
   private sendMessage(localMessage: LocalMessage) {
     if (this.remoteConnectionStatus !== 'connectionOK' && this.remoteConnectionStatus !== 'cantReachRemoteServer') {
-      logger.debug(`[RemoteConnection.sendMessage] cant send message "${localMessage.localMessagesType}" to remote since remote status is "${this.remoteConnectionStatus}"`);
       return;
     }
     try {
       // Don't log al ack messages...
       if (localMessage.localMessagesType !== 'ack') {
-        logger.debug(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}"`);
       }
       this.webSocketClient.sendData(JSON.stringify(localMessage));
     } catch (error) {
@@ -390,7 +392,6 @@ export class RemoteConnectionBl {
     const remoteMessage: RemoteMessage = JSON.parse(rawRemoteMessage);
     // Don't log all ack messages...
     if (remoteMessage.remoteMessagesType !== 'ackOk') {
-      logger.debug(`[RemoteServerBl] message arrived "${remoteMessage.remoteMessagesType}"`);
     }
     switch (remoteMessage.remoteMessagesType) {
       case 'readyToInitialization':

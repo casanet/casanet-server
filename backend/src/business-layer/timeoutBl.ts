@@ -45,11 +45,6 @@ export class TimeoutBl {
    */
   constructor(minionsBl: MinionsBl) {
     this.minionsBl = minionsBl;
-
-    /**
-     * Init module.
-     */
-    this.initData();
   }
 
   /**
@@ -83,7 +78,6 @@ export class TimeoutBl {
       }
 
       try {
-        logger.info(`Minion ${timeoutMinion.minionId} timeout activated`);
         const minion = await this.minionsBl.getMinionById(timeoutMinion.minionId);
 
         /**
@@ -95,7 +89,10 @@ export class TimeoutBl {
          * Set status off.
          */
         minionStatus[minion.minionType].status = 'off';
+
+        logger.debug(`[TimeoutBl.timeoutActivation] Setting minion "${minion.minionId}" status "${JSON.stringify(minionStatus)}" ...`);
         await this.minionsBl.setMinionStatus(timeoutMinion.minionId, minionStatus);
+        logger.debug(`[TimeoutBl.timeoutActivation] Setting minion ${minion.minionId} timeout successfully activated`);
 
         /**
          * If success set status to 'off'.
@@ -179,7 +176,7 @@ export class TimeoutBl {
     this.minionsTimeoutInfo.splice(this.minionsTimeoutInfo.indexOf(timeoutMinion), 1);
   }
 
-  private async initData(): Promise<void> {
+  public async initTimeoutModule(): Promise<void> {
     this.minionsTimeoutInfo = [];
 
     /**

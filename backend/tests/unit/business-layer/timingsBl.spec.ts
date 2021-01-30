@@ -11,5 +11,6 @@ import { TimingsDalMock } from '../data-layer/timingsDal.mock.spec';
 
 const timingsDalMock = new TimingsDalMock();
 const timingsBl = new TimingsBl((timingsDalMock as unknown) as TimingsDal, {} as OperationsBl);
+timingsBl.initTimingModule();
 
 describe('Timings BL tests', () => {});

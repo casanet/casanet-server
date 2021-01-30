@@ -43,15 +43,6 @@ export class MinionsBl {
     this.minionsDal = minionsDal;
     this.devicesBl = devicesBl;
     this.modulesManager = modulesManager;
-
-    logger.info('Starting init minions....');
-    this.initData()
-      .then(() => {
-        logger.info('Init minions done');
-      })
-      .catch(() => {
-        logger.error('Init minions fail');
-      });
   }
 
   /**
@@ -500,7 +491,7 @@ export class MinionsBl {
   /**
    * Init minions.
    */
-  private async initData(): Promise<void> {
+  public async initMinionsModule(): Promise<void> {
     /** Mark scanning as 'inProgress' */
     this.scanningStatus = 'inProgress';
 

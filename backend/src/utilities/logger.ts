@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as winston from 'winston';
 
-export const LOGS_DIR =  './logs';
+export const LOGS_DIR = './logs';
 export const LOG_FILE_PATH: string = path.join(LOGS_DIR, 'casalogs.log');
 
 const logFormat = winston.format.printf(info => `[${new Date().toLocaleString()}] [${info.level}] ${info.message}`);

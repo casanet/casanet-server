@@ -48,7 +48,8 @@ export class DevicesBl {
    */
   public async setDeviceName(deviceToSet: LocalNetworkDevice): Promise<void> {
     await this.devicesDal.saveDevice(deviceToSet);
-    await this.loadDevicesName();
+    const localDevice = this.localDevices.find(d => d.mac === deviceToSet.mac);
+    localDevice.name = deviceToSet.name;
     this.devicesUpdate.next(this.localDevices);
   }
 
@@ -68,33 +69,38 @@ export class DevicesBl {
   }
 
   /**
-   * Load local devices name from saved cache.
-   */
-  private async loadDevicesName(): Promise<void> {
-    const cachedDevices = await this.devicesDal.getDevices();
-
-    for (const localDevice of this.localDevices) {
-      for (const cachedDevice of cachedDevices) {
-        if (cachedDevice.mac === localDevice.mac) {
-          localDevice.name = cachedDevice.name;
-          break;
-        }
-      }
-    }
-  }
-
-  /**
    * Load local network devices data.
    */
   private async loadDevices(): Promise<void> {
-    this.localDevices = (await this.localNetworkReader().catch(() => {
-      logger.warn('Loading devices network fail, setting devices as empty array...');
-      this.localDevices = [];
-    })) as LocalNetworkDevice[];
+    const cachedDevices = await this.devicesDal.getDevices();
 
-    await this.loadDevicesName().catch(() => {
-      logger.warn('Loading devices names fail');
-    });
+    // Read the network devices
+    let networkDevices: LocalNetworkDevice[] = [];
+    try {
+      networkDevices = await this.localNetworkReader();
+    } catch (error) {
+      logger.warn('Loading devices network fail');
+    }
+
+    const unknown = '------------';
+
+    // Set the cached name if cached
+    for (const networkDevice of networkDevices) {
+      const localDevice = cachedDevices.find(d => d.mac === networkDevice.mac);
+      networkDevice.name = localDevice?.name || unknown;
+    }
+
+    // Collect all cached devices that not found in the network
+    const unconnectedDevices: LocalNetworkDevice[] = [];
+    for (const cachedDevice of cachedDevices) {
+      if (!networkDevices.some(d => d.mac === cachedDevice.mac)) {
+        cachedDevice.ip = unknown;
+        unconnectedDevices.push(cachedDevice);
+      }
+    }
+
+    // Merge all devices into one collection, while the network devices in the first
+    this.localDevices = [...networkDevices, ...unconnectedDevices,];
   }
 }
 

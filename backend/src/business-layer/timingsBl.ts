@@ -40,14 +40,18 @@ export class TimingsBl {
    * @param localNetworkReader Inject the reader function.
    */
   constructor(private timingsDal: TimingsDal, private operationBl: OperationsBl) {
-    setInterval(async () => {
-      await this.timingActivation();
-    }, TIMING_INTERVAL_ACTIVATION.asMilliseconds());
+
   }
 
   /**
    * API
    */
+
+  public async initTimingModule() {
+    setInterval(async () => {
+      await this.timingActivation();
+    }, TIMING_INTERVAL_ACTIVATION.asMilliseconds());
+  }
 
   /**
    * Get all timings array.
@@ -115,8 +119,8 @@ export class TimingsBl {
     } catch (error) {
       logger.warn(
         `Invoke timing ${timing.timingName}` +
-          ` id: ${timing.timingId}` +
-          ` operationId: ${timing.triggerOperationId} fail, ${error.message}`,
+        ` id: ${timing.timingId}` +
+        ` operationId: ${timing.triggerOperationId} fail, ${error.message}`,
       );
     }
   }

@@ -23,6 +23,7 @@ const remoteConnectionBl = new RemoteConnectionBl(
   (minionBlMock as unknown) as MinionsBl,
   (new TimingsBlMock() as unknown) as TimingsBl,
 );
+remoteConnectionBl.initRemoteConnectionModule();
 
 // remoteConnectionBl.setRemoteSettings({
 //     host: '127.0.0.1:4112',
