@@ -20,6 +20,7 @@ import { OrviboHandler } from './orvibo/orviboHandler';
 import { TasmotaHandler } from './tasmota/tasmotaHandler';
 import { TuyaHandler } from './tuya/tuyaHandler';
 import { YeelightHandler } from './yeelight/yeelightHandler';
+import { logger } from '../utilities/logger';
 
 export class ModulesManager {
   /**
@@ -42,7 +43,7 @@ export class ModulesManager {
   }>(undefined);
 
   /**
-   * Allows to retrieve minions array. (used as proxy for all moduls).
+   * Allows to retrieve minions array. (used as proxy for all modulus).
    */
   public retrieveMinions: PullBehavior<Minion[]> = new PullBehavior<Minion[]>();
   private readonly COMMUNICATE_DEVICE_TIMEOUT = moment.duration(15, 'seconds');
@@ -78,8 +79,13 @@ export class ModulesManager {
     }
 
     try {
-      return await withTimeout(minionModule.getStatus(minion), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+      logger.debug(`[ModulesManager.getStatus] getting minion "${minion.minionId}" status using "${minionModule.brandName}" module ...`);
+      const status = await withTimeout(minionModule.getStatus(minion), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
+      logger.debug(`[ModulesManager.getStatus] getting minion "${minion.minionId}" status succeed`);
+      return status;
     } catch (error) {
+      logger.warn(`[ModulesManager.getStatus] getting minion "${minion.minionId}" status failed ${error.message || JSON.stringify(error)}`);
+
       if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
         throw {
           responseCode: 1503,
@@ -109,11 +115,14 @@ export class ModulesManager {
     }
 
     try {
-      return await withTimeout(
+      logger.debug(`[ModulesManager.setStatus] setting minion "${minion.minionId}" status "${JSON.stringify(setStatus)}" using "${minionModule.brandName}" module ...`);
+      await withTimeout(
         minionModule.setStatus(minion, setStatus),
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
+      logger.debug(`[ModulesManager.setStatus] setting minion "${minion.minionId}" status succeed`);
     } catch (error) {
+      logger.warn(`[ModulesManager.getStatus] setting minion "${minion.minionId}" status failed ${error.message || JSON.stringify(error)}`);
       if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
         throw {
           responseCode: 1503,
@@ -126,7 +135,7 @@ export class ModulesManager {
   }
 
   /**
-   * Record data for currrent minion status.
+   * Record data for current minion status.
    * Note, only few devices models support this feature.
    * For example it is used when need to record IR data to math status for next use.
    * @param minion minion to record for.
@@ -144,7 +153,7 @@ export class ModulesManager {
       throw errorResponse;
     }
 
-    /** Make sure that minion supprt recording */
+    /** Make sure that minion support recording */
     const modelKind = this.getModelKind(minionModule, minion.device);
     if (!modelKind || !modelKind.isRecordingSupported) {
       const errorResponse: ErrorResponse = {
@@ -218,7 +227,7 @@ export class ModulesManager {
   }
 
   /**
-   * Update the currect module with fatched commands set.
+   * Update the current module with fetched commands set.
    * see https://github.com/casanet/rf-commands-repo project API.
    * @param minion minioin to update commands by fetched commands set.
    * @param commandsSet Fetched RF commands set.
@@ -347,7 +356,7 @@ export class ModulesManager {
   }
 
   /**
-   * Get minion communcation module based on brand name.
+   * Get minion communication module based on brand name.
    * @param brandName the brand name.
    * @returns The module instance or undefined if not exist.
    */
@@ -360,9 +369,9 @@ export class ModulesManager {
   }
 
   /**
-   * Get DeviceKind of minoin device.
+   * Get DeviceKind of minion device.
    * @param minionsBrandModuleBase The rand module to look in.
-   * @param minionDevice the minoin device to get kind for.
+   * @param minionDevice the minion device to get kind for.
    * @returns The device kind.
    */
   private getModelKind(minionsBrandModuleBase: BrandModuleBase, minionDevice: MinionDevice): DeviceKind {

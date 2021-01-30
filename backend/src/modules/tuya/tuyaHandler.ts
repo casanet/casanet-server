@@ -339,6 +339,8 @@ export class TuyaHandler extends BrandModuleBase {
               continue;
             }
 
+            logger.debug(`[tuyaHandler] minion "${minion.minionId}" status arrived from device ${JSON.stringify(rowStatus)}`);
+
             const status: SwitchOptions = rowStatus !== '3' ? 'on' : 'off';
             const direction: RollerDirection = rowStatus === '1' ? 'up' : 'down';
 
@@ -375,6 +377,8 @@ export class TuyaHandler extends BrandModuleBase {
             if (minion.device.deviceId !== minionDevice.deviceId) {
               continue;
             }
+
+            logger.debug(`[tuyaHandler] minion "${minion.minionId}" status arrived from device ${JSON.stringify(status)}`);
 
             /**
              * Then read the current status for specific model and
@@ -421,7 +425,7 @@ export class TuyaHandler extends BrandModuleBase {
      * Subscribe to error event.
      */
     tuyaDevice.on('error', async err => {
-      logger.debug(`tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${err}`);
+      logger.debug(`[tuyaHandler] tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${JSON.stringify(err)}`);
 
       try {
         tuyaDevice.disconnect();

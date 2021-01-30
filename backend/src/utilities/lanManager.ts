@@ -33,7 +33,7 @@ export const LocalNetworkReader = (): Promise<LocalNetworkDevice[]> => {
 
       const devices: LocalNetworkDevice[] = [];
 
-      /** Add current mechine info to table (without the MAC address!!!) */
+      /** Add current machine info to table (without the MAC address!!!, then mac used as part of the default authentication) */
       devices.push({
         mac: '------------',
         ip: ip.address(),
