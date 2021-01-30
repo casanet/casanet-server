@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import chaiHttp = require('chai-http');
 import * as moment from 'moment';
-import app from '../../src/app';
+import { app } from '../../src/app';
 import { Login } from '../../src/models/sharedInterfaces';
 import {
   validAdminPlainPassword,
