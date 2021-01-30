@@ -17,6 +17,7 @@ import { MinionsBlMock } from './minionsBl.mock.spec';
 
 const minionsBlMock = new MinionsBlMock();
 const timeoutBlMock = new TimeoutBl((minionsBlMock as unknown) as MinionsBl);
+timeoutBlMock.initTimeoutModule();
 
 describe('Timeout BL tests', () => {
   describe('Handle new minion', () => {
