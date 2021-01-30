@@ -20,11 +20,6 @@ export class CalibrateBl {
    */
   constructor(minionsBl: MinionsBl) {
     this.minionsBl = minionsBl;
-
-    /**
-     * Init module.
-     */
-    this.initActivation();
   }
 
   private async calibrateActivation(): Promise<void> {
@@ -91,9 +86,9 @@ export class CalibrateBl {
     }
   }
 
-  private initActivation() {
+  public async initCalibrateModule() {
     /**
-     * Finally start timeout activation
+     * start timeout activation
      */
     setInterval(async () => {
       try {

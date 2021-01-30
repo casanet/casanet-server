@@ -45,11 +45,6 @@ export class TimeoutBl {
    */
   constructor(minionsBl: MinionsBl) {
     this.minionsBl = minionsBl;
-
-    /**
-     * Init module.
-     */
-    this.initData();
   }
 
   /**
@@ -179,7 +174,7 @@ export class TimeoutBl {
     this.minionsTimeoutInfo.splice(this.minionsTimeoutInfo.indexOf(timeoutMinion), 1);
   }
 
-  private async initData(): Promise<void> {
+  public async initTimeoutModule(): Promise<void> {
     this.minionsTimeoutInfo = [];
 
     /**

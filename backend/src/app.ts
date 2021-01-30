@@ -30,10 +30,6 @@ import './controllers/timingsController';
 import './controllers/usersController';
 import './controllers/versionsController';
 
-// also import other moduls that not imported in other place.
-import './business-layer/calibrateBl';
-import './business-layer/timeoutBl';
-
 class App {
   public express: express.Express;
   private authenticationRouter: AuthenticationRouter = new AuthenticationRouter();
@@ -55,7 +51,7 @@ class App {
     /** Load instance to remote server connection logic. */
     this.loadRemoteServerConnection();
 
-    /** Finaly route to API */
+    /** Finlay route to API */
     this.routes();
 
     /** Serve static client side assets */
@@ -188,4 +184,4 @@ class App {
   }
 }
 
-export default new App().express;
+export const app = new App().express;

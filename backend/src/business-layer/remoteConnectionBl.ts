@@ -70,6 +70,10 @@ export class RemoteConnectionBl {
     private minionsBl: MinionsBl,
     private timingsBl: TimingsBl,
   ) {
+
+  }
+
+  public async initRemoteConnectionModule() {
     /** Use chai testing lib, to mock http requests */
     chai.use(chaiHttp);
 

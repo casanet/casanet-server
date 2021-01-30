@@ -7,11 +7,19 @@ import { MinionsBl, MinionsBlSingleton } from './minionsBl';
  */
 export class TimelineBl {
   /**
-   * Init TimelineBl . using dependecy injection pattern to allow units testings.
+   * Init TimelineBl . using dependency injection pattern to allow units testings.
    * @param minionsBl Inject minionsBl instance.
    * @param timelineDal Inject timelineDal instance.
    */
   constructor(private minionsBl: MinionsBl, private timelineDal: TimelineDal) {
+  }
+
+  /** Get timeline nodes array */
+  public async getTimeline(): Promise<MinionTimeline[]> {
+    return await this.timelineDal.getTimeline();
+  }
+
+  public async initTimelineModule() {
     this.minionsBl.minionFeed.subscribe(minionFeed => {
       if (!minionFeed) {
         return;
@@ -21,15 +29,10 @@ export class TimelineBl {
         case 'update':
           try {
             this.onMinionUpdate(minionFeed.minion);
-          } catch {}
+          } catch { }
           break;
       }
     });
-  }
-
-  /** Get timeline nodes array */
-  public async getTimeline(): Promise<MinionTimeline[]> {
-    return await this.timelineDal.getTimeline();
   }
 
   /** Add node to the timeline */

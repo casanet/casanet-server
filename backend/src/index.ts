@@ -23,42 +23,82 @@ import { exec } from 'child-process-promise';
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
-import app from './app';
 import { Configuration } from './config';
 import { logger } from './utilities/logger';
+import { app } from './app';
+import { MinionsBlSingleton } from './business-layer/minionsBl';
+import { TimeoutBlSingleton } from './business-layer/timeoutBl';
+import { CalibrateBlSingleton } from './business-layer/calibrateBl';
+import { RemoteConnectionBlSingleton } from './business-layer/remoteConnectionBl';
+import { TimingsBlSingleton } from './business-layer/timingsBl';
+import { TimelineBlSingleton } from './business-layer/timelineBl';
 
 logger.info('home-iot-server app starting...');
 
-// Start HTTP application
-http.createServer(app).listen(Configuration.http.httpPort, () => {
-  logger.info('HTTP listen on port ' + Configuration.http.httpPort);
-});
-
-// SSL/HTTPS
-if (Configuration.http.useHttps) {
+async function initServices() {
   try {
-    const key = fs.readFileSync('./encryption/private.key');
-    const cert = fs.readFileSync('./encryption/certificate.crt');
-    const ca = fs.readFileSync('./encryption/ca_bundle.crt');
 
-    const sslOptions: https.ServerOptions = {
-      key,
-      cert,
-      ca,
-    };
+    logger.info(`[home-iot-server] ------------------- ------------------- Initializing minions module... -------------------`);
+    await MinionsBlSingleton.initMinionsModule();
+    logger.info(`[home-iot-server] ------------------- Initializing minions module succeed -------------------`);
 
-    https.createServer(sslOptions, app).listen(Configuration.http.httpsPort, () => {
-      logger.info('HTTPS/SSL listen on port ' + Configuration.http.httpsPort);
+    logger.info(`[home-iot-server] ------------------- Initializing timeline module... -------------------`);
+    await TimelineBlSingleton.initTimelineModule();
+    logger.info(`[home-iot-server] ------------------- Initializing timeline module succeed -------------------`);
+
+    logger.info(`[home-iot-server] ------------------- Initializing remote connection module... -------------------`);
+    await RemoteConnectionBlSingleton.initRemoteConnectionModule();
+    logger.info(`[home-iot-server] ------------------- Initializing remote connection module succeed -------------------`);
+
+    logger.info(`[home-iot-server] ------------------- Initializing timings module... -------------------`);
+    await TimingsBlSingleton.initTimingModule();
+    logger.info(`[home-iot-server] ------------------- Initializing timings module succeed -------------------`);
+
+    logger.info(`[home-iot-server] ------------------- Initializing timeout module... -------------------`);
+    await TimeoutBlSingleton.initTimeoutModule();
+    logger.info(`[home-iot-server] ------------------- Initializing timeout module succeed -------------------`);
+
+    logger.info(`[home-iot-server] ------------------- Initializing calibration module... -------------------`);
+    await CalibrateBlSingleton.initCalibrateModule();
+    logger.info(`[home-iot-server] ------------------- Initializing calibration module succeed -------------------`);
+
+    // Start HTTP application
+    logger.info(`[home-iot-server] ------------------- Initializing HTTP server... -------------------`);
+    http.createServer(app).listen(Configuration.http.httpPort, () => {
+      logger.info(`[home-iot-server] ------------------- Initializing HTTP server on port ${Configuration.http.httpPort} succeed -------------------`);
     });
+
+    // SSL/HTTPS
+    if (Configuration.http.useHttps) {
+      logger.info(`[home-iot-server] ------------------- Initializing HTTPS server... -------------------`);
+      try {
+        const key = fs.readFileSync('./encryption/private.key');
+        const cert = fs.readFileSync('./encryption/certificate.crt');
+        const ca = fs.readFileSync('./encryption/ca_bundle.crt');
+
+        const sslOptions: https.ServerOptions = {
+          key,
+          cert,
+          ca,
+        };
+
+        https.createServer(sslOptions, app).listen(Configuration.http.httpsPort, () => {
+          logger.info(`[home-iot-server] ------------------- Initializing HTTPS server on port ${Configuration.http.httpPort} succeed -------------------`);
+        });
+      } catch (error) {
+        logger.error(`Failed to load SSL certificate ${error}, exit...`);
+        process.exit();
+      }
+    }
   } catch (error) {
-    logger.error(`Failed to load SSL certificate ${error}, exit...`);
-    process.exit();
+    logger.error(`[home-iot-server] app services initialization failed, error: ${error} ${error?.message} ${JSON.stringify(error)}\nstack: ${error.stack}`);
   }
 }
 
 // Catch uncaughtException instead of crashing
 process.on('uncaughtException', async (err: any) => {
-  logger.error(`[home-iot-server] app uncaughtException, error: ${err} ${err?.message} ${JSON.stringify(err)}`);
+  const error = new Error();
+  logger.error(`[home-iot-server] app uncaughtException, error: ${err} ${err?.message} ${JSON.stringify(err)}\nstack: ${error.stack}`);
 
   // start restart process....
   /** THIS IS A DANGERS ACTION! BE SURE THAT USER KNOW WHAT IT IS SET AS RESET COMMAND */
@@ -95,3 +135,6 @@ process.on('SIGTERM', () => {
 process.on('SIGTERM', () => {
   logger.warn(`[home-iot-server] About to exit SIGTERM`);
 });
+
+// Start services initialization
+initServices();
