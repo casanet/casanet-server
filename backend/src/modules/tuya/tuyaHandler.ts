@@ -273,10 +273,10 @@ export class TuyaHandler extends BrandModuleBase {
    */
   private async getTuyaDevice(minionDevice: MinionDevice): Promise<any> {
 
-    // If the device is currently running inbackgroud, disconnect it.
+    // If the device is currently running in background, disconnect it.
     if (minionDevice.pysicalDevice.mac in this.pysicalDevicesMap) {
       try {
-        this.pysicalDevicesMap[minionDevice.pysicalDevice.mac].disconnect();
+        this.pysicalDevicesMap[minionDevice.pysicalDevice.mac]?.disconnect();
       } catch (error) { }
     }
 
@@ -310,7 +310,7 @@ export class TuyaHandler extends BrandModuleBase {
     /**
      * Subscribe to status changed event.
      */
-    tuyaDevice.on('data', async data => {
+    tuyaDevice.on('data', async (data: any) => {
       /** Case data arrived with garbage value */
       if (typeof data === 'string') {
         return;
@@ -421,18 +421,28 @@ export class TuyaHandler extends BrandModuleBase {
       });
     });
 
+    tuyaDevice.on('connected', () => {
+      logger.debug(`[tuyaHandler] tuya device mac: "${minionDevice.pysicalDevice.mac}" connected`);
+    });
+    
+    tuyaDevice.on('disconnected', () => {
+      logger.debug(`[tuyaHandler] tuya device mac: "${minionDevice.pysicalDevice.mac}" disconnected`);
+    });
+
     /**
      * Subscribe to error event.
      */
-    tuyaDevice.on('error', async err => {
-      logger.debug(`[tuyaHandler] tuya device mac: ${minionDevice.pysicalDevice.mac} error: ${JSON.stringify(err)}`);
+    tuyaDevice.on('error', async (err: any) => {
+      logger.debug(`[tuyaHandler] tuya device mac: "${minionDevice.pysicalDevice.mac}" error: ${err.message} ${err.stack || JSON.stringify(err)}`);
 
       try {
-        tuyaDevice.disconnect();
+        // Not sure if this a good idea to try disconnet from error socket
+        // tuyaDevice.disconnect();
         delete this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
 
         await Delay(moment.duration(5, 'seconds'));
-        await this.getTuyaDevice(minionDevice);
+        // Do not try to reconnect auto, to avoid infinity circular run 
+        // await this.getTuyaDevice(minionDevice);
       } catch (error) {
         logger.warn(
           `reconnecting TCP connection to the tuya mac: ${minionDevice.pysicalDevice.mac} fail error: ${error}`,
