@@ -13,6 +13,9 @@
     <mat-form-field>
       <input [disabled]="!isAutoTimeoutActive" matInput type="number" min="0" placeholder="{{ 'MINUTES' | translate }}" [(ngModel)]="minutes">
   </mat-form-field>
+  <mat-form-field>
+    <input [disabled]="!isAutoTimeoutActive" matInput type="number" min="0" placeholder="{{ 'SECONDS' | translate }}" [(ngModel)]="seconds">
+  </mat-form-field>
   <!-- </form> -->
 </div>
 <div mat-dialog-actions>
