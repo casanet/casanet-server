@@ -2,14 +2,18 @@
 
 This is the casa-net local server to communicate and control IoT devices in a home.
 
-[![Build Status](https://travis-ci.org/casanet/casanet-server.svg?branch=master)](https://travis-ci.org/casanet/casanet-server)
+[![CI CD Status](https://github.com/casanet/casanet-server/workflows/casanet%20server%20CI%20CD/badge.svg?branch=master)](https://github.com/casanet/casanet-server/actions)
 [![Coverage Status](https://coveralls.io/repos/github/casanet/casanet-server/badge.svg?branch=master)](https://coveralls.io/github/casanet/casanet-server?branch=master)
 
 ### Server installation
 
+> In Linux OS, make sure `net-tools` installed (in ubuntu install it by `apt-get install net-tools`)
+
+There are ready to use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file. 
+
+If you prefer to build the server by your own:  
 1. Download the project via git or download files as a zip
-1. In Linux OS, make sure `net-tools` installed
-1. Install Node.js on the machine
+1. Install [Node.js](https://nodejs.org/en/download/) on the machine
 1. Navigate in a command line to `$/casanet-server/backend` and press `npm ci`
 1. Run `npm run build` command
 1. If you wish to access the dashboard using the local network, build the frontend too
@@ -32,9 +36,7 @@ Also in the `casanet.json` file, you can edit the configuration of a few stuff (
 
 #### Default user
 
-Can edit any property of the default user.
-
-Except for the user account in the email. this will be always the mac address of the machine.
+You can change the default user domain in the `casanet.json` configuration file, but not the user account in the email address. this will be always the mac address of the machine.
 (The reason is for security, the only owner of the machine should know the default username).
 
 #### HTTP/HTTPS server ports

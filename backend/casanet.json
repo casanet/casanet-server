@@ -9,7 +9,7 @@
     "timelineDaysLength": 15,
     "defaultLockCalibrationMinutes" : 10,
     "http": {
-        "httpPort": 80,
+        "httpPort": 8080,
         "httpsPort": 443,
         "useHttps": false
     },
