@@ -10,7 +10,7 @@ export class DevicesBl {
    * Local devices changes feed.
    */
   public devicesUpdate = new BehaviorSubject<LocalNetworkDevice[]>([]);
-  // Dependecies
+  // Dependencies
   private localNetworkReader: () => Promise<LocalNetworkDevice[]>;
   private devicesDal: DevicesDal;
   private modulesManager: ModulesManager;

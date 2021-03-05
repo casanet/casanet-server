@@ -22,6 +22,66 @@ export class CalibrateBl {
     this.minionsBl = minionsBl;
   }
 
+  public async initCalibrateModule() {
+    /**
+     * start timeout activation
+     */
+    setInterval(async () => {
+      try {
+        await this.calibrateActivation();
+      } catch (error) {
+        logger.error(`Invoking calibration on minions fail, ${error}`);
+      }
+    }, CALIBRATE_INTERVAL_ACTIVATION.asMilliseconds());
+
+    logger.info('Calibrate module init done.');
+
+    /**
+     * If a status update arrived from the physical devices that not match the current
+     * LOCK value, sent back the LOCKed status.
+     */
+    this.minionsBl.minionFeed.subscribe(async (minionFeed: MinionFeed) => {
+      if (!minionFeed || minionFeed.event !== 'update') {
+        return;
+      }
+
+      const minion = minionFeed.minion;
+
+      // Continue only if minion have a calibration property.
+      if (!minion.calibration || !minion.calibration.calibrationCycleMinutes) {
+        return;
+      }
+
+      // Calibrate only in case the update are violated the lock.
+
+      let legalStatus: SwitchOptions = 'on';
+      switch (minion.calibration.calibrationMode) {
+        case 'LOCK_ON':
+          legalStatus = 'on';
+          break;
+        case 'LOCK_OFF':
+          legalStatus = 'off';
+          break;
+        case 'AUTO':
+        case 'SHABBAT':
+          legalStatus = minion.minionStatus[minion.minionType]?.status || 'on';
+          break;
+        default:
+          break;
+      }
+
+      // Only if the update is violated the lock
+      if (legalStatus === minion.minionStatus[minion.minionType]?.status || 'on') {
+        return;
+      }
+
+      // Wait in case the device don't like quick status changes
+      await Delay(moment.duration(1, 'seconds'));
+
+      this.calibrateMinion(minion);
+    });
+  }
+
   private async calibrateActivation(): Promise<void> {
     const now = new Date();
 
@@ -85,66 +145,6 @@ export class CalibrateBl {
     } catch (error) {
       logger.warn(`Calibrate minion ${minion.minionId} fail, ${JSON.stringify(error)}`);
     }
-  }
-
-  public async initCalibrateModule() {
-    /**
-     * start timeout activation
-     */
-    setInterval(async () => {
-      try {
-        await this.calibrateActivation();
-      } catch (error) {
-        logger.error(`Invoking calibration on minions fail, ${error}`);
-      }
-    }, CALIBRATE_INTERVAL_ACTIVATION.asMilliseconds());
-
-    logger.info('Calibrate module init done.');
-
-    /**
-     * If a status update arrived from the physical devices that not match the current
-     * LOCK value, sent back the LOCKed status.
-     */
-    this.minionsBl.minionFeed.subscribe(async (minionFeed: MinionFeed) => {
-      if (!minionFeed || minionFeed.event !== 'update') {
-        return;
-      }
-
-      const minion = minionFeed.minion;
-
-      // Continue only if minion have a calibration property.
-      if (!minion.calibration || !minion.calibration.calibrationCycleMinutes) {
-        return;
-      }
-
-      // Calibrate only in case the update are violated the lock.
-
-      let legalStatus: SwitchOptions = 'on';
-      switch (minion.calibration.calibrationMode) {
-        case 'LOCK_ON':
-          legalStatus = 'on';
-          break;
-        case 'LOCK_OFF':
-          legalStatus = 'off';
-          break;
-        case 'AUTO':
-        case 'SHABBAT':
-          legalStatus = minion.minionStatus[minion.minionType]?.status || 'on';
-          break;
-        default:
-          break;
-      }
-
-      // Only if the update is violated the lock
-      if (legalStatus === minion.minionStatus[minion.minionType]?.status || 'on') {
-        return;
-      }
-
-      // Wait in case the device don't like quick status changes
-      await Delay(moment.duration(1, 'seconds'));
-
-      this.calibrateMinion(minion);
-    });
   }
 }
 
