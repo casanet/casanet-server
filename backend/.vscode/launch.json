@@ -6,6 +6,9 @@
       "request": "launch",
       "name": "Debug TypeScript",
       "program": "${workspaceFolder}\\src\\index.ts",
+      "linux": {
+        "program": "${workspaceFolder}/src/index.ts"
+      },
       "preLaunchTask": "npm: build",
       "sourceMaps": true,
       "smartStep": true,
