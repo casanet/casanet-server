@@ -1,6 +1,4 @@
 import * as moment from 'moment';
-import { Moment } from 'moment';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import {
   // tslint:disable-next-line:ordered-imports
   Minion,
@@ -14,12 +12,12 @@ import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
 import { MinionsBl, MinionsBlSingleton } from './minionsBl';
 
-const TIMEOUT_INTERVAL_ACTIVATION = moment.duration(5, 'seconds');
+const TIMEOUT_INTERVAL_ACTIVATION = moment.duration(50, 'milliseconds');
 
 /**
- * Struct to hold info about any minion in system.
+ * Structure to hold info about any minion in system.
  */
-declare interface MinionTimeoutStruct {
+declare interface MinionTimeoutStructure {
   isTimeoutDisabled: boolean;
   timeout: moment.Duration;
   status: SwitchOptions;
@@ -31,42 +29,101 @@ declare interface MinionTimeoutStruct {
  * This class take care on all logic of minions self timeout.
  */
 export class TimeoutBl {
-  // Dependecies
+  // Dependencies
   private minionsBl: MinionsBl;
 
   /**
-   * Info about all minios in system.
+   * Info about all minion in system.
    */
-  private minionsTimeoutInfo: MinionTimeoutStruct[];
+  private minionsTimeoutInfo: MinionTimeoutStructure[];
 
   /**
-   * Init TimeoutBl . using dependecy injection pattern to allow units testings.
+   * Is timeout works now (used as flag to not allow parallel check)
+   */
+  private isTimeoutPossessing: boolean = false;
+
+
+  /**
+   * Init TimeoutBl . using dependency injection pattern to allow units testings.
    * @param minionsBl Inject minionsBl instance.
    */
   constructor(minionsBl: MinionsBl) {
     this.minionsBl = minionsBl;
   }
 
+  public async initTimeoutModule(): Promise<void> {
+    this.minionsTimeoutInfo = [];
+
+    /**
+     * First get all exist minions
+     */
+    const rawMinions = await this.minionsBl.getMinions();
+    for (const minion of rawMinions) {
+      /**
+       * Call to *update* method.
+       * in case the new minion will arrived *before* current code line.
+       */
+      this.UpdateMinion(minion);
+    }
+
+    /**
+     * Then register to changes feed.
+     */
+    this.minionsBl.minionFeed.subscribe(minionFeed => {
+      if (!minionFeed) {
+        return;
+      }
+
+      switch (minionFeed.event) {
+        case 'created':
+        case 'update':
+          this.UpdateMinion(minionFeed.minion);
+          break;
+        case 'removed':
+          this.removeMinion(minionFeed.minion);
+          break;
+      }
+    });
+
+    /**
+     * Finally start timeout activation
+     */
+    setInterval(async () => {
+      await this.timeoutActivation();
+    }, TIMEOUT_INTERVAL_ACTIVATION.asMilliseconds());
+
+    logger.info('Timeout module init done.');
+  }
+
   /**
-   * Get minion info sturuct if exsit for given minion id.
+   * Get minion info sturuct if exist for given minion id.
    * @param minionId minion id to get info for.
    */
-  private findMinionInfo(minionId: string): MinionTimeoutStruct {
-    for (const timeoutMinoin of this.minionsTimeoutInfo) {
-      if (timeoutMinoin.minionId === minionId) {
-        return timeoutMinoin;
+  private findMinionInfo(minionId: string): MinionTimeoutStructure {
+    for (const timeoutMinion of this.minionsTimeoutInfo) {
+      if (timeoutMinion.minionId === minionId) {
+        return timeoutMinion;
       }
     }
   }
 
   private async timeoutActivation(): Promise<void> {
+
+    // If currently the timeoutActivation in action, ignore other calls
+    if(this.isTimeoutPossessing){
+      return;
+    }
+
+    // turn timeoutActivation in action flag on
+    this.isTimeoutPossessing = true;
+
     /**
      * get current time.
      */
     const now = new Date();
 
     /**
-     * Cehck each minion info to know if timeout.
+     * Check each minion info to know if timeout.
      */
     for (const timeoutMinion of this.minionsTimeoutInfo) {
       if (
@@ -105,8 +162,11 @@ export class TimeoutBl {
       /**
        * Some poor devices protocols need it.
        */
-      await Delay(moment.duration(1, 'seconds'));
+      await Delay(moment.duration(100, 'milliseconds'));
     }
+
+    // turn timeoutActivation in action flag off
+    this.isTimeoutPossessing = false;
   }
 
   /**
@@ -127,7 +187,7 @@ export class TimeoutBl {
   }
 
   /**
-   * Add new minoin to minions timeout info system.
+   * Add new minion to minions timeout info system.
    * @param minion new minion to add.
    */
   private AddMinion(minion: Minion) {
@@ -141,7 +201,7 @@ export class TimeoutBl {
   }
 
   /**
-   * Update minoin timeout info system.
+   * Update minion timeout info system.
    * @param minion minion to update from.
    */
   private UpdateMinion(minion: Minion) {
@@ -158,7 +218,7 @@ export class TimeoutBl {
     const currentStatus = this.extractMinionOnOffStatus(minion);
 
     /**
-     * If the status changed to *on* save the timestump.
+     * If the status changed to *on* save the timestamp.
      */
     if (currentStatus !== timeoutMinion.status && currentStatus === 'on') {
       timeoutMinion.turnOnTimeStump = new Date();
@@ -168,56 +228,12 @@ export class TimeoutBl {
   }
 
   /**
-   * Remove minoin timeout info from system.
+   * Remove minion timeout info from system.
    * @param minion minion to remove.
    */
   private removeMinion(minion: Minion) {
     const timeoutMinion = this.findMinionInfo(minion.minionId);
     this.minionsTimeoutInfo.splice(this.minionsTimeoutInfo.indexOf(timeoutMinion), 1);
-  }
-
-  public async initTimeoutModule(): Promise<void> {
-    this.minionsTimeoutInfo = [];
-
-    /**
-     * First get all exist minions
-     */
-    const rawMinions = await this.minionsBl.getMinions();
-    for (const minion of rawMinions) {
-      /**
-       * Call to *update* method.
-       * in case the new minion will arrived *befor* current code line.
-       */
-      this.UpdateMinion(minion);
-    }
-
-    /**
-     * Then registar to changes feed.
-     */
-    this.minionsBl.minionFeed.subscribe(minionFeed => {
-      if (!minionFeed) {
-        return;
-      }
-
-      switch (minionFeed.event) {
-        case 'created':
-        case 'update':
-          this.UpdateMinion(minionFeed.minion);
-          break;
-        case 'removed':
-          this.removeMinion(minionFeed.minion);
-          break;
-      }
-    });
-
-    /**
-     * Finally start timeout activation
-     */
-    setInterval(async () => {
-      await this.timeoutActivation();
-    }, TIMEOUT_INTERVAL_ACTIVATION.asMilliseconds());
-
-    logger.info('Timeout module init done.');
   }
 }
 

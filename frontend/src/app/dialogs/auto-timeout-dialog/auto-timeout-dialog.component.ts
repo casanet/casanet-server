@@ -14,12 +14,14 @@ export class AutoTimeoutDialogComponent implements OnInit {
   isAutoTimeoutActive: boolean;
   hours = 1;
   minutes = 0;
+  seconds = 0;
   constructor(private minionsService: MinionsService, private dialogRef: MatDialogRef<AutoTimeoutDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data) {
     this.minion = data;
     this.isAutoTimeoutActive = this.minion.minionAutoTurnOffMS ? true : false;
 
     if (this.isAutoTimeoutActive) {
+      this.seconds = (Math.floor(this.minion.minionAutoTurnOffMS / 100) / 10) % 60;
       this.minutes = Math.floor(this.minion.minionAutoTurnOffMS * 0.00001667) % 60;
       this.hours = Math.floor(this.minion.minionAutoTurnOffMS * 2.8e-7);
     }
@@ -31,7 +33,7 @@ export class AutoTimeoutDialogComponent implements OnInit {
   public async saveAutoTimeout() {
     let autoTimeout = 0;
     if (this.isAutoTimeoutActive) {
-      autoTimeout = (this.minutes * 1000 * 60) + (this.hours * 1000 * 60 * 60);
+      autoTimeout = (this.seconds * 1000) + (this.minutes * 1000 * 60) + (this.hours * 1000 * 60 * 60);
     }
 
     await this.minionsService.setAutoTimeout(this.minion, autoTimeout);

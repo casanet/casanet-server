@@ -74,7 +74,7 @@ definitions:
             - model
         type: object
     Toggle:
-        description: "A toggle value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off\r\nbut there is no way to know the real light status if someone changes the light status using physical switch."
+        description: "A toggle value, the toggle is on way communicated device,\nFor example wall light switches with 433 RF that can turn on or off\nbut there is no way to know the real light status if someone changes the light status using physical switch."
         properties:
             status:
                 type: string
@@ -85,7 +85,7 @@ definitions:
             - status
         type: object
     Switch:
-        description: "A switch status.\r\n  Used for simple devices that can be turned on or off. *and minion status is readable*\r\nThe properties same as a toggle, and the difference is logic only (if that status is readable or not)."
+        description: "A switch status.\n  Used for simple devices that can be turned on or off. *and minion status is readable*\nThe properties same as a toggle, and the difference is logic only (if that status is readable or not)."
         properties:
             status:
                 type: string
@@ -96,7 +96,7 @@ definitions:
             - status
         type: object
     Roller:
-        description: "A roller switch status.\r\nA roller is a switch for curtains or blinds (or for any other needs) that can drag up/down or stop."
+        description: "A roller switch status.\nA roller is a switch for curtains or blinds (or for any other needs) that can drag up/down or stop."
         properties:
             status:
                 type: string
@@ -114,7 +114,7 @@ definitions:
             - direction
         type: object
     Cleaner:
-        description: "A Cleaner (robot) status.\r\nCleaner is a smart robot for cleaning home."
+        description: "A Cleaner (robot) status.\nCleaner is a smart robot for cleaning home."
         properties:
             status:
                 type: string
@@ -175,7 +175,7 @@ definitions:
             - fanStrength
         type: object
     Light:
-        description: "A simple light status.\r\nUsed to devices that can chang it's brightness."
+        description: "A simple light status.\nUsed to devices that can chang it's brightness."
         properties:
             status:
                 type: string
@@ -193,7 +193,7 @@ definitions:
             - brightness
         type: object
     TemperatureLight:
-        description: "A light simple light status.\r\nUsed to devices that can chang also light temperature (warm or cold light)."
+        description: "A light simple light status.\nUsed to devices that can chang also light temperature (warm or cold light)."
         properties:
             status:
                 type: string
@@ -218,7 +218,7 @@ definitions:
             - temperature
         type: object
     ColorLight:
-        description: "A light simple light status.\r\nUsed to devices that can change also light color (RGB)."
+        description: "A light simple light status.\nUsed to devices that can change also light color (RGB)."
         properties:
             status:
                 type: string
@@ -240,19 +240,19 @@ definitions:
             red:
                 type: integer
                 format: int32
-                description: "Minimum 0 maximum 255 from red color.\r\nValid color value. (8 bits number, minimum 0 maximum 255)."
+                description: "Minimum 0 maximum 255 from red color.\nValid color value. (8 bits number, minimum 0 maximum 255)."
                 minimum: 0
                 maximum: 255
             green:
                 type: integer
                 format: int32
-                description: "Minimum 0 maximum 255 from green color.\r\nValid color value. (8 bits number, minimum 0 maximum 255)."
+                description: "Minimum 0 maximum 255 from green color.\nValid color value. (8 bits number, minimum 0 maximum 255)."
                 minimum: 0
                 maximum: 255
             blue:
                 type: integer
                 format: int32
-                description: "Minimum 0 maximum 255 from blue color.\r\nValid color value. (8 bits number, minimum 0 maximum 255)."
+                description: "Minimum 0 maximum 255 from blue color.\nValid color value. (8 bits number, minimum 0 maximum 255)."
                 minimum: 0
                 maximum: 255
         required:
@@ -312,7 +312,7 @@ definitions:
             - calibrationMode
         type: object
     Minion:
-        description: "Represents a minion in system.\r\nMinion is a logic device in the system, meaning that a device is a physical device and minion is a logic device\r\nthat uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device\r\nfor a few minions, one to central AC control and second for secondary AC control\r\nso in it will be two totally different minions that use one physical device."
+        description: "Represents a minion in system.\nMinion is a logic device in the system, meaning that a device is a physical device and minion is a logic device\nthat uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device\nfor a few minions, one to central AC control and second for secondary AC control\nso in it will be two totally different minions that use one physical device."
         properties:
             minionId:
                 type: string
@@ -346,11 +346,11 @@ definitions:
             minionAutoTurnOffMS:
                 type: number
                 format: double
-                description: "Auto turns  off duration, *if* set member value then the minion will turn off in X ms after turning it on,\r\nUsed for example in boiler minion etc."
+                description: "Auto turns  off duration, *if* set member value then the minion will turn off in X ms after turning it on,\nUsed for example in boiler minion etc."
                 x-nullable: true
             calibration:
                 $ref: '#/definitions/MinionCalibrate'
-                description: "Calibrate the physical device with the server known status, in a periodic cycle,\r\nand allow locking the status."
+                description: "Calibrate the physical device with the server known status, in a periodic cycle,\nand allow locking the status."
                 x-nullable: true
             room:
                 type: string
@@ -396,7 +396,7 @@ definitions:
             durationMinutes:
                 type: number
                 format: double
-                description: "Minutes from the sun trigger.\r\ncan be before or after the sun triggers.\r\nFor example, to invoke 40 minutes before sunset set -40 and to invoke 40 minutes after sunset set 40.\r\n\r\nNOTE! if the duration is more then minutes available in the day from the sun trigger time, the timing will not activate.\r\nfor example if the sunset is in 18:00 and the duration set to 7*60 minutes,\r\nthe activate time is not on the same day, so it will not activate at all."
+                description: "Minutes from the sun trigger.\ncan be before or after the sun triggers.\nFor example, to invoke 40 minutes before sunset set -40 and to invoke 40 minutes after sunset set 40.\n\nNOTE! if the duration is more then minutes available in the day from the sun trigger time, the timing will not activate.\nfor example if the sunset is in 18:00 and the duration set to 7*60 minutes,\nthe activate time is not on the same day, so it will not activate at all."
             sunTrigger:
                 type: string
                 enum:
@@ -566,7 +566,7 @@ definitions:
             minionsPerDevice:
                 type: number
                 format: double
-                description: "The max minions that can be in one device, or -1 if unlimited.\r\nFor example, a simple smart socket can be 1 minion per device,\r\nWall switch with 3 switches can be 3 minions per device,\r\nAnd IR transmitter can be unlimited minions per device."
+                description: "The max minions that can be in one device, or -1 if unlimited.\nFor example, a simple smart socket can be 1 minion per device,\nWall switch with 3 switches can be 3 minions per device,\nAnd IR transmitter can be unlimited minions per device."
             isTokenRequired:
                 type: boolean
                 description: 'Is the device require a token for communication API.'
@@ -590,7 +590,7 @@ definitions:
                 description: 'Some of the devices supported recording (for example IR transmitter).'
             isFetchCommandsAvailable:
                 type: boolean
-                description: "Whenever the device and module supported fetching commands data from \r\nthe https://github.com/casanet/rf-commands-repo project"
+                description: "Whenever the device and module supported fetching commands data from \nthe https://github.com/casanet/rf-commands-repo project"
         required:
             - brand
             - model
@@ -657,7 +657,7 @@ definitions:
             - scanningStatus
         type: object
     IftttOnChanged:
-        description: "Ifttt webhook request body to notify minion status changed.\r\n*Used in ifttt module interface only*"
+        description: "Ifttt webhook request body to notify minion status changed.\n*Used in ifttt module interface only*"
         properties:
             localMac:
                 type: string
@@ -690,7 +690,7 @@ definitions:
             - minionStatus
         type: object
     Operation:
-        description: "Represents an operation in the system.\r\nAn operation is a set of activities to do.\r\nFor example, to turn on all home light operation\r\nsets an array of activity for each light in the home to set light status 'on'."
+        description: "Represents an operation in the system.\nAn operation is a set of activities to do.\nFor example, to turn on all home light operation\nsets an array of activity for each light in the home to set light status 'on'."
         properties:
             operationId:
                 type: string
@@ -1012,7 +1012,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Minions feed.\r\nwhen minion status changed minion created etc."
+            description: "Minions feed.\nwhen minion status changed minion created etc."
             tags:
                 - Feeds
             security:
@@ -1035,7 +1035,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Timing feed.\r\nwhen timing activated."
+            description: "Timing feed.\nwhen timing activated."
             tags:
                 - Feeds
             security:
@@ -1139,7 +1139,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Rescan all devices in LAN.\r\nUsed when there are changes in the local network.\r\nFor example, if the router (DHCP server) change IP's of devices or new device connect to the local network etc."
+            description: "Rescan all devices in LAN.\nUsed when there are changes in the local network.\nFor example, if the router (DHCP server) change IP's of devices or new device connect to the local network etc."
             tags:
                 - Devices
             security:
@@ -1366,7 +1366,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Recheck every minion device status (update server status cache).\r\nNote that this is not the devices scan!\r\nThis scanning only checks every minion API to know the current status."
+            description: "Recheck every minion device status (update server status cache).\nNote that this is not the devices scan!\nThis scanning only checks every minion API to know the current status."
             tags:
                 - Minions
             security:
@@ -2155,7 +2155,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Get remote server host/IP.\r\nor empty if not set."
+            description: "Get remote server host/IP.\nor empty if not set."
             tags:
                 - Remote
             security:
@@ -2249,7 +2249,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Get local casa-server machine mac address.\r\nUsed when creating a new local server in a remote server."
+            description: "Get local casa-server machine mac address.\nUsed when creating a new local server in a remote server."
             tags:
                 - Remote
             security:
@@ -2332,7 +2332,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Ifttt webhooks triggering casa-net action API.\r\nwhen all details in body only, to allow send all data ion one text line.\r\nExample to use: SMS trigger has only simple text that can pass to IFTTT activity,\r\nand by current request, it is possible to control any minion by one single line of text.\r\nso fill the SMS text with JSON and by IFTTT set it to be the request body."
+            description: "Ifttt webhooks triggering casa-net action API.\nwhen all details in body only, to allow send all data ion one text line.\nExample to use: SMS trigger has only simple text that can pass to IFTTT activity,\nand by current request, it is possible to control any minion by one single line of text.\nso fill the SMS text with JSON and by IFTTT set it to be the request body."
             tags:
                 - Ifttt
             security:
@@ -2568,7 +2568,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Record a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status."
+            description: "Record a command (IR, 433-RF or any other supported RF tech)\nfor current minion status."
             tags:
                 - RF
             security:
@@ -2602,7 +2602,7 @@ paths:
                     description: 'Server error'
                     schema:
                         $ref: '#/definitions/ErrorResponse'
-            description: "Generate a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status."
+            description: "Generate a command (IR, 433-RF or any other supported RF tech)\nfor current minion status."
             tags:
                 - RF
             security:
