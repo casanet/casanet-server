@@ -50,7 +50,7 @@ export class CreateMinionDialogComponent implements OnInit {
     for (const device of this.devicesService.lanDevices) {
       this.devices.push({
         mac: device.mac,
-        display: device.name ||
+        display: device.name && device.name !== '------------' ? device.name :
           `${device.mac} ${device.ip} ${device.vendor ? device.vendor.substr(0, Math.min(device.vendor.length, 10)) : ''}`,
       });
     }

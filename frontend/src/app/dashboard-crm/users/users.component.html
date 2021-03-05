@@ -133,8 +133,7 @@
 <div dir="ltr" *ngIf="!dataLoading" style="position: absolute; bottom: 50px;"
   [style.right]="('DIR' | translate) === 'ltr' ? '25px' : null"
   [style.left]="('DIR' | translate) === 'rtl' ? '25px' : null">
-  <eco-fab-speed-dial #allDevicesActionsFab (mouseenter)="allDevicesActionsFab.open = true"
-    (mouseleave)="allDevicesActionsFab.open = false">
+  <eco-fab-speed-dial #allDevicesActionsFab (click)="allDevicesActionsFab.open = !allDevicesActionsFab.open">
     <eco-fab-speed-dial-trigger [spin]="true">
       <button [color]="primary" mat-fab>
         <mat-icon class="spin180">more_vert</mat-icon>
