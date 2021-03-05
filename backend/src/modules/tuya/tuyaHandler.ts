@@ -14,7 +14,8 @@ import { logger } from '../../utilities/logger';
 import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 
-const MAX_SAME_CONNECTION_USES_MS = 1000 * 60 * 2;
+/** The Tuya communication chanel is sensitive, so each X time disconnect and reconnect it */
+const MAX_SAME_CONNECTION_USES_MS = 1000 * 60 * 10; // each 10 minutes
 
 export class TuyaHandler extends BrandModuleBase {
   public readonly brandName: string = 'tuya';
@@ -91,6 +92,8 @@ export class TuyaHandler extends BrandModuleBase {
           },
         };
       } catch (err) {
+        tuyaDevice.error = true;
+
         logger.warn(`Fail to get status of ${minion.minionId}, ${err}`);
 
         if (typeof err === 'object' && err.message === 'fffffffffffffff') {
@@ -109,6 +112,8 @@ export class TuyaHandler extends BrandModuleBase {
     }
 
     const stausResult = await tuyaDevice.get({ schema: true }).catch((err: Error) => {
+      tuyaDevice.error = true;
+
       logger.warn(`Fail to get status of ${minion.minionId}, ${err}`);
 
       if (
@@ -131,6 +136,8 @@ export class TuyaHandler extends BrandModuleBase {
 
     /** Case stausResult get a garbage value */
     if (typeof stausResult !== 'object' || !stausResult.dps) {
+      tuyaDevice.error = true;
+
       throw {
         responseCode: 10503,
         message: 'tuya device gives garbage values.',
@@ -173,6 +180,7 @@ export class TuyaHandler extends BrandModuleBase {
         });
         return;
       } catch (err) {
+        tuyaDevice.error = true;
         logger.warn(`Fail to get status of ${minion.minionId}, ${err}`);
 
         if (
@@ -211,6 +219,7 @@ export class TuyaHandler extends BrandModuleBase {
     }
 
     await tuyaDevice.set({ set: setStatus.switch.status === 'on', dps: gangIndex }).catch(err => {
+      tuyaDevice.error = true;
       logger.warn(`Fail to get status of ${minion.minionId}, ${err}`);
 
       if (
@@ -276,7 +285,8 @@ export class TuyaHandler extends BrandModuleBase {
      
       const now = new Date().getTime();
 
-      if(now - tuyaApiObject.connectionTimeout < MAX_SAME_CONNECTION_USES_MS) {
+      // If there is no any error in the previous action, and the chanel liveliness is not too long, use the same chanel 
+      if(!tuyaApiObject.error && now - tuyaApiObject.connectionTimeout < MAX_SAME_CONNECTION_USES_MS) {
         return tuyaApiObject;
       }
 
