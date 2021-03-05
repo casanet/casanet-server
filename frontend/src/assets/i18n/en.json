@@ -55,6 +55,7 @@
   "RESCAN_NETWORK_AND_MINIONS": "Scan network IP`s and refresh minions",
   "CREATE_MINION": "Create a new minion",
   "PRESS_TO_RECORD": "Press to record the command",
+  "SECONDS": "seconds",
   "MINUTES": "minutes",
   "HOURS": "hours",
   "SURE": "sure",
