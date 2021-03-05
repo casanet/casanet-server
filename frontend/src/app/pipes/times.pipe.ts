@@ -15,8 +15,9 @@ export class TimesPipe implements PipeTransform {
   }
 
   transform(miliseconds: any) {
+    const seconds = (Math.floor(miliseconds / 100) / 10) % 60;
     const minutes = Math.floor(miliseconds * 0.00001667) % 60;
     const hours = Math.floor(miliseconds * 2.8e-7);
-    return `${hours} ${this.translatePipe.transform('HOURS')} ${minutes} ${this.translatePipe.transform('MINUTES')}`;
+    return `${hours} ${this.translatePipe.transform('HOURS')} ${minutes} ${this.translatePipe.transform('MINUTES')}${!seconds ? '' : ` ${seconds} ${this.translatePipe.transform('SECONDS')}`}`;
   }
 }
