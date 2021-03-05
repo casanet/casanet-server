@@ -14,6 +14,8 @@ import { logger } from '../../utilities/logger';
 import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 
+const MAX_SAME_CONNECTION_USES_MS = 1000 * 60 * 2;
+
 export class TuyaHandler extends BrandModuleBase {
   public readonly brandName: string = 'tuya';
 
@@ -63,9 +65,9 @@ export class TuyaHandler extends BrandModuleBase {
   /**
    * Map devices by mac address
    */
-  private pysicalDevicesMap: { [key: string]: Tuyapi } = {};
+  private physicalDevicesMap: { [key: string]: Tuyapi } = {};
 
-  /** Cache last status, to ignore unnececary updates.  */
+  /** Cache last status, to ignore unnecessary updates.  */
   private devicesStatusCache: { [key: string]: any } = {};
 
   constructor() {
@@ -78,11 +80,9 @@ export class TuyaHandler extends BrandModuleBase {
      */
     const tuyaDevice = await this.getTuyaDevice(minion.device);
 
-    if (minion.device.model.indexOf('curtain') !== -1) {
+    if (minion.device.model.includes('curtain')) {
       try {
         const rowStatus = await tuyaDevice.get();
-
-        this.watchDevice(tuyaDevice, minion.device);
 
         return {
           roller: {
@@ -153,8 +153,6 @@ export class TuyaHandler extends BrandModuleBase {
         break;
     }
 
-    this.watchDevice(tuyaDevice, minion.device);
-
     return {
       switch: {
         status: currentGangStatus ? 'on' : 'off',
@@ -168,13 +166,11 @@ export class TuyaHandler extends BrandModuleBase {
      */
     const tuyaDevice = await this.getTuyaDevice(minion.device);
 
-    if (minion.device.model.indexOf('curtain') !== -1) {
+    if (minion.device.model.includes('curtain')) {
       try {
         await tuyaDevice.set({
           set: setStatus.roller.status === 'off' ? '3' : setStatus.roller.direction === 'up' ? '1' : '2',
         });
-        this.watchDevice(tuyaDevice, minion.device);
-
         return;
       } catch (err) {
         logger.warn(`Fail to get status of ${minion.minionId}, ${err}`);
@@ -234,8 +230,6 @@ export class TuyaHandler extends BrandModuleBase {
         message: 'communication with tuya device fail',
       } as ErrorResponse;
     });
-
-    this.watchDevice(tuyaDevice, minion.device);
   }
 
   public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
@@ -257,13 +251,14 @@ export class TuyaHandler extends BrandModuleBase {
   }
 
   public async refreshCommunication(): Promise<void> {
-    for (const tuyaApi of Object.values(this.pysicalDevicesMap)) {
+    for (const tuyaApi of Object.values(this.physicalDevicesMap)) {
       try {
-        tuyaApi.disconnect();
+        await tuyaApi.disconnect();
       } catch (error) {
+        logger.warn(`[tuyaAPI.refreshCommunication] disconnecting device ${tuyaApi.mac} error ${error.message || JSON.stringify(error)}`)
       }
     }
-    this.pysicalDevicesMap = {};
+    this.physicalDevicesMap = {};
   }
 
   /**
@@ -273,11 +268,23 @@ export class TuyaHandler extends BrandModuleBase {
    */
   private async getTuyaDevice(minionDevice: MinionDevice): Promise<any> {
 
-    // If the device is currently running in background, disconnect it.
-    if (minionDevice.pysicalDevice.mac in this.pysicalDevicesMap) {
+    // If time from the last reconnecting is less then 2 minutes, use the same communication chanel.
+
+    const tuyaApiObject = this.physicalDevicesMap[minionDevice.pysicalDevice.mac];
+
+    if(tuyaApiObject) {
+     
+      const now = new Date().getTime();
+
+      if(now - tuyaApiObject.connectionTimeout < MAX_SAME_CONNECTION_USES_MS) {
+        return tuyaApiObject;
+      }
+
       try {
-        this.pysicalDevicesMap[minionDevice.pysicalDevice.mac]?.disconnect();
-      } catch (error) { }
+        await tuyaApiObject.disconnect();
+      } catch (error) { 
+        logger.warn(`[tuyaAPI.getTuyaDevice] disconnecting device ${tuyaApiObject.mac} error ${error.message || JSON.stringify(error)}`)
+      }
     }
 
     // Create the new instance
@@ -293,7 +300,15 @@ export class TuyaHandler extends BrandModuleBase {
     // Connect to it (TCP channel)
     await device.connect();
 
-    // Retunr the instance, ready to use.
+    device.mac = minionDevice.pysicalDevice.mac;
+    device.connectionTimeout = new Date().getTime();
+
+    // Keep the device
+    this.physicalDevicesMap[minionDevice.pysicalDevice.mac] = device;
+
+    await this.watchDevice(device, minionDevice);
+  
+    // Return the instance, ready to use.
     return device;
   }
 
@@ -303,9 +318,6 @@ export class TuyaHandler extends BrandModuleBase {
    * @param minionDevice 
    */
   private async watchDevice(tuyaDevice: Tuyapi, minionDevice: MinionDevice) {
-
-    // Keep the device
-    this.pysicalDevicesMap[minionDevice.pysicalDevice.mac] = tuyaDevice;
 
     /**
      * Subscribe to status changed event.
@@ -438,7 +450,7 @@ export class TuyaHandler extends BrandModuleBase {
       try {
         // Not sure if this a good idea to try disconnet from error socket
         // tuyaDevice.disconnect();
-        delete this.pysicalDevicesMap[minionDevice.pysicalDevice.mac];
+        delete this.physicalDevicesMap[minionDevice.pysicalDevice.mac];
 
         await Delay(moment.duration(5, 'seconds'));
         // Do not try to reconnect auto, to avoid infinity circular run 
