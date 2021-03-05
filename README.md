@@ -38,6 +38,12 @@ Minimal page (only 5 kb of resources should be transferred !!!) for old phones o
 
 Link to the minimal page exist in the settings 'light version' section, or just navigate to `[server-ip/host]/light-app/index.html`.
 
+## Ruining local casanet server in my computer
+
+To make it easy to use there are ready to use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file, It's recommanded to read the configuration section [here](./backend/README.md#configure-server). 
+
+In addination I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
+
 ## Project parts + technologies
 * **[Casanet server](./backend):**
 	* **Purpose:** Control the IoT devices in a local home network.
@@ -76,12 +82,6 @@ Make sure that the IP address of your home is public and redirect ports in-home 
 
 #### Method 2: Using casa remote server
 The casa remote server is built for this, [casanet-remote](https://github.com/casanet/remote-server) run on cloud service and used to redirect API requests to the local server.
-
-## Runinng local casanet server in my computer
-
-To make it easy to use there are ready to use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file, It's recommanded to read the configuration section [here](./backend/README.md#configure-server). 
-
-In addination I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
 
 ## Supported IoT devices / protocols
 
@@ -141,8 +141,14 @@ In addination I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux 
     
 ## Supported soon.
 
+## Connecting devices
+
+How to connect my device to the local network and how to add it to be managed by the casa-net server?
+
+see [here](./backend/src/modules/README.md) the brands modules documentation.
+
 ## Adding other devices support
-Yes, it is possible and is welcomed, see [modules](./backend/src/modules/README.md#-for-development-only-).
+Yes, it is possible and it's welcomed! see [modules](./backend/src/modules/README.md#-for-development-only-).
 
 
 ## Using scenario
