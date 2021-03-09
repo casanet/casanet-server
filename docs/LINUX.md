@@ -36,7 +36,7 @@ Then
 ### Connect to the new window
 ```tmux a -t casanet```
 ### Get the server
-- Download the arm linux binary execution (`casanet_linux_arm` file) from [here](https://github.com/casanet/casanet-server/releases)
+- Download the Linux binary execution (`casanet_linux_x64` or `casanet_linux_arm` for arm based (suck as raspberry pi) `casanet_linux_arm` file) from [here](https://github.com/casanet/casanet-server/releases)
 - Download the `casanet.json` configuration file from [here](https://github.com/casanet/casanet-server/releases)
 - Download the environments example file from [here](https://github.com/casanet/casanet-server/releases)
 - Give `casanet-local-server-linux` file an execute permission (using `chmod -R 0777 ./casanet-local-server-linux`)
@@ -80,7 +80,7 @@ case "$1" in
         tmux kill-session -t "casanet" 
         tmux new -s "casanet" -d 
         tmux send-keys -t "casanet" "cd /root" C-m m # Or the "./casanet-server/backend" if you use the source-code 
-        tmux send-keys -t "casanet" "sudo ./casanet_linux_arm" C-m # Or the "node ./dist/index.js" if you use the source-code
+        tmux send-keys -t "casanet" "sudo ./casanet_linux_arm" C-m # Or casanet_linux_x64 or the "node ./dist/index.js" if you use the source-code
 ;; 
 'stop') 
         killall node 
