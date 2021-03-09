@@ -22,6 +22,11 @@ export const LocalNetworkReader = (): Promise<LocalNetworkDevice[]> => {
       ops.vendor = isInternetOnline;
     }
 
+    if(Configuration.runningMode === 'test'){
+      resolve([]);
+      return 
+    }
+
     networkList2.scan(ops, (err: any, netTableArray: any[]) => {
       logger.info('Scanning network devices done.');
       if (err) {
