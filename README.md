@@ -2,7 +2,7 @@
 
 Let's create a smart home, without giving anyone access to our house 😊.
 
-## CASA-NET.
+## CASANET.
 Open-source server to control IoT devices in a local home network.
 
 [![CI CD Status](https://github.com/casanet/casanet-server/workflows/casanet%20server%20CI%20CD/badge.svg?branch=master)](https://github.com/casanet/casanet-server/actions)
@@ -31,7 +31,7 @@ This structure enables the creation of a separate server and a collection of mod
 ![Screenshot](./docs/screenshots/timings.PNG)
 ![Screenshot](./docs/screenshots/devices.PNG)
 
-Minimal page (only 5 kb of resources should be transferred !!!) for old phones or very slow networks.
+Minimal page (only 5 kb of resources will be transferred !!!) for old phones or very slow networks.
 <img src="./docs/screenshots/light-dashboard.jpg" alt="lite-dashboard"
 	title="lite-dashboard screenshot" width="300" height="600" />
 
@@ -40,9 +40,9 @@ Link to the minimal page exist in the settings 'light version' section, or just 
 
 ## Ruining local casanet server in my computer
 
-To make it easy to use there are ready to use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file, It's recommanded to read the configuration section [here](./backend/README.md#configure-server). 
+To make it easy to use there are ready-to-use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file, It's recommended to read the configuration section [here](./backend/README.md#configure-server). 
 
-In addination I made a [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
+In order to set up Linux from scratch see [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
 
 ## Project parts + technologies
 * **[Casanet server](./backend):**
