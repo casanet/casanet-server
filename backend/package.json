@@ -81,7 +81,7 @@
     "request-promise": "^4.2.5",
     "rxjs": "^6.5.2",
     "suncalc": "^1.8.0",
-    "tsoa": "2.4.3",
+    "tsoa": "^3.6.1",
     "tuyapi": "^6.1.4",
     "winston": "^3.2.1",
     "yeelight-awesome": "^1.0.12"

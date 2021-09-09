@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import * as express from 'express';
 import { AuthController } from '../controllers/authController';
 import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
-import { SystemAuthScopes } from '../security/authentication';
+import { SystemAuthScopes, verifyBySecurity } from '../security/authentication';
 import { LoginSchema, RequestSchemaValidator } from '../security/schemaValidator';
 import { expressAuthentication } from './../security/authentication';
 
@@ -55,7 +55,7 @@ export class AuthenticationRouter {
       /**
        * Because there is not use in TSOA security, needs to call middelwhere manualy.
        */
-      req.user = (await expressAuthentication(req, [SystemAuthScopes.userScope, SystemAuthScopes.adminScope]).catch(
+      req.user = (await verifyBySecurity(req, [SystemAuthScopes.userScope, SystemAuthScopes.adminScope]).catch(
         (error: ErrorResponse) => {
           res.status(403).send(error);
         },

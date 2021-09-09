@@ -1,89 +1,32 @@
 {
-    "swagger": {
-        "outputDirectory": "./",
-        "entryFile": "./src/index.ts",
-        "host": "localhost:3000",
-        "basePath": "/API",
-        "tags": [
-            {
-                "name": "Authentication",
-                "description": "Manage system authentication, such as login logout etc."
-            },
-            {
-                "name": "Devices",
-                "description": "Pysical device in local home managing."
-            },
-            {
-                "name": "Users",
-                "description": "Manage users in system."
-            },
-            {
-                "name": "Minions",
-                "description": "Manage the minions (logic devices in system) in home, such as turn on off etc."
-            },
-            {
-                "name": "RF",
-                "description": "Manage everything about RF devices (IR, 433MHZ etc.) includes record, generate and fetch from commands repository."
-            },
-            {
-                "name": "Operations",
-                "description": "Manage operation in system, such as create operation to turn on all home lights etc."
-            },
-            {
-                "name": "Timings",
-                "description": "Manage timings in system, such as invoke turn off lights operation today 12 AM etc."
-            },
-            {
-                "name": "Ifttt",
-                "description": "Manage IFTTT (https://ifttt.com/) integration and allow to turn on/off any device by any Ifttt trigger and to trigger by minion on/off event."
-            },
-            {
-                "name": "Feeds",
-                "description": "Feed of updates from system, such as minion turned on/off etc. all using SSE protocol"
-            },
-            {
-                "name": "Remote",
-                "description": "Manage the remote server connection, used to access local server via www"
-            },
-            {
-                "name": "Public",
-                "description": "Static files/assets for client side"
-            },
-            {
-                "name": "Version",
-                "description": "Manage Versioning of application, get current vertion, update to lastes etc."
-            }
-        ],
-        "name": "CASAnet - API",
-        "description": "IoT server for local home network. hosted in [GitHub repo](https://github.com/casanet/casanet-server).",
-        "securityDefinitions": {
-            "userAuth": {
-                "type": "apiKey",
-                "name": "Cookie",
-                "in": "header"
-            },
-            "adminAuth": {
-                "type": "apiKey",
-                "name": "Cookie",
-                "in": "header"
-            },
-            "iftttAuth": {
-                "type": "apiKey",
-                "name": "apiKey",
-                "in": "header"
-            }
-        },
-        "schemes": [
-            "http",
-            "https"
-        ],
-        "yaml" : true
-    },
-    "routes": {
-        "basePath": "/API",
-        "entryFile": "./src/index.ts",
-        "routesDir": "./src/routers",
-        "middlewareTemplate": "./src/routers/expressRoutesTemplate.ts.tsoa",
-        "authenticationModule": "./src/security/authentication.ts"
-    }
+	"entryFile": "./src/index.ts",
+	"noImplicitAdditionalProperties": "throw-on-extras",
+	"controllerPathGlobs": [
+		"src/**/*Controller.ts"
+	],
+	"spec": {
+		"securityDefinitions": {
+			"userAuth": {
+				"type": "apiKey",
+				"name": "Cookie",
+				"in": "header"
+			},
+			"adminAuth": {
+				"type": "apiKey",
+				"name": "Cookie",
+				"in": "header"
+			},
+			"iftttAuth": {
+				"type": "apiKey",
+				"name": "apiKey",
+				"in": "header"
+			}
+		},
+		"outputDirectory": "./",
+		"specVersion": 3
+	},
+	"routes": {
+		"authenticationModule": "./src/security/authentication.ts",
+		"routesDir": "./src/routers"
+	}
 }

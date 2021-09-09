@@ -3,7 +3,7 @@ import * as express from 'express';
 import * as SseStream from 'express-sse';
 import { FeedController } from '../controllers/feedController';
 import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
-import { SystemAuthScopes } from '../security/authentication';
+import { SystemAuthScopes, verifyBySecurity } from '../security/authentication';
 import { logger } from '../utilities/logger';
 import { expressAuthentication } from './../security/authentication';
 
@@ -19,11 +19,11 @@ export class FeedRouter {
         /**
          * Because there is no use in TSOA security, needs to call middelwhere manualy.
          */
-        const user = (await expressAuthentication(req, [
+        const user = (await verifyBySecurity(req,  [
           SystemAuthScopes.userScope,
           SystemAuthScopes.adminScope,
         ])) as User;
-        logger.debug(`user ${user.email} connected to feed ${req.path}`);
+        // logger.debug(`user ${user.email} connected to feed ${req.path}`);
 
         next();
       } catch (error) {

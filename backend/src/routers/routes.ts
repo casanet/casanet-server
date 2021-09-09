@@ -1,2040 +1,2316 @@
-// @ts-ignore
 /* tslint:disable */
-import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
+/* eslint-disable */
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AuthController } from './../controllers/authController';
-import { FeedController } from './../controllers/feedController';
-import { DevicesController } from './../controllers/devicesController';
-import { MinionsController } from './../controllers/minionsController';
-import { OperationsController } from './../controllers/operationsController';
-import { TimingsController } from './../controllers/timingsController';
-import { UsersController } from './../controllers/usersController';
-import { RemoteConnectionController } from './../controllers/remoteConnectionController';
-import { StaticAssetsController } from './../controllers/staticAssetsController';
-import { IftttController } from './../controllers/iftttController';
-import { VersionsController } from './../controllers/versionsController';
-import { RfController } from './../controllers/radioFrequencyController';
-import { LogsController } from './../controllers/logsController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { BackupController } from './../controllers/backupController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { DevicesController } from './../controllers/devicesController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { FeedController } from './../controllers/feedController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { IftttController } from './../controllers/iftttController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { LogsController } from './../controllers/logsController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { MinionsController } from './../controllers/minionsController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { OperationsController } from './../controllers/operationsController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { RfController } from './../controllers/radioFrequencyController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { RemoteConnectionController } from './../controllers/remoteConnectionController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { StaticAssetsController } from './../controllers/staticAssetsController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { TimingsController } from './../controllers/timingsController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { UsersController } from './../controllers/usersController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { VersionsController } from './../controllers/versionsController';
 import { expressAuthentication } from './../security/authentication';
+// @ts-ignore - no great way to install types from subpackage
+const promiseAny = require('promise.any');
 import * as express from 'express';
-import { ErrorResponse, User } from '../../../backend/src/models/sharedInterfaces';
+
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
 const models: TsoaRoute.Models = {
     "ErrorResponse": {
+        "dataType": "refObject",
         "properties": {
-            "responseCode": { "dataType": "double", "required": true },
-            "message": { "dataType": "string" },
+            "responseCode": {"dataType":"double","required":true},
+            "message": {"dataType":"string"},
         },
+        "additionalProperties": false,
     },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Login": {
+        "dataType": "refObject",
         "properties": {
-            "email": { "dataType": "string", "required": true },
-            "password": { "dataType": "string", "required": true },
+            "email": {"dataType":"string","required":true},
+            "password": {"dataType":"string","required":true},
         },
+        "additionalProperties": false,
     },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "LocalNetworkDevice": {
+        "dataType": "refObject",
         "properties": {
-            "name": { "dataType": "string" },
-            "mac": { "dataType": "string", "required": true },
-            "vendor": { "dataType": "string" },
-            "ip": { "dataType": "string" },
+            "name": {"dataType":"string"},
+            "mac": {"dataType":"string","required":true},
+            "vendor": {"dataType":"string"},
+            "ip": {"dataType":"string"},
         },
+        "additionalProperties": false,
     },
-    "MinionDevice": {
-        "properties": {
-            "pysicalDevice": { "ref": "LocalNetworkDevice", "required": true },
-            "brand": { "dataType": "string", "required": true },
-            "model": { "dataType": "string", "required": true },
-            "token": { "dataType": "string" },
-            "deviceId": { "dataType": "string" },
-        },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MinionTypes": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["toggle"]},{"dataType":"enum","enums":["switch"]},{"dataType":"enum","enums":["roller"]},{"dataType":"enum","enums":["cleaner"]},{"dataType":"enum","enums":["airConditioning"]},{"dataType":"enum","enums":["light"]},{"dataType":"enum","enums":["temperatureLight"]},{"dataType":"enum","enums":["colorLight"]}],"validators":{}},
     },
-    "Toggle": {
-        "properties": {
-            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-        },
-    },
-    "Switch": {
-        "properties": {
-            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-        },
-    },
-    "Roller": {
-        "properties": {
-            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "direction": { "dataType": "enum", "enums": ["up", "down"], "required": true },
-        },
-    },
-    "Cleaner": {
-        "properties": {
-            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "mode": { "dataType": "enum", "enums": ["dock", "clean"], "required": true },
-            "fanSpeed": { "dataType": "enum", "enums": ["low", "med", "high", "auto"], "required": true },
-        },
-    },
-    "AirConditioning": {
-        "properties": {
-            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "temperature": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 16 }, "maximum": { "value": 30 }, "isInt": { "errorMsg": "true" } } },
-            "mode": { "dataType": "enum", "enums": ["hot", "cold", "dry", "auto"], "required": true },
-            "fanStrength": { "dataType": "enum", "enums": ["low", "med", "high", "auto"], "required": true },
-        },
-    },
-    "Light": {
-        "properties": {
-            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "brightness": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
-        },
-    },
-    "TemperatureLight": {
-        "properties": {
-            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "brightness": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
-            "temperature": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
-        },
-    },
-    "ColorLight": {
-        "properties": {
-            "status": { "dataType": "enum", "enums": ["on", "off"], "required": true },
-            "brightness": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
-            "temperature": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 1 }, "maximum": { "value": 100 }, "isInt": { "errorMsg": "true" } } },
-            "red": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
-            "green": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
-            "blue": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 255 }, "isInt": { "errorMsg": "true" } } },
-        },
-    },
-    "MinionStatus": {
-        "properties": {
-            "toggle": { "ref": "Toggle" },
-            "switch": { "ref": "Switch" },
-            "roller": { "ref": "Roller" },
-            "cleaner": { "ref": "Cleaner" },
-            "airConditioning": { "ref": "AirConditioning" },
-            "light": { "ref": "Light" },
-            "temperatureLight": { "ref": "TemperatureLight" },
-            "colorLight": { "ref": "ColorLight" },
-        },
-    },
-    "MinionCalibrate": {
-        "properties": {
-            "calibrationCycleMinutes": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "isInt": { "errorMsg": "true" } } },
-            "calibrationMode": { "dataType": "enum", "enums": ["LOCK_ON", "LOCK_OFF", "SHABBAT", "AUTO"], "required": true },
-        },
-    },
-    "Minion": {
-        "properties": {
-            "minionId": { "dataType": "string" },
-            "name": { "dataType": "string", "required": true },
-            "device": { "ref": "MinionDevice", "required": true },
-            "isProperlyCommunicated": { "dataType": "boolean" },
-            "minionStatus": { "ref": "MinionStatus", "required": true },
-            "minionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
-            "minionAutoTurnOffMS": { "dataType": "double" },
-            "calibration": { "ref": "MinionCalibrate" },
-            "room": { "dataType": "string" },
-        },
-    },
-    "MinionFeed": {
-        "properties": {
-            "event": { "dataType": "enum", "enums": ["created", "update", "removed"], "required": true },
-            "minion": { "ref": "Minion", "required": true },
-        },
-    },
-    "DailySunTrigger": {
-        "properties": {
-            "days": { "dataType": "array", "array": { "dataType": "enum", "enums": ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] }, "required": true },
-            "durationMinutes": { "dataType": "double", "required": true },
-            "sunTrigger": { "dataType": "enum", "enums": ["sunrise", "sunset"], "required": true },
-        },
-    },
-    "DailyTimeTrigger": {
-        "properties": {
-            "days": { "dataType": "array", "array": { "dataType": "enum", "enums": ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] }, "required": true },
-            "hour": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 23 }, "isInt": { "errorMsg": "true" } } },
-            "minutes": { "dataType": "integer", "required": true, "validators": { "minimum": { "value": 0 }, "maximum": { "value": 59 }, "isInt": { "errorMsg": "true" } } },
-        },
-    },
-    "OnceTiming": {
-        "properties": {
-            "date": { "dataType": "double", "required": true },
-        },
-    },
-    "TimeoutTiming": {
-        "properties": {
-            "startDate": { "dataType": "double", "required": true },
-            "durationInMinutes": { "dataType": "double", "required": true },
-        },
-    },
-    "TimingProperties": {
-        "properties": {
-            "dailySunTrigger": { "ref": "DailySunTrigger" },
-            "dailyTimeTrigger": { "ref": "DailyTimeTrigger" },
-            "once": { "ref": "OnceTiming" },
-            "timeout": { "ref": "TimeoutTiming" },
-        },
-    },
-    "Timing": {
-        "properties": {
-            "timingId": { "dataType": "string", "required": true },
-            "timingName": { "dataType": "string", "required": true },
-            "triggerOperationId": { "dataType": "string", "required": true },
-            "isActive": { "dataType": "boolean", "required": true },
-            "timingType": { "dataType": "enum", "enums": ["dailySunTrigger", "dailyTimeTrigger", "once", "timeout"], "required": true },
-            "timingProperties": { "ref": "TimingProperties", "required": true },
-            "lockStatus": { "dataType": "boolean" },
-            "shabbatMode": { "dataType": "boolean" },
-            "overrideLock": { "dataType": "boolean" },
-        },
-    },
-    "OperationResult": {
-        "properties": {
-            "minionId": { "dataType": "string", "required": true },
-            "error": { "ref": "ErrorResponse" },
-        },
-    },
-    "TimingFeed": {
-        "properties": {
-            "timing": { "ref": "Timing", "required": true },
-            "results": { "dataType": "array", "array": { "ref": "OperationResult" }, "required": true },
-        },
-    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "DeviceKind": {
+        "dataType": "refObject",
         "properties": {
-            "brand": { "dataType": "string", "required": true },
-            "model": { "dataType": "string", "required": true },
-            "minionsPerDevice": { "dataType": "double", "required": true },
-            "isTokenRequired": { "dataType": "boolean", "required": true },
-            "isIdRequired": { "dataType": "boolean", "required": true },
-            "supportedMinionType": { "dataType": "enum", "enums": ["toggle", "switch", "roller", "cleaner", "airConditioning", "light", "temperatureLight", "colorLight"], "required": true },
-            "isRecordingSupported": { "dataType": "boolean", "required": true },
-            "isFetchCommandsAvailable": { "dataType": "boolean", "required": true },
+            "brand": {"dataType":"string","required":true},
+            "model": {"dataType":"string","required":true},
+            "minionsPerDevice": {"dataType":"double","required":true},
+            "isTokenRequired": {"dataType":"boolean","required":true},
+            "isIdRequired": {"dataType":"boolean","required":true},
+            "supportedMinionType": {"ref":"MinionTypes","required":true},
+            "isRecordingSupported": {"dataType":"boolean","required":true},
+            "isFetchCommandsAvailable": {"dataType":"boolean","required":true},
         },
+        "additionalProperties": false,
     },
-    "MinionTimeline": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "FeedEvent": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["created"]},{"dataType":"enum","enums":["update"]},{"dataType":"enum","enums":["removed"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MinionDevice": {
+        "dataType": "refObject",
         "properties": {
-            "minionId": { "dataType": "string", "required": true },
-            "timestamp": { "dataType": "double", "required": true },
-            "status": { "ref": "MinionStatus", "required": true },
+            "pysicalDevice": {"ref":"LocalNetworkDevice","required":true},
+            "brand": {"dataType":"string","required":true},
+            "model": {"dataType":"string","required":true},
+            "token": {"dataType":"string"},
+            "deviceId": {"dataType":"string"},
         },
+        "additionalProperties": false,
     },
-    "MinionRename": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "SwitchOptions": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["on"]},{"dataType":"enum","enums":["off"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Toggle": {
+        "dataType": "refObject",
         "properties": {
-            "name": { "dataType": "string", "required": true },
+            "status": {"ref":"SwitchOptions","required":true},
         },
+        "additionalProperties": false,
     },
-    "MinionSetRoomName": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Switch": {
+        "dataType": "refObject",
         "properties": {
-            "room": { "dataType": "string", "required": true },
+            "status": {"ref":"SwitchOptions","required":true},
         },
+        "additionalProperties": false,
     },
-    "SetMinionAutoTurnOff": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "RollerDirection": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["up"]},{"dataType":"enum","enums":["down"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Roller": {
+        "dataType": "refObject",
         "properties": {
-            "setAutoTurnOffMS": { "dataType": "double", "required": true },
+            "status": {"ref":"SwitchOptions","required":true},
+            "direction": {"ref":"RollerDirection","required":true},
         },
+        "additionalProperties": false,
     },
-    "ScanningStatus": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CleanerMode": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["dock"]},{"dataType":"enum","enums":["clean"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "FanStrengthOptions": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["low"]},{"dataType":"enum","enums":["med"]},{"dataType":"enum","enums":["high"]},{"dataType":"enum","enums":["auto"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Cleaner": {
+        "dataType": "refObject",
         "properties": {
-            "scanningStatus": { "dataType": "enum", "enums": ["inProgress", "finished", "fail"], "required": true },
+            "status": {"ref":"SwitchOptions","required":true},
+            "mode": {"ref":"CleanerMode","required":true},
+            "fanSpeed": {"ref":"FanStrengthOptions","required":true},
         },
+        "additionalProperties": false,
     },
-    "IftttOnChanged": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ACModeOptions": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["hot"]},{"dataType":"enum","enums":["cold"]},{"dataType":"enum","enums":["dry"]},{"dataType":"enum","enums":["auto"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AirConditioning": {
+        "dataType": "refObject",
         "properties": {
-            "localMac": { "dataType": "string" },
-            "deviceId": { "dataType": "string", "required": true },
-            "newStatus": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+            "status": {"ref":"SwitchOptions","required":true},
+            "temperature": {"dataType":"integer","required":true,"validators":{"minimum":{"value":16},"maximum":{"value":30},"isInt":{"errorMsg":"true"}}},
+            "mode": {"ref":"ACModeOptions","required":true},
+            "fanStrength": {"ref":"FanStrengthOptions","required":true},
         },
+        "additionalProperties": false,
     },
-    "OperationActivity": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Light": {
+        "dataType": "refObject",
         "properties": {
-            "minionId": { "dataType": "string", "required": true },
-            "minionStatus": { "ref": "MinionStatus", "required": true },
+            "status": {"ref":"SwitchOptions","required":true},
+            "brightness": {"dataType":"integer","required":true,"validators":{"minimum":{"value":1},"maximum":{"value":100},"isInt":{"errorMsg":"true"}}},
         },
+        "additionalProperties": false,
     },
-    "Operation": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "TemperatureLight": {
+        "dataType": "refObject",
         "properties": {
-            "operationId": { "dataType": "string", "required": true },
-            "operationName": { "dataType": "string", "required": true },
-            "activities": { "dataType": "array", "array": { "ref": "OperationActivity" }, "required": true },
+            "status": {"ref":"SwitchOptions","required":true},
+            "brightness": {"dataType":"integer","required":true,"validators":{"minimum":{"value":1},"maximum":{"value":100},"isInt":{"errorMsg":"true"}}},
+            "temperature": {"dataType":"integer","required":true,"validators":{"minimum":{"value":1},"maximum":{"value":100},"isInt":{"errorMsg":"true"}}},
         },
+        "additionalProperties": false,
     },
-    "User": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ColorLight": {
+        "dataType": "refObject",
         "properties": {
-            "displayName": { "dataType": "string" },
-            "email": { "dataType": "string", "required": true },
-            "password": { "dataType": "string" },
-            "ignoreTfa": { "dataType": "boolean", "required": true },
-            "scope": { "dataType": "enum", "enums": ["adminAuth", "userAuth", "iftttAuth"], "required": true },
+            "status": {"ref":"SwitchOptions","required":true},
+            "brightness": {"dataType":"integer","required":true,"validators":{"minimum":{"value":1},"maximum":{"value":100},"isInt":{"errorMsg":"true"}}},
+            "temperature": {"dataType":"integer","required":true,"validators":{"minimum":{"value":1},"maximum":{"value":100},"isInt":{"errorMsg":"true"}}},
+            "red": {"dataType":"integer","required":true,"validators":{"minimum":{"value":0},"maximum":{"value":255},"isInt":{"errorMsg":"true"}}},
+            "green": {"dataType":"integer","required":true,"validators":{"minimum":{"value":0},"maximum":{"value":255},"isInt":{"errorMsg":"true"}}},
+            "blue": {"dataType":"integer","required":true,"validators":{"minimum":{"value":0},"maximum":{"value":255},"isInt":{"errorMsg":"true"}}},
         },
+        "additionalProperties": false,
     },
-    "UserForwardAuth": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MinionStatus": {
+        "dataType": "refObject",
         "properties": {
-            "code": { "dataType": "string", "required": true, "validators": { "minLength": { "value": 6 }, "maxLength": { "value": 6 } } },
+            "toggle": {"ref":"Toggle"},
+            "switch": {"ref":"Switch"},
+            "roller": {"ref":"Roller"},
+            "cleaner": {"ref":"Cleaner"},
+            "airConditioning": {"ref":"AirConditioning"},
+            "light": {"ref":"Light"},
+            "temperatureLight": {"ref":"TemperatureLight"},
+            "colorLight": {"ref":"ColorLight"},
         },
+        "additionalProperties": false,
     },
-    "RemoteSettings": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CalibrationMode": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["LOCK_ON"]},{"dataType":"enum","enums":["LOCK_OFF"]},{"dataType":"enum","enums":["SHABBAT"]},{"dataType":"enum","enums":["AUTO"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MinionCalibrate": {
+        "dataType": "refObject",
         "properties": {
-            "host": { "dataType": "string", "required": true },
-            "connectionKey": { "dataType": "string", "required": true },
+            "calibrationCycleMinutes": {"dataType":"integer","required":true,"validators":{"minimum":{"value":0},"isInt":{"errorMsg":"true"}}},
+            "calibrationMode": {"ref":"CalibrationMode","required":true},
         },
+        "additionalProperties": false,
     },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Minion": {
+        "dataType": "refObject",
+        "properties": {
+            "minionId": {"dataType":"string"},
+            "name": {"dataType":"string","required":true},
+            "device": {"ref":"MinionDevice","required":true},
+            "isProperlyCommunicated": {"dataType":"boolean"},
+            "minionStatus": {"ref":"MinionStatus","required":true},
+            "minionType": {"ref":"MinionTypes","required":true},
+            "minionAutoTurnOffMS": {"dataType":"double"},
+            "calibration": {"ref":"MinionCalibrate"},
+            "room": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MinionFeed": {
+        "dataType": "refObject",
+        "properties": {
+            "event": {"ref":"FeedEvent","required":true},
+            "minion": {"ref":"Minion","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "TimingTypes": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["dailySunTrigger"]},{"dataType":"enum","enums":["dailyTimeTrigger"]},{"dataType":"enum","enums":["once"]},{"dataType":"enum","enums":["timeout"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "SunTriggerOptions": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["sunrise"]},{"dataType":"enum","enums":["sunset"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "DaysOptions": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["sunday"]},{"dataType":"enum","enums":["monday"]},{"dataType":"enum","enums":["tuesday"]},{"dataType":"enum","enums":["wednesday"]},{"dataType":"enum","enums":["thursday"]},{"dataType":"enum","enums":["friday"]},{"dataType":"enum","enums":["saturday"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "DailySunTrigger": {
+        "dataType": "refObject",
+        "properties": {
+            "days": {"dataType":"array","array":{"dataType":"refAlias","ref":"DaysOptions"},"required":true},
+            "durationMinutes": {"dataType":"double","required":true},
+            "sunTrigger": {"ref":"SunTriggerOptions","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "DailyTimeTrigger": {
+        "dataType": "refObject",
+        "properties": {
+            "days": {"dataType":"array","array":{"dataType":"refAlias","ref":"DaysOptions"},"required":true},
+            "hour": {"dataType":"integer","required":true,"validators":{"minimum":{"value":0},"maximum":{"value":23},"isInt":{"errorMsg":"true"}}},
+            "minutes": {"dataType":"integer","required":true,"validators":{"minimum":{"value":0},"maximum":{"value":59},"isInt":{"errorMsg":"true"}}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OnceTiming": {
+        "dataType": "refObject",
+        "properties": {
+            "date": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "TimeoutTiming": {
+        "dataType": "refObject",
+        "properties": {
+            "startDate": {"dataType":"double","required":true},
+            "durationInMinutes": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "TimingProperties": {
+        "dataType": "refObject",
+        "properties": {
+            "dailySunTrigger": {"ref":"DailySunTrigger"},
+            "dailyTimeTrigger": {"ref":"DailyTimeTrigger"},
+            "once": {"ref":"OnceTiming"},
+            "timeout": {"ref":"TimeoutTiming"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Timing": {
+        "dataType": "refObject",
+        "properties": {
+            "timingId": {"dataType":"string","required":true},
+            "timingName": {"dataType":"string","required":true},
+            "triggerOperationId": {"dataType":"string","required":true},
+            "isActive": {"dataType":"boolean","required":true},
+            "timingType": {"ref":"TimingTypes","required":true},
+            "timingProperties": {"ref":"TimingProperties","required":true},
+            "lockStatus": {"dataType":"boolean"},
+            "shabbatMode": {"dataType":"boolean"},
+            "overrideLock": {"dataType":"boolean"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OperationResult": {
+        "dataType": "refObject",
+        "properties": {
+            "minionId": {"dataType":"string","required":true},
+            "error": {"ref":"ErrorResponse"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "TimingFeed": {
+        "dataType": "refObject",
+        "properties": {
+            "timing": {"ref":"Timing","required":true},
+            "results": {"dataType":"array","array":{"dataType":"refObject","ref":"OperationResult"},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IftttIntegrationSettings": {
+        "dataType": "refObject",
         "properties": {
-            "apiKey": { "dataType": "string" },
-            "enableIntegration": { "dataType": "boolean", "required": true },
+            "apiKey": {"dataType":"string"},
+            "enableIntegration": {"dataType":"boolean","required":true},
         },
+        "additionalProperties": false,
     },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IftttRawActionTriggered": {
+        "dataType": "refObject",
         "properties": {
-            "apiKey": { "dataType": "string", "required": true },
-            "localMac": { "dataType": "string" },
-            "minionId": { "dataType": "string", "required": true },
-            "setStatus": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+            "apiKey": {"dataType":"string","required":true},
+            "localMac": {"dataType":"string"},
+            "minionId": {"dataType":"string","required":true},
+            "setStatus": {"ref":"SwitchOptions","required":true},
         },
+        "additionalProperties": false,
     },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IftttActionTriggered": {
+        "dataType": "refObject",
         "properties": {
-            "apiKey": { "dataType": "string", "required": true },
-            "localMac": { "dataType": "string" },
-            "setStatus": { "dataType": "enum", "enums": ["on", "off"], "required": true },
+            "apiKey": {"dataType":"string","required":true},
+            "localMac": {"dataType":"string"},
+            "setStatus": {"ref":"SwitchOptions","required":true},
         },
+        "additionalProperties": false,
     },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IftttActionTriggeredRequest": {
+        "dataType": "refObject",
         "properties": {
-            "apiKey": { "dataType": "string", "required": true },
-            "localMac": { "dataType": "string" },
+            "apiKey": {"dataType":"string","required":true},
+            "localMac": {"dataType":"string"},
         },
+        "additionalProperties": false,
     },
-    "UpdateResults": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MinionTimeline": {
+        "dataType": "refObject",
         "properties": {
-            "alreadyUpToDate": { "dataType": "boolean", "required": true },
+            "minionId": {"dataType":"string","required":true},
+            "timestamp": {"dataType":"double","required":true},
+            "status": {"ref":"MinionStatus","required":true},
         },
+        "additionalProperties": false,
     },
-    "VersionUpdateStatus": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MinionRename": {
+        "dataType": "refObject",
         "properties": {
-            "updateStatus": { "dataType": "enum", "enums": ["inProgress", "finished", "fail"], "required": true },
+            "name": {"dataType":"string","required":true},
         },
+        "additionalProperties": false,
     },
-    "VersionInfo": {
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MinionSetRoomName": {
+        "dataType": "refObject",
         "properties": {
-            "version": { "dataType": "string", "required": true },
-            "commitHash": { "dataType": "string", "required": true },
-            "timestamp": { "dataType": "double", "required": true },
+            "room": {"dataType":"string","required":true},
         },
+        "additionalProperties": false,
     },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "SetMinionAutoTurnOff": {
+        "dataType": "refObject",
+        "properties": {
+            "setAutoTurnOffMS": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ProgressStatus": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["inProgress"]},{"dataType":"enum","enums":["finished"]},{"dataType":"enum","enums":["fail"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ScanningStatus": {
+        "dataType": "refObject",
+        "properties": {
+            "scanningStatus": {"ref":"ProgressStatus","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IftttOnChanged": {
+        "dataType": "refObject",
+        "properties": {
+            "localMac": {"dataType":"string"},
+            "deviceId": {"dataType":"string","required":true},
+            "newStatus": {"ref":"SwitchOptions","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OperationActivity": {
+        "dataType": "refObject",
+        "properties": {
+            "minionId": {"dataType":"string","required":true},
+            "minionStatus": {"ref":"MinionStatus","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Operation": {
+        "dataType": "refObject",
+        "properties": {
+            "operationId": {"dataType":"string","required":true},
+            "operationName": {"dataType":"string","required":true},
+            "activities": {"dataType":"array","array":{"dataType":"refObject","ref":"OperationActivity"},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "CommandsRepoDevice": {
+        "dataType": "refObject",
         "properties": {
-            "brand": { "dataType": "string", "required": true },
-            "model": { "dataType": "string", "required": true },
-            "category": { "dataType": "string", "required": true },
+            "brand": {"dataType":"string","required":true},
+            "model": {"dataType":"string","required":true},
+            "category": {"dataType":"string","required":true},
         },
+        "additionalProperties": false,
     },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "RemoteConnectionStatus": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["notConfigured"]},{"dataType":"enum","enums":["cantReachRemoteServer"]},{"dataType":"enum","enums":["authorizationFail"]},{"dataType":"enum","enums":["localServerDisconnected"]},{"dataType":"enum","enums":["connectionOK"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "RemoteSettings": {
+        "dataType": "refObject",
+        "properties": {
+            "host": {"dataType":"string","required":true},
+            "connectionKey": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AuthScopes": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["adminAuth"]},{"dataType":"enum","enums":["userAuth"]},{"dataType":"enum","enums":["iftttAuth"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "User": {
+        "dataType": "refObject",
+        "properties": {
+            "displayName": {"dataType":"string"},
+            "email": {"dataType":"string","required":true},
+            "password": {"dataType":"string"},
+            "ignoreTfa": {"dataType":"boolean","required":true},
+            "scope": {"ref":"AuthScopes","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserForwardAuth": {
+        "dataType": "refObject",
+        "properties": {
+            "code": {"dataType":"string","required":true,"validators":{"minLength":{"value":6},"maxLength":{"value":6}}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateResults": {
+        "dataType": "refObject",
+        "properties": {
+            "alreadyUpToDate": {"dataType":"boolean","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "VersionUpdateStatus": {
+        "dataType": "refObject",
+        "properties": {
+            "updateStatus": {"ref":"ProgressStatus","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "VersionInfo": {
+        "dataType": "refObject",
+        "properties": {
+            "version": {"dataType":"string","required":true},
+            "commitHash": {"dataType":"string","required":true},
+            "timestamp": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
-export function RegisterRoutes(app: express.Express) {
-    app.post('/API/auth/logout-sessions/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+export function RegisterRoutes(app: express.Router) {
+    // ###########################################################################################################
+    //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
+    //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
+    // ###########################################################################################################
+        app.post('/auth/logout-sessions/:userId',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function AuthController_logoutSessions(request: any, response: any, next: any) {
             const args = {
-                userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+                    userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = getValidatedArgs(args, request);
+                validatedArgs = getValidatedArgs(args, request, response);
             } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
+                return next(err);
             }
 
             const controller = new AuthController();
 
 
             const promise = controller.logoutSessions.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
+            promiseHandler(controller, promise, response, undefined, next);
         });
-    app.post('/API/auth/login',
-        function(request: any, response: any, next: any) {
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/auth/login',
+
+            function AuthController_loginDocumentation(request: any, response: any, next: any) {
             const args = {
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-                login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    login: {"in":"body","name":"login","required":true,"ref":"Login"},
             };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = getValidatedArgs(args, request);
+                validatedArgs = getValidatedArgs(args, request, response);
             } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
+                return next(err);
             }
 
             const controller = new AuthController();
 
 
             const promise = controller.loginDocumentation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
+            promiseHandler(controller, promise, response, undefined, next);
         });
-    app.post('/API/auth/login/tfa',
-        function(request: any, response: any, next: any) {
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/auth/login/tfa',
+
+            function AuthController_loginTfaDocumentation(request: any, response: any, next: any) {
             const args = {
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-                login: { "in": "body", "name": "login", "required": true, "ref": "Login" },
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    login: {"in":"body","name":"login","required":true,"ref":"Login"},
             };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = getValidatedArgs(args, request);
+                validatedArgs = getValidatedArgs(args, request, response);
             } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
+                return next(err);
             }
 
             const controller = new AuthController();
 
 
             const promise = controller.loginTfaDocumentation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
+            promiseHandler(controller, promise, response, undefined, next);
         });
-    app.post('/API/auth/logout',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/auth/logout',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function AuthController_logoutDocumentation(request: any, response: any, next: any) {
             const args = {
             };
 
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = getValidatedArgs(args, request);
+                validatedArgs = getValidatedArgs(args, request, response);
             } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
+                return next(err);
             }
 
             const controller = new AuthController();
 
 
             const promise = controller.logoutDocumentation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
+            promiseHandler(controller, promise, response, undefined, next);
         });
-    app.get('/API/feed/minions',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/backup',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function BackupController_getSettingsBackup(request: any, response: any, next: any) {
             const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = getValidatedArgs(args, request);
+                validatedArgs = getValidatedArgs(args, request, response);
             } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new FeedController();
-
-
-            const promise = controller.getMinionsFeed.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/feed/timings',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new FeedController();
-
-
-            const promise = controller.getTimingFeed.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/devices',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new DevicesController();
-
-
-            const promise = controller.getDevices.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/devices/kinds',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new DevicesController();
-
-
-            const promise = controller.getDevicesKinds.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/devices/:deviceMac',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                deviceMac: { "in": "path", "name": "deviceMac", "required": true, "dataType": "string" },
-                device: { "in": "body", "name": "device", "required": true, "ref": "LocalNetworkDevice" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new DevicesController();
-
-
-            const promise = controller.setDeviceName.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/devices/rescan',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new DevicesController();
-
-
-            const promise = controller.rescanDevices.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/minions/timeline',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.getMinionsTimeline.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/minions/power-off',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.powerAllOff.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/minions/rename/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                minionRename: { "in": "body", "name": "minionRename", "required": true, "ref": "MinionRename" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.renameMinion.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/minions/room/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                roomName: { "in": "body", "name": "roomName", "required": true, "ref": "MinionSetRoomName" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.renameRoom.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/minions/timeout/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                setTimeout: { "in": "body", "name": "setTimeout", "required": true, "ref": "SetMinionAutoTurnOff" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.setMinionTimeout.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/minions/calibrate/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                calibration: { "in": "body", "name": "calibration", "required": true, "ref": "MinionCalibrate" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.setMinionCalibrate.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/minions/rescan/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.rescanMinionStatus.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/minions/rescan',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                scanNetwork: { "default": false, "in": "query", "name": "scanNetwork", "dataType": "boolean" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.rescanMinionsStatus.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/minions/rescan',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.getSescaningMinionsStatus.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.delete('/API/minions/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.deleteMinion.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/minions',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minion: { "in": "body", "name": "minion", "required": true, "ref": "Minion" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.createMinion.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/minions/:minionId/ifttt',
-        authenticateMiddleware([{ "iftttAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                iftttOnChanged: { "in": "body", "name": "iftttOnChanged", "required": true, "ref": "IftttOnChanged" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.notifyMinionStatusChanged.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/minions',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.getMinions.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/minions/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.getMinion.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/minions/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                setStatus: { "in": "body", "name": "setStatus", "required": true, "ref": "MinionStatus" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new MinionsController();
-
-
-            const promise = controller.setMinion.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/operations',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new OperationsController();
-
-
-            const promise = controller.getOperations.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/operations/:operationId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new OperationsController();
-
-
-            const promise = controller.getOperation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/operations/:operationId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
-                operation: { "in": "body", "name": "operation", "required": true, "ref": "Operation" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new OperationsController();
-
-
-            const promise = controller.setOperation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.delete('/API/operations/:operationId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new OperationsController();
-
-
-            const promise = controller.deleteOperation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/operations',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                operation: { "in": "body", "name": "operation", "required": true, "ref": "Operation" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new OperationsController();
-
-
-            const promise = controller.createOperation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/operations/trigger/:operationId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new OperationsController();
-
-
-            const promise = controller.triggerOperation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/timings',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new TimingsController();
-
-
-            const promise = controller.getTimings.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/timings/:timingId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                timingId: { "in": "path", "name": "timingId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new TimingsController();
-
-
-            const promise = controller.getTiming.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/timings/:timingId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                timingId: { "in": "path", "name": "timingId", "required": true, "dataType": "string" },
-                timing: { "in": "body", "name": "timing", "required": true, "ref": "Timing" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new TimingsController();
-
-
-            const promise = controller.setTiming.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.delete('/API/timings/:timingId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                timingId: { "in": "path", "name": "timingId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new TimingsController();
-
-
-            const promise = controller.deleteTiming.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/timings',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                timing: { "in": "body", "name": "timing", "required": true, "ref": "Timing" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new TimingsController();
-
-
-            const promise = controller.createTiming.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/users/profile',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.getProfile.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/users/forward-auth/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.requestUserForwarding.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/users/forward',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.getRegisteredUsers.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/users/forward/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
-                auth: { "in": "body", "name": "auth", "required": true, "ref": "UserForwardAuth" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.requestUserForwardingAuth.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.delete('/API/users/forward/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.removeUserForwarding.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/users',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.getUsers.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/users/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.getUser.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/users/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-                user: { "in": "body", "name": "user", "required": true, "ref": "User" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.setUser.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.delete('/API/users/:userId',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                userId: { "in": "path", "name": "userId", "required": true, "dataType": "string" },
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.deleteUser.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/users',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                user: { "in": "body", "name": "user", "required": true, "ref": "User" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new UsersController();
-
-
-            const promise = controller.createUser.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/remote',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new RemoteConnectionController();
-
-
-            const promise = controller.getRemoteHost.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/remote/status',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new RemoteConnectionController();
-
-
-            const promise = controller.getConnectionStatus.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/remote/machine-mac',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new RemoteConnectionController();
-
-
-            const promise = controller.getMachineMac.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/remote',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                remoteSettings: { "in": "body", "name": "remoteSettings", "required": true, "ref": "RemoteSettings" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new RemoteConnectionController();
-
-
-            const promise = controller.setRemoteSettings.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.delete('/API/remote',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new RemoteConnectionController();
-
-
-            const promise = controller.removeRemoteSettings.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/static/**/*',
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new StaticAssetsController();
-
-
-            const promise = controller.getStaticsAssets.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/ifttt/settings',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new IftttController();
-
-
-            const promise = controller.isIftttEnabled.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/ifttt/settings',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                iftttIntegrationSettings: { "in": "body", "name": "iftttIntegrationSettings", "required": true, "ref": "IftttIntegrationSettings" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new IftttController();
-
-
-            const promise = controller.setIftttIntegrationSettings.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/ifttt/trigger/minions/raw',
-        authenticateMiddleware([{ "iftttAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                iftttRawActionTriggerd: { "in": "body", "name": "iftttRawActionTriggerd", "required": true, "ref": "IftttRawActionTriggered" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new IftttController();
-
-
-            const promise = controller.triggeredSomeAction.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/ifttt/trigger/minions/:minionId',
-        authenticateMiddleware([{ "iftttAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                iftttActionTriggered: { "in": "body", "name": "iftttActionTriggered", "required": true, "ref": "IftttActionTriggered" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new IftttController();
-
-
-            const promise = controller.triggeredMinionAction.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/ifttt/trigger/operations/:operationId',
-        authenticateMiddleware([{ "iftttAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                operationId: { "in": "path", "name": "operationId", "required": true, "dataType": "string" },
-                iftttActionTriggeredRequest: { "in": "body", "name": "iftttActionTriggeredRequest", "required": true, "ref": "IftttActionTriggeredRequest" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new IftttController();
-
-
-            const promise = controller.triggeredOperationAction.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/version/latest',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new VersionsController();
-
-
-            const promise = controller.updateVersion.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/version/update-status',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new VersionsController();
-
-
-            const promise = controller.getUpdateStatus.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/version',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new VersionsController();
-
-
-            const promise = controller.getCurrentVersion.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/version/is-up-date',
-        authenticateMiddleware([{ "adminAuth": [] }, { "userAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new VersionsController();
-
-
-            const promise = controller.isLatestVersion.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/rf/devices',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new RfController();
-
-
-            const promise = controller.getCommandsRepoAvailableDevices.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.put('/API/rf/fetch-commands/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                commandsRepoDevice: { "in": "body", "name": "commandsRepoDevice", "required": true, "ref": "CommandsRepoDevice" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new RfController();
-
-
-            const promise = controller.fetchDeviceCommandsToMinion.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/rf/record/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new RfController();
-
-
-            const promise = controller.recordMinionCommand.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.post('/API/rf/generate/:minionId',
-        authenticateMiddleware([{ "userAuth": [] }, { "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                minionId: { "in": "path", "name": "minionId", "required": true, "dataType": "string" },
-                minionStatus: { "in": "body", "name": "minionStatus", "required": true, "ref": "MinionStatus" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new RfController();
-
-
-            const promise = controller.generateMinionCommand.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/logs',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
-            }
-
-            const controller = new LogsController();
-
-
-            const promise = controller.getLastLogs.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    app.get('/API/backup',
-        authenticateMiddleware([{ "adminAuth": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-            };
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request);
-            } catch (err) {
-                response.status(422).send({
-                    responseCode: 1422,
-                    message: JSON.stringify(err.fields),
-                } as ErrorResponse);
-                return;
+                return next(err);
             }
 
             const controller = new BackupController();
 
 
             const promise = controller.getSettingsBackup.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
+            promiseHandler(controller, promise, response, undefined, next);
         });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/devices',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function DevicesController_getDevices(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new DevicesController();
+
+
+            const promise = controller.getDevices.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/devices/kinds',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function DevicesController_getDevicesKinds(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new DevicesController();
+
+
+            const promise = controller.getDevicesKinds.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/devices/:deviceMac',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function DevicesController_setDeviceName(request: any, response: any, next: any) {
+            const args = {
+                    deviceMac: {"in":"path","name":"deviceMac","required":true,"dataType":"string"},
+                    device: {"in":"body","name":"device","required":true,"ref":"LocalNetworkDevice"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new DevicesController();
+
+
+            const promise = controller.setDeviceName.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/devices/rescan',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function DevicesController_rescanDevices(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new DevicesController();
+
+
+            const promise = controller.rescanDevices.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/feed/minions',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function FeedController_getMinionsFeed(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new FeedController();
+
+
+            const promise = controller.getMinionsFeed.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/feed/timings',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function FeedController_getTimingFeed(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new FeedController();
+
+
+            const promise = controller.getTimingFeed.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/ifttt/settings',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function IftttController_isIftttEnabled(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new IftttController();
+
+
+            const promise = controller.isIftttEnabled.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/ifttt/settings',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function IftttController_setIftttIntegrationSettings(request: any, response: any, next: any) {
+            const args = {
+                    iftttIntegrationSettings: {"in":"body","name":"iftttIntegrationSettings","required":true,"ref":"IftttIntegrationSettings"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new IftttController();
+
+
+            const promise = controller.setIftttIntegrationSettings.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/ifttt/trigger/minions/raw',
+            authenticateMiddleware([{"iftttAuth":[]}]),
+
+            function IftttController_triggeredSomeAction(request: any, response: any, next: any) {
+            const args = {
+                    iftttRawActionTriggerd: {"in":"body","name":"iftttRawActionTriggerd","required":true,"ref":"IftttRawActionTriggered"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new IftttController();
+
+
+            const promise = controller.triggeredSomeAction.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/ifttt/trigger/minions/:minionId',
+            authenticateMiddleware([{"iftttAuth":[]}]),
+
+            function IftttController_triggeredMinionAction(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    iftttActionTriggered: {"in":"body","name":"iftttActionTriggered","required":true,"ref":"IftttActionTriggered"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new IftttController();
+
+
+            const promise = controller.triggeredMinionAction.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/ifttt/trigger/operations/:operationId',
+            authenticateMiddleware([{"iftttAuth":[]}]),
+
+            function IftttController_triggeredOperationAction(request: any, response: any, next: any) {
+            const args = {
+                    operationId: {"in":"path","name":"operationId","required":true,"dataType":"string"},
+                    iftttActionTriggeredRequest: {"in":"body","name":"iftttActionTriggeredRequest","required":true,"ref":"IftttActionTriggeredRequest"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new IftttController();
+
+
+            const promise = controller.triggeredOperationAction.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/logs',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function LogsController_getLastLogs(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new LogsController();
+
+
+            const promise = controller.getLastLogs.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/minions/timeline',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_getMinionsTimeline(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.getMinionsTimeline.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/minions/power-off',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_powerAllOff(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.powerAllOff.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/minions/rename/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_renameMinion(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    minionRename: {"in":"body","name":"minionRename","required":true,"ref":"MinionRename"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.renameMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/minions/room/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_renameRoom(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    roomName: {"in":"body","name":"roomName","required":true,"ref":"MinionSetRoomName"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.renameRoom.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/minions/timeout/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_setMinionTimeout(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    setTimeout: {"in":"body","name":"setTimeout","required":true,"ref":"SetMinionAutoTurnOff"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.setMinionTimeout.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/minions/calibrate/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_setMinionCalibrate(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    calibration: {"in":"body","name":"calibration","required":true,"ref":"MinionCalibrate"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.setMinionCalibrate.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/minions/rescan/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_rescanMinionStatus(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.rescanMinionStatus.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/minions/rescan',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_rescanMinionsStatus(request: any, response: any, next: any) {
+            const args = {
+                    scanNetwork: {"default":false,"in":"query","name":"scanNetwork","dataType":"boolean"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.rescanMinionsStatus.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/minions/rescan',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_getSescaningMinionsStatus(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.getSescaningMinionsStatus.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.delete('/minions/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_deleteMinion(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.deleteMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/minions',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_createMinion(request: any, response: any, next: any) {
+            const args = {
+                    minion: {"in":"body","name":"minion","required":true,"ref":"Minion"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.createMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/minions/:minionId/ifttt',
+            authenticateMiddleware([{"iftttAuth":[]}]),
+
+            function MinionsController_notifyMinionStatusChanged(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    iftttOnChanged: {"in":"body","name":"iftttOnChanged","required":true,"ref":"IftttOnChanged"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.notifyMinionStatusChanged.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/minions',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_getMinions(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.getMinions.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/minions/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_getMinion(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.getMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/minions/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_setMinion(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    setStatus: {"in":"body","name":"setStatus","required":true,"ref":"MinionStatus"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.setMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/operations',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function OperationsController_getOperations(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new OperationsController();
+
+
+            const promise = controller.getOperations.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/operations/:operationId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function OperationsController_getOperation(request: any, response: any, next: any) {
+            const args = {
+                    operationId: {"in":"path","name":"operationId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new OperationsController();
+
+
+            const promise = controller.getOperation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/operations/:operationId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function OperationsController_setOperation(request: any, response: any, next: any) {
+            const args = {
+                    operationId: {"in":"path","name":"operationId","required":true,"dataType":"string"},
+                    operation: {"in":"body","name":"operation","required":true,"ref":"Operation"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new OperationsController();
+
+
+            const promise = controller.setOperation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.delete('/operations/:operationId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function OperationsController_deleteOperation(request: any, response: any, next: any) {
+            const args = {
+                    operationId: {"in":"path","name":"operationId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new OperationsController();
+
+
+            const promise = controller.deleteOperation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/operations',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function OperationsController_createOperation(request: any, response: any, next: any) {
+            const args = {
+                    operation: {"in":"body","name":"operation","required":true,"ref":"Operation"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new OperationsController();
+
+
+            const promise = controller.createOperation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/operations/trigger/:operationId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function OperationsController_triggerOperation(request: any, response: any, next: any) {
+            const args = {
+                    operationId: {"in":"path","name":"operationId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new OperationsController();
+
+
+            const promise = controller.triggerOperation.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/rf/devices',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function RfController_getCommandsRepoAvailableDevices(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RfController();
+
+
+            const promise = controller.getCommandsRepoAvailableDevices.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/rf/fetch-commands/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function RfController_fetchDeviceCommandsToMinion(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    commandsRepoDevice: {"in":"body","name":"commandsRepoDevice","required":true,"ref":"CommandsRepoDevice"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RfController();
+
+
+            const promise = controller.fetchDeviceCommandsToMinion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/rf/record/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function RfController_recordMinionCommand(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    minionStatus: {"in":"body","name":"minionStatus","required":true,"ref":"MinionStatus"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RfController();
+
+
+            const promise = controller.recordMinionCommand.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/rf/generate/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function RfController_generateMinionCommand(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+                    minionStatus: {"in":"body","name":"minionStatus","required":true,"ref":"MinionStatus"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RfController();
+
+
+            const promise = controller.generateMinionCommand.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/remote',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function RemoteConnectionController_getRemoteHost(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.getRemoteHost.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/remote/status',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function RemoteConnectionController_getConnectionStatus(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.getConnectionStatus.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/remote/machine-mac',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function RemoteConnectionController_getMachineMac(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.getMachineMac.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/remote',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function RemoteConnectionController_setRemoteSettings(request: any, response: any, next: any) {
+            const args = {
+                    remoteSettings: {"in":"body","name":"remoteSettings","required":true,"ref":"RemoteSettings"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.setRemoteSettings.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.delete('/remote',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function RemoteConnectionController_removeRemoteSettings(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new RemoteConnectionController();
+
+
+            const promise = controller.removeRemoteSettings.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/static/**/*',
+
+            function StaticAssetsController_getStaticsAssets(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new StaticAssetsController();
+
+
+            const promise = controller.getStaticsAssets.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/timings',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function TimingsController_getTimings(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new TimingsController();
+
+
+            const promise = controller.getTimings.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/timings/:timingId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function TimingsController_getTiming(request: any, response: any, next: any) {
+            const args = {
+                    timingId: {"in":"path","name":"timingId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new TimingsController();
+
+
+            const promise = controller.getTiming.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/timings/:timingId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function TimingsController_setTiming(request: any, response: any, next: any) {
+            const args = {
+                    timingId: {"in":"path","name":"timingId","required":true,"dataType":"string"},
+                    timing: {"in":"body","name":"timing","required":true,"ref":"Timing"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new TimingsController();
+
+
+            const promise = controller.setTiming.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.delete('/timings/:timingId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function TimingsController_deleteTiming(request: any, response: any, next: any) {
+            const args = {
+                    timingId: {"in":"path","name":"timingId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new TimingsController();
+
+
+            const promise = controller.deleteTiming.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/timings',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function TimingsController_createTiming(request: any, response: any, next: any) {
+            const args = {
+                    timing: {"in":"body","name":"timing","required":true,"ref":"Timing"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new TimingsController();
+
+
+            const promise = controller.createTiming.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/users/profile',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function UsersController_getProfile(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.getProfile.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/users/forward-auth/:userId',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function UsersController_requestUserForwarding(request: any, response: any, next: any) {
+            const args = {
+                    userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.requestUserForwarding.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/users/forward',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function UsersController_getRegisteredUsers(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.getRegisteredUsers.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/users/forward/:userId',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function UsersController_requestUserForwardingAuth(request: any, response: any, next: any) {
+            const args = {
+                    userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
+                    auth: {"in":"body","name":"auth","required":true,"ref":"UserForwardAuth"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.requestUserForwardingAuth.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.delete('/users/forward/:userId',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function UsersController_removeUserForwarding(request: any, response: any, next: any) {
+            const args = {
+                    userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.removeUserForwarding.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/users',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function UsersController_getUsers(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.getUsers.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/users/:userId',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function UsersController_getUser(request: any, response: any, next: any) {
+            const args = {
+                    userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.getUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/users/:userId',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function UsersController_setUser(request: any, response: any, next: any) {
+            const args = {
+                    userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    user: {"in":"body","name":"user","required":true,"ref":"User"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.setUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.delete('/users/:userId',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function UsersController_deleteUser(request: any, response: any, next: any) {
+            const args = {
+                    userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.deleteUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/users',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function UsersController_createUser(request: any, response: any, next: any) {
+            const args = {
+                    user: {"in":"body","name":"user","required":true,"ref":"User"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new UsersController();
+
+
+            const promise = controller.createUser.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.put('/version/latest',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function VersionsController_updateVersion(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new VersionsController();
+
+
+            const promise = controller.updateVersion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/version/update-status',
+            authenticateMiddleware([{"adminAuth":[]}]),
+
+            function VersionsController_getUpdateStatus(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new VersionsController();
+
+
+            const promise = controller.getUpdateStatus.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/version',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function VersionsController_getCurrentVersion(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new VersionsController();
+
+
+            const promise = controller.getCurrentVersion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/version/is-up-date',
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
+
+            function VersionsController_isLatestVersion(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new VersionsController();
+
+
+            const promise = controller.isLatestVersion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
     function authenticateMiddleware(security: TsoaRoute.Security[] = []) {
-        return (request: any, _response: any, next: any) => {
+        return async function runAuthenticationMiddleware(request: any, _response: any, next: any) {
 
-            const succeed = function(user: any) {
-                request['user'] = user;
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            // keep track of failed auth attempts so we can hand back the most
+            // recent one.  This behavior was previously existing so preserving it
+            // here
+            const failedAttempts: any[] = [];
+            const pushAndRethrow = (error: any) => {
+                failedAttempts.push(error);
+                throw error;
+            };
+
+            const secMethodOrPromises: Promise<any>[] = [];
+            for (const secMethod of security) {
+                if (Object.keys(secMethod).length > 1) {
+                    const secMethodAndPromises: Promise<any>[] = [];
+
+                    for (const name in secMethod) {
+                        secMethodAndPromises.push(
+                            expressAuthentication(request, name, secMethod[name])
+                                .catch(pushAndRethrow)
+                        );
+                    }
+
+                    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+                    secMethodOrPromises.push(Promise.all(secMethodAndPromises)
+                        .then(users => { return users[0]; }));
+                } else {
+                    for (const name in secMethod) {
+                        secMethodOrPromises.push(
+                            expressAuthentication(request, name, secMethod[name])
+                                .catch(pushAndRethrow)
+                        );
+                    }
+                }
+            }
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            try {
+                request['user'] = await promiseAny(secMethodOrPromises);
                 next();
             }
-
-            const fail = async function(error: any) {
-                _response.status(401).send({
-                    responseCode: 1401,
-                } as ErrorResponse);
+            catch(err) {
+                // Show most recent error as response
+                const error = failedAttempts.pop();
+                error.status = error.status || 401;
+                next(error);
             }
 
-            const scopes: string[] = [];
-            try {
-                for (const scop of security) {
-                    scopes.push(Object.keys(scop)[0]);
-                }
-            } catch (error) {
-            }
-
-            expressAuthentication(request, scopes)
-                .then(succeed)
-                .catch(fail)
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         }
     }
+
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
     function isController(object: any): object is Controller {
         return 'getHeaders' in object && 'getStatus' in object && 'setStatus' in object;
     }
 
-    function promiseHandler(controllerObj: any, promise: any, response: any, next: any) {
+    function promiseHandler(controllerObj: any, promise: any, response: any, successStatus: any, next: any) {
         return Promise.resolve(promise)
             .then((data: any) => {
-                let statusCode;
+                let statusCode = successStatus;
+                let headers;
                 if (isController(controllerObj)) {
-                    const headers = controllerObj.getHeaders();
-                    Object.keys(headers).forEach((name: string) => {
-                        response.set(name, headers[name]);
-                    });
-
-                    statusCode = controllerObj.getStatus();
+                    headers = controllerObj.getHeaders();
+                    statusCode = controllerObj.getStatus() || statusCode;
                 }
 
-                // If the controller ends the request by own code, ignore any action. 
-                if (response.finished) {
-                    return;
-                } else if (data || data === false) {
-                    // === false allows boolean result
-                    response.status(statusCode || 200).json(data);
-                } else {
-                    response.status(statusCode || 204).end();
-                }
+                // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+                returnHandler(response, statusCode, data, headers)
             })
-            .catch(async (error: any) => {
-                /**
-                 * If error is from TSOA sent it back to client (it's part of API)
-                 * Else throw it back.
-                 */
-                try {
-                    const cleanError = {
-                        responseCode: error.responseCode,
-                        message: error.message
-                    } as ErrorResponse;
-
-                    if (typeof cleanError.responseCode !== 'number') {
-                        throw new Error('invalid error schema');
-                    }
-                    response.status(500).send(cleanError);
-                } catch (error) {
-                    response.status(500).send({
-                        responseCode: 1500,
-                        message: 'unknown error',
-                    } as ErrorResponse);
-                }
-            });
+            .catch((error: any) => next(error));
     }
 
-    function getValidatedArgs(args: any, request: any): any[] {
-        const fieldErrors: FieldErrors = {};
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+    function returnHandler(response: any, statusCode?: number, data?: any, headers: any = {}) {
+        if (response.headersSent) {
+            return;
+        }
+        Object.keys(headers).forEach((name: string) => {
+            response.set(name, headers[name]);
+        });
+        if (data && typeof data.pipe === 'function' && data.readable && typeof data._read === 'function') {
+            data.pipe(response);
+        } else if (data !== null && data !== undefined) {
+            response.status(statusCode || 200).json(data);
+        } else {
+            response.status(statusCode || 204).end();
+        }
+    }
+
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+    function responder(response: any): TsoaResponse<HttpStatusCodeLiteral, unknown>  {
+        return function(status, data, headers) {
+            returnHandler(response, status, data, headers);
+        };
+    };
+
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+    function getValidatedArgs(args: any, request: any, response: any): any[] {
+        const fieldErrors: FieldErrors  = {};
         const values = Object.keys(args).map((key) => {
             const name = args[key].name;
             switch (args[key].in) {
                 case 'request':
                     return request;
                 case 'query':
-                    return validationService.ValidateParam(args[key], request.query[name], name, fieldErrors);
+                    return validationService.ValidateParam(args[key], request.query[name], name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
                 case 'path':
-                    return validationService.ValidateParam(args[key], request.params[name], name, fieldErrors);
+                    return validationService.ValidateParam(args[key], request.params[name], name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
                 case 'header':
-                    return validationService.ValidateParam(args[key], request.header(name), name, fieldErrors);
+                    return validationService.ValidateParam(args[key], request.header(name), name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
                 case 'body':
-                    return validationService.ValidateParam(args[key], request.body, name, fieldErrors, name + '.');
+                    return validationService.ValidateParam(args[key], request.body, name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
                 case 'body-prop':
-                    return validationService.ValidateParam(args[key], request.body[name], name, fieldErrors, 'body.');
+                    return validationService.ValidateParam(args[key], request.body[name], name, fieldErrors, 'body.', {"noImplicitAdditionalProperties":"throw-on-extras"});
+                case 'formData':
+                    if (args[key].dataType === 'file') {
+                        return validationService.ValidateParam(args[key], request.file, name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                    } else if (args[key].dataType === 'array' && args[key].array.dataType === 'file') {
+                        return validationService.ValidateParam(args[key], request.files, name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                    } else {
+                        return validationService.ValidateParam(args[key], request.body[name], name, fieldErrors, undefined, {"noImplicitAdditionalProperties":"throw-on-extras"});
+                    }
+                case 'res':
+                    return responder(response);
             }
         });
+
         if (Object.keys(fieldErrors).length > 0) {
             throw new ValidateError(fieldErrors, '');
         }
         return values;
     }
+
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 }
+
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
