@@ -9,30 +9,15 @@ import * as helmet from 'helmet';
 import * as path from 'path';
 import { RemoteConnectionBlSingleton } from './business-layer/remoteConnectionBl';
 import { Configuration } from './config';
-import { AuthenticationRouter } from './routers/authenticationRoute';
 import { FeedRouter } from './routers/feedRoute';
 import { RegisterRoutes } from './routers/routes';
 import { logger } from './utilities/logger';
+import * as swaggerUi from 'swagger-ui-express';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
-import './controllers/authController';
-import './controllers/backupController';
-import './controllers/devicesController';
-import './controllers/feedController';
-import './controllers/iftttController';
-import './controllers/logsController';
-import './controllers/minionsController';
-import './controllers/operationsController';
-import './controllers/radioFrequencyController';
-import './controllers/remoteConnectionController';
-import './controllers/staticAssetsController';
-import './controllers/timingsController';
-import './controllers/usersController';
-import './controllers/versionsController';
 
 class App {
   public express: express.Express;
-  private authenticationRouter: AuthenticationRouter = new AuthenticationRouter();
   private feedRouter: FeedRouter = new FeedRouter();
 
   constructor() {
@@ -57,6 +42,9 @@ class App {
     /** Serve static client side assets */
     this.serveStatic();
 
+		/** Serve swagger docs UI */
+    this.serveDocs();
+		
     /** And never sent errors back to the client. */
     this.catchErrors();
   }
@@ -87,8 +75,6 @@ class App {
    * Route requests to API.
    */
   private routes(): void {
-    /** Route authentication API */
-    this.authenticationRouter.routes(this.express);
 
     /** Route system feed */
     this.feedRouter.routes(this.express);
@@ -154,6 +140,12 @@ class App {
         allowedTags: [],
       });
     });
+  }
+
+	private serveDocs(): void {
+    this.express.use('/docs', swaggerUi.serve, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			return res.send(swaggerUi.generateHTML(await import('./swagger.json')));
+		});
   }
 
   /**

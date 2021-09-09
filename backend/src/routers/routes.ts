@@ -52,6 +52,17 @@ const models: TsoaRoute.Models = {
         "properties": {
             "email": {"dataType":"string","required":true},
             "password": {"dataType":"string","required":true},
+            "localServerId": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "LoginMfa": {
+        "dataType": "refObject",
+        "properties": {
+            "email": {"dataType":"string","required":true},
+            "mfa": {"dataType":"string","required":true},
+            "localServerId": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -558,7 +569,79 @@ export function RegisterRoutes(app: express.Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-        app.post('/auth/logout-sessions/:userId',
+        app.post('/API/auth/login',
+
+            function AuthController_login(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    login: {"in":"body","name":"login","required":true,"ref":"Login"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AuthController();
+
+
+            const promise = controller.login.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/API/auth/login/tfa',
+
+            function AuthController_loginTfa(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    login: {"in":"body","name":"login","required":true,"ref":"LoginMfa"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AuthController();
+
+
+            const promise = controller.loginTfa.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/API/auth/logout',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function AuthController_logout(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AuthController();
+
+
+            const promise = controller.logout.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/API/auth/logout-sessions/:userId',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function AuthController_logoutSessions(request: any, response: any, next: any) {
@@ -583,78 +666,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/auth/login',
-
-            function AuthController_loginDocumentation(request: any, response: any, next: any) {
-            const args = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    login: {"in":"body","name":"login","required":true,"ref":"Login"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new AuthController();
-
-
-            const promise = controller.loginDocumentation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/auth/login/tfa',
-
-            function AuthController_loginTfaDocumentation(request: any, response: any, next: any) {
-            const args = {
-                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
-                    login: {"in":"body","name":"login","required":true,"ref":"Login"},
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new AuthController();
-
-
-            const promise = controller.loginTfaDocumentation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/auth/logout',
-            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
-
-            function AuthController_logoutDocumentation(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new AuthController();
-
-
-            const promise = controller.logoutDocumentation.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/backup',
+        app.get('/API/backup',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function BackupController_getSettingsBackup(request: any, response: any, next: any) {
@@ -678,7 +690,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/devices',
+        app.get('/API/devices',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function DevicesController_getDevices(request: any, response: any, next: any) {
@@ -701,7 +713,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/devices/kinds',
+        app.get('/API/devices/kinds',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function DevicesController_getDevicesKinds(request: any, response: any, next: any) {
@@ -724,7 +736,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/devices/:deviceMac',
+        app.put('/API/devices/:deviceMac',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function DevicesController_setDeviceName(request: any, response: any, next: any) {
@@ -749,7 +761,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/devices/rescan',
+        app.post('/API/devices/rescan',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function DevicesController_rescanDevices(request: any, response: any, next: any) {
@@ -772,7 +784,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/feed/minions',
+        app.get('/API/feed/minions',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function FeedController_getMinionsFeed(request: any, response: any, next: any) {
@@ -795,7 +807,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/feed/timings',
+        app.get('/API/feed/timings',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function FeedController_getTimingFeed(request: any, response: any, next: any) {
@@ -818,7 +830,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/ifttt/settings',
+        app.get('/API/ifttt/settings',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function IftttController_isIftttEnabled(request: any, response: any, next: any) {
@@ -841,7 +853,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/ifttt/settings',
+        app.put('/API/ifttt/settings',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function IftttController_setIftttIntegrationSettings(request: any, response: any, next: any) {
@@ -865,7 +877,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/ifttt/trigger/minions/raw',
+        app.post('/API/ifttt/trigger/minions/raw',
             authenticateMiddleware([{"iftttAuth":[]}]),
 
             function IftttController_triggeredSomeAction(request: any, response: any, next: any) {
@@ -889,7 +901,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/ifttt/trigger/minions/:minionId',
+        app.post('/API/ifttt/trigger/minions/:minionId',
             authenticateMiddleware([{"iftttAuth":[]}]),
 
             function IftttController_triggeredMinionAction(request: any, response: any, next: any) {
@@ -914,7 +926,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/ifttt/trigger/operations/:operationId',
+        app.post('/API/ifttt/trigger/operations/:operationId',
             authenticateMiddleware([{"iftttAuth":[]}]),
 
             function IftttController_triggeredOperationAction(request: any, response: any, next: any) {
@@ -939,7 +951,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/logs',
+        app.get('/API/logs',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function LogsController_getLastLogs(request: any, response: any, next: any) {
@@ -963,7 +975,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/minions/timeline',
+        app.get('/API/minions/timeline',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_getMinionsTimeline(request: any, response: any, next: any) {
@@ -986,7 +998,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/minions/power-off',
+        app.put('/API/minions/power-off',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_powerAllOff(request: any, response: any, next: any) {
@@ -1009,7 +1021,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/minions/rename/:minionId',
+        app.put('/API/minions/rename/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_renameMinion(request: any, response: any, next: any) {
@@ -1034,7 +1046,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/minions/room/:minionId',
+        app.put('/API/minions/room/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_renameRoom(request: any, response: any, next: any) {
@@ -1059,7 +1071,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/minions/timeout/:minionId',
+        app.put('/API/minions/timeout/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_setMinionTimeout(request: any, response: any, next: any) {
@@ -1084,7 +1096,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/minions/calibrate/:minionId',
+        app.put('/API/minions/calibrate/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_setMinionCalibrate(request: any, response: any, next: any) {
@@ -1109,7 +1121,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/minions/rescan/:minionId',
+        app.post('/API/minions/rescan/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_rescanMinionStatus(request: any, response: any, next: any) {
@@ -1133,7 +1145,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/minions/rescan',
+        app.post('/API/minions/rescan',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_rescanMinionsStatus(request: any, response: any, next: any) {
@@ -1157,7 +1169,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/minions/rescan',
+        app.get('/API/minions/rescan',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_getSescaningMinionsStatus(request: any, response: any, next: any) {
@@ -1180,7 +1192,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/minions/:minionId',
+        app.delete('/API/minions/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_deleteMinion(request: any, response: any, next: any) {
@@ -1204,7 +1216,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/minions',
+        app.post('/API/minions',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_createMinion(request: any, response: any, next: any) {
@@ -1228,7 +1240,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/minions/:minionId/ifttt',
+        app.put('/API/minions/:minionId/ifttt',
             authenticateMiddleware([{"iftttAuth":[]}]),
 
             function MinionsController_notifyMinionStatusChanged(request: any, response: any, next: any) {
@@ -1253,7 +1265,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/minions',
+        app.get('/API/minions',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_getMinions(request: any, response: any, next: any) {
@@ -1276,7 +1288,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/minions/:minionId',
+        app.get('/API/minions/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_getMinion(request: any, response: any, next: any) {
@@ -1300,7 +1312,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/minions/:minionId',
+        app.put('/API/minions/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_setMinion(request: any, response: any, next: any) {
@@ -1325,7 +1337,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/operations',
+        app.get('/API/operations',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function OperationsController_getOperations(request: any, response: any, next: any) {
@@ -1348,7 +1360,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/operations/:operationId',
+        app.get('/API/operations/:operationId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function OperationsController_getOperation(request: any, response: any, next: any) {
@@ -1372,7 +1384,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/operations/:operationId',
+        app.put('/API/operations/:operationId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function OperationsController_setOperation(request: any, response: any, next: any) {
@@ -1397,7 +1409,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/operations/:operationId',
+        app.delete('/API/operations/:operationId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function OperationsController_deleteOperation(request: any, response: any, next: any) {
@@ -1421,7 +1433,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/operations',
+        app.post('/API/operations',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function OperationsController_createOperation(request: any, response: any, next: any) {
@@ -1445,7 +1457,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/operations/trigger/:operationId',
+        app.post('/API/operations/trigger/:operationId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function OperationsController_triggerOperation(request: any, response: any, next: any) {
@@ -1469,7 +1481,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/rf/devices',
+        app.get('/API/rf/devices',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function RfController_getCommandsRepoAvailableDevices(request: any, response: any, next: any) {
@@ -1492,7 +1504,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/rf/fetch-commands/:minionId',
+        app.put('/API/rf/fetch-commands/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function RfController_fetchDeviceCommandsToMinion(request: any, response: any, next: any) {
@@ -1517,7 +1529,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/rf/record/:minionId',
+        app.post('/API/rf/record/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function RfController_recordMinionCommand(request: any, response: any, next: any) {
@@ -1542,7 +1554,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/rf/generate/:minionId',
+        app.post('/API/rf/generate/:minionId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function RfController_generateMinionCommand(request: any, response: any, next: any) {
@@ -1567,7 +1579,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/remote',
+        app.get('/API/remote',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function RemoteConnectionController_getRemoteHost(request: any, response: any, next: any) {
@@ -1590,7 +1602,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/remote/status',
+        app.get('/API/remote/status',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function RemoteConnectionController_getConnectionStatus(request: any, response: any, next: any) {
@@ -1613,7 +1625,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/remote/machine-mac',
+        app.get('/API/remote/machine-mac',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function RemoteConnectionController_getMachineMac(request: any, response: any, next: any) {
@@ -1636,7 +1648,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/remote',
+        app.put('/API/remote',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function RemoteConnectionController_setRemoteSettings(request: any, response: any, next: any) {
@@ -1660,7 +1672,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/remote',
+        app.delete('/API/remote',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function RemoteConnectionController_removeRemoteSettings(request: any, response: any, next: any) {
@@ -1683,7 +1695,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/static/**/*',
+        app.get('/API/static/**/*',
 
             function StaticAssetsController_getStaticsAssets(request: any, response: any, next: any) {
             const args = {
@@ -1705,7 +1717,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/timings',
+        app.get('/API/timings',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function TimingsController_getTimings(request: any, response: any, next: any) {
@@ -1728,7 +1740,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/timings/:timingId',
+        app.get('/API/timings/:timingId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function TimingsController_getTiming(request: any, response: any, next: any) {
@@ -1752,7 +1764,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/timings/:timingId',
+        app.put('/API/timings/:timingId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function TimingsController_setTiming(request: any, response: any, next: any) {
@@ -1777,7 +1789,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/timings/:timingId',
+        app.delete('/API/timings/:timingId',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function TimingsController_deleteTiming(request: any, response: any, next: any) {
@@ -1801,7 +1813,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/timings',
+        app.post('/API/timings',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function TimingsController_createTiming(request: any, response: any, next: any) {
@@ -1825,7 +1837,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/profile',
+        app.get('/API/users/profile',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function UsersController_getProfile(request: any, response: any, next: any) {
@@ -1849,7 +1861,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/users/forward-auth/:userId',
+        app.post('/API/users/forward-auth/:userId',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function UsersController_requestUserForwarding(request: any, response: any, next: any) {
@@ -1873,7 +1885,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/forward',
+        app.get('/API/users/forward',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function UsersController_getRegisteredUsers(request: any, response: any, next: any) {
@@ -1896,7 +1908,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/users/forward/:userId',
+        app.post('/API/users/forward/:userId',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function UsersController_requestUserForwardingAuth(request: any, response: any, next: any) {
@@ -1921,7 +1933,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/users/forward/:userId',
+        app.delete('/API/users/forward/:userId',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function UsersController_removeUserForwarding(request: any, response: any, next: any) {
@@ -1945,7 +1957,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users',
+        app.get('/API/users',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function UsersController_getUsers(request: any, response: any, next: any) {
@@ -1968,7 +1980,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/users/:userId',
+        app.get('/API/users/:userId',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function UsersController_getUser(request: any, response: any, next: any) {
@@ -1993,7 +2005,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/users/:userId',
+        app.put('/API/users/:userId',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function UsersController_setUser(request: any, response: any, next: any) {
@@ -2019,7 +2031,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.delete('/users/:userId',
+        app.delete('/API/users/:userId',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function UsersController_deleteUser(request: any, response: any, next: any) {
@@ -2044,7 +2056,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/users',
+        app.post('/API/users',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function UsersController_createUser(request: any, response: any, next: any) {
@@ -2068,7 +2080,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.put('/version/latest',
+        app.put('/API/version/latest',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function VersionsController_updateVersion(request: any, response: any, next: any) {
@@ -2091,7 +2103,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/version/update-status',
+        app.get('/API/version/update-status',
             authenticateMiddleware([{"adminAuth":[]}]),
 
             function VersionsController_getUpdateStatus(request: any, response: any, next: any) {
@@ -2114,7 +2126,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/version',
+        app.get('/API/version',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function VersionsController_getCurrentVersion(request: any, response: any, next: any) {
@@ -2137,7 +2149,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/version/is-up-date',
+        app.get('/API/version/is-up-date',
             authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function VersionsController_isLatestVersion(request: any, response: any, next: any) {

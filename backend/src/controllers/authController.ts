@@ -1,112 +1,161 @@
 import * as express from 'express';
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Header,
-  Path,
-  Post,
-  Put,
-  Request,
-  Response,
-  Route,
-  Security,
-  SuccessResponse,
-  Tags,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Header,
+	Path,
+	Post,
+	Put,
+	Request,
+	Response,
+	Route,
+	Security,
+	SuccessResponse,
+	Tags,
 } from 'tsoa';
-import { AuthBlSingleton } from '../business-layer/authBl';
+import { AuthBlSingleton, sessionExpiresMs } from '../business-layer/authBl';
 import { SessionsBlSingleton } from '../business-layer/sessionsBl';
 import { UsersBlSingleton } from '../business-layer/usersBl';
-import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
+import { Configuration } from '../config';
+import { ErrorResponse, Login, LoginMfa, User } from '../models/sharedInterfaces';
+import { AUTHENTICATION_HEADER, SESSION_COOKIE_NAME } from '../security/authentication';
+import { LoginMfaSchema, LoginSchema, RequestSchemaValidator, SchemaValidator } from '../security/schemaValidator';
 
-/**
- * Because that express response object needs in auth logic (to write cookies)
- * The TSOA routing is for documentation only.
- * and one day i will extends TSOA lib to support response in parameter inject like request object.
- */
+
 @Tags('Authentication')
 @Route('auth')
 export class AuthController extends Controller {
-  /**
-   * Login to system.
-   */
-  public async login(request: express.Request, response: express.Response, login: Login): Promise<ErrorResponse> {
-    return await AuthBlSingleton.login(response, login);
-  }
 
-  /**
-   * 2-step verification login.
-   */
-  public async loginTfa(request: express.Request, response: express.Response, login: Login): Promise<ErrorResponse> {
-    return await AuthBlSingleton.loginTfa(response, login);
-  }
+	private activeSession(key: string) {
 
-  /**
-   * LLogout manually from the system.
-   */
-  public async logout(request: express.Request, response: express.Response): Promise<void> {
-    await AuthBlSingleton.logout(request.cookies.session, response);
-  }
+		this.setHeader(AUTHENTICATION_HEADER, key);
+		this.setHeader('Access-Control-Allow-Headers', 'Authorization');
+		this.setHeader('Access-Control-Expose-Headers', 'Authentication');
 
-  /**
-   * Logout from all activate sessions.
-   */
-  @Security('adminAuth')
-  @Security('userAuth')
-  @Response<ErrorResponse>(501, 'Server error')
-  @Post('/logout-sessions/{userId}')
-  public async logoutSessions(userId: string, @Request() request: express.Request): Promise<void> {
-    const userSession = request.user as User;
-    /**
-     * Only admin can update other user.
-     */
-    if (userSession.scope !== 'adminAuth' && userSession.email !== userId) {
-      throw {
-        responseCode: 4403,
-        message: 'user not allowed to logout for other users',
-      } as ErrorResponse;
-    }
+		const maxAgeInSec = sessionExpiresMs / 1000;
+		this.setHeader('Set-Cookie', `${SESSION_COOKIE_NAME}=${key}; Max-Age=${maxAgeInSec}; Path=/; HttpOnly; ${Configuration.http.useHttps ? 'Secure' : ''}; SameSite=Strict;`);
+	}
 
-    const user = await UsersBlSingleton.getUser(userId);
-    await SessionsBlSingleton.deleteUserSessions(user);
-  }
+	/**
+	 * Login.
+	 */
+	@Response<void>(201, '2-factors code sent')
+	@Response<ErrorResponse>(501, 'Server error')
+	@Response<ErrorResponse>(403, 'Auth fail')
+	@Response<ErrorResponse>(422, 'Invalid schema')
+	@Post('login')
+	public async login(@Request() request: express.Request, @Body() login: Login): Promise<void> {
+		let loginData: Login;
+		try {
+			loginData = await SchemaValidator(login, LoginSchema);
+		} catch {
+			this.setStatus(422);
+			return;
+		}
 
-  //////////////////////////////////////////////////
-  /////// SWAGGER DOCUMENTATION ONLY METHODS ///////
-  //////////////////////////////////////////////////
+		try {
+			const loginResults = await AuthBlSingleton.login(loginData);
 
-  /**
-   * Login.
-   */
-  @Response<void>(201, '2-fatore code sent')
-  @Response<ErrorResponse>(501, 'Server error')
-  @Response<ErrorResponse>(403, 'Auth fail')
-  @Response<ErrorResponse>(422, 'Invalid schema')
-  @Post('login')
-  public async loginDocumentation(@Request() request: express.Request, @Body() login: Login): Promise<void> {
-    throw new Error('Request never should be here. it is a documentation only route.');
-  }
+			if (loginResults.key && loginResults.success && !loginResults.requireMfa) {
+				this.activeSession(loginResults.key);
+				this.setStatus(200);
+				return;
+			}
 
-  /**
-   * 2-step verification login.
-   */
-  @Response<ErrorResponse>(501, 'Server error')
-  @Response<ErrorResponse>(403, 'Auth fail')
-  @Response<ErrorResponse>(422, 'Invalid schema')
-  @Post('login/tfa')
-  public async loginTfaDocumentation(@Request() request: express.Request, @Body() login: Login): Promise<void> {
-    throw new Error('Request never should be here. it is a documentation only route.');
-  }
+			if (loginResults.success && loginResults.requireMfa) {
+				/** Mark status to 201, means, the login is OK but needs extra, MFA. */
+				this.setStatus(201);
+				return;
+			}
 
-  /**
-   * Logout manually from the system.
-   */
-  @Security('userAuth')
-  @Security('adminAuth')
-  @Response<ErrorResponse>(501, 'Server error')
-  @Post('logout')
-  public async logoutDocumentation(): Promise<void> {
-    throw new Error('Request never should be here. it is a documentation only route.');
-  }
+			if (loginResults.error) {
+				/** Mark status to 201, means, the login is OK but needs extra, MFA. */
+				this.setStatus(501);
+				return;
+			}
+
+		} catch (error) {
+			this.setStatus(403);
+			return;
+		}
+		this.setStatus(501);
+		return;
+	}
+
+	/**
+	 * 2-step verification login.
+	 */
+	@Response<ErrorResponse>(501, 'Server error')
+	@Response<ErrorResponse>(403, 'Auth fail')
+	@Response<ErrorResponse>(422, 'Invalid schema')
+	@Post('login/tfa')
+	public async loginTfa(@Request() request: express.Request, @Body() login: LoginMfa): Promise<void> {
+		let loginData: LoginMfa;
+		try {
+			loginData = await SchemaValidator(login, LoginMfaSchema);
+		} catch {
+			this.setStatus(422);
+			return;
+		}
+
+		try {
+			const loginResults = await AuthBlSingleton.loginTfa(loginData);
+
+			if (loginResults.success && loginResults.requireMfa) {
+				this.activeSession(loginResults.key);
+				this.setStatus(200);
+				return;
+			}
+
+			if (loginResults.error) {
+				/** Mark status to 201, means, the login is OK but needs extra, MFA. */
+				this.setStatus(501);
+				return;
+			}
+
+		} catch (error) {
+			this.setStatus(403);
+			return;
+		}
+		this.setStatus(501);
+		return;
+	}
+
+
+	/**
+	 * Logout manually from the system.
+	 */
+	@Security('userAuth')
+	@Security('adminAuth')
+	@Response<ErrorResponse>(501, 'Server error')
+	@Post('logout')
+	public async logout(@Request() request: express.Request): Promise<void> {
+		await AuthBlSingleton.logout(request.cookies.session);
+		this.activeSession('');
+	}
+
+	/**
+ * Logout from all activate sessions.
+ */
+	@Security('adminAuth')
+	@Security('userAuth')
+	@Response<ErrorResponse>(501, 'Server error')
+	@Post('/logout-sessions/{userId}')
+	public async logoutSessions(userId: string, @Request() request: express.Request): Promise<void> {
+		const userSession = request.user as User;
+		/**
+		 * Only admin can update other user.
+		 */
+		if (userSession.scope !== 'adminAuth' && userSession.email !== userId) {
+			throw {
+				responseCode: 4403,
+				message: 'user not allowed to logout for other users',
+			} as ErrorResponse;
+		}
+
+		const user = await UsersBlSingleton.getUser(userId);
+		await SessionsBlSingleton.deleteUserSessions(user);
+	}
 }

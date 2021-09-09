@@ -33,11 +33,33 @@
 					},
 					"password": {
 						"type": "string"
+					},
+					"localServerId": {
+						"type": "string"
 					}
 				},
 				"required": [
 					"email",
 					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LoginMfa": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"mfa": {
+						"type": "string"
+					},
+					"localServerId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email",
+					"mfa"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1183,12 +1205,12 @@
 		"securitySchemes": {
 			"userAuth": {
 				"type": "apiKey",
-				"name": "Cookie",
+				"name": "authentication",
 				"in": "header"
 			},
 			"adminAuth": {
 				"type": "apiKey",
-				"name": "Cookie",
+				"name": "authentication",
 				"in": "header"
 			},
 			"iftttAuth": {
@@ -1213,54 +1235,12 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/auth/logout-sessions/{userId}": {
-			"post": {
-				"operationId": "LogoutSessions",
-				"responses": {
-					"204": {
-						"description": "No content"
-					},
-					"501": {
-						"description": "Server error",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ErrorResponse"
-								}
-							}
-						}
-					}
-				},
-				"description": "Logout from all activate sessions.",
-				"tags": [
-					"Authentication"
-				],
-				"security": [
-					{
-						"adminAuth": []
-					},
-					{
-						"userAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "userId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
 		"/auth/login": {
 			"post": {
-				"operationId": "LoginDocumentation",
+				"operationId": "Login",
 				"responses": {
 					"201": {
-						"description": "2-fatore code sent"
+						"description": "2-factors code sent"
 					},
 					"204": {
 						"description": "No content"
@@ -1316,7 +1296,7 @@
 		},
 		"/auth/login/tfa": {
 			"post": {
-				"operationId": "LoginTfaDocumentation",
+				"operationId": "LoginTfa",
 				"responses": {
 					"204": {
 						"description": "No content"
@@ -1363,7 +1343,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/Login"
+								"$ref": "#/components/schemas/LoginMfa"
 							}
 						}
 					}
@@ -1372,7 +1352,7 @@
 		},
 		"/auth/logout": {
 			"post": {
-				"operationId": "LogoutDocumentation",
+				"operationId": "Logout",
 				"responses": {
 					"204": {
 						"description": "No content"
@@ -1401,6 +1381,48 @@
 					}
 				],
 				"parameters": []
+			}
+		},
+		"/auth/logout-sessions/{userId}": {
+			"post": {
+				"operationId": "LogoutSessions",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Logout from all activate sessions.",
+				"tags": [
+					"Authentication"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/backup": {
@@ -4118,7 +4140,7 @@
 	},
 	"servers": [
 		{
-			"url": "/"
+			"url": "/API"
 		}
 	]
 }

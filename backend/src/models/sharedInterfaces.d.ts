@@ -57,6 +57,15 @@ export declare interface RemoteSettings {
 export declare interface Login {
   email: string;
   password: string;
+	/** Optional for remote request forwards only */
+	localServerId?: string;
+}
+
+export declare interface LoginMfa {
+  email: string;
+  mfa: string;
+	/** Optional for remote request forwards only */
+	localServerId?: string;
 }
 
 /**

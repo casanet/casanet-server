@@ -14,6 +14,9 @@ import {
 } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
+export const AUTHENTICATION_HEADER = 'authentication';
+export const SESSION_COOKIE_NAME = 'session';
+
 /**
  * System auth scopes, shown in swagger doc as 2 kinds of security definitions.
  */
@@ -42,14 +45,12 @@ export async function verifyBySecurity(request: express.Request, securityNames: 
 }
 
 /**
- * Cert Authentication middelwhere API.
- * the auth token should be the value of 'session' cookie.
- * @param securityName Used as auth scope beacuse of poor scopes swaggger support in apiKey auth.
+ * Cert Authentication middleware API.
  */
 export const expressAuthentication = async (
 	request: express.Request,
 	securityName: string,
-	scopesr?: string[],
+	scope?: string[],
 ): Promise<User | ErrorResponse> => {
 	// If the routing security sent wrong security scope.
 	if (!securityName) {
@@ -73,8 +74,15 @@ export const expressAuthentication = async (
 		} as ErrorResponse;
 	}
 
-	// If the session cookie empty, ther is nothing to check.
-	if (!request.cookies.session) {
+	// The authentication header sent, use it as the token.
+	// Note, that as default in production the token saved only in a secure cookie to avoid XSS.
+	// But we still support using API with authentication header
+	if (request.headers[AUTHENTICATION_HEADER]) {
+		request.cookies[SESSION_COOKIE_NAME] = request.headers[AUTHENTICATION_HEADER] as string;
+	}
+
+	// If the session cookie empty, there is nothing to check.
+	if (!request.cookies[SESSION_COOKIE_NAME]) {
 		throw {
 			responseCode: 1401,
 		} as ErrorResponse;
@@ -95,7 +103,7 @@ export const expressAuthentication = async (
 		}
 
 		/**
-		 * Pass only in user scope in requierd scopes and the scope is valid.
+		 * Pass only in user scope in required scopes and the scope is valid.
 		 */
 		if (user.scope.includes(securityName)) {
 			return user;

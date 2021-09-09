@@ -8,12 +8,12 @@
 		"securityDefinitions": {
 			"userAuth": {
 				"type": "apiKey",
-				"name": "Cookie",
+				"name": "authentication",
 				"in": "header"
 			},
 			"adminAuth": {
 				"type": "apiKey",
-				"name": "Cookie",
+				"name": "authentication",
 				"in": "header"
 			},
 			"iftttAuth": {
@@ -22,10 +22,12 @@
 				"in": "header"
 			}
 		},
-		"outputDirectory": "./",
+		"outputDirectory": "./src",
+		"basePath": "/API",
 		"specVersion": 3
 	},
 	"routes": {
+		"basePath": "/API",
 		"authenticationModule": "./src/security/authentication.ts",
 		"routesDir": "./src/routers"
 	}
