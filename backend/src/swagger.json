@@ -35,7 +35,8 @@
 						"type": "string"
 					},
 					"localServerId": {
-						"type": "string"
+						"type": "string",
+						"description": "Optional for remote request forwards only"
 					}
 				},
 				"required": [
@@ -54,7 +55,8 @@
 						"type": "string"
 					},
 					"localServerId": {
-						"type": "string"
+						"type": "string",
+						"description": "Optional for remote request forwards only"
 					}
 				},
 				"required": [
