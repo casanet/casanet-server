@@ -9,7 +9,7 @@ import { RemoteConnectionBlSingleton } from '../../src/business-layer/remoteConn
 import { TimelineBlSingleton } from '../../src/business-layer/timelineBl';
 import { TimeoutBlSingleton } from '../../src/business-layer/timeoutBl';
 import { TimingsBlSingleton } from '../../src/business-layer/timingsBl';
-import { Login } from '../../src/models/sharedInterfaces';
+import { Login, LoginMfa } from '../../src/models/sharedInterfaces';
 import {
   validAdminPlainPassword,
   validSystemAdmin,
@@ -79,10 +79,10 @@ describe('Authentication routing API', () => {
   });
 
   describe('/POST auth/login/tfa', () => {
-    it('it should respond 20x as status code', done => {
-      const loginSchema: Login = {
+    it('it should respond 40x as status code', done => {
+      const loginSchema: LoginMfa = {
         email: validSystemUser.email,
-        password: validUserPlainPassword,
+        mfa: validUserPlainPassword,
       };
 
       agent

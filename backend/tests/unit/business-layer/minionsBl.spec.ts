@@ -290,7 +290,7 @@ describe('Minions BL tests', () => {
   });
 
   describe('Create new minion', () => {
-    it('it should create minion successfuly', async () => {
+    it('it should create minion successfully', async () => {
       const minion: Minion = {
         device: {
           brand: 'test mock',
@@ -307,7 +307,7 @@ describe('Minions BL tests', () => {
       await minionsBl.createMinion(minion);
     });
 
-    it('it should create minion successfuly', async () => {
+    it('it should create minion successfully', async () => {
       const minionToCreate: Minion = {
         device: {
           brand: 'test mock',
@@ -340,7 +340,7 @@ describe('Minions BL tests', () => {
       throw new Error(`The minion type should fixed to 'airConditioning'`);
     });
 
-    it('it should create minion successfuly', async () => {
+    it('it should create minion successfully', async () => {
       const minionToCreate: Minion = {
         device: {
           brand: 'test mock',
@@ -425,6 +425,7 @@ describe('Minions BL tests', () => {
       const pysicalInfo: LocalNetworkDevice = {
         mac: '777777ee',
         ip: '192.168.1.58',
+        name: "------------",
         vendor: 'factory name',
       };
 
