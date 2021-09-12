@@ -14,6 +14,7 @@ import { RegisterRoutes } from './routers/routes';
 import { logger } from './utilities/logger';
 import * as swaggerUi from 'swagger-ui-express';
 import * as cors from 'cors';
+import { ErrorResponse } from './models/sharedInterfaces';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
 
@@ -186,15 +187,24 @@ class App {
 		/**
 		 * Production error handler, no stacktraces leaked to the client.
 		 */
-		this.express.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+		this.express.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+
 			try {
-				logger.warn(
+				if (err?.responseCode) {
+					const responseError = err as ErrorResponse;
+					const resCode = responseError.responseCode % 1000;
+					logger.error(`[REST_ERROR] request ${req.method} ${req.path} failed, sending error "${resCode}" to client with payload: ${JSON.stringify(responseError)}`)
+					res.status(resCode).json(responseError);
+					return;
+				}
+	
+				logger.error(
 					`express route crash,  req: ${req.method} ${req.path} error: ${err.message} body: ${JSON.stringify(
 						req.body,
 					)}`,
 				);
 			} catch (error) {
-				logger.warn(`Ok... even the crash route catcher crashd...`);
+				logger.error(`Ok... even the crash route catcher crashed...`);
 			}
 			res.status(500).send();
 		});

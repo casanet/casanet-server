@@ -56,7 +56,7 @@ export const expressAuthentication = async (
 	if (!securityName) {
 		logger.error('invalid or empty security scope');
 		throw {
-			responseCode: 1501,
+			responseCode: 1503,
 		} as ErrorResponse;
 	}
 
@@ -109,7 +109,6 @@ export const expressAuthentication = async (
 			return user;
 		}
 
-		logger.info(`user ${user.email} try to access ${request.method} ${request.path} above his scope ${user.scope}`);
 		throw {
 			responseCode: 1403,
 		} as ErrorResponse;

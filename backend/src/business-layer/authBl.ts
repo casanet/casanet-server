@@ -60,12 +60,14 @@ export class AuthBl {
 
 		/** If User not fault or password not match  */
 		if (!(await bcrypt.compare(login.password, userTryToLogin.password))) {
+			logger.debug(`login email ${login.email} fail, invalid password`);
 			/** Case password incorrect return generic error. */
 			throw this.GENERIC_ERROR_RESPONSE;
 		}
 
 		/** Case user not require MFA, the login process done. */
 		if (userTryToLogin.ignoreTfa) {
+			logger.debug(`login email ${login.email} succeed`);
 			const key = await this.sessionsBl.generateSession(userTryToLogin);
 			return {
 				key,
@@ -73,9 +75,11 @@ export class AuthBl {
 			}
 		}
 
+		logger.debug(`login email ${login.email} generating TFA code...`);
+
 		/** Case user require MFA but email account not properly sets, send error message about it. */
 		if (!Configuration.twoStepsVerification.TwoStepEnabled) {
-			logger.warn(`User ${userTryToLogin.email} try to login but there is no support in tfa right now`);
+			logger.error(`User ${userTryToLogin.email} try to login but there is no support in tfa right now`);
 			throw {
 				responseCode: 2501,
 				message: 'MFA configuration not set correctly',

@@ -42,7 +42,7 @@ export class UsersController extends Controller {
   @Get('profile')
   public async getProfile(@Request() request: express.Request): Promise<User> {
     const userSession: User = request.user;
-    return this.cleanUpUserBeforRelease(await UsersBlSingleton.getUser(userSession.email));
+    return this.cleanUpUserBeforeRelease(await UsersBlSingleton.getUser(userSession.email));
   }
 
   /**
@@ -108,8 +108,8 @@ export class UsersController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Get('{userId}')
   public async getUser(userId: string, @Request() request: express.Request): Promise<User> {
-    this.isUserAllowd(request.user, userId);
-    return this.cleanUpUserBeforRelease(await UsersBlSingleton.getUser(userId));
+    this.isUserAllowed(request.user, userId);
+    return this.cleanUpUserBeforeRelease(await UsersBlSingleton.getUser(userId));
   }
 
   /**
@@ -123,7 +123,7 @@ export class UsersController extends Controller {
   @Put('{userId}')
   public async setUser(userId: string, @Request() request: express.Request, @Body() user: User): Promise<void> {
     const userSession = request.user as User;
-    this.isUserAllowd(userSession, userId);
+    this.isUserAllowed(userSession, userId);
     user.email = userId;
 
     /**
@@ -145,7 +145,7 @@ export class UsersController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Delete('{userId}')
   public async deleteUser(userId: string, @Request() request: express.Request): Promise<void> {
-    this.isUserAllowd(request.user, userId);
+    this.isUserAllowed(request.user, userId);
     return await UsersBlSingleton.deleteUser(userId);
   }
 
@@ -163,7 +163,7 @@ export class UsersController extends Controller {
    * NEVER let anyone get hashed password.
    * @param user user to remove password from.
    */
-  private cleanUpUserBeforRelease(user: User): User {
+  private cleanUpUserBeforeRelease(user: User): User {
     const userCopy = DeepCopy<User>(user);
     delete userCopy.password;
     return userCopy;
@@ -176,7 +176,7 @@ export class UsersController extends Controller {
   private cleanUpUsersBeforRelease(users: User[]): User[] {
     const usersCopy: User[] = [];
     for (const user of users) {
-      usersCopy.push(this.cleanUpUserBeforRelease(user));
+      usersCopy.push(this.cleanUpUserBeforeRelease(user));
     }
     return usersCopy;
   }
@@ -184,7 +184,7 @@ export class UsersController extends Controller {
   /**
    * Only admin can watch/update/delete other users.
    */
-  private isUserAllowd(userSession: User, userIdInReq): void {
+  private isUserAllowed(userSession: User, userIdInReq): void {
     /**
      * Only admin can update other user.
      */
