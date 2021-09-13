@@ -1,5 +1,5 @@
-const fse = require('fs-extra');
-const path = require('path');
+import path from 'path';
+import fse from 'fs-extra';
 
 const fixModulesLicenceSection = async modulesPath => {
   try {

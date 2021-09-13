@@ -42,7 +42,8 @@ class App {
 		this.routes();
 
 		/** Serve static client side assets */
-		this.serveStatic();
+		this.serveDashboard();
+		this.serveLegacyDashboard();
 
 		/** Serve swagger docs UI */
 		this.serveDocs();
@@ -54,15 +55,37 @@ class App {
 	/**
 	 * Serve static files of front-end.
 	 */
-	private serveStatic() {
+	private serveLegacyDashboard() {
 		/** In / path only serve the index.html file */
-		this.express.get('/', (req: express.Request, res: express.Response) =>
+		this.express.get('/v3', (req: express.Request, res: express.Response) =>
 			res.sendFile(path.join(__dirname, '/public/index.html')),
 		);
 
 		/** Get any file in public directory */
 		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			const filePath = path.join(__dirname, '/public/', req.url);
+			fse.exists(filePath, exists => {
+				if (exists) {
+					res.sendFile(filePath);
+				} else {
+					next();
+				}
+			});
+		});
+	}
+
+	/**
+	 * Serve new dashboard files.
+	 */
+	 private serveDashboard() {
+		/** In / path only serve the index.html file */
+		this.express.get('/', (req: express.Request, res: express.Response) =>
+			res.sendFile(path.join(__dirname, '/dashboard/index.html')),
+		);
+
+		/** Get any file in public directory */
+		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			const filePath = path.join(__dirname, '/dashboard/', req.url);
 			fse.exists(filePath, exists => {
 				if (exists) {
 					res.sendFile(filePath);
@@ -100,7 +123,7 @@ class App {
 		// Protect authentication API from guessing username/password.
 		const authLimiter = rateLimit({
 			windowMs: 15 * 60 * 1000, // 5 minutes
-			max: 20,
+			max: 100,
 		});
 		// apply to all authentication requests
 		this.express.use('/API/auth/**', authLimiter);
