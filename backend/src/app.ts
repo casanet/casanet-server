@@ -77,7 +77,7 @@ class App {
 	/**
 	 * Serve new dashboard files.
 	 */
-	 private serveDashboard() {
+	private serveDashboard() {
 		/** In / path only serve the index.html file */
 		this.express.get('/', (req: express.Request, res: express.Response) =>
 			res.sendFile(path.join(__dirname, '/dashboard/index.html')),
@@ -137,8 +137,15 @@ class App {
 		this.express.use(helmet());
 		this.express.use(helmet.frameguard({ action: 'deny' }));
 
-		// The local server is used by same origin only, only in dev the dashboard is cross and the auth is by header
-		this.express.use(cors);
+		this.express.use(
+			cors({
+				credentials: true,
+				origin: (origin, callback) => {
+					// The local server is used by same origin only, only in dev the dashboard is cross and the auth is by header
+					callback(null, true);
+				},
+			})
+		);
 	}
 
 	/**
@@ -199,7 +206,7 @@ class App {
 					res.status(resCode).json(responseError);
 					return;
 				}
-	
+
 				logger.error(
 					`express route crash,  req: ${req.method} ${req.path} error: ${err.message} body: ${JSON.stringify(
 						req.body,
