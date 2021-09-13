@@ -137,29 +137,8 @@ class App {
 		this.express.use(helmet());
 		this.express.use(helmet.frameguard({ action: 'deny' }));
 
-
-		// Open CORS to let frontend apps API access.
-		const { ALLOW_DASHBOARD_ORIGINS } = process.env;
-
-		// Get the domains (separated by ',') or use the default domains
-		const whitelist = ALLOW_DASHBOARD_ORIGINS ? ALLOW_DASHBOARD_ORIGINS.split(',') : ['http://127.0.0.1:3000', 'http://localhost:3000'];
-
-		logger.info('Opening CORS for the following origins:');
-		// eslint-disable-next-line no-console
-		console.table(whitelist);
-		this.express.use(
-			cors({
-				credentials: true,
-				origin: (origin, callback) => {
-					/** If origin not sent (mean it`s same origin) or origin match white list, allow it. */
-					if (!origin || whitelist.indexOf(origin) !== -1) {
-						callback(null, true);
-					} else {
-						callback(new Error(`${origin} not allowed by CORS`));
-					}
-				},
-			})
-		);
+		// The local server is used by same origin only, only in dev the dashboard is cross and the auth is by header
+		this.express.use(cors);
 	}
 
 	/**
