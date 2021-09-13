@@ -9,12 +9,12 @@ const fixModulesLicenceSection = async modulesPath => {
     for (const dir of dirs) {
       try {
         const packagePath = path.join(modulesPath, dir, 'package.json');
-        const package = await fse.readJSON(packagePath);
-        if (package.license) {
+        const packageManifest = await fse.readJSON(packagePath);
+        if (packageManifest.license) {
           continue;
         }
-        package.license = 'ISC';
-        fse.writeJSON(packagePath, package);
+        packageManifest.license = 'ISC';
+        fse.writeJSON(packagePath, packageManifest);
         console.log(`package '${packagePath}' fixed`);
       } catch (error) {}
     }
