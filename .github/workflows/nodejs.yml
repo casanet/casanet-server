@@ -28,9 +28,12 @@ jobs:
         cd ../../
         cd frontend
         npm ci
+        npm run build:internal
         cd ../
         cd backend
         npm ci
+        rm -r dist/public
+        cp -r ../frontend/dist dist/public
         npm run bundle
         cp -v bundle/* ../casanet_bin
     - uses: actions/upload-artifact@v2

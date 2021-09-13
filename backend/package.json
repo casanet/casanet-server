@@ -25,7 +25,7 @@
     "pack:mac64": "pkg . -t node12-macos-x64 --output ../bundle/casanet_macos_x64",
     "pack": "cd dist && npm run pack:arm && npm run pack:win64 && npm run pack:lin64 && npm run pack:mac64",
     "prepack": "node ./scripts/fixPkgLicence.js && node ./scripts/fixPkgBuild.js && copyfiles package.json dist && copyfiles .env.example casanet.json bundle",
-    "bundle": "npm run build:front && npm run build && npm run fetch:dashboard && npm run prepack && npm run pack",
+    "bundle": "npm run build && npm run fetch:dashboard && npm run prepack && npm run pack",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "lint:fix": "tslint --fix -p tsconfig.json",
