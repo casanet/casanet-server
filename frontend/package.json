@@ -9,7 +9,7 @@
     "build:dev": "ng build",
     "serve": "ng serve --watch",
     "build:external": "npm run environment:external && ng build --prod && npm run postngbuild",
-    "build:internal:org": "npm run environment:internal && ng build --prod --base-href /v3/ --deploy-url /v3/ && del-cli ../backend/dist/public/ --force && copyfiles --up 1 dist/** ../backend/dist/public && copyfiles --up 1 dist/**/* ../backend/dist/public && copyfiles --up 1 dist/**/**/* ../backend/dist/public",
+    "build:internal": "npm run environment:internal && ng build --prod --base-href /v3/ --deploy-url /v3/ && del-cli ../backend/dist/public/ --force && copyfiles --up 1 dist/** ../backend/dist/public && copyfiles --up 1 dist/**/* ../backend/dist/public && copyfiles --up 1 dist/**/**/* ../backend/dist/public",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
