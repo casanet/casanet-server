@@ -85,7 +85,7 @@ export class AuthService {
   }
 
   public async loginTfa(email: string, password: string, localServerId: string = ''): Promise<void> {
-    await this.httpClient.post(`${environment.baseUrl}/auth/login/tfa`, { email, password, localServerId }, {
+    await this.httpClient.post(`${environment.baseUrl}/auth/login/tfa`, { email, localServerId, mfa: password }, {
       withCredentials: true
     }).toPromise();
     await this.retriveProfile();
