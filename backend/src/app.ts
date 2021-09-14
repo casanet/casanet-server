@@ -64,10 +64,13 @@ class App {
 		/** Get any file in public directory */
 		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			const filePath = path.join(__dirname, '/public/', req.url);
+			console.log(`CHECKING PUBLIC: "${filePath}"`);
 			fse.exists(filePath, exists => {
+				console.log(`EXISTS PUBLIC: "${filePath}"`);
 				if (exists) {
 					res.sendFile(filePath);
 				} else {
+					console.log(`404 PUBLIC: "${filePath}"`);
 					next();
 				}
 			});
@@ -86,10 +89,13 @@ class App {
 		/** Get any file in public directory */
 		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			const filePath = path.join(__dirname, '/dashboard/', req.url);
+			console.log(`CHECKING DASHBOARD: "${filePath}"`);
 			fse.exists(filePath, exists => {
 				if (exists) {
+					console.log(`EXISTS DASHBOARD: "${filePath}"`);
 					res.sendFile(filePath);
 				} else {
+					console.log(`404 DASHBOARD: "${filePath}"`);
 					next();
 				}
 			});
