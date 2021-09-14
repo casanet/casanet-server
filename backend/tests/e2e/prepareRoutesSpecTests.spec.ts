@@ -69,14 +69,14 @@ UsersDalSingleton.createUser(signInUser).then(() => {
 
   /**
    * Login to system then the load session agent can be used
-   * in other spec's to check thire tests.
+   * in other spec's to check their tests.
    */
   userAgent
     .post('/API/auth/login')
     .send(loginSchema)
     .end((err, res) => {
       if (err || res.statusType !== 2) {
-        console.error('Perpare user agent fail, all API tests specs that need user certs will fail too.');
+        console.error('Prepare user agent fail, all API tests specs that need user certs will fail too.');
       } else {
         const cookie: string = res['headers']['set-cookie'][0] as string;
         sessionKey.userSessionKey = cookie.split(';')[0].split('=')[1];

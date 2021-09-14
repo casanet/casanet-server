@@ -9,179 +9,225 @@ import * as helmet from 'helmet';
 import * as path from 'path';
 import { RemoteConnectionBlSingleton } from './business-layer/remoteConnectionBl';
 import { Configuration } from './config';
-import { AuthenticationRouter } from './routers/authenticationRoute';
 import { FeedRouter } from './routers/feedRoute';
 import { RegisterRoutes } from './routers/routes';
 import { logger } from './utilities/logger';
+import * as swaggerUi from 'swagger-ui-express';
+import * as cors from 'cors';
+import { ErrorResponse } from './models/sharedInterfaces';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
-import './controllers/authController';
-import './controllers/backupController';
-import './controllers/devicesController';
-import './controllers/feedController';
-import './controllers/iftttController';
-import './controllers/logsController';
-import './controllers/minionsController';
-import './controllers/operationsController';
-import './controllers/radioFrequencyController';
-import './controllers/remoteConnectionController';
-import './controllers/staticAssetsController';
-import './controllers/timingsController';
-import './controllers/usersController';
-import './controllers/versionsController';
 
 class App {
-  public express: express.Express;
-  private authenticationRouter: AuthenticationRouter = new AuthenticationRouter();
-  private feedRouter: FeedRouter = new FeedRouter();
+	public express: express.Express;
+	private feedRouter: FeedRouter = new FeedRouter();
 
-  constructor() {
-    /** Creat the express app */
-    this.express = express();
+	constructor() {
+		/** Creat the express app */
+		this.express = express();
 
-    /** Security is the first thing, right?  */
-    this.vulnerabilityProtection();
+		/** Security is the first thing, right?  */
+		this.vulnerabilityProtection();
 
-    /** Parse the request */
-    this.dataParsing();
+		/** Parse the request */
+		this.dataParsing();
 
-    /** After data parsed, sanitize it. */
-    this.sanitizeData();
+		/** After data parsed, sanitize it. */
+		this.sanitizeData();
 
-    /** Load instance to remote server connection logic. */
-    this.loadRemoteServerConnection();
+		/** Load instance to remote server connection logic. */
+		this.loadRemoteServerConnection();
 
-    /** Finlay route to API */
-    this.routes();
+		/** Finlay route to API */
+		this.routes();
 
-    /** Serve static client side assets */
-    this.serveStatic();
+		/** Serve static client side assets */
+		this.serveDashboard();
+		this.serveLegacyDashboard();
 
-    /** And never sent errors back to the client. */
-    this.catchErrors();
-  }
+		/** Serve swagger docs UI */
+		this.serveDocs();
 
-  /**
-   * Serve static files of front-end.
-   */
-  private serveStatic() {
-    /** In / path only serve the index.html file */
-    this.express.get('/', (req: express.Request, res: express.Response) =>
-      res.sendFile(path.join(__dirname, '/public/index.html')),
-    );
+		/** And never sent errors back to the client. */
+		this.catchErrors();
+	}
 
-    /** Get any file in public directory */
-    this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      const filePath = path.join(__dirname, '/public/', req.url);
-      fse.exists(filePath, exists => {
-        if (exists) {
-          res.sendFile(filePath);
-        } else {
-          next();
-        }
-      });
-    });
-  }
+	/**
+	 * Serve static files of front-end.
+	 */
+	private serveLegacyDashboard() {
+		/** In / path only serve the index.html file */
+		this.express.get('/v3', (req: express.Request, res: express.Response) =>
+			res.sendFile(path.join(__dirname, '/public/index.html')),
+		);
 
-  /**
-   * Route requests to API.
-   */
-  private routes(): void {
-    /** Route authentication API */
-    this.authenticationRouter.routes(this.express);
+		/** Get any file in public directory */
+		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
-    /** Route system feed */
-    this.feedRouter.routes(this.express);
+			// The v3 dashboard assets placed in the public dir, so redirect thr V3 requests to there.
+			let url = req.url || '';
+			if (url.startsWith('v3') || url.startsWith('/v3')) {
+				url = url.replace('v3', 'public');
+			} else {
+				next();
+				return;
+			}
 
-    /** Use generated routers (by TSOA) */
-    RegisterRoutes(this.express);
-  }
+			const filePath = path.join(__dirname, url);
+			fse.exists(filePath, exists => {
+				if (exists) {
+					res.sendFile(filePath);
+				} else {
+					next();
+				}
+			});
+		});
+	}
 
-  /**
-   * Protect from many vulnerabilities ,by http headers such as HSTS HTTPS redirect etc.
-   */
-  private vulnerabilityProtection(): void {
-    // Protect from DDOS and access thieves
-    const limiter = rateLimit({
-      windowMs: Configuration.requestsLimit.windowsMs,
-      max: Configuration.requestsLimit.maxRequests,
-    });
-    // apply to all requests
-    this.express.use(limiter);
+	/**
+	 * Serve new dashboard files.
+	 */
+	private serveDashboard() {
+		/** In / path only serve the index.html file */
+		this.express.get('/', (req: express.Request, res: express.Response) =>
+			res.sendFile(path.join(__dirname, '/dashboard/index.html')),
+		);
 
-    // Protect authentication API from guessing username/password.
-    const authLimiter = rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 10,
-    });
-    // apply to all authentication requests
-    this.express.use('/API/auth/**', authLimiter);
+		/** Get any file in public directory */
+		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			const filePath = path.join(__dirname, '/dashboard/', req.url);
+			fse.exists(filePath, exists => {
+				if (exists) {
+					res.sendFile(filePath);
+				} else {
+					next();
+				}
+			});
+		});
+	}
 
-    // Use to redirect http to https/ssl
-    if (Configuration.http.useHttps) {
-      this.express.use(forceSsl);
-    }
+	/**
+	 * Route requests to API.
+	 */
+	private routes(): void {
 
-    // Protect from XSS and other malicious attacks
-    this.express.use(helmet());
-    this.express.use(helmet.frameguard({ action: 'deny' }));
-  }
+		/** Route system feed */
+		this.feedRouter.routes(this.express);
 
-  /**
-   * Init remote server, with app router.
-   */
-  private loadRemoteServerConnection() {
-    RemoteConnectionBlSingleton.loadExpressRouter(this.express);
-  }
+		/** Use generated routers (by TSOA) */
+		RegisterRoutes(this.express);
+	}
 
-  /**
-   * Parse request query and body.
-   */
-  private dataParsing(): void {
-    this.express.use(cookieParser()); // Parse every request cookie to readble json.
+	/**
+	 * Protect from many vulnerabilities ,by http headers such as HSTS HTTPS redirect etc.
+	 */
+	private vulnerabilityProtection(): void {
+		// Protect from DDOS and access thieves
+		const limiter = rateLimit({
+			windowMs: Configuration.requestsLimit.windowsMs,
+			max: Configuration.requestsLimit.maxRequests,
+		});
+		// apply to all requests
+		this.express.use(limiter);
 
-    this.express.use(bodyParser.json({ limit: '2mb' })); // for parsing application/json
-  }
+		// Protect authentication API from guessing username/password.
+		const authLimiter = rateLimit({
+			windowMs: 15 * 60 * 1000, // 5 minutes
+			max: 100,
+		});
+		// apply to all authentication requests
+		this.express.use('/API/auth/**', authLimiter);
 
-  /**
-   * Sanitize Json schema arrived from client.
-   * to avoid stored XSS issues.
-   */
-  private sanitizeData(): void {
-    this.express.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-      sanitizeExpressMiddleware(req, res, next, {
-        allowedAttributes: {},
-        allowedTags: [],
-      });
-    });
-  }
+		// Use to redirect http to https/ssl
+		if (Configuration.http.useHttps) {
+			this.express.use(forceSsl);
+		}
 
-  /**
-   * Catch any Node / JS error.
-   */
-  private catchErrors() {
-    // Unknowon routing get 404
-    this.express.use('*', (req, res) => {
-      res.statusCode = 404;
-      res.send();
-    });
+		// Protect from XSS and other malicious attacks
+		this.express.use(helmet());
+		this.express.use(helmet.frameguard({ action: 'deny' }));
 
-    /**
-     * Production error handler, no stacktraces leaked to the client.
-     */
-    this.express.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-      try {
-        logger.warn(
-          `express route crash,  req: ${req.method} ${req.path} error: ${err.message} body: ${JSON.stringify(
-            req.body,
-          )}`,
-        );
-      } catch (error) {
-        logger.warn(`Ok... even the crash route catcher crashd...`);
-      }
-      res.status(500).send();
-    });
-  }
+		this.express.use(
+			cors({
+				credentials: true,
+				origin: (origin, callback) => {
+					// The local server is used by same origin only, only in dev the dashboard is cross and the auth is by header
+					callback(null, true);
+				},
+			})
+		);
+	}
+
+	/**
+	 * Init remote server, with app router.
+	 */
+	private loadRemoteServerConnection() {
+		RemoteConnectionBlSingleton.loadExpressRouter(this.express);
+	}
+
+	/**
+	 * Parse request query and body.
+	 */
+	private dataParsing(): void {
+		this.express.use(cookieParser()); // Parse every request cookie to readble json.
+
+		this.express.use(bodyParser.json({ limit: '2mb' })); // for parsing application/json
+	}
+
+	/**
+	 * Sanitize Json schema arrived from client.
+	 * to avoid stored XSS issues.
+	 */
+	private sanitizeData(): void {
+		this.express.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+			sanitizeExpressMiddleware(req, res, next, {
+				allowedAttributes: {},
+				allowedTags: [],
+			});
+		});
+	}
+
+	private serveDocs(): void {
+		this.express.use('/docs', swaggerUi.serve, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			return res.send(swaggerUi.generateHTML(await import('./swagger.json')));
+		});
+	}
+
+	/**
+	 * Catch any Node / JS error.
+	 */
+	private catchErrors() {
+		// Unknowon routing get 404
+		this.express.use('*', (req, res) => {
+			res.statusCode = 404;
+			res.send();
+		});
+
+		/**
+		 * Production error handler, no stacktraces leaked to the client.
+		 */
+		this.express.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+			try {
+				if (err?.responseCode) {
+					const responseError = err as ErrorResponse;
+					const resCode = responseError.responseCode % 1000;
+					logger.error(`[REST_ERROR] request ${req.method} ${req.path} failed, sending error "${resCode}" to client with payload: ${JSON.stringify(responseError)}`)
+					res.status(resCode).json(responseError);
+					return;
+				}
+
+				logger.error(
+					`express route crash,  req: ${req.method} ${req.path} error: ${err.message} body: ${JSON.stringify(
+						req.body,
+					)}`,
+				);
+			} catch (error) {
+				logger.error(`Ok... even the crash route catcher crashed...`);
+			}
+			res.status(500).send();
+		});
+	}
 }
 
 export const app = new App().express;

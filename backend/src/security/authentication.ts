@@ -6,93 +6,115 @@ import { UsersBlSingleton } from '../business-layer/usersBl';
 import { IftttIntergrationDalSingleton } from '../data-layer/iftttIntegrationDal';
 import { Session } from '../models/backendInterfaces';
 import {
-  AuthScopes,
-  ErrorResponse,
-  IftttActionTriggeredRequest,
-  IftttIntegrationSettings,
-  User,
+	AuthScopes,
+	ErrorResponse,
+	IftttActionTriggeredRequest,
+	IftttIntegrationSettings,
+	User,
 } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
+
+export const AUTHENTICATION_HEADER = 'authentication';
+export const SESSION_COOKIE_NAME = 'session';
 
 /**
  * System auth scopes, shown in swagger doc as 2 kinds of security definitions.
  */
 export const SystemAuthScopes: {
-  adminScope: AuthScopes;
-  userScope: AuthScopes;
-  iftttScope: AuthScopes;
+	adminScope: AuthScopes;
+	userScope: AuthScopes;
+	iftttScope: AuthScopes;
 } = {
-  adminScope: 'adminAuth',
-  userScope: 'userAuth',
-  iftttScope: 'iftttAuth',
+	adminScope: 'adminAuth',
+	userScope: 'userAuth',
+	iftttScope: 'iftttAuth',
 };
 
+export async function verifyBySecurity(request: express.Request, securityNames: string[]) {
+	for (const securityName of securityNames) {
+		try {
+			const user = await expressAuthentication(request, securityName);
+			return user;
+		} catch (error) {
+		}
+	}
+
+	throw {
+		responseCode: 1403,
+	} as ErrorResponse;
+}
+
 /**
- * Cert Authentication middelwhere API.
- * the auth token should be the value of 'session' cookie.
- * @param securityName Used as auth scope beacuse of poor scopes swaggger support in apiKey auth.
+ * Cert Authentication middleware API.
  */
 export const expressAuthentication = async (
-  request: express.Request,
-  scopes: string[],
+	request: express.Request,
+	securityName: string,
+	scope?: string[],
 ): Promise<User | ErrorResponse> => {
-  // If the routing security sent wrong security scope.
-  if (!scopes || scopes.length < 1) {
-    logger.error('invalid or empty security scope');
-    throw {
-      responseCode: 1501,
-    } as ErrorResponse;
-  }
+	// If the routing security sent wrong security scope.
+	if (!securityName) {
+		logger.error('invalid or empty security scope');
+		throw {
+			responseCode: 1503,
+		} as ErrorResponse;
+	}
 
-  if (scopes.indexOf(SystemAuthScopes.iftttScope) !== -1) {
-    const authedRequest: IftttActionTriggeredRequest = request.body;
-    if (typeof authedRequest === 'object' && authedRequest.apiKey) {
-      const iftttIntegrationSettings: IftttIntegrationSettings = await IftttIntergrationDalSingleton.getIntegrationSettings();
-      if (iftttIntegrationSettings.enableIntegration && authedRequest.apiKey === iftttIntegrationSettings.apiKey) {
-        return;
-      }
-    }
+	if (securityName == SystemAuthScopes.iftttScope) {
+		const authedRequest: IftttActionTriggeredRequest = request.body;
+		if (typeof authedRequest === 'object' && authedRequest.apiKey) {
+			const iftttIntegrationSettings: IftttIntegrationSettings = await IftttIntergrationDalSingleton.getIntegrationSettings();
+			if (iftttIntegrationSettings.enableIntegration && authedRequest.apiKey === iftttIntegrationSettings.apiKey) {
+				return;
+			}
+		}
 
-    throw {
-      responseCode: 1401,
-    } as ErrorResponse;
-  }
+		throw {
+			responseCode: 1401,
+		} as ErrorResponse;
+	}
 
-  // If the session cookie empty, ther is nothing to check.
-  if (!request.cookies.session) {
-    throw {
-      responseCode: 1401,
-    } as ErrorResponse;
-  }
+	// The authentication header sent, use it as the token.
+	// Note, that as default in production the token saved only in a secure cookie to avoid XSS.
+	// But we still support using API with authentication header
+	if (request.headers[AUTHENTICATION_HEADER]) {
+		request.cookies[SESSION_COOKIE_NAME] = request.headers[AUTHENTICATION_HEADER] as string;
+	}
 
-  try {
-    const session = await SessionsBlSingleton.getSession(request.cookies.session);
-    const user = await UsersBlSingleton.getUser(session.email);
+	// If the session cookie empty, there is nothing to check.
+	if (!request.cookies[SESSION_COOKIE_NAME]) {
+		throw {
+			responseCode: 1401,
+		} as ErrorResponse;
+	}
 
-    /**
-     * Make sure that session not expired.
-     */
-    if (new Date().getTime() - session.timeStamp > sessionExpiresMs) {
-      await SessionsBlSingleton.deleteSession(session);
-      throw {
-        responseCode: 1403,
-      } as ErrorResponse;
-    }
+	try {
+		const session = await SessionsBlSingleton.getSession(request.cookies.session);
+		const user = await UsersBlSingleton.getUser(session.email);
 
-    /**
-     * Pass only in user scope in requierd scopes and the scope is valid.
-     */
-    if (scopes.indexOf(user.scope) !== -1 && Object.values(SystemAuthScopes).indexOf(user.scope) !== -1) {
-      return user;
-    }
+		/**
+		 * Make sure that session not expired.
+		 */
+		if (new Date().getTime() - session.timeStamp > sessionExpiresMs) {
+			await SessionsBlSingleton.deleteSession(session);
+			throw {
+				responseCode: 1401,
+			} as ErrorResponse;
+		}
 
-    logger.info(`user ${user.email} try to access ${request.method} ${request.path} above his scope ${user.scope}`);
-    throw {
-      responseCode: 1403,
-    } as ErrorResponse;
-  } catch (error) {
-    throw {
-      responseCode: 1403,
-    } as ErrorResponse;
-  }
+		/**
+		 * Pass only in user scope in required scopes and the scope is valid.
+		 */
+		if (user.scope.includes(securityName)) {
+			return user;
+		}
+
+		throw {
+			responseCode: 1401,
+		} as ErrorResponse;
+	} catch (error) {
+		throw {
+			responseCode: 1401,
+		} as ErrorResponse;
+	}
 };

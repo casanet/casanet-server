@@ -5,6 +5,7 @@
     "outDir": "dist",
     "sourceMap": true,
     "experimentalDecorators": true,
+		"resolveJsonModule": true
   },
   "files": [
     "./src/models/backendInterfaces.d.ts",

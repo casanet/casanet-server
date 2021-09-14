@@ -1,8 +1,8 @@
-const simplegit = require('simple-git/promise');
-const fse = require('fs-extra');
-const path = require('path');
+import simpleGit from 'simple-git';
+import path from 'path';
+import fse from 'fs-extra';
 
-const git = simplegit();
+const git = simpleGit();
 
 const buildVersionInfo = async() => {
       const tags = await git.tags();
@@ -11,8 +11,8 @@ const buildVersionInfo = async() => {
 
       const timestamp = +rawTimestamp * 1000;
 
-      fse.writeFileSync(path.join(__dirname, '../dist', 'versionInfo.json'), JSON.stringify({
-        version: fse.readFileSync(path.join(__dirname, '../../', 'version.txt')).toString('utf8').trim(),
+      fse.writeFileSync(path.join('dist', 'versionInfo.json'), JSON.stringify({
+        version: fse.readFileSync(path.join('../', 'version.txt')).toString('utf8').trim(),
         commitHash,
         timestamp,
       }));

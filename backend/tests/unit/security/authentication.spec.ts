@@ -7,13 +7,14 @@ import { expressAuthentication, SystemAuthScopes } from '../../../src/security/a
 
 describe('Security scopes validation middelwere', () => {
   describe('Test certification', () => {
-    it('it should pass succsessfully', async () => {
+    it('it should pass successfully', async () => {
       const faksRequest = {
         cookies: {
           session: validSession.userSessionKey,
         },
+				headers: {},
       };
-      const user = (await expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.userScope]).catch(
+      const user = (await expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope).catch(
         () => {
           throw new Error('auth fail');
         },
@@ -30,8 +31,9 @@ describe('Security scopes validation middelwere', () => {
         cookies: {
           session: 'abc1234567',
         },
+				headers: {},
       };
-      expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.userScope])
+      expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope)
         .then(() => {
           throw new Error('Access should denied, but bad cert passed');
         })
@@ -46,8 +48,9 @@ describe('Security scopes validation middelwere', () => {
     it('it should denied', async () => {
       const faksRequest = {
         cookies: {},
+				headers: {},
       };
-      expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.userScope])
+      expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope)
         .then(() => {
           throw new Error('Access should denied, but empty cert passed');
         })
@@ -70,8 +73,9 @@ describe('Security scopes validation middelwere', () => {
         cookies: {
           session: validSession.adminSessionKey,
         },
+				headers: {},
       };
-      const user = (await expressAuthentication(faksRequest as express.Request, [SystemAuthScopes.adminScope]).catch(
+      const user = (await expressAuthentication(faksRequest as express.Request, SystemAuthScopes.adminScope).catch(
         () => {
           throw new Error('admin scope auth fail');
         },
@@ -88,9 +92,10 @@ describe('Security scopes validation middelwere', () => {
         cookies: {
           session: validSession.userSessionKey,
         },
+				headers: {},
       };
       try {
-        await expressAuthentication(faksRequest as express.Request, ['testScop']);
+        await expressAuthentication(faksRequest as express.Request, 'testScop');
       } catch (err) {
         const expectedError: ErrorResponse = {
           responseCode: 1403,
@@ -98,7 +103,7 @@ describe('Security scopes validation middelwere', () => {
         expect(err).to.deep.equal(expectedError);
         return;
       }
-      throw new Error('Access should throw unknow scope exception, but bad scope passed');
+      throw new Error('Access should throw unknown scope exception, but bad scope passed');
     });
 
     it('it should denied any access', async () => {
@@ -106,17 +111,18 @@ describe('Security scopes validation middelwere', () => {
         cookies: {
           session: validSession.userSessionKey,
         },
+				headers: {},
       };
       try {
-        await expressAuthentication(faksRequest as express.Request, ['']);
+        await expressAuthentication(faksRequest as express.Request, '');
       } catch (err) {
         const expectedError: ErrorResponse = {
-          responseCode: 1403,
+          responseCode: 1503,
         };
         expect(err).to.deep.equal(expectedError);
         return;
       }
-      throw new Error('Access should throw unknow scope exception, but empty scope passed');
+      throw new Error('Access should throw unknown scope exception, but empty scope passed');
     });
   });
 });

@@ -67,7 +67,7 @@ describe('Users routing API', () => {
 
     it('it should respond 50x as status code', done => {
       validUserAgent.get('/API/users/aa@bb.com').end((err, res) => {
-        expect(res.statusType).eql(5);
+        expect(res.status).eql(403);
         done();
       });
     });
@@ -107,7 +107,7 @@ describe('Users routing API', () => {
         .post('/API/users')
         .send(newUser)
         .end((err, res) => {
-          expect(res.statusType).eql(5);
+          expect(res.status).eql(405);
           done();
         });
     });

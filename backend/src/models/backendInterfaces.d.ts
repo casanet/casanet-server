@@ -10,6 +10,15 @@ import {
 } from './sharedInterfaces';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs';
 
+declare global {
+	namespace Express {
+		interface Request {
+			user: User;
+		}
+	}
+}
+
+
 /**
  * Session key and meta.
  */
