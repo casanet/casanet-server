@@ -29,18 +29,10 @@ jobs:
         cd frontend
         npm ci
         npm run build:internal
-        ls -a -l
-        cd dist
-        ls -a -l
-        cd ../..
+        cd ..
         cd backend
         npm ci
         cp -rf ../frontend/dist/* dist/public/
-        cd dist
-        ls -a -l
-        cd public
-        ls -a -l
-        cd ../..
         npm run bundle
         cp -v bundle/* ../casanet_bin
     - uses: actions/upload-artifact@v2
