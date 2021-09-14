@@ -128,6 +128,6 @@
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.8.2",
-    "ws": "^6.2.1"
+    "ws": "^6.2.2"
   }
 }
