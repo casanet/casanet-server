@@ -5,7 +5,7 @@ import nodeFetch from 'node-fetch';
 
 const dashboardDist = path.join('dist', 'dashboard');
 
-const ENV_BRANCH = process.env.GITHUB_REF !== 'master' ? 'main' : 'main';
+const ENV_BRANCH = process.env.GITHUB_REF !== 'master' ? 'develop' : 'main';
 
 (async () => {
 
