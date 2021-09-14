@@ -98,7 +98,7 @@ export const expressAuthentication = async (
 		if (new Date().getTime() - session.timeStamp > sessionExpiresMs) {
 			await SessionsBlSingleton.deleteSession(session);
 			throw {
-				responseCode: 1403,
+				responseCode: 1401,
 			} as ErrorResponse;
 		}
 
@@ -110,11 +110,11 @@ export const expressAuthentication = async (
 		}
 
 		throw {
-			responseCode: 1403,
+			responseCode: 1401,
 		} as ErrorResponse;
 	} catch (error) {
 		throw {
-			responseCode: 1403,
+			responseCode: 1401,
 		} as ErrorResponse;
 	}
 };
