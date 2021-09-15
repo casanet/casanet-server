@@ -71,19 +71,18 @@ Then create and edit the script named `casanet`
 
 In the editor paste the following content:
 ```bash
-#!/bin/bash 
+#!/bin/bash
+
 # autostart casanet server 
 echo "Starting casanet server in casanet tmux window" 
 case "$1" in 
 'start') 
-        killall node 
         tmux kill-session -t "casanet" 
         tmux new -s "casanet" -d 
-        tmux send-keys -t "casanet" "cd /root" C-m m # Or the "./casanet-server/backend" if you use the source-code 
+        tmux send-keys -t "casanet" "cd /root" C-m # Or the "./casanet-server/backend" if you use the source-code 
         tmux send-keys -t "casanet" "sudo ./casanet_linux_arm" C-m # Or casanet_linux_x64 or the "node ./dist/index.js" if you use the source-code
 ;; 
-'stop') 
-        killall node 
+'stop')  
         tmux kill-session -t "casanet" 
 esac 
 ```
