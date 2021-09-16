@@ -21,7 +21,7 @@ export class FeedRouter {
 				 * - used when not using cookies but authentication header as authorization for REST request
 				 */
 				if (req.query[AUTHENTICATION_HEADER]) {
-					req.headers[AUTHENTICATION_HEADER] = req.query[AUTHENTICATION_HEADER];
+					req.headers[AUTHENTICATION_HEADER] = req.query[AUTHENTICATION_HEADER] as any;
 				}
 				const user = (await verifyBySecurity(req, [
 					SystemAuthScopes.userScope,
