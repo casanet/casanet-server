@@ -9,11 +9,3 @@ import fse from 'fs-extra';
 	delete packageManifest.exports;
 	fse.writeJSON(packagePath, packageManifest);
 })();
-
-
-(async () => {
-	const packagePath = path.join('node_modules', 'nanoio', 'package.json');
-	const packageManifest = await fse.readJSON(packagePath);
-	delete packageManifest.exports;
-	fse.writeJSON(packagePath, packageManifest);
-})();
