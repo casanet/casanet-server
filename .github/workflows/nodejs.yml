@@ -56,7 +56,7 @@ jobs:
     - name: test backend
       run: |
         cd backend
-        npm ci
+        yarn install --frozen-lockfile
         npm run test
 
   release:

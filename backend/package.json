@@ -19,7 +19,7 @@
   "scripts": {
     "version": "node ./scripts/buildVersion.js",
     "fetch:dashboard": "node ./scripts/fetchDashboard.js",
-    "pack:arm": "pkg . -t node12-linux-armv7 --no-bytecode --output ../bundle/casanet_linux_arm",
+    "pack:arm": "pkg . -t node14-linux-armv7 --no-bytecode --output ../bundle/casanet_linux_arm",
     "pack:win64": "pkg . -t node14-win-x64 --output ../bundle/casanet_win_x64.exe",
     "pack:lin64": "pkg . -t node14-linux-x64 --output ../bundle/casanet_linux_x64",
     "pack:mac64": "pkg . -t node14-macos-x64 --output ../bundle/casanet_macos_x64",
