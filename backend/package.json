@@ -59,7 +59,7 @@
     "express-sse": "^0.5.1",
     "fs": "0.0.1-security",
     "fs-extra": "^7.0.1",
-    "generic-json-sanitizer": "^1.1.2",
+    "generic-json-sanitizer": "1.0.2",
     "helmet": "^3.20.0",
     "http": "0.0.0",
     "https": "^1.0.0",
