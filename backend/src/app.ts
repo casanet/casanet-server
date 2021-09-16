@@ -4,7 +4,7 @@ import * as express from 'express';
 import * as forceSsl from 'express-force-ssl';
 import * as rateLimit from 'express-rate-limit';
 import * as fse from 'fs-extra';
-// import { sanitizeExpressMiddleware } from 'generic-json-sanitizer';
+import { sanitizeExpressMiddleware } from 'generic-json-sanitizer';
 import * as helmet from 'helmet';
 import * as path from 'path';
 import { RemoteConnectionBlSingleton } from './business-layer/remoteConnectionBl';
@@ -179,12 +179,12 @@ class App {
 	 * to avoid stored XSS issues.
 	 */
 	private sanitizeData(): void {
-		// this.express.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-		// 	sanitizeExpressMiddleware(req, res, next, {
-		// 		allowedAttributes: {},
-		// 		allowedTags: [],
-		// 	});
-		// });
+		this.express.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+			sanitizeExpressMiddleware(req, res, next, {
+				allowedAttributes: {},
+				allowedTags: [],
+			});
+		});
 	}
 
 	private serveDocs(): void {
