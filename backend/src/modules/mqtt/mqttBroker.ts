@@ -25,10 +25,10 @@ export class MqttBroker {
       logger.warn(`[MqttBroker] aedes mqtt server  ${ip.address()}:${port} is closed`);
 		});
 		this.server.on('connection' ,() => {
-      logger.warn(`[MqttBroker] aedes mqtt server  ${ip.address()}:${port} connection arrived`);
+      logger.info(`[MqttBroker] aedes mqtt server  ${ip.address()}:${port} connection arrived`);
 		});
 		this.server.on('error' ,() => {
-      logger.warn(`[MqttBroker] aedes mqtt server  ${ip.address()}:${port} got error`);
+      logger.error(`[MqttBroker] aedes mqtt server  ${ip.address()}:${port} got error`);
 		});
 
     return ip.address();
