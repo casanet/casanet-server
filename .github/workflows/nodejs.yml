@@ -23,8 +23,8 @@ jobs:
         echo $PKG_CACHE_PATH
         mkdir v2.6
         cd v2.6
-        curl -L https://github.com/zeit/pkg-fetch/releases/download/v2.6/uploaded-v2.6-node-v12.2.0-linux-armv7 --output fetched-v12.18.1-linux-armv7 
-        chmod 777 fetched-v12.18.1-linux-armv7
+        curl -L https://github.com/vercel/pkg-fetch/releases/download/v3.2/node-v14.17.0-linuxstatic-armv7--output --output fetched-v2.6-node-v14.4.0-linux-armv7
+        chmod 777 fetched-v2.6-node-v14.4.0-linux-armv7
         cd ../../
         cd frontend
         npm ci
@@ -56,6 +56,7 @@ jobs:
     - name: test backend
       run: |
         cd backend
+
         yarn install --frozen-lockfile
         npm run test
 
