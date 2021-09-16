@@ -32,5 +32,5 @@ async function downloadAndUnpackDashboard(dashboardArtifact, distDir) {
 	// Download the dashboard app
 	await downloadAndUnpackDashboard(`https://nightly.link/casanet/dashboard-app/workflows/build/${ENV_BRANCH}/internal.zip`, dashboardDist);
 	// Download the legacy v3 front dashboard
-	await downloadAndUnpackDashboard(`https://nightly.link/casanet/frontend-v3/workflows/build/${ENV_BRANCH}/internal.zip`, legacyDashboardDist);
+	await downloadAndUnpackDashboard(`https://nightly.link/casanet/frontend-v3/workflows/nodejs/${ENV_BRANCH}/internal.zip`, legacyDashboardDist);
 })();
