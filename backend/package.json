@@ -33,7 +33,6 @@
     "build": "tsoa routes && tsoa swagger && tsc && npm run jscopy && npm run version",
     "serve": "npm run build && node dist/index.js",
     "build:prod": "npm run format && npm run lint && npm run build",
-    "build:front": "cd ../frontend && npm run build:internal && cd ../backend",
     "test:unit": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --exit --require ts-node/register tests/unit/**/*.spec.ts",
     "test:e2e": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --exit --require ts-node/register tests/e2e/**/*.spec.ts",
     "test": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --exit --require ts-node/register tests/**/*.spec.ts",

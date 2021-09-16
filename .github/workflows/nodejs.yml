@@ -26,13 +26,8 @@ jobs:
         curl -L https://github.com/zeit/pkg-fetch/releases/download/v2.6/uploaded-v2.6-node-v12.2.0-linux-armv7 --output fetched-v12.18.1-linux-armv7 
         chmod 777 fetched-v12.18.1-linux-armv7
         cd ../../
-        cd frontend
-        npm ci
-        npm run build:internal
-        cd ..
         cd backend
         npm ci
-        cp -rf ../frontend/dist/* dist/public/
         npm run bundle
         cp -v bundle/* ../casanet_bin
     - uses: actions/upload-artifact@v2
