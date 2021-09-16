@@ -10,9 +10,10 @@ const fixModulesLicenceSection = async modulesPath => {
       try {
         const packagePath = path.join(modulesPath, dir, 'package.json');
         const packageManifest = await fse.readJSON(packagePath);
-        if (packageManifest.license) {
-          continue;
-        }
+        // See https://github.com/vercel/pkg/pull/1140
+				// if (packageManifest.license) {
+        //   continue;
+        // }
         packageManifest.license = 'ISC';
         fse.writeJSON(packagePath, packageManifest);
         console.log(`package '${packagePath}' fixed`);
