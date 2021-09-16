@@ -31,7 +31,8 @@ jobs:
         npm run build:internal
         cd ..
         cd backend
-        npm ci
+        npm i -g yarn
+        yarn install --frozen-lockfile
         cp -rf ../frontend/dist/* dist/public/
         npm run bundle
         cp -v bundle/* ../casanet_bin

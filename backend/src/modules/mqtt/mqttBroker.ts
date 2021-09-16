@@ -4,28 +4,37 @@ import { logger } from '../../utilities/logger';
 
 /** Simple Mqtt server */
 export class MqttBroker {
-  private server: mosca.Server;
+	private server: mosca.Server;
 
-  constructor() {}
+	constructor() { }
 
-  /**
-   * Init broker
-   * @param port broker listening port.
-   * @returns  The broker ip.
-   */
-  public async invokeBroker(port: number): Promise<string> {
-    this.server = new mosca.Server({
-      port,
-    });
+	/**
+	 * Init broker
+	 * @param port broker listening port.
+	 * @returns  The broker ip.
+	 */
+	public async invokeBroker(port: number): Promise<string> {
+		try {
+			this.server = new mosca.Server({
+				port,
+			});
+		} catch (error) {
+			return '';
+		}
 
-    this.server.on('ready', () => {
-      logger.info(`Mosca mqtt server on ${ip.address()}:${port} is up and running`);
-    });
 
-    this.server.on('clientConnected', client => {
-      logger.info(`Mqtt ${client.id} client connected`);
-    });
+		this.server.on('ready', () => {
+			logger.info(`Mosca mqtt server on ${ip.address()}:${port} is up and running`);
+		});
 
-    return ip.address();
-  }
+		this.server.on('error', () => {
+			logger.error(`Mosca mqtt server on ${ip.address()}:${port} failed to boot`);
+		});
+
+		this.server.on('clientConnected', client => {
+			logger.info(`Mqtt ${client.id} client connected`);
+		});
+
+		return ip.address();
+	}
 }
