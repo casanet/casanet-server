@@ -319,10 +319,19 @@ export class RemoteConnectionBl {
     try {
       // Don't log al ack messages...
       if (localMessage.localMessagesType !== 'ack') {
+				logger.debug(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}" ...`);
       }
       this.webSocketClient.sendData(JSON.stringify(localMessage));
     } catch (error) {
       logger.error(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}" failed, ${error.message}`);
+
+			// In case of failure, close the connection, and try to reopen it from scratch
+			if (localMessage.localMessagesType === 'ack') {
+				logger.info(`[RemoteConnection.sendMessage] During the WS error, manually closing the WS, and reopening ...`);
+				this.remoteConnectionStatus = 'cantReachRemoteServer';
+				this.closeRemoteConnection();
+				this.connectToRemote();
+			}
     }
   }
 
