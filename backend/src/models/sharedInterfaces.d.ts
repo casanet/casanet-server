@@ -651,12 +651,17 @@ export declare interface Timing {
   /**
    * Timing display name.
    */
-  timingName: string;
+  timingName?: string;
 
   /**
-   * Operation id to invoke.
+   * Operation id to invoke (optional).
    */
-  triggerOperationId: string;
+  triggerOperationId?: string;
+
+	/**
+	 * Allow (optional) to trigger (only) one minion directly
+	 */
+	triggerDirectAction?: OperationActivity;
 
   /**
    * Is timing active or not.

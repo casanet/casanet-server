@@ -17,12 +17,12 @@ import { OperationsBl, OperationsBlSingleton } from './operationsBl';
  */
 export class IftttIntegrationBl {
   /**
-   * Init Ifttt IntegrationBl bl. using dependecy injection pattern to allow units testings.
-   * @param iftttIntergrationDal Inject the ifttt intergration dal.
+   * Init Ifttt IntegrationBl bl. using dependency injection pattern to allow units testings.
+   * @param iftttIntegrationDal Inject the ifttt integration dal.
    * @param minionsBl Inject the minions bl instance to used minionsBl.
    */
   constructor(
-    private iftttIntergrationDal: IftttIntergrationDal,
+    private iftttIntegrationDal: IftttIntergrationDal,
     private minionsBl: MinionsBl,
     private operationsBl: OperationsBl,
   ) {
@@ -39,12 +39,12 @@ export class IftttIntegrationBl {
    * Set Ifttt intergration settings.
    */
   public async setIftttIntergrationSettings(iftttIntegrationSettings: IftttIntegrationSettings) {
-    await this.iftttIntergrationDal.setIntegrationSettings(iftttIntegrationSettings);
+    await this.iftttIntegrationDal.setIntegrationSettings(iftttIntegrationSettings);
   }
 
   /** Get current ifttt integration settings */
   public async getIftttIntergrationSettings(): Promise<IftttIntegrationSettings> {
-    return await this.iftttIntergrationDal.getIntegrationSettings();
+    return await this.iftttIntegrationDal.getIntegrationSettings();
   }
 
   /** Trigger requested minion action. */
@@ -56,12 +56,12 @@ export class IftttIntegrationBl {
 
   /** Trigger requested operation action. */
   public async triggeredOperationAction(operationId: string): Promise<void> {
-    await this.operationsBl.triggerOperation(operationId);
+    await this.operationsBl.triggerOperationById(operationId);
   }
 
   /** Send trigger to webhooks API */
   private async invokeTrigger(minion: Minion) {
-    const iftttSettings = await this.iftttIntergrationDal.getIntegrationSettings();
+    const iftttSettings = await this.iftttIntegrationDal.getIntegrationSettings();
     if (!iftttSettings.enableIntegration) {
       return;
     }

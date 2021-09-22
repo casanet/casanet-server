@@ -568,6 +568,25 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"OperationActivity": {
+				"description": "Represents activity.",
+				"properties": {
+					"minionId": {
+						"type": "string",
+						"description": "Minion id to set"
+					},
+					"minionStatus": {
+						"$ref": "#/components/schemas/MinionStatus",
+						"description": "Status to set to minion."
+					}
+				},
+				"required": [
+					"minionId",
+					"minionStatus"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"TimingTypes": {
 				"type": "string",
 				"enum": [
@@ -730,6 +749,10 @@
 						"type": "string",
 						"description": "Operation id to invoke."
 					},
+					"triggerDirectAction": {
+						"$ref": "#/components/schemas/OperationActivity",
+						"description": "Allow (optional) to trigger (only) one minion directly"
+					},
 					"isActive": {
 						"type": "boolean",
 						"description": "Is timing active or not."
@@ -757,8 +780,6 @@
 				},
 				"required": [
 					"timingId",
-					"timingName",
-					"triggerOperationId",
 					"isActive",
 					"timingType",
 					"timingProperties"
@@ -994,25 +1015,6 @@
 				"required": [
 					"deviceId",
 					"newStatus"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"OperationActivity": {
-				"description": "Represents activity.",
-				"properties": {
-					"minionId": {
-						"type": "string",
-						"description": "Minion id to set"
-					},
-					"minionStatus": {
-						"$ref": "#/components/schemas/MinionStatus",
-						"description": "Status to set to minion."
-					}
-				},
-				"required": [
-					"minionId",
-					"minionStatus"
 				],
 				"type": "object",
 				"additionalProperties": false

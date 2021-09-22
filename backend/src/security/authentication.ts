@@ -36,11 +36,13 @@ export async function verifyBySecurity(request: express.Request, securityNames: 
 			const user = await expressAuthentication(request, securityName);
 			return user;
 		} catch (error) {
+			// Let give a try to the next scop
 		}
 	}
 
+	// If nothing helps, throw 401
 	throw {
-		responseCode: 1403,
+		responseCode: 1401,
 	} as ErrorResponse;
 }
 
