@@ -272,6 +272,15 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OperationActivity": {
+        "dataType": "refObject",
+        "properties": {
+            "minionId": {"dataType":"string","required":true},
+            "minionStatus": {"ref":"MinionStatus","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "TimingTypes": {
         "dataType": "refAlias",
         "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["dailySunTrigger"]},{"dataType":"enum","enums":["dailyTimeTrigger"]},{"dataType":"enum","enums":["once"]},{"dataType":"enum","enums":["timeout"]}],"validators":{}},
@@ -339,8 +348,9 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "timingId": {"dataType":"string","required":true},
-            "timingName": {"dataType":"string","required":true},
-            "triggerOperationId": {"dataType":"string","required":true},
+            "timingName": {"dataType":"string"},
+            "triggerOperationId": {"dataType":"string"},
+            "triggerDirectAction": {"ref":"OperationActivity"},
             "isActive": {"dataType":"boolean","required":true},
             "timingType": {"ref":"TimingTypes","required":true},
             "timingProperties": {"ref":"TimingProperties","required":true},
@@ -461,15 +471,6 @@ const models: TsoaRoute.Models = {
             "localMac": {"dataType":"string"},
             "deviceId": {"dataType":"string","required":true},
             "newStatus": {"ref":"SwitchOptions","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "OperationActivity": {
-        "dataType": "refObject",
-        "properties": {
-            "minionId": {"dataType":"string","required":true},
-            "minionStatus": {"ref":"MinionStatus","required":true},
         },
         "additionalProperties": false,
     },

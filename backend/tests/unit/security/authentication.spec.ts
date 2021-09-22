@@ -98,7 +98,7 @@ describe('Security scopes validation middelwere', () => {
         await expressAuthentication(faksRequest as express.Request, 'testScop');
       } catch (err) {
         const expectedError: ErrorResponse = {
-          responseCode: 1403,
+          responseCode: 1401,
         };
         expect(err).to.deep.equal(expectedError);
         return;

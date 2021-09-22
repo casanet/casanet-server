@@ -5,7 +5,6 @@ import { FeedController } from '../controllers/feedController';
 import { ErrorResponse, Login, User } from '../models/sharedInterfaces';
 import { AUTHENTICATION_HEADER, SystemAuthScopes, verifyBySecurity } from '../security/authentication';
 import { logger } from '../utilities/logger';
-import { expressAuthentication } from './../security/authentication';
 
 export class FeedRouter {
 	private feedController: FeedController = new FeedController();
