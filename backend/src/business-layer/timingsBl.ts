@@ -74,7 +74,9 @@ export class TimingsBl {
 	 * @param timing timing props to set.
 	 */
 	public async SetTiming(timingId: string, timing: Timing): Promise<void> {
-		await this.validateNewTimingOperation(timing);
+		if (timing.triggerOperationId) {
+			await this.validateNewTimingOperation(timing);
+		}
 		timing.timingId = timingId;
 		return await this.timingsDal.updateTiming(timing);
 	}
@@ -84,7 +86,9 @@ export class TimingsBl {
 	 * @param timing timing to create.
 	 */
 	public async CreateTiming(timing: Timing): Promise<void> {
-		await this.validateNewTimingOperation(timing);
+		if (timing.triggerOperationId) {
+			await this.validateNewTimingOperation(timing);
+		}
 		/**
 		 * Generate new id. (never trust client....)
 		 */
