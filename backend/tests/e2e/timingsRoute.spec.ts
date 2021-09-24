@@ -67,6 +67,25 @@ describe('Timings routing API', () => {
     });
   });
 
+	describe('/PUT timings/{userId}', () => {
+    it('it should response 405 duo timing properties mismatch', done => {
+      timingMock.isActive = false;
+			timingMock.timingProperties = {
+				timeout : {
+					durationInMinutes : 12,
+					startDate : new Date().getTime(),
+				}
+			}
+      validUserAgent
+        .put('/API/timings/td1')
+        .send(timingMock)
+        .end((err, res) => {
+          expect(res.statusType).eql(4);
+          done();
+        });
+    });
+  });
+
   describe('/DELETE timings/{timingId}', () => {
     it('it should respond 20x as status code', done => {
       validUserAgent.del('/API/timings/td1').end((err, res) => {
