@@ -747,7 +747,7 @@
 					},
 					"triggerOperationId": {
 						"type": "string",
-						"description": "Operation id to invoke."
+						"description": "Operation id to invoke (optional)."
 					},
 					"triggerDirectAction": {
 						"$ref": "#/components/schemas/OperationActivity",

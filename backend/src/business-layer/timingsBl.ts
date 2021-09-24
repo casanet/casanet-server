@@ -77,6 +77,7 @@ export class TimingsBl {
 		if (timing.triggerOperationId) {
 			await this.validateNewTimingOperation(timing);
 		}
+		await this.validateTimingProperties(timing);
 		timing.timingId = timingId;
 		return await this.timingsDal.updateTiming(timing);
 	}
@@ -89,6 +90,7 @@ export class TimingsBl {
 		if (timing.triggerOperationId) {
 			await this.validateNewTimingOperation(timing);
 		}
+		await this.validateTimingProperties(timing);
 		/**
 		 * Generate new id. (never trust client....)
 		 */
@@ -293,21 +295,24 @@ export class TimingsBl {
 	}
 
 	/**
-	 * Validate timing.
-	 * 1) operation existence.
-	 * 2) correct timing properties.
+	 * Validate operation existence.
 	 * @param timing timing to validate existence.
 	 */
-	private async validateNewTimingOperation(timing: Timing): Promise<ErrorResponse> {
+	private async validateNewTimingOperation(timing: Timing) {
 		await this.operationBl.getOperationById(timing.triggerOperationId);
+	}
 
+	/**
+	 * Validate timing properties.
+	 * @param timing timing to validate existence.
+	 */
+	private async validateTimingProperties(timing: Timing) {
 		if (!timing.timingProperties[timing.timingType]) {
 			throw {
 				responseCode: 3405,
 				message: 'timing properties not match to timing type',
 			} as ErrorResponse;
 		}
-		return;
 	}
 }
 
