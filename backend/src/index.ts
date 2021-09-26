@@ -98,7 +98,7 @@ async function initServices() {
 // Catch uncaughtException instead of crashing
 process.on('uncaughtException', async (err: any) => {
   const error = new Error();
-  logger.error(`[home-iot-server] app uncaughtException, error: ${err} ${err?.message} ${JSON.stringify(err)}\nstack: ${error.stack}`);
+  logger.error(`[home-iot-server] app uncaughtException, error: ${err} ${err?.message} ${JSON.stringify(err)}\nstack: ${err?.stack}`);
 
   // start restart process....
   /** THIS IS A DANGERS ACTION! BE SURE THAT USER KNOW WHAT IT IS SET AS RESET COMMAND */

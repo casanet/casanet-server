@@ -24,7 +24,7 @@ export class StaticAssetsController extends Controller {
    */
   @Response(404, 'Page not found')
   @Get('**/*')
-  public async getStaticsAssets(): Promise<any> {
+  public async getStaticsAssets(): Promise<string> {
     throw new Error('Request never should be here. it is a documentation only route.');
   }
 }

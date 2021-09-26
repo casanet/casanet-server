@@ -1,5 +1,5 @@
-const fse = require('fs-extra');
-const path = require('path');
+import path from 'path';
+import fse from 'fs-extra';
 
 const fixModulesLicenceSection = async modulesPath => {
   try {
@@ -9,12 +9,13 @@ const fixModulesLicenceSection = async modulesPath => {
     for (const dir of dirs) {
       try {
         const packagePath = path.join(modulesPath, dir, 'package.json');
-        const package = await fse.readJSON(packagePath);
-        if (package.license) {
-          continue;
-        }
-        package.license = 'ISC';
-        fse.writeJSON(packagePath, package);
+        const packageManifest = await fse.readJSON(packagePath);
+        // See https://github.com/vercel/pkg/pull/1140
+				// if (packageManifest.license) {
+        //   continue;
+        // }
+        packageManifest.license = 'ISC';
+        fse.writeJSON(packagePath, packageManifest);
         console.log(`package '${packagePath}' fixed`);
       } catch (error) {}
     }

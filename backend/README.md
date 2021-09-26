@@ -135,4 +135,4 @@ You can edit in the `defaultLockCalibrationMinutes` field in the `casanet.json` 
 
 The UI should wrap API.
 
-The full specs of API are documented in [swagger API file](./swagger.yaml).
+The full specs of API are documented in [swagger API file](./swagger.json).

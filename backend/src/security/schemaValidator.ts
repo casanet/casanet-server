@@ -63,6 +63,19 @@ export const LoginSchema: ObjectSchema = Joi.object()
   })
   .required();
 
+export const LoginMfaSchema: ObjectSchema = Joi.object()
+  .keys({
+    email: Joi.string()
+      .email()
+      .required(),
+			mfa: Joi.string()
+			.min(6)
+			.max(6)
+      .required(),
+    localServerId: Joi.string().allow(''),
+  })
+  .required();
+
 export const ErrorResponseSchema: ObjectSchema = Joi.object()
   .keys({
     responseCode: Joi.number()

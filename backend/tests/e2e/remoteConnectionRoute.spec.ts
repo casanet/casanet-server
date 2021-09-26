@@ -48,12 +48,12 @@ describe('Remote connection routing API', () => {
     });
 
     it('it should respond 50x as status code', done => {
-      remoteSettings.host = 'invalied.com/wrong';
+      remoteSettings.host = 'invalided.com/wrong';
       validAdminAgent
         .put('/API/remote')
         .send(remoteSettings)
         .end((err, res) => {
-          expect(res.statusType).eql(5);
+          expect(res.status).eql(422);
           done();
         });
     });

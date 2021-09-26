@@ -91,6 +91,6 @@ export class OperationsController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Post('trigger/{operationId}')
   public async triggerOperation(operationId: string): Promise<OperationResult[]> {
-    return await OperationsBlSingleton.triggerOperation(operationId);
+    return await OperationsBlSingleton.triggerOperationById(operationId);
   }
 }

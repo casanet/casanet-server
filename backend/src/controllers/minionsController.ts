@@ -191,7 +191,7 @@ export class MinionsController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Get()
   public async getMinions(): Promise<Minion[]> {
-    return this.cleanUpMinionsBeforRelease(await MinionsBlSingleton.getMinions());
+    return this.cleanUpMinionsBeforeRelease(await MinionsBlSingleton.getMinions());
   }
 
   /**
@@ -202,7 +202,7 @@ export class MinionsController extends Controller {
   @Security('adminAuth')
   @Get('{minionId}')
   public async getMinion(minionId: string): Promise<Minion> {
-    return this.cleanUpMinionBeforRelease(await MinionsBlSingleton.getMinionById(minionId));
+    return this.cleanUpMinionBeforeRelease(await MinionsBlSingleton.getMinionById(minionId));
   }
 
   /**
@@ -221,7 +221,7 @@ export class MinionsController extends Controller {
    * NEVER let anyone get device API keys.
    * @param minion minion to remove keys from.
    */
-  private cleanUpMinionBeforRelease(minion: Minion): Minion {
+  private cleanUpMinionBeforeRelease(minion: Minion): Minion {
     const minionCopy = DeepCopy<Minion>(minion);
     delete minionCopy.device.deviceId;
     delete minionCopy.device.token;
@@ -232,10 +232,10 @@ export class MinionsController extends Controller {
    * NEVER let anyone get device API keys.
    * @param minions minions to remove keys from.
    */
-  private cleanUpMinionsBeforRelease(minions: Minion[]): Minion[] {
+  private cleanUpMinionsBeforeRelease(minions: Minion[]): Minion[] {
     const minionsCopy: Minion[] = [];
     for (const minion of minions) {
-      minionsCopy.push(this.cleanUpMinionBeforRelease(minion));
+      minionsCopy.push(this.cleanUpMinionBeforeRelease(minion));
     }
     return minionsCopy;
   }

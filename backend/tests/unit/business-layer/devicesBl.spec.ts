@@ -42,7 +42,7 @@ describe('Devices BL tests', () => {
       return;
     }).timeout(moment.duration(2.5, 'seconds').asMilliseconds());
 
-    it('it should load names succsessfully', async () => {
+    it('it should load names successfully', async () => {
       const devices = await devicesBlMock.getDevices();
 
       const localDevices: LocalNetworkDevice = {

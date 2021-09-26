@@ -6,7 +6,6 @@ Let's create a smart home, without giving anyone access to our house 😊.
 Open-source server to control IoT devices in a local home network.
 
 [![CI CD Status](https://github.com/casanet/casanet-server/workflows/casanet%20server%20CI%20CD/badge.svg?branch=master)](https://github.com/casanet/casanet-server/actions)
-[![Build Status](https://travis-ci.org/casanet/casanet-server.svg?branch=master)](https://travis-ci.org/casanet/casanet-server)
 [![Coverage Status](https://coveralls.io/repos/github/casanet/casanet-server/badge.svg?branch=master)](https://coveralls.io/github/casanet/casanet-server?branch=master)
 
 The latest release binaries available to download from [casanet-server releases](https://github.com/casanet/casanet-server/releases)
