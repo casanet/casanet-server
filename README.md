@@ -13,17 +13,16 @@ The latest release binaries available to download from [casanet-server releases]
 The dashboard app (APK) currently on alpha version only, temporary available [here](https://github.com/casanet/dashboard-app/actions/runs/1276262855).
 
 ## Philosophy
-In this project, we wanted to solve a number of Smart Home troubles. 
+This project aims to resolve a number of issues plaguing most Smart Home systems
 
-* *One-stop shop*: anyone who uses a number of smart devices (smart IR, smart socket, or anything of that kind) of different brands is familiar with the problem of dealing with a number of different applications,
-holding 10 applications for each home appliance when each is completely different in the interface, operation abilities (timing, automation, etc.) and authentication.
+* *Lack of common interfaces*: Anyone who uses a number of smart devices (smart IR, smart sockets or anything of that kind) of different brands is familiar with the problem of having to deal with completely different applications, authentication methods, timings, operations etc. for each device.
 
-* *Reliability & Stability*: To control the home appliances from the internet, the devices communicate with the manufacture servers, but some are small Chinese companies and do not always work well, and even so, there is no guarantee for the future, and in most cases, in case of failure there is no readable and clear message that tells you what happens.
+* *Reliability & Stability*: To control home appliances from the internet, the devices communicate with the manufacture's servers, some of which belong to small companies that may "come and go" or have downtime issues. Client side service issues are also notoriously difficult to diagnose and resolve.
 
-* *Accessibility*: Although that there is no good reason to not allow control of home appliances directly from the local network, most of the commercial home appliances allow to control the devices through their servers only, so, as result, in the case of internet connection issues at home, there is no way to control the device even from inside the home.
+* *Accessibility*: Although that there is no good reason to disallow control of home appliances directly from the local network, most commercial home appliances allow control only via the manufacturer's servers, therefore rendering the device inoperable, (even from inside the LAN!) in case of connectivity issues.
 
-* *Security*: And the biggest problem is the security issues. we don't want to trust any company code/server in our physical home. we want to use open-source assets only, where we can make sure that no one tracks us or any other malicious behave, running inside our home. we want the ability to block all of any device from communicating with any server outside our local network.  
-
+* *Security*: The biggest problem with commercial IOT is security. We definitely do not want to entrust our home to any code produced by an IOT manufacturer as they are known for making some of the most insecure and dubious systems in existence. We want to use vetted, battle-tested and privacy oriented open-source assets in order to ensure the devices do not turn rouge or outright malicious. We want the ability to 
+isolate our devices from the outside world whilst retaining all (or most) capabilities.  
 
 As a solution to these problems, this project consolidates all the smart home appliances into one simple, clear and easy to access API.
 
