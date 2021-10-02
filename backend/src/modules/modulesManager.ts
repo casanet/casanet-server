@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import * as withTimeout from 'promise-with-timeout';
+import { timeout as withTimeout, TimeoutError } from 'promise-timeout';
 import { PullBehavior } from 'pull-behavior';
 import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { Configuration } from '../config';
@@ -86,7 +86,7 @@ export class ModulesManager {
     } catch (error) {
       logger.warn(`[ModulesManager.getStatus] getting minion "${minion.minionId}" status failed ${error.message || JSON.stringify(error)}`);
 
-      if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
+       if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -123,7 +123,7 @@ export class ModulesManager {
       logger.debug(`[ModulesManager.setStatus] setting minion "${minion.minionId}" status succeed`);
     } catch (error) {
       logger.warn(`[ModulesManager.getStatus] setting minion "${minion.minionId}" status failed ${error.message || JSON.stringify(error)}`);
-      if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
+       if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -169,7 +169,7 @@ export class ModulesManager {
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
     } catch (error) {
-      if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
+       if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -215,7 +215,7 @@ export class ModulesManager {
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
     } catch (error) {
-      if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
+       if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -260,7 +260,7 @@ export class ModulesManager {
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
     } catch (error) {
-      if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
+       if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -302,7 +302,7 @@ export class ModulesManager {
     try {
       return await withTimeout(minionModule.refreshCommunication(), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
     } catch (error) {
-      if (typeof error.message === 'string' && error.message.indexOf('Promise not resolved after') !== -1) {
+       if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
