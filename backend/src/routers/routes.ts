@@ -490,7 +490,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "brand": {"dataType":"string","required":true},
             "model": {"dataType":"string","required":true},
-            "category": {"dataType":"string","required":true},
+            "category": {"ref":"MinionTypes","required":true},
         },
         "additionalProperties": false,
     },

@@ -773,5 +773,5 @@ export declare interface MinionTimeline {
 export declare interface CommandsRepoDevice {
   brand: string;
   model: string;
-  category: string;
+  category: MinionTypes;
 }

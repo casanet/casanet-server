@@ -1056,7 +1056,7 @@
 						"type": "string"
 					},
 					"category": {
-						"type": "string"
+						"$ref": "#/components/schemas/MinionTypes"
 					}
 				},
 				"required": [
