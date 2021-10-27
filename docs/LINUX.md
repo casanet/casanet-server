@@ -1,6 +1,6 @@
-# Deploy casanet server on a Linux OS based devices
+# Prepare casanet server on a Linux OS based devices
 
-Tested on Orange  pi zero + armbian image, Orange pi one + armbian image and Raspberry pi B+ with rapsebian image.
+Tested on Orange  pi zero + Armbian image, Orange pi one + Armbian image and Raspberry pi B+ with Rapsebian image.
 
 ## Pre requirements
 
@@ -14,18 +14,7 @@ Then
 ### Set correct Time Zone
 ```sudo dpkg-reconfigure tzdata``` 
 
-### Install Node.js + NPM (In case you wish to use the binary execution file, skip)
-```sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -``` 
-
-Then
-
-```sudo apt-get install -y nodejs```
-
-### Install Git (In case you wish to use the binary execution file, skip)
-```sudo apt-get install -y git```
-
 ### Install tmux 
-
 ```sudo apt-get install -y tmux```
 
 
@@ -36,31 +25,22 @@ Then
 ### Connect to the new window
 ```tmux a -t casanet```
 ### Get the server
-- Download the Linux binary execution (`casanet_linux_x64` or `casanet_linux_arm` for arm based (suck as raspberry pi) `casanet_linux_arm` file) from [here](https://github.com/casanet/casanet-server/releases)
+- Download the Linux binary execution (`casanet_linux_x64` or `casanet_linux_arm` for ARM processor based (such as raspberry pi) `casanet_linux_arm` file) from [here](https://github.com/casanet/casanet-server/releases)
 - Download the `casanet.json` configuration file from [here](https://github.com/casanet/casanet-server/releases)
 - Download the environments example file from [here](https://github.com/casanet/casanet-server/releases)
-- Give `casanet-local-server-linux` file an execute permission (using `chmod -R 0777 ./casanet-local-server-linux`)
-
-#### If you wish to build the source-code
-- Run ```git clone https://github.com/casanet/casanet-server.git```
-- Go to the frontend directory ```cd casanet-server/frontend/```
-- Install casanet server dependencies ```npm ci```
-- Build the forntend by ```npm run build```
-- Go to the backend directory ```cd ../backend/``
-- Install casanet server dependencies ```npm ci```
-- Build the backend by ```npm run build```
+- Give to the `casanet_linux_arm` file an execute permission (using `chmod -R 0777 ./casanet_linux_arm` command)
 
 It is recommended to check the default environments of the server and change it by demand.
 for it copy the .env.example file and edit the real env:
 ```cp .env.example .env```
 Then edit real environments by ```nano .env``` or any other text editor.
 
-> The Orange pi armbian image, changes his mac address each boot, so I recommend to get the mac address and set it to the `PHYSICAL_ADDRESS` environment variable, else the default username and the identity against a [remote server](https://github.com/casanet/remote-server) will change each boot.
+> The Orange pi Armbian image, changes his mac address each boot, so I recommend to get the mac address and set it to the `PHYSICAL_ADDRESS` environment variable, else the default username and the identity against a [remote server](https://github.com/casanet/remote-server) will change each boot.
 
 ### Exit from the tmux window
 press `ctrl` + `b` + `d` to exit from the tmux window.
 
-# Configure autostart on boot.
+# Configure autostart on boot
 ### Create the autostart script
 Go to the `init.d` directory
 
@@ -79,14 +59,14 @@ case "$1" in
 'start') 
         tmux kill-session -t "casanet" 
         tmux new -s "casanet" -d 
-        tmux send-keys -t "casanet" "cd /root" C-m # Or the "./casanet-server/backend" if you use the source-code 
-        tmux send-keys -t "casanet" "sudo ./casanet_linux_arm" C-m # Or casanet_linux_x64 or the "node ./dist/index.js" if you use the source-code
+        tmux send-keys -t "casanet" "cd /root" C-m # Go the the directory where the Casanet executable placed 
+        tmux send-keys -t "casanet" "sudo ./casanet_linux_arm" C-m # Or casanet_linux_x64, the sudo used to allows Casanet to scan the network
 ;; 
 'stop')  
         tmux kill-session -t "casanet" 
 esac 
 ```
-Then give to file the exe permission 
+Give file an exe permission 
 
 ```chmod +x casanet```
 
@@ -107,6 +87,13 @@ And change the link name to a boot pattern.
 Now reboot the device and check that all work properly. 
 
 Good Luck!
+
+#### If you wish to build the source-code on your own
+- Run ```git clone https://github.com/casanet/casanet-server.git```
+- Go to the backend directory ```cd ../backend/``
+- Install casanet server dependencies ```npm ci```
+- Build the backend by ```npm run build```
+- Run ```npm run fetch:dashboard``` if you wants the server to serve frontend dashboard
 
 
 

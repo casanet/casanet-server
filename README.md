@@ -1,57 +1,84 @@
 ![Screenshot](./docs/images/logo-wide.png)
 
-Let's create a smart home, without giving anyone access to our house 😊.
+Let's create a smart home, without giving anyone access to our house 😊
 
-## CASANET.
-Open-source server to control IoT devices in a local home network.
+## CASANET
+Open-source server to control Smart Home IoT devices in a local network.
 
 [![CI CD Status](https://github.com/casanet/casanet-server/workflows/casanet%20server%20CI%20CD/badge.svg?branch=master)](https://github.com/casanet/casanet-server/actions)
 [![Coverage Status](https://coveralls.io/repos/github/casanet/casanet-server/badge.svg?branch=master)](https://coveralls.io/github/casanet/casanet-server?branch=master)
 
 The latest release binaries available to download from [casanet-server releases](https://github.com/casanet/casanet-server/releases)
 
-## Philosophy.
-In this project, I wanted to solve a number of troubles. first of all, anyone who uses a number of smart devices (smart IR, smart socket, or anything of that kind) of different companies is familiar with the problem of dealing with a number of different applications;
-holding 10 applications for each home appliance when each is completely different in the interface and operations and authentication.
-It's a very annoying thing and in addition, the servers, some of which are small Chinese companies, do not always work well, so there is no external access, and there is no normal and clear message that tells you why it does not work.
+The dashboard app (APK) currently on alpha version only, temporary available [here](https://github.com/casanet/dashboard-app/actions/runs/1276262855).
 
-And the biggest problem is security issues. I don't want to trust any company code/server in my home. I want to use open-source only, where I can make sure that no one tracks me or any other malicious code is running in my home. Also, I want to block all of my Chinese devices from communicating any server outside my local network.   
+## Philosophy
+This project aims to resolve a number of issues plaguing most Smart Home systems
+
+* *Lack of common interfaces*: Anyone who uses a number of smart devices (smart IR, smart sockets or anything of that kind) of different brands is familiar with the problem of having to deal with completely different applications, authentication methods, timings, operations etc. for each device.
+
+* *Reliability & Stability*: To control home appliances from the internet, the devices communicate with the manufacture's servers, some of which belong to small companies that may "come and go" or have downtime issues. Client side service issues are also notoriously difficult to diagnose and resolve.
+
+* *Accessibility*: Although that there is no good reason to disallow control of home appliances directly from the local network, most commercial home appliances allow control only via the manufacturer's servers, therefore rendering the device inoperable, (even from inside the LAN!) in case of connectivity issues.
+
+* *Security*: The biggest problem with commercial IOT is security. We definitely do not want to entrust our home to any code produced by an IOT manufacturer as they are known for making some of the most insecure and dubious systems in existence. We want to use vetted, battle-tested and privacy oriented open-source assets in order to ensure the devices do not turn rouge or outright malicious. We want the ability to 
+isolate our devices from the outside world whilst retaining all (or most) capabilities.  
 
 As a solution to these problems, this project consolidates all the smart home appliances into one simple, clear and easy to access API.
-And on top of that, it runs on a computer (or any other device that can run Node.JS) at home and does not have to connect to the internet to work properly.
 
-The logic and design of the server is that there are several types of devices in the world, such as a lighting device, an AC device, etc, and each physical device has its own module that realizes the capabilities that the device of its kind enables, (and the advanced options that each company realizes in a different way like timing, thrown), and on all devices there is a switch component with on\off option.
+The Casanet server can run on any computer type (x86, ARM) at home and does not required an internet connection to operate.
 
-This structure enables the creation of a separate server and a collection of modules that enable communication by implementing preset methods for each device type (such as the OOP interface).
+The Casanet server design is to manage abstract world devices and a collection of modules ("drives") for each physical device kind, to convert to/from an abstract device state to/from the physical device.
+
+This allows to easily add support in vast devices kinds, and separately, control all of them in one dashboard, same timing/operation abilities and even open an easy to use modern API.
+
+Each module/driver design to work only through a local network, let us disconnect the device for good from the internet.
 
 ## How does it look?
-![Screenshot](./docs/screenshots/dashboard.PNG)
-![Screenshot](./docs/screenshots/operations.PNG)
-![Screenshot](./docs/screenshots/timings.PNG)
-![Screenshot](./docs/screenshots/devices.PNG)
 
-Minimal page (only 5 kb of resources will be transferred !!!) for old phones or very slow networks.
-<img src="./docs/screenshots/light-dashboard.jpg" alt="lite-dashboard"
-	title="lite-dashboard screenshot" width="300" height="600" />
+### The web dashboard
+![Screenshot](https://raw.githubusercontent.com/casanet/dashboard-app/develop/assets/capture/desktop-capture.gif)
+
+### The mobile app
+<img src="https://raw.githubusercontent.com/casanet/dashboard-app/develop/assets/capture/app1.jpg" alt="app1-dashboard"
+	title="lite-dashboard screenshot" width="270" height="580" />
+<img src="https://raw.githubusercontent.com/casanet/dashboard-app/develop/assets/capture/app2.jpg" alt="app2-dashboard"
+	title="lite-dashboard screenshot" width="270" height="580" />
+<img src="https://raw.githubusercontent.com/casanet/dashboard-app/develop/assets/capture/app3.jpg" alt="app3-dashboard"
+	title="lite-dashboard screenshot" width="270" height="580" />
+
+> For more details and information about the web & mobile interface see [dashboard-app](https://github.com/casanet/dashboard-app) repository.
+
+### The web lightweight dashboard
+
+The (very) lightweight dashboard (only about 20kb of total assets) for old phones or very slow networks.
+
+For the lightweight interface navigate to `[server-ip/host]/light-app/index.html`.
+
+![Screenshot](https://raw.githubusercontent.com/casanet/lightweight-dashboard/develop/assets/capture.jpg)
+
+> For more details and information about the lightweight interface see [lightweight-dashboard](https://github.com/casanet/lightweight-dashboard) repository.
 
 
-Link to the minimal page exist in the settings 'light version' section, or just navigate to `[server-ip/host]/light-app/index.html`.
+> For the legacy dashboard see [frontend-v3](https://github.com/casanet/frontend-v3) repository.
 
-## Ruining local casanet server in my computer
+## Running Casanet server on a local computer
 
-To make it easy to use there are ready-to-use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file, It's recommended to read the configuration section [here](./backend/README.md#configure-server). 
+To make it easy to use there are ready-to-use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file and run the executable file.
 
-In order to set up Linux from scratch see [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (raspberry pi etc.)
+It's recommended to read the configuration section [here](./backend/README.md#configure-server). 
+
+In order to set up Linux from scratch see [Linux deployment tutorial](./docs/LINUX.md) for a Linux based devices (for raspberry pi etc.)
 
 ## Project parts + technologies
-* **[Casanet server](./backend):**
+* **[Casanet server](./backend/README.md):**
 	* **Purpose:** Control the IoT devices in a local home network.
 	* **Technologies:** [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa)).
-* **[Dashboard](./frontend):**
-	* **Purpose:** The dashboard app (frontend) to control the IoT devices (using casanet server API). 
-	* **Technologies:** [Angular](https://angular.io/) (using [angular material](https://material.angular.io/)).
+* **[Dashboard](https://github.com/casanet/dashboard-app):**
+	* **Purpose:** Hybrid dashboard for web & mobile to control the IoT devices (using Casanet server API). 
+	* **Technologies:** [react v17](https://reactjs.org/blog/2020/10/20/react-v17.html) (with [mui v5](https://mui.com/)) and [cordova](https://cordova.apache.org/).
 * **[Remote server](https://github.com/casanet/remote-server):**
-	* **Purpose:** Forward API requests from the wide internet to the local casanet servers.
+	* **Purpose:** Forward API requests from the wide internet to the local Casanet servers.
 	* **Technologies:** [Node.js](https://nodejs.org/en/) (using TypeScript + [TSOA](https://github.com/lukeautry/tsoa) + [PostgreSQL](https://www.postgresql.org/)).
 * **[Remote dashboard](https://github.com/casanet/remote-dashboard):**
 	* **Purpose:** Management dashboard for the remote server admin (using remote server API)
@@ -62,8 +89,8 @@ In order to set up Linux from scratch see [Linux deployment tutorial](./docs/LIN
 * **API (for local and remote server):**
 	* **Technologies:** [Swagger](https://swagger.io/).
 
-### Dashboard Languages support
-The UI is designed to support multi-Language.
+### Dashboard languages support
+The UI is designed to support multi-Language using [i18](https://react.i18next.com/).
 
 Current supported Languages:
 * English
@@ -72,7 +99,7 @@ Current supported Languages:
 Any support for other languages will be welcome.
 
 ## Accessing casanet server from the internet
-The server needs to run on local home network. So how does one access it via the local home network? How does one get access to the casanet local server from the internet?
+The server needs to run on local home network. So, how does one access it via the local home network? How does one get access to the casanet local server from the internet?
 
 #### Method 1: Port forwarding
 Make sure that the IP address of your home is public and redirect ports in-home router to the computer that is running the casanet server.
@@ -114,12 +141,12 @@ The casa remote server is built for this, [casanet-remote](https://github.com/ca
     - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363)) 
     - Air-conditioning (IR Transmitter) (tested with [this](https://www.aliexpress.com/item/33004692351.html) (after [flashing to Tasmota](https://blog.castnet.club/en/blog/flashing-tasmota-on-tuya-ir-bridge))
 
-- [IFTTT](https://ifttt.com/discover) module. [module use documentation](./backend/src/modules/ifttt/README.md)..
+- [IFTTT](https://ifttt.com/discover) module. [module documentation](./backend/src/modules/ifttt/README.md)..
 
     - Toggle.
     - Switch.
     
-- [MQTT](http://mqtt.org/) module. [module use documentation](./backend/src/modules/mqtt/README.md).
+- [MQTT](http://mqtt.org/) module. [module documentation](./backend/src/modules/mqtt/README.md).
     -  Toggle.
     -  Switch.
     -  Air-conditioning.
@@ -128,7 +155,7 @@ The casa remote server is built for this, [casanet-remote](https://github.com/ca
     -  Color light.
     -  Roller.
     
-- Mock (for testing only)
+- Mock (for testing purpose)
     
     -  Toggle demo.
     -  Switch demo
@@ -138,24 +165,23 @@ The casa remote server is built for this, [casanet-remote](https://github.com/ca
     -  Color light demo.
     -  Roller demo.
     
-## Supported soon.
-
 ## Connecting devices
 
-How to connect my device to the local network and how to add it to be managed by the casa-net server?
+How to connect a device to the local network and how to add it to be managed by the casa-net server?
 
 see [here](./backend/src/modules/README.md) the brands modules documentation.
 
 ## Adding other devices support
-Yes, it is possible and it's welcomed! see [modules](./backend/src/modules/README.md#-for-development-only-).
+Yes, it is possible and it's welcomed! see [modules documentation](./backend/src/modules/README.md#-for-development-only-).
 
+## API
 
-## Using scenario
-To see a simple using scenario go to [using scenario](./docs/using-scenario.md) doc.
+To explorer the full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/src/swagger.json` in explorer input.
 
-To explorer the full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/swagger.yaml` in explorer input.
+In a running Casanet server you can use Swagger UI to call API, the URL is `[local server IP]/docs`. 
 
 ## IFTTT integration
+
 The [IFTTT](https://ifttt.com/discover) ecosystem is great ;)
 
 Now, invoking triggers when a minion turned on/off or turning on/off minion when any IFTTT trigger invoked is possible.
@@ -166,29 +192,21 @@ Receiving invoked triggers allow only if the casa-net server accessible via publ
 
 Invoking triggers when a device turned on/off the local server requires an internet connection.  
 
-See [step by step instruction ](./docs/IFTTT.md) to use IFTTT.
-
-## TODO
-
-- [X] Finish UI of casanet local server.
-- [X] Faster boot time for the angular dashboard app.  
-
-Feel free to open an issue with a bug report or feature to develop for the next version.
-
-For any suggestions or help feel free to contact me.
+See [step by step instruction](./docs/IFTTT.md) to use IFTTT.
 
 ### The casanet server tested on
-* Windows 7
-* Windows 10
-* Linux Ubuntu
-* Orange PI Armbian (Debian-based)
-* Raspberry PI Raspbian
+* Windows - 10/7
+* Linux - Ubuntu
+* Raspberry PI - Raspbian
+* Orange PI - Armbian (Debian-based)
+
+## Contributing
+  
+Feel free to open an issue with a bug report or feature to develop for the next version.
+
+For any suggestions or help feel free to contact.
 
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
 
 Shared with :heart: by kastnet.
-
----
-> Version 1 of the project placed in [here](https://github.com/casanet/casanet-server/tree/archive-v1), maintaining for security and fatal bugs fixes only.
----

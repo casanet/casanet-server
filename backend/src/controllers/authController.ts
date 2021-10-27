@@ -71,14 +71,13 @@ export class AuthController extends Controller {
 			}
 
 			if (loginResults.error) {
-				/** Mark status to 201, means, the login is OK but needs extra, MFA. */
-				this.setStatus(501);
-				return;
+				this.setStatus(403);
+				return loginResults?.error?.responseCode && { responseCode: loginResults.error.responseCode} as unknown as void;
 			}
 
 		} catch (error) {
 			this.setStatus(403);
-			return;
+			return error?.responseCode && { responseCode: error.responseCode}  as unknown as void;;
 		}
 		this.setStatus(501);
 		return;
@@ -103,21 +102,20 @@ export class AuthController extends Controller {
 		try {
 			const loginResults = await AuthBlSingleton.loginTfa(loginData);
 
-			if (loginResults.success && loginResults.requireMfa) {
+			if (loginResults.success) {
 				this.activeSession(loginResults.key);
 				this.setStatus(200);
 				return;
 			}
 
 			if (loginResults.error) {
-				/** Mark status to 201, means, the login is OK but needs extra, MFA. */
-				this.setStatus(501);
-				return;
+				this.setStatus(403);
+				return loginResults?.error?.responseCode && { responseCode: loginResults.error.responseCode} as unknown as void;
 			}
 
 		} catch (error) {
 			this.setStatus(403);
-			return;
+			return (error?.responseCode && { responseCode: error.responseCode }) as unknown as void;
 		}
 		this.setStatus(501);
 		return;

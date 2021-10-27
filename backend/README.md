@@ -1,6 +1,6 @@
 # Casanet server - backend
 
-This is the Casanet local server to communicate and control IoT devices in a home.
+This is the Casanet local server to communicate and control Smart Home devices in home.
 
 [![CI CD Status](https://github.com/casanet/casanet-server/workflows/casanet%20server%20CI%20CD/badge.svg?branch=master)](https://github.com/casanet/casanet-server/actions)
 [![Coverage Status](https://coveralls.io/repos/github/casanet/casanet-server/badge.svg?branch=master)](https://coveralls.io/github/casanet/casanet-server?branch=master)
@@ -11,16 +11,17 @@ This is the Casanet local server to communicate and control IoT devices in a hom
 
 There are ready to use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file. 
 
-If you prefer to build the server by your own:  
+If you prefer to build the server by your own:
+
 1. Download the project via git or download files as a zip
-1. Install [Node.js](https://nodejs.org/en/download/) on the machine
+1. Install [Node.js](https://nodejs.org/en/download/) on machine
 1. Navigate in a command line to `$/casanet-server/backend` and press `npm ci`
 1. Run `npm run build` command
-1. If you wish to access the dashboard using the local network, build the frontend too
-    1. Navigate in a command line to `$/casanet-server/frontend` and press `npm ci`
-    1. Run `npm run build:internal` command
-    1. Navigate back to `$/casanet-server/backend`
-1. Press `node dist/index.js` to run the server.
+1. If you wish to access the dashboard using the local network, run ```npm run fetch:dashboard``` to fetch the latest dashboard, or to build dashboard by tour own build the frontend too
+    1. Pull repository `git clone https://github.com/casanet/dashboard-app.git`.
+		1. Run `yarn` & `yarn run build`.
+		1. Copy the new bundle assets to the `$/casanet-server/backend/dist/www` directory.
+1. Run `node dist/index.js` to start the server.
 
 Then open the browser in `http://127.0.0.1`.
 
@@ -107,30 +108,31 @@ For each supported IoT device model connection and pairing instructions see [mod
 ## Fetch RF (IR / 433MHz etc.) commands from a commands repository
 
 When using RF transmitter to control home devices it's possible to record the command from the original remote control or generating random command.
-So to avoid recording a lot of commands one by one there is another project to store commands and serve then on demand. see the [project page](https://github.com/casanet/rf-commands-repo).
+So to avoid recording a lot of commands one by one there is a service to store commands and serve them on demand. see the [rf-commands-repo](https://github.com/casanet/rf-commands-repo) repository.
+
 The `rf-commands-repo` URL placed in the `casanet.json` configuration file.
 
-If you want to update my repo, feel free to contact me.
+If you want to update the repo, feel free to contact me.
 
 ## Version update
-There is an API to update the version to the latest release.
+There is an API to easily update the version to the latest release.
 
-To run a command after the files update to apply changes,
-set your command in `RESET_MACHINE_ON_VERSION_UPDATE` environment, and the backend will invoke it after version update.
-Usually, it is something like `sudo reboot` etc.
+To run a command after the files update to apply the changes,
+set the command in the `RESET_MACHINE_ON_VERSION_UPDATE` environment variable, and the backend will invoke it after version update.
+Usually, it is something like `sudo reboot` to restart machine.
 
-*THIS IS A DANGEROUS ACTION! BE SURE THAT KNOW WHAT IT WILL HAPPENED WHEN THIS COMMAND WILL EXECUTED*
+*THIS IS A DANGEROUS ACTION! MAKE SURE YOU KNOW THE COMMAND*
 
 ## On app failure
 When an unknown failure thrown in the app, from any reason, there is an option to execute a command to restart the app/process/machine.
 
 To run a command on app failure,
-set your command in `RESET_APP_ON_FAILURE` environment, and the backend will invoke it pn failure.
-Usually, it is something like `sudo reboot` for restarting the machine etc.
+set a command in `RESET_APP_ON_FAILURE` environment, and the backend will invoke it pn failure.
+Usually, it is something like `sudo reboot` for restarting the machine.
 
-*THIS IS A DANGEROUS ACTION! BE SURE THAT KNOW WHAT IT WILL HAPPENED WHEN THIS COMMAND WILL EXECUTED*
+*THIS IS A DANGEROUS ACTION! MAKE SURE YOU KNOW THE COMMAND*
 
-## Default Lock Calibration Sampling 
+## Default lock sync/calibration sampling 
 
 The default lock calibration activation (used by timings and operation set lock).
 
@@ -138,6 +140,8 @@ You can edit in the `defaultLockCalibrationMinutes` field in the `casanet.json` 
 
 ## API
 
-The UI should wrap API.
+The full specs of API are documented in [swagger API file](./src/swagger.json).
 
-The full specs of API are documented in [swagger API file](./swagger.json).
+To explorer the full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/src/swagger.json` in explorer input.
+
+In a running Casanet server you can use Swagger UI to call API, the URL is `[local server IP]/docs`. 
