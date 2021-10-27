@@ -519,7 +519,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "displayName": {"dataType":"string"},
             "email": {"dataType":"string","required":true},
-            "password": {"dataType":"string","validators":{"minLength":{"value":8}}},
+            "password": {"dataType":"string"},
             "ignoreTfa": {"dataType":"boolean","required":true},
             "scope": {"ref":"AuthScopes","required":true},
             "passwordChangeRequired": {"dataType":"boolean"},

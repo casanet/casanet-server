@@ -97,7 +97,7 @@ describe('Users routing API', () => {
 				.post('/API/users')
 				.send({ ...newUser, password: '1234567' })
 				.end((err, res) => {
-					expect(res.statusType).eql(5);
+					expect(res.statusType).eql(4);
 					done();
 				});
 		});
