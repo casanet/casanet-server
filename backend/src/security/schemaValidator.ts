@@ -26,8 +26,7 @@ export const UserSchema: ObjectSchema = Joi.object()
       .required(),
     password: Joi.string()
       .not('')
-      .min(6)
-      .max(18)
+      .min(8)
       .required(),
     ignoreTfa: Joi.boolean().required(),
     scope: Joi.allow('adminAuth', 'userAuth').required(),
@@ -44,8 +43,7 @@ export const UserUpdateSchema: ObjectSchema = Joi.object()
       .required(),
     password: Joi.string()
       .allow('')
-      .min(6)
-      .max(18),
+      .min(8),
     ignoreTfa: Joi.boolean().required(),
     scope: Joi.allow('adminAuth', 'userAuth'),
   })

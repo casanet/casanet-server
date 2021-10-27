@@ -194,7 +194,6 @@ export declare interface User {
 
   /**
    * User password.
-	 * @minLength 8
    */
   password?: string;
 
