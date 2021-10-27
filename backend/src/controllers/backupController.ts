@@ -25,7 +25,12 @@ export class BackupController extends Controller {
   public async getSettingsBackup(@Request() request: express.Request) {
     const zip = new AdmZip();
 
-    zip.addLocalFolder(CACHE_DIRECTORY, 'cache');
+		try {
+			zip.addLocalFolder(CACHE_DIRECTORY, 'cache');
+		} catch (error) {
+			logger.debug(`[getSettingsBackup] zipping cache directory failed ${error.message}`)
+			// Do nothing, it's OK, not always there is cache.		
+		}
     
     const dataToZip: Array<{ name: string, data: any }> = [{
       name: 'minions',

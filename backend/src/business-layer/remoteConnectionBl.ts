@@ -17,7 +17,7 @@ import {
 } from '../models/sharedInterfaces';
 import { binaryResponseParser } from '../utilities/binaryParser';
 import { logger, LOGS_DIR } from '../utilities/logger';
-import { GetMachinMacAddress } from '../utilities/macAddress';
+import { getMachineMacAddress } from '../utilities/macAddress';
 import { MinionsBl } from './minionsBl';
 import { MinionsBlSingleton } from './minionsBl';
 import { TimingsBl } from './timingsBl';
@@ -508,7 +508,7 @@ export class RemoteConnectionBl {
    */
   private async onInitReady() {
     try {
-      const machineAddress = await GetMachinMacAddress();
+      const machineAddress = await getMachineMacAddress();
       const remoteSettings = await this.remoteConnectionDal.getRemoteSettings();
 
       if (!remoteSettings) {

@@ -21,7 +21,7 @@ but this project made to be totally in the user's hands and control. so using We
         ![Screenshot](../../../../docs/screenshots/ifttt/go-to-webhooks-documentation.PNG)
     - Watch and copy the webhooks API key.
         ![Screenshot](../../../../docs/screenshots/ifttt/watch-webhooks-api-key.PNG)
-1) Create a new minion in casa-net with brand `ifttt` model `switch` or `toggle` and paste the Webhooks API key as device id.
+1) Create a new minion in Casanet with brand `ifttt` model `switch` or `toggle` and paste the Webhooks API key as device id.
 1) Copy the new minion inner-id from device meta.
     - Open the new minion menu and select `device meta`, then copy inner-id.
         ![Screenshot](../../../../docs/screenshots/ifttt/copy-inner-id.PNG)
@@ -47,10 +47,10 @@ but this project made to be totally in the user's hands and control. so using We
 1) Press on `+that` button and select the IFTTT service and the action that turn the device on.
 1) Create the same trigger for `off` operation.
 
-For now, it's possible to turn on/off the device via casa-net and use the device as `toggle` minion.
+For now, it's possible to turn on/off the device via Casanet and use the device as `toggle` minion.
 
 To receive feedback from the device to know when the device turned on/off and use the device as `switch`,
-Make sure casa-net accessible via public internet or via remote-server.
+Make sure Casanet accessible via public internet or via remote-server.
 
 ### Listen to device turned on/off.
 1) Create a trigger to be invoked when the device turned on/off using the manufacture IFTTT service.
@@ -59,7 +59,7 @@ Make sure casa-net accessible via public internet or via remote-server.
  1) Select make request action
     - ![Screenshot](../../../../docs/screenshots/ifttt/choose-action.PNG)
  1) Set the HTTP request as following struct:
-    - URL: `http://[casa-net server or remote server host/ip]/API/minions/[inner-id]/ifttt`.
+    - URL: `http://[casanet server or remote server host/ip]/API/minions/[inner-id]/ifttt`.
     - Method: `PUT`.
     - Content-Type `application/json`.
     - Body: 

@@ -20,7 +20,7 @@ import {
 @Route('static')
 export class StaticAssetsController extends Controller {
   /**
-   * Get public assets for casa-net client side.
+   * Get public assets for Casanet client side.
    */
   @Response(404, 'Page not found')
   @Get('**/*')

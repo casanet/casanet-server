@@ -519,9 +519,10 @@ const models: TsoaRoute.Models = {
         "properties": {
             "displayName": {"dataType":"string"},
             "email": {"dataType":"string","required":true},
-            "password": {"dataType":"string"},
+            "password": {"dataType":"string","validators":{"minLength":{"value":8}}},
             "ignoreTfa": {"dataType":"boolean","required":true},
             "scope": {"ref":"AuthScopes","required":true},
+            "passwordChangeRequired": {"dataType":"boolean"},
         },
         "additionalProperties": false,
     },
@@ -1863,10 +1864,11 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/API/users/forward-auth/:userId',
-            authenticateMiddleware([{"adminAuth":[]}]),
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function UsersController_requestUserForwarding(request: any, response: any, next: any) {
             const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
             };
 
@@ -1887,10 +1889,11 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/API/users/forward',
-            authenticateMiddleware([{"adminAuth":[]}]),
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function UsersController_getRegisteredUsers(request: any, response: any, next: any) {
             const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1910,10 +1913,11 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/API/users/forward/:userId',
-            authenticateMiddleware([{"adminAuth":[]}]),
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function UsersController_requestUserForwardingAuth(request: any, response: any, next: any) {
             const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
                     auth: {"in":"body","name":"auth","required":true,"ref":"UserForwardAuth"},
             };
@@ -1935,10 +1939,11 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.delete('/API/users/forward/:userId',
-            authenticateMiddleware([{"adminAuth":[]}]),
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function UsersController_removeUserForwarding(request: any, response: any, next: any) {
             const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
             };
 
@@ -2105,7 +2110,7 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/API/version/update-status',
-            authenticateMiddleware([{"adminAuth":[]}]),
+            authenticateMiddleware([{"adminAuth":[]},{"userAuth":[]}]),
 
             function VersionsController_getUpdateStatus(request: any, response: any, next: any) {
             const args = {
