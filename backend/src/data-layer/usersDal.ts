@@ -3,7 +3,7 @@ import { Configuration } from '../config';
 import { IDataIO } from '../models/backendInterfaces';
 import { ErrorResponse, User } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
-import { GetMachinMacAddress } from '../utilities/macAddress';
+import { getMachineMacAddress } from '../utilities/macAddress';
 import { DataIO } from './dataIO';
 
 const USERS_FILE_NAME = 'users.json';
@@ -109,35 +109,31 @@ export class UsersDal {
    * used when system in first use and there is no any user in system, yet.
    */
   private async setDefaultUser() {
+		/**
+     * Used machine address as default user password.
+     * This is for security reasons the default user password is the machine MAC address,
+     * So attackers can access server with default user only if they know the machine MAC address.
+     */
+		 const password = await getMachineMacAddress();
+
     /** Get password from configuration, and hash it like any other password in system */
     const passwordHash = bcrypt.hashSync(
-      Configuration.defaultUser.password,
+      password,
       Configuration.keysHandling.bcryptSaltRounds,
     );
 
-    /** Extract user domain from configuration */
-    const userNameDomain = Configuration.defaultUser.email.split('@')[1];
-    /**
-     * Used machine address as default user name.
-     * This is for security issues when users not replacing default user,
-     * and attackers can access server with known default user.
-     */
-    const userName = await GetMachinMacAddress();
-    /** Build default user email address */
-    const defaultUserName = `${userName}@${userNameDomain}`;
-
     this.users.push({
       displayName: Configuration.defaultUser.displayName,
-      email: defaultUserName,
+      email: Configuration.defaultUser.email,
       ignoreTfa: Configuration.defaultUser.ignoreTfa,
       password: passwordHash,
       scope: Configuration.defaultUser.scope,
+			passwordChangeRequired: true,
     });
 
     logger.warn(
       `There is no any user in system, using default user to allow first time access,` +
-        ` user name is: ${defaultUserName} and for password see casanet.json file.` +
-        ` for system secure, please create valid user and remove the default user.`,
+        ` user password is: "${password}" for system secure, PLEASE CHANGE THE DEFAULT PASSWORD.`,
     );
   }
 

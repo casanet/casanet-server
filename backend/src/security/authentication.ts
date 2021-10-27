@@ -109,10 +109,11 @@ export const expressAuthentication = async (
 		 */
 		if (user.scope.includes(securityName)) {
 			return user;
-		}
+		} 
 
 		throw {
-			responseCode: 1401,
+			// throw no permission (403) and not the unauthorized (401) 
+			responseCode: 1403,
 		} as ErrorResponse;
 	} catch (error) {
 		throw {

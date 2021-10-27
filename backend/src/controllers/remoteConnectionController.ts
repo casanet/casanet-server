@@ -26,7 +26,7 @@ import {
   TimingFeed,
 } from '../models/sharedInterfaces';
 import { RemoteSettingsSchema, SchemaValidator } from '../security/schemaValidator';
-import { GetMachinMacAddress } from '../utilities/macAddress';
+import { getMachineMacAddress } from '../utilities/macAddress';
 
 @Tags('Remote')
 @Route('remote')
@@ -63,7 +63,7 @@ export class RemoteConnectionController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Get('machine-mac')
   public async getMachineMac(): Promise<string> {
-    return await GetMachinMacAddress();
+    return await getMachineMacAddress();
   }
 
   /**

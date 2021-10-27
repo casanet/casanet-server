@@ -18,7 +18,7 @@ export class VersionsBl {
   constructor() { }
 
   /**
-   * Update CASA-net application to the latest version.
+   * Update Casanet application to the latest version.
    * Step 1: Check if there is a new version.
    * Step 2: Download from GitHub releases the latest version bin file.
    * Step 3: Replace the current bin file.
@@ -171,7 +171,7 @@ export class VersionsBl {
       await this.downloadNewVersion(latestVersion);
     } catch (error) {
       this.updateStatus = 'fail';
-      logger.warn(`Downloading last version bin failed, ${error.message || error}`);
+      logger.error(`Downloading last version bin failed, ${error.message || error}`);
       return;
     }
 

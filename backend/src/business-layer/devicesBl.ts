@@ -94,7 +94,7 @@ export class DevicesBl {
     const unconnectedDevices: LocalNetworkDevice[] = [];
     for (const cachedDevice of cachedDevices) {
       if (!networkDevices.some(d => d.mac === cachedDevice.mac)) {
-        cachedDevice.ip = unknown;
+        cachedDevice.ip = '';
         unconnectedDevices.push(cachedDevice);
       }
     }

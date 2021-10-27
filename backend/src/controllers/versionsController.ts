@@ -22,7 +22,7 @@ import { ErrorResponse, UpdateResults, VersionInfo, VersionUpdateStatus } from '
 @Route('version')
 export class VersionsController extends Controller {
   /**
-   * Update CASA-net application to the latest version (Restart required for the version update complete).
+   * Update Casanet application to the latest version (Restart required for the version update complete).
    */
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
@@ -35,6 +35,7 @@ export class VersionsController extends Controller {
    * Get current version update progress status
    */
   @Security('adminAuth')
+  @Security('userAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Get('update-status')
   public async getUpdateStatus(): Promise<VersionUpdateStatus> {

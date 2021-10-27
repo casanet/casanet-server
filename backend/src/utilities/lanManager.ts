@@ -22,7 +22,7 @@ export async function LocalNetworkReader(): Promise<LocalNetworkDevice[]> {
 
 	try {
 		logger.info('[LocalNetworkReader] Scanning network devices...');
-		const networkDevices = await timeout(scanLocalNetwork({ localNetwork: Configuration.scanSubnet, queryVendor: isInternetOnline }), Duration.FromSeconds(50).Milliseconds);
+		const networkDevices = await timeout(scanLocalNetwork({ localNetwork: Configuration.scanSubnet, queryVendor: isInternetOnline }), Duration.FromMinutes(2).Milliseconds);
 		logger.info('[LocalNetworkReader] Scanning network devices done.');
 
 		const devices: LocalNetworkDevice[] = [];
@@ -30,7 +30,7 @@ export async function LocalNetworkReader(): Promise<LocalNetworkDevice[]> {
 		devices.push({
 			mac: '------------',
 			ip: ip.address(),
-			vendor: 'casa-net server',
+			vendor: 'Casanet Local Server',
 		});
 
 		for (const localDevice of networkDevices) {

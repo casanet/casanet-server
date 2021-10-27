@@ -1,15 +1,14 @@
 {
     "defaultUser": {
-        "displayName": "default user",
-        "email": "[machine-mac-address]@casanet.casa",
-        "password": "casanet",
+        "displayName": "Default Admin",
+        "email": "admin@casanet.casa",
         "ignoreTfa": true,
         "scope": "adminAuth"
     },
     "timelineDaysLength": 15,
     "defaultLockCalibrationMinutes" : 10,
     "http": {
-        "httpPort": 8080,
+        "httpPort": 80,
         "httpsPort": 443,
         "useHttps": false
     },

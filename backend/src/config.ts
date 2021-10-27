@@ -53,7 +53,7 @@ switch (rawNodeEnv) {
 }
 
 logger.info(
-  `casa-net app running in -${configuration.runningMode}- mode (use environments vars "NODE_ENV" to change it)`,
+  `Casanet app running in -${configuration.runningMode}- mode (use environments vars "NODE_ENV" to change it)`,
 );
 
 if (!rawHttpPort) {
