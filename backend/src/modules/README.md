@@ -1,30 +1,30 @@
 ## Casanet modules/drivers
 
-## How to connect my device to the local network and how to add it to be managed by the casa-net server?
+## How to connect my device to the local network and how to add it to be managed by the Casanet server?
 Good question... depend on device protocol.
 
 ### Broadlink devices
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.broadlink.rmt).
 
-Then scan the local network by the casa-net server.
+Then scan the local network by the Casanet server.
 
 ### Orvibo devices
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.orvibo.irhost).
 
-Then scan the local network by the casa-net server.
+Then scan the local network by the Casanet server.
 
 ### Yeelight devices
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.yeelight.cherry).
 then you have to [enable the LAN Control](https://www.yeelight.com/en_US/developer) 
 see [instruction with pictures](https://getyeti.co/posts/how-to-control-yeelight-and-your-smarthome-with-yeti). 
 
-Then scan the local network by the casa-net server.
+Then scan the local network by the Casanet server.
 
 ### Xiaomi (Miio) devices
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.xiaomi.smarthome).
 then you have to get the device token to see [Obtain Mi Home device token](https://github.com/jghaanstra/com.xiaomi-miio/blob/master/docs/obtain_token.md). 
 
-Then scan the local network by the casa-net server.
+Then scan the local network by the Casanet server.
 
 ### Tasmota devices
 
@@ -32,7 +32,7 @@ Tasmota is a great open-source firmware for ESP8266 based boards. see the projec
  
 After flashing and configure the device to connect to the local home WIFI (there are many tutorials, for me [thats](https://www.youtube.com/watch?v=pVPPiYAo8NI) worked).
 
-Then scan the local network by the casa-net server.
+Then scan the local network by the Casanet server.
 
 > This module using the HTTP API of Tasmota. and assuming that there is no username/password required.
 
@@ -46,18 +46,18 @@ For integration guide see [MQTT module](./mqtt/README.md)
 Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.tuya.smart).
 Note that a lot of Chinese devices supported Tuya API, see [Tuyapi project](https://github.com/codetheweb/tuyapi).
 
-Then you need to get the device id and key before it can reach by the casa-net server.
+Then you need to get the device id and key before it can reach by the Casanet server.
 to get the id and key see [Linking a Tuya Device](https://github.com/codetheweb/tuyapi/blob/master/docs/SETUP.md).
 
-After you get the id and key (called token in casa-net) then scan it insert the id and key/token and add it to the casa-net server. 
-> Note that the Tuya device key changed each time that setting a new local network SSID. and then the device's status became read-only until the casa-net update with the correct new key. 
+After you get the id and key (called token in Casanet) then scan it insert the id and key/token and add it to the Casanet server. 
+> Note that the Tuya device key changed each time that setting a new local network SSID. and then the device's status became read-only until the Casanet update with the correct new key. 
 
-> Note that the Tuya device can communicate by only one TCP connection, so if the Tuya app is open the casa-net server could not communicate with the device. 
+> Note that the Tuya device can communicate by only one TCP connection, so if the Tuya app is open the Casanet server could not communicate with the device. 
 
 ### Ifttt devices
 If a device doesn't have API to control it via the local network, 
 it's possible to use the device manufacturer Ifttt service (if exist).
-to control the device from the casa-net server.
+to control the device from the Casanet server.
 
 [Using Ifttt as device API step by step instructions.](./ifttt/README.md#step-by-step-instructions).
 

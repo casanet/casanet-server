@@ -206,6 +206,11 @@ export declare interface User {
    * User scopes.
    */
   scope: AuthScopes;
+
+	/**
+	 * Whenever the user required to set new password, during default password usage, password expiration, etc. 
+	 */
+	passwordChangeRequired?: boolean;
 }
 
 /**

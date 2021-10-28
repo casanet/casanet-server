@@ -33,12 +33,15 @@ All variables with example value placed in the [.env.example](./.env.example) fi
 
 You can load the environment using a `.env` file.
 
-Also in the `casanet.json` file, you can edit the configuration of a few stuff (if not set by the environments variables).
+Also in the [casanet.json](./casanet.json) file, you can edit the configuration of a few stuff (if not set by the environments variables).
 
 #### Default user
 
-You can change the default user domain in the `casanet.json` configuration file, but not the user account in the email address. this will be always the mac address of the machine.
-(The reason is for security, the only owner of the machine should know the default username).
+The default user placed in the [casanet.json](./casanet.json) configuration file, but the password for the default user is the machine mac address.
+This password is insecure and will marked as "need to be replaced", so an alert will shown in the UI dashboard till the admin will set a new valid password.
+
+The reason for using the machine mac as default pass, is to the default user password less vulnerable, the only owner of the machine should know the machine address.
+
 
 #### HTTP/HTTPS server ports
 
@@ -77,9 +80,9 @@ if not set, the default network is the first current machine IP subnet.
 set `PHYSICAL_ADDRESS` env var to specify the physical (aka MAC) address to use.
 if not set, the address will be the first real machine address.
 
-#### Two factor authentication (MFA)
+#### Two factor authentication (2FA)
 
-To Allows MFA protection the server needs access to the email account to send the code to user email before login is done.
+To Allows 2FA protection the server needs access to the email account to send the code to user email before login is done.
 
 Let's take for example how to configure a Gmail account: (Of course, it will work for any other SMTP services).
 
@@ -94,6 +97,8 @@ And use the following environment variables:
 - `TFA_USER_KEY` (value example: `my-gmail-password or my-application-password`)
 
 that's all.
+
+> Notice, that when using an email service from outside the local network for the 2FA, it means that the local server is required to access the internet while a user tries to login.
 
 ## Devices connection
 

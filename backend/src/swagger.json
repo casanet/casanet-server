@@ -1128,6 +1128,10 @@
 					"scope": {
 						"$ref": "#/components/schemas/AuthScopes",
 						"description": "User scopes."
+					},
+					"passwordChangeRequired": {
+						"type": "boolean",
+						"description": "Whenever the user required to set new password, during default password usage, password expiration, etc."
 					}
 				},
 				"required": [
@@ -3323,7 +3327,7 @@
 						"description": "Page not found"
 					}
 				},
-				"description": "Get public assets for casa-net client side.",
+				"description": "Get public assets for Casanet client side.",
 				"tags": [
 					"Public"
 				],
@@ -3616,13 +3620,16 @@
 						}
 					}
 				},
-				"description": "Reqest registration code.",
+				"description": "Request registration code.",
 				"tags": [
 					"Users"
 				],
 				"security": [
 					{
 						"adminAuth": []
+					},
+					{
+						"userAuth": []
 					}
 				],
 				"parameters": [
@@ -3673,6 +3680,9 @@
 				"security": [
 					{
 						"adminAuth": []
+					},
+					{
+						"userAuth": []
 					}
 				],
 				"parameters": []
@@ -3703,6 +3713,9 @@
 				"security": [
 					{
 						"adminAuth": []
+					},
+					{
+						"userAuth": []
 					}
 				],
 				"parameters": [
@@ -3751,6 +3764,9 @@
 				"security": [
 					{
 						"adminAuth": []
+					},
+					{
+						"userAuth": []
 					}
 				],
 				"parameters": [
@@ -4012,7 +4028,7 @@
 						}
 					}
 				},
-				"description": "Update CASA-net application to the latest version (Restart required for the version update complete).",
+				"description": "Update Casanet application to the latest version (Restart required for the version update complete).",
 				"tags": [
 					"Version"
 				],
@@ -4056,6 +4072,9 @@
 				"security": [
 					{
 						"adminAuth": []
+					},
+					{
+						"userAuth": []
 					}
 				],
 				"parameters": []

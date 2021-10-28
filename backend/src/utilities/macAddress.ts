@@ -5,10 +5,10 @@ import { logger } from '../utilities/logger';
 let machineMacAddress: string;
 
 /**
- * Get machine mac address. in 0b1a2c3d2345 fromat.
+ * Get machine mac address. in 0b1a2c3d2345 format.
  * @returns the mac address.
  */
-export const GetMachinMacAddress = (): Promise<string> => {
+export const getMachineMacAddress = (): Promise<string> => {
   return new Promise<string>((resolve, reject) => {
     /** If mac address already known, send it */
     if (machineMacAddress) {
