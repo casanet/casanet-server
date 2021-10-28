@@ -34,16 +34,20 @@ export async function LocalNetworkReader(): Promise<LocalNetworkDevice[]> {
 		});
 
 		for (const localDevice of networkDevices) {
+			// Skip devices without mac
+			if (!localDevice.mac) {
+				continue;
+			}
 			devices.push({
 				// Show clean MAC string without ':', '-' or '_'
-				mac: localDevice.mac.replace(/:|-|_| /g, '').toLowerCase(),
+				mac: localDevice.mac?.replace(/:|-|_| /g, '').toLowerCase(),
 				ip: localDevice.ip,
 				vendor: localDevice.vendor,
 			});
 		}
 		return devices;
 	} catch (error) {
-		if (error instanceof TimeoutError) {
+		if (error.message === 'Timeout') {
 			console.error('[LocalNetworkReader] Scanning network devices scanning timeout');
 		}
 		logger.error(`[LocalNetworkReader] Scanning network devices failed - ${error?.message}`);
