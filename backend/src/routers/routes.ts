@@ -23,8 +23,6 @@ import { RfController } from './../controllers/radioFrequencyController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { RemoteConnectionController } from './../controllers/remoteConnectionController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { StaticAssetsController } from './../controllers/staticAssetsController';
-// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TimingsController } from './../controllers/timingsController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { UsersController } from './../controllers/usersController';
@@ -1694,28 +1692,6 @@ export function RegisterRoutes(app: express.Router) {
 
 
             const promise = controller.removeRemoteSettings.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, undefined, next);
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/API/static/**/*',
-
-            function StaticAssetsController_getStaticsAssets(request: any, response: any, next: any) {
-            const args = {
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller = new StaticAssetsController();
-
-
-            const promise = controller.getStaticsAssets.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

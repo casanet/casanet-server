@@ -36,7 +36,10 @@ Each module/driver design to work only through a local network, let us disconnec
 
 ## How does it look?
 
+## ✨✨✨ [Live Demo Dashboard](https://demo.dashboard.casanet.casa/) ✨✨✨
+
 ### The web dashboard
+
 ![Screenshot](https://raw.githubusercontent.com/casanet/dashboard-app/develop/assets/capture/desktop-capture.gif)
 
 ### The mobile app
@@ -178,7 +181,9 @@ Yes, it is possible and it's welcomed! see [modules documentation](./backend/src
 
 To explorer the full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/src/swagger.json` in explorer input.
 
-In a running Casanet server you can use Swagger UI to call API, the URL is `[local server IP]/docs`. 
+To try it out against the demo mock server go to [casanet-mock-server docs](https://casanet-mock-server.herokuapp.com/docs/#/)
+
+For a running Casanet server use Swagger UI to make API calls in the `[local server IP]/docs` URL. 
 
 ## IFTTT integration
 
