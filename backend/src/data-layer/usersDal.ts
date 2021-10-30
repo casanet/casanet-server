@@ -132,8 +132,8 @@ export class UsersDal {
     });
 
     logger.warn(
-      `There is no any user in system, using default user to allow first time access,` +
-        ` user password is: "${password}" for system secure, PLEASE CHANGE THE DEFAULT PASSWORD.`,
+      `There is no ANY user in system, using the default user places in the 'casanet.json' configuration file to allow first time access,` +
+        ` the default user password is: "${password}" for system secure, PLEASE CHANGE THE DEFAULT PASSWORD.`,
     );
   }
 

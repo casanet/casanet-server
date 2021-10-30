@@ -68,7 +68,7 @@
     "ip": "^1.1.5",
     "is-online": "^8.2.1",
     "joi": "^14.3.0",
-    "local-network-scan": "^1.1.0",
+    "local-network-scan": "^1.1.1",
     "macaddress": "^0.2.9",
     "miio": "^0.15.6",
     "moment": "^2.23.0",
