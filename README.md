@@ -211,6 +211,16 @@ Feel free to open an issue with a bug report or feature to develop for the next 
 
 For any suggestions or help feel free to contact.
 
+## Privacy Statement
+
+This project *doesn't* include any type of data collection and tracking, all data is stored *only* in the machine where the server runs inside.
+
+Keep the machine safe and secure to keep your data in your hands only.
+
+Using this server is own your own risk, and could contain sensitive data such as your users' email, name, devices key, etc.
+ 
+Please secure your network, server machine, and your data :)
+
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
 
