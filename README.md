@@ -221,6 +221,8 @@ Using this server is own your own risk, and could contain sensitive data such as
  
 Please secure your network, server machine, and your data :)
 
+By using this project you agree to the [privacy policy](./docs/privacy-policy.md) please read it carefully.
+
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
 
