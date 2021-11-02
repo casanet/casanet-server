@@ -4,8 +4,6 @@ import { Configuration } from '../config';
 import { LocalNetworkDevice } from '../models/sharedInterfaces';
 import { logger } from './logger';
 import { scanLocalNetwork } from 'local-network-scan';
-import { timeout, TimeoutError } from 'promise-timeout';
-import { Duration } from 'unitsnet-js';
 
 /**
  * Scan local network devices 
@@ -22,7 +20,7 @@ export async function LocalNetworkReader(): Promise<LocalNetworkDevice[]> {
 
 	try {
 		logger.info('[LocalNetworkReader] Scanning network devices...');
-		const networkDevices = await timeout(scanLocalNetwork({ localNetwork: Configuration.scanSubnet, queryVendor: isInternetOnline }), Duration.FromMinutes(2).Milliseconds);
+		const networkDevices = await scanLocalNetwork({ localNetwork: Configuration.scanSubnet, queryVendor: isInternetOnline });
 		logger.info('[LocalNetworkReader] Scanning network devices done.');
 
 		const devices: LocalNetworkDevice[] = [];
