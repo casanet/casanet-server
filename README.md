@@ -36,7 +36,10 @@ Each module/driver design to work only through a local network, let us disconnec
 
 ## How does it look?
 
+## ✨✨✨ [Live Demo Dashboard](https://demo.dashboard.casanet.casa/) ✨✨✨
+
 ### The web dashboard
+
 ![Screenshot](https://raw.githubusercontent.com/casanet/dashboard-app/develop/assets/capture/desktop-capture.gif)
 
 ### The mobile app
@@ -178,7 +181,9 @@ Yes, it is possible and it's welcomed! see [modules documentation](./backend/src
 
 To explorer the full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/src/swagger.json` in explorer input.
 
-In a running Casanet server you can use Swagger UI to call API, the URL is `[local server IP]/docs`. 
+To try it out against the demo mock server go to [casanet-mock-server docs](https://casanet-mock-server.herokuapp.com/docs/#/)
+
+For a running Casanet server use Swagger UI to make API calls in the `[local server IP]/docs` URL. 
 
 ## IFTTT integration
 
@@ -205,6 +210,18 @@ See [step by step instruction](./docs/IFTTT.md) to use IFTTT.
 Feel free to open an issue with a bug report or feature to develop for the next version.
 
 For any suggestions or help feel free to contact.
+
+## Privacy Statement
+
+This project *doesn't* include any type of data collection and tracking, all data is stored *only* in the machine where the server runs inside.
+
+Keep the machine safe and secure to keep your data in your hands only.
+
+Using this server is own your own risk, and could contain sensitive data such as your users' email, name, devices key, etc.
+ 
+Please secure your network, server machine, and your data :)
+
+By using this project you agree to the [privacy policy](./docs/privacy-policy.md) please read it carefully.
 
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).

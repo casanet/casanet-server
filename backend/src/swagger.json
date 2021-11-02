@@ -3309,32 +3309,6 @@
 				"parameters": []
 			}
 		},
-		"/static/**/*": {
-			"get": {
-				"operationId": "GetStaticsAssets",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Page not found"
-					}
-				},
-				"description": "Get public assets for Casanet client side.",
-				"tags": [
-					"Public"
-				],
-				"security": [],
-				"parameters": []
-			}
-		},
 		"/timings": {
 			"get": {
 				"operationId": "GetTimings",
