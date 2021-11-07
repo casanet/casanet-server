@@ -20,7 +20,7 @@ export async function LocalNetworkReader(): Promise<LocalNetworkDevice[]> {
 
 	try {
 		logger.info('[LocalNetworkReader] Scanning network devices...');
-		const networkDevices = await scanLocalNetwork({ localNetwork: Configuration.scanSubnet, queryVendor: isInternetOnline });
+		const networkDevices = await scanLocalNetwork({ logger, localNetwork: Configuration.scanSubnet, queryVendor: isInternetOnline });
 		logger.info('[LocalNetworkReader] Scanning network devices done.');
 
 		const devices: LocalNetworkDevice[] = [];
