@@ -15,19 +15,22 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Bundle packages
+      # NOTE, the default ARMV bin (v16.12.0) not exists in the "https://github.com/vercel/pkg-fetch/releases" page, so download V16.8 and replace name and hash to build using it 
       run: |
         mkdir casanet_bin
         mkdir .pkg-cache
         cd .pkg-cache
         export PKG_CACHE_PATH=$(pwd)
         echo $PKG_CACHE_PATH
-        mkdir v2.6
-        cd v2.6
-        curl -L https://github.com/zeit/pkg-fetch/releases/download/v2.6/uploaded-v2.6-node-v12.2.0-linux-armv7 --output fetched-v12.18.1-linux-armv7 
-        chmod 777 fetched-v12.18.1-linux-armv7
+        mkdir v3.2
+        cd v3.2
+        curl -L https://github.com/zeit/pkg-fetch/releases/download/v3.2/node-v16.8.0-linuxstatic-armv7 --output fetched-v16.12.0-linux-armv7 
+        chmod 777 fetched-v16.12.0-linux-armv7
         cd ../../
         cd backend
         npm ci
+        sed -i 's/node-v16.12.0-linuxstatic-armv7/node-v16.12.0-linux-armv7/g' node_modules/pkg-fetch/lib-es5/expected.js
+        sed -i 's/e26b713c159d38b09ba8db95e4c8220653386aad7bc6ec0921f6b6b20f4710c5/51e503c90a9670c3f3be5382f229d818edbe128f989c8e7b467ed91c34386393/g' node_modules/pkg-fetch/lib-es5/expected.js
         npm run bundle
         cp -v bundle/* ../casanet_bin
     - uses: actions/upload-artifact@v2
@@ -106,16 +109,6 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./casanet_bin/casanet_win_x64.exe
         asset_name: casanet_win_x64.exe
-        asset_content_type: application/octet-stream
-    - name: Upload Release Asset - macos
-      id: upload-release-asset_macos
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./casanet_bin/casanet_macos_x64
-        asset_name: casanet_macos_x64
         asset_content_type: application/octet-stream
     - name: Upload Release Asset - linux x86
       id: upload-release-asset_linux86
