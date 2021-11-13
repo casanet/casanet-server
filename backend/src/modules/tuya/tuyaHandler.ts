@@ -366,7 +366,7 @@ export class TuyaHandler extends BrandModuleBase {
             const status: SwitchOptions = rowStatus !== '3' ? 'on' : 'off';
             const direction: RollerDirection = rowStatus === '1' ? 'up' : 'down';
 
-            this.minionStatusChangedEvent.next({
+            this.minionStatusChangedEvent.post({
               minionId: minion.minionId,
               status: {
                 roller: {
@@ -407,7 +407,7 @@ export class TuyaHandler extends BrandModuleBase {
              * send new status update to all subsribers.
              */
             if (minion.device.model === 'wall switch, 3 gangs, first one') {
-              this.minionStatusChangedEvent.next({
+              this.minionStatusChangedEvent.post({
                 minionId: minion.minionId,
                 status: {
                   switch: {
@@ -418,7 +418,7 @@ export class TuyaHandler extends BrandModuleBase {
             }
 
             if (minion.device.model === 'wall switch, 3 gangs, second one') {
-              this.minionStatusChangedEvent.next({
+              this.minionStatusChangedEvent.post({
                 minionId: minion.minionId,
                 status: {
                   switch: {
@@ -429,7 +429,7 @@ export class TuyaHandler extends BrandModuleBase {
             }
 
             if (minion.device.model === 'wall switch, 3 gangs, third one') {
-              this.minionStatusChangedEvent.next({
+              this.minionStatusChangedEvent.post({
                 minionId: minion.minionId,
                 status: {
                   switch: {

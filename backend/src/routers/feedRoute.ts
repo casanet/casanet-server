@@ -9,11 +9,16 @@ import { logger } from '../utilities/logger';
 export class FeedRouter {
 	private feedController: FeedController = new FeedController();
 
+	
 	public routes(app: express.Express): void {
 		/**
 		 * Feed security middleware
 		 */
 		app.use('/API/feed/*', async (req: Request, res: Response, next: NextFunction) => {
+			// WA to fix deprecated flush, see https://github.com/dpskvn/express-sse/issues/28
+			const originalRespond = res as any;
+			originalRespond.flush = () => { /* Do nothing */ }
+
 			try {
 				/** 
 				 * Allow send the authentication key via query in SSE (only)
@@ -26,7 +31,6 @@ export class FeedRouter {
 					SystemAuthScopes.userScope,
 					SystemAuthScopes.adminScope,
 				])) as User;
-				// logger.debug(`user ${user.email} connected to feed ${req.path}`);
 
 				next();
 			} catch (error) {
@@ -37,8 +41,8 @@ export class FeedRouter {
 		/**
 		 * Init the sse objects.
 		 */
-		const minionsSseFeed = new SseStream(['init'], { isSerialized: true });
-		const timingsSseFeed = new SseStream(['init'], { isSerialized: true });
+		 const minionsSseFeed = new SseStream(['init'], { isSerialized: true });
+		 const timingsSseFeed = new SseStream(['init'], { isSerialized: true });
 
 		/**
 		 * SSE minions feed.

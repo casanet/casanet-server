@@ -8,7 +8,6 @@ import {
   AirConditioning,
   MinionTypes,
 } from './sharedInterfaces';
-import { Observable, Subscriber, BehaviorSubject } from 'rxjs';
 
 declare global {
 	namespace Express {

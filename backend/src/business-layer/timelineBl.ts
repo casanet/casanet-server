@@ -20,10 +20,7 @@ export class TimelineBl {
   }
 
   public async initTimelineModule() {
-    this.minionsBl.minionFeed.subscribe(minionFeed => {
-      if (!minionFeed) {
-        return;
-      }
+    this.minionsBl.minionFeed.attach(minionFeed => {
 
       switch (minionFeed.event) {
         case 'update':

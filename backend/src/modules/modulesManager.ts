@@ -1,11 +1,11 @@
 import * as moment from 'moment';
 import { timeout as withTimeout, TimeoutError } from 'promise-timeout';
 import { PullBehavior } from 'pull-behavior';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { Configuration } from '../config';
 import { DeviceKind, ErrorResponse, Minion, MinionDevice, MinionStatus } from '../models/sharedInterfaces';
 import { MutexMinionsAccess } from '../utilities/mutex';
 import { BrandModuleBase } from './brandModuleBase';
+import { SyncEvent } from 'ts-events';
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////// TO EXTEND: Place here handler reference //////////////////////
@@ -37,10 +37,10 @@ export class ModulesManager {
   /**
    * Let subscribe to any status minion changed. from any brand module.
    */
-  public minionStatusChangedEvent = new BehaviorSubject<{
+  public minionStatusChangedEvent = new SyncEvent<{
     minionId: string;
     status: MinionStatus;
-  }>(undefined);
+  }>(); 
 
   /**
    * Allows to retrieve minions array. (used as proxy for all modulus).
@@ -348,8 +348,8 @@ export class ModulesManager {
       },
     );
 
-    brandModule.minionStatusChangedEvent.subscribe(changedMinionStatus => {
-      this.minionStatusChangedEvent.next(changedMinionStatus);
+    brandModule.minionStatusChangedEvent.attach(changedMinionStatus => {
+      this.minionStatusChangedEvent.post(changedMinionStatus);
     });
 
     this.modulesHandlers.push(brandModule);

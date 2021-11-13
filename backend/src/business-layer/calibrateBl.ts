@@ -40,7 +40,7 @@ export class CalibrateBl {
      * If a status update arrived from the physical devices that not match the current
      * LOCK value, sent back the LOCKed status.
      */
-    this.minionsBl.minionFeed.subscribe(async (minionFeed: MinionFeed) => {
+    this.minionsBl.minionFeed.attach(async (minionFeed: MinionFeed) => {
       if (!minionFeed || minionFeed.event !== 'update') {
         return;
       }

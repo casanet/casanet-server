@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 import { Duration } from 'moment';
-import { BehaviorSubject } from 'rxjs';
 import { CommandsSet } from '../../models/backendInterfaces';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { DeepCopy } from '../../utilities/deepCopy';
@@ -109,14 +108,14 @@ export class MockHandler extends BrandModuleBase {
       const statusObject = statusCopy[minions[0].minionType] as Toggle;
       statusObject.status = statusObject.status === 'off' ? 'on' : 'off';
 
-      this.minionStatusChangedEvent.next({
+      this.minionStatusChangedEvent.post({
         minionId: minions[0].minionId,
         status: statusCopy,
       });
     }, this.SWITCH_CHANGED_INTERVAL.asMilliseconds());
 
     setInterval(() => {
-      this.minionStatusChangedEvent.next({
+      this.minionStatusChangedEvent.post({
         minionId: '656565656',
         status: {
           airConditioning: {
