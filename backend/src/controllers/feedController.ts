@@ -29,7 +29,7 @@ export class FeedController extends Controller {
   /**
    * minions sse feed object.
    */
-  private miniosSse: any;
+  private minionsSse: any;
 
   /**
    * timings sse feed object.
@@ -38,17 +38,13 @@ export class FeedController extends Controller {
 
   /**
    * Init minions feed.
-   * @param miniosSse minion sse object.
+   * @param minionsSse minion sse object.
    */
-  public initMinionsFeed(miniosSse: any): void {
-    this.miniosSse = miniosSse;
+  public initMinionsFeed(minionsSse: any): void {
+    this.minionsSse = minionsSse;
 
-    MinionsBlSingleton.minionFeed.subscribe(minionFeed => {
-      if (!minionFeed) {
-        return;
-      }
-
-      this.miniosSse.send(minionFeed);
+    MinionsBlSingleton.minionFeed.attach(minionFeed => {
+      this.minionsSse.send(minionFeed);
     });
   }
 
@@ -59,11 +55,7 @@ export class FeedController extends Controller {
   public initTimingsFeed(timingsSse: any): void {
     this.timingsSse = timingsSse;
 
-    TimingsBlSingleton.timingFeed.subscribe(timingFeed => {
-      if (!timingFeed) {
-        return;
-      }
-
+    TimingsBlSingleton.timingFeed.attach(timingFeed => {
       this.timingsSse.send(timingFeed);
     });
   }

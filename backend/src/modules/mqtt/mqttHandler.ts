@@ -208,7 +208,7 @@ export class MqttHandler extends BrandModuleBase {
           }
 
           /** Publish the update to casanet system */
-          this.minionStatusChangedEvent.next({
+          this.minionStatusChangedEvent.post({
             minionId,
             status,
           });

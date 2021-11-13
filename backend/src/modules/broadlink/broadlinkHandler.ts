@@ -363,7 +363,7 @@ export class BroadlinkHandler extends BrandModuleBase {
             continue;
           }
 
-          this.minionStatusChangedEvent.next({
+          this.minionStatusChangedEvent.post({
             minionId: minion.minionId,
             status: currStatus
           });

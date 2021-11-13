@@ -27,7 +27,7 @@ export class IftttIntegrationBl {
     private operationsBl: OperationsBl,
   ) {
     /** Subscribe to minions feed, to trigger an wenhooks event */
-    this.minionsBl.minionFeed.subscribe((minionFeed: MinionFeed) => {
+    this.minionsBl.minionFeed.attach((minionFeed: MinionFeed) => {
       if (!minionFeed || minionFeed.event !== 'update') {
         return;
       }
