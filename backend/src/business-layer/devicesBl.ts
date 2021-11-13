@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import { SyncEvent } from 'ts-events';
 import { DevicesDal, DevicesDalSingleton } from '../data-layer/devicesDal';
 import { DeviceKind, LocalNetworkDevice } from '../models/sharedInterfaces';
 import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
@@ -9,7 +9,7 @@ export class DevicesBl {
   /**
    * Local devices changes feed.
    */
-  public devicesUpdate = new BehaviorSubject<LocalNetworkDevice[]>([]);
+  public devicesUpdate = new SyncEvent<LocalNetworkDevice[]>();
   // Dependencies
   private localNetworkReader: () => Promise<LocalNetworkDevice[]>;
   private devicesDal: DevicesDal;
@@ -50,7 +50,7 @@ export class DevicesBl {
     await this.devicesDal.saveDevice(deviceToSet);
     const localDevice = this.localDevices.find(d => d.mac === deviceToSet.mac);
     localDevice.name = deviceToSet.name;
-    this.devicesUpdate.next(this.localDevices);
+    this.devicesUpdate.post(this.localDevices);
   }
 
   /**
@@ -58,7 +58,7 @@ export class DevicesBl {
    */
   public async rescanNetwork(): Promise<void> {
     await this.loadDevices();
-    this.devicesUpdate.next(this.localDevices);
+    this.devicesUpdate.post(this.localDevices);
   }
 
   /**

@@ -1,5 +1,4 @@
 import * as miio from 'miio';
-import { BehaviorSubject } from 'rxjs';
 import { CommandsSet } from '../../models/backendInterfaces';
 import {
   Cleaner,

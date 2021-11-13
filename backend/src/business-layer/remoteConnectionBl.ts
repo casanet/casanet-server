@@ -28,7 +28,7 @@ import { VersionsBlSingleton } from './versionsBl';
  * Used to connect remote server via web socket, and let`s users access
  */
 export class RemoteConnectionBl {
-  private ACK_INTERVAL = moment.duration(20, 'seconds');
+  private ACK_INTERVAL = moment.duration(30, 'seconds');
   private REMOTE_REQUEST_TIMEOUT = moment.duration(20, 'seconds');
   private ackPongReceived = true;
 
@@ -81,7 +81,7 @@ export class RemoteConnectionBl {
     this.connectToRemote();
 
     /** Subscribe to minions feed, to forward remote server */
-    this.minionsBl.minionFeed.subscribe((minionFeed: MinionFeed) => {
+    this.minionsBl.minionFeed.attach((minionFeed: MinionFeed) => {
       if (this.remoteConnectionStatus !== 'connectionOK') {
         return;
       }
@@ -99,7 +99,7 @@ export class RemoteConnectionBl {
     });
 
     /** Subscribe to timings feed, to forward remote server */
-    this.timingsBl.timingFeed.subscribe((timingFeed: TimingFeed) => {
+    this.timingsBl.timingFeed.attach((timingFeed: TimingFeed) => {
       if (this.remoteConnectionStatus !== 'connectionOK') {
         return;
       }
@@ -123,14 +123,20 @@ export class RemoteConnectionBl {
        * (If remote server not set yet, there is no point to try sending ack).
        */
       if (this.remoteConnectionStatus !== 'connectionOK' && this.remoteConnectionStatus !== 'cantReachRemoteServer') {
+				logger.debug(`[RemoteConnectionBl][initRemoteConnectionModule] remoteConnectionStatus "${this.remoteConnectionStatus}" ignoring ping send`)
         return;
       }
 
       if (!this.ackPongReceived) {
+				logger.warn('[RemoteConnectionBl][initRemoteConnectionModule] There is no pong respond, marking "remoteConnectionStatus" as "cantReachRemoteServer" and closing channel')
         this.remoteConnectionStatus = 'cantReachRemoteServer';
-      } else {
-        this.remoteConnectionStatus = 'connectionOK';
+				this.closeRemoteConnection();
+				this.connectToRemote();
+				return;
       }
+
+			logger.info('[RemoteConnectionBl][initRemoteConnectionModule] Remote connection is OK, sending ping...')
+      this.remoteConnectionStatus = 'connectionOK';
 
       this.ackPongReceived = false;
       this.sendMessage({
@@ -179,6 +185,7 @@ export class RemoteConnectionBl {
    * Disconnect from remote server, and delete his settings.
    */
   public async removeRemoteSettings() {
+		logger.info('[RemoteConnectionBl][removeRemoteSettings] Removing & disconnecting remote server...')
     this.closeRemoteConnection();
     this.remoteConnectionStatus = 'notConfigured';
     await this.remoteConnectionDal.deleteRemoteSettings();
@@ -313,21 +320,18 @@ export class RemoteConnectionBl {
    * @param localMessage message to send
    */
   private sendMessage(localMessage: LocalMessage) {
+		// Dont even try to send message in cause remote server not configured al all
     if (this.remoteConnectionStatus !== 'connectionOK' && this.remoteConnectionStatus !== 'cantReachRemoteServer') {
       return;
     }
     try {
-      // Don't log al ack messages...
-      if (localMessage.localMessagesType !== 'ack') {
-				logger.debug(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}" ...`);
-      }
       this.webSocketClient.sendData(JSON.stringify(localMessage));
     } catch (error) {
-      logger.error(`[RemoteConnection.sendMessage] sending message to remote server "${localMessage.localMessagesType}" failed, ${error.message}`);
+      logger.error(`[RemoteConnectionBl.sendMessage] sending message to remote server "${localMessage.localMessagesType}" failed, ${error.message}`);
 
 			// In case of failure, close the connection, and try to reopen it from scratch
 			if (localMessage.localMessagesType === 'ack') {
-				logger.info(`[RemoteConnection.sendMessage] During the WS error, manually closing the WS, and reopening ...`);
+				logger.info(`[RemoteConnectionBl.sendMessage] During the WS error, manually closing the WS, and reopening ...`);
 				this.remoteConnectionStatus = 'cantReachRemoteServer';
 				this.closeRemoteConnection();
 				this.connectToRemote();
@@ -337,6 +341,7 @@ export class RemoteConnectionBl {
 
   /** Close manually web socket to remote server */
   private closeRemoteConnection() {
+		logger.info(`[RemoteConnectionBl.closeRemoteConnection] Closing remote channel ...`);
     try {
       this.webSocketClient.disconnect();
     } catch (error) { }
@@ -344,6 +349,8 @@ export class RemoteConnectionBl {
 
   /** Connect to remote server by web sockets */
   private async connectToRemote() {
+		logger.info(`[RemoteConnectionBl.connectToRemote] Connecting to remote channel ...`);
+
     /** Get remote server settings */
     const remoteSettings = await this.remoteConnectionDal.getRemoteSettings();
 
@@ -362,34 +369,34 @@ export class RemoteConnectionBl {
 
     this.webSocketClient.on('open', () => {
       this.remoteConnectionStatus = 'connectionOK';
-      logger.info(`Ws channel to ${remoteSettings.host} opened successfully`);
+      logger.info(`[RemoteConnectionBl.connectToRemote][on-open] Ws channel to ${remoteSettings.host} opened successfully`);
     });
 
     this.webSocketClient.on('message', async (rawRemoteMessage: string) => {
       try {
         await this.onRemoteServerMessage(rawRemoteMessage);
       } catch (error) {
-        logger.info(`Ws message parsing & handling filed row message: ${rawRemoteMessage}\n error ${error.message || JSON.stringify(error)}`);
+        logger.error(`[RemoteConnectionBl.connectToRemote][on-message] Ws message parsing & handling filed row message: ${rawRemoteMessage}\n error ${error.message || JSON.stringify(error)}`);
       }
     });
 
     this.webSocketClient.on('error', (err: Error) => {
-      logger.info(`Ws channel error ${err.message}`);
+      logger.error(`[RemoteConnectionBl.connectToRemote][on-error] Ws channel error ${err.message}`);
     });
 
     this.webSocketClient.on('close', (code: number, reason: string) => {
+      logger.info(`[RemoteConnectionBl.connectToRemote][on-close] Ws channel closed ${remoteSettings.host} code: ${code} reason: ${reason}`);
       if (this.remoteConnectionStatus !== 'connectionOK') {
         return;
       }
       this.remoteConnectionStatus = 'cantReachRemoteServer';
-      logger.info(`Ws channel closed ${remoteSettings.host} code: ${code} reason: ${reason}`);
     });
 
     this.webSocketClient.on('reconnect', () => {
-      logger.debug(`Ws channel trying reconnect ${remoteSettings.host}`);
+      logger.info(`[RemoteConnectionBl.connectToRemote][on-reconnect] Ws channel trying reconnect ${remoteSettings.host}`);
     });
 
-    logger.info(`Opening ws channel to ${remoteSettings.host}`);
+    logger.info(`[RemoteConnectionBl.connectToRemote] Opening ws channel to ${remoteSettings.host}`);
 
     /** Allow *only wss* connections. */
     /** open connection to remote server. */
@@ -489,8 +496,8 @@ export class RemoteConnectionBl {
 
   /** Handle auth passed messages from remote server */
   private async onAuthenticatedSuccessfully() {
+    logger.info(`[RemoteConnectionBl.onAuthenticatedSuccessfully] Successfully authenticated to remote server.`);
     this.remoteConnectionStatus = 'connectionOK';
-    logger.info(`Successfully authenticated to remote server.`);
   }
 
   /**
@@ -498,8 +505,9 @@ export class RemoteConnectionBl {
    * @param errorResponse Error message from remote server.
    */
   private async onAuthenticationFail(errorResponse: ErrorResponse) {
-    logger.error(`Authenticate local server in remote server fail, ${errorResponse.message}`);
+    logger.error(`[RemoteConnectionBl.onAuthenticationFail] Authenticate local server in remote server fail, ${errorResponse.message}`);
     this.closeRemoteConnection();
+    logger.info(`[RemoteConnectionBl.onAuthenticationFail] Setting remoteConnectionStatus as 'authorizationFail'`);
     this.remoteConnectionStatus = 'authorizationFail';
   }
 
@@ -512,8 +520,9 @@ export class RemoteConnectionBl {
       const remoteSettings = await this.remoteConnectionDal.getRemoteSettings();
 
       if (!remoteSettings) {
-        logger.error(`There is no way to connect remote server, remote settings data not exist`);
+        logger.error(`[RemoteConnectionBl.onInitReady] There is no way to connect remote server, remote settings data not exist`);
         this.closeRemoteConnection();
+        logger.info(`[RemoteConnectionBl.onInitReady] Setting remoteConnectionStatus as 'notConfigured'`);
         this.remoteConnectionStatus = 'notConfigured';
         return;
       }
@@ -530,7 +539,7 @@ export class RemoteConnectionBl {
         },
       });
     } catch (error) {
-      logger.error(`There is no way to connect remote server, fail to get mac address ${error}`);
+      logger.error(`[RemoteConnectionBl.onInitReady] There is no way to connect remote server, fail to get init connection ${error}`);
       this.closeRemoteConnection();
     }
   }

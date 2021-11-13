@@ -203,7 +203,7 @@ export class OrviboHandler extends BrandModuleBase {
 
       for (const minion of minions) {
         if (minion.device.pysicalDevice.mac === changedDevice.macAddress) {
-          this.minionStatusChangedEvent.next({
+          this.minionStatusChangedEvent.post({
             minionId: minion.minionId,
             status: {
               switch: {

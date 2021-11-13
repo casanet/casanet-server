@@ -2,7 +2,6 @@ import { broadlinkToPulesArray, pulesArrayToBroadlink } from 'broadlink-ir-conve
 import * as moment from 'moment';
 import { Duration } from 'moment';
 import * as request from 'request-promise';
-import { BehaviorSubject } from 'rxjs';
 import { CommandsSet } from '../../models/backendInterfaces';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus, SwitchOptions, Toggle } from '../../models/sharedInterfaces';
 import { CommandsCacheManager } from '../../utilities/cacheManager';

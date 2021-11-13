@@ -97,7 +97,7 @@ export class YeelightHandler extends BrandModuleBase {
               lightStatus.blue = Math.floor(lightUpdate.rgb.b) as number;
             }
 
-            this.minionStatusChangedEvent.next({
+            this.minionStatusChangedEvent.post({
               minionId: minion.minionId,
               status: currentStatus,
             });

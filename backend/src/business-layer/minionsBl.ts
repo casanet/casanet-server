@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 import * as randomstring from 'randomstring';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { MinionsDal, MinionsDalSingleton } from '../data-layer/minionsDal';
 import {
   DeviceKind,
@@ -18,12 +17,13 @@ import { DeepCopy } from '../utilities/deepCopy';
 import { logger } from '../utilities/logger';
 import { Delay } from '../utilities/sleep';
 import { DevicesBl, DevicesBlSingleton } from './devicesBl';
+import { SyncEvent } from 'ts-events';
 
 export class MinionsBl {
   /**
    * Minions status update feed.
    */
-  public minionFeed = new BehaviorSubject<MinionFeed>(undefined);
+  public minionFeed = new SyncEvent<MinionFeed>();
   // Dependencies
   private minionsDal: MinionsDal;
   private devicesBl: DevicesBl;
@@ -130,7 +130,7 @@ export class MinionsBl {
     /**
      * Send minions feed update.
      */
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'update',
       minion,
     });
@@ -161,7 +161,7 @@ export class MinionsBl {
     /**
      * Send minions feed update.
      */
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'update',
       minion,
     });
@@ -213,7 +213,7 @@ export class MinionsBl {
      */
     await this.modulesManager.setStatus(minion, minionStatus).catch(err => {
       minion.isProperlyCommunicated = false;
-      this.minionFeed.next({
+      this.minionFeed.post({
         event: 'update',
         minion,
       });
@@ -235,7 +235,7 @@ export class MinionsBl {
     /**
      * Send minions feed update.
      */
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'update',
       minion,
     });
@@ -265,7 +265,7 @@ export class MinionsBl {
     /**
      * Send minion feed update
      */
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'update',
       minion,
     });
@@ -295,7 +295,7 @@ export class MinionsBl {
       /**
        * Send minion feed update
        */
-      this.minionFeed.next({
+      this.minionFeed.post({
         event: 'update',
         minion,
       });
@@ -399,7 +399,7 @@ export class MinionsBl {
     /**
      * Send create new minion feed update (*before* try to get the status!!!)
      */
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'created',
       minion,
     });
@@ -434,7 +434,7 @@ export class MinionsBl {
       this.minions.splice(this.minions.indexOf(originalMinion), 1);
     }
 
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'removed',
       minion: originalMinion,
     });
@@ -482,7 +482,7 @@ export class MinionsBl {
     /**
      * Send minions feed update.
      */
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'update',
       minion,
     });
@@ -527,23 +527,23 @@ export class MinionsBl {
     /**
      * After all, subscribe to devices status updates.
      */
-    this.modulesManager.minionStatusChangedEvent.subscribe(async pysicalDeviceUpdate => {
-      if (!pysicalDeviceUpdate) {
+    this.modulesManager.minionStatusChangedEvent.attach(async physicalDeviceUpdate => {
+      if (!physicalDeviceUpdate) {
         return;
       }
 
       try {
-        const minion = await this.getMinionById(pysicalDeviceUpdate.minionId);
-        await this.onMinionUpdated(minion, pysicalDeviceUpdate.status);
+        const minion = await this.getMinionById(physicalDeviceUpdate.minionId);
+        await this.onMinionUpdated(minion, physicalDeviceUpdate.status);
       } catch (error) {
-        logger.info(`Avoiding device update, there is no minion with id: ${pysicalDeviceUpdate.minionId}`);
+        logger.info(`Avoiding device update, there is no minion with id: ${physicalDeviceUpdate.minionId}`);
       }
     });
 
     /**
      * And also register to devices pysical data update (name or ip).
      */
-    this.devicesBl.devicesUpdate.subscribe((localsDevices: LocalNetworkDevice[]) => {
+    this.devicesBl.devicesUpdate.attach((localsDevices: LocalNetworkDevice[]) => {
       this.loadMinionsLocalDeviceData(localsDevices);
     });
 
@@ -631,7 +631,7 @@ export class MinionsBl {
 
     minion.isProperlyCommunicated = true;
     minion.minionStatus = updateToStatus;
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'update',
       minion,
     });

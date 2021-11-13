@@ -69,10 +69,7 @@ export class TimeoutBl {
     /**
      * Then register to changes feed.
      */
-    this.minionsBl.minionFeed.subscribe(minionFeed => {
-      if (!minionFeed) {
-        return;
-      }
+    this.minionsBl.minionFeed.attach(minionFeed => {
 
       switch (minionFeed.event) {
         case 'created':

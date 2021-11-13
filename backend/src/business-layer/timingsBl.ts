@@ -1,7 +1,6 @@
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import * as randomstring from 'randomstring';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import * as suncalc from 'suncalc';
 import { Configuration } from '../config';
 import { TimingsDal, TimingsDalSingleton } from '../data-layer/timingsDal';
@@ -19,6 +18,7 @@ import {
 } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 import { OperationsBl, OperationsBlSingleton } from './operationsBl';
+import { SyncEvent } from 'ts-events';
 
 const TIMING_INTERVAL_ACTIVATION = moment.duration(5, 'seconds');
 
@@ -26,7 +26,7 @@ export class TimingsBl {
 	/**
 	 * Timing trigger feed.
 	 */
-	public timingFeed = new BehaviorSubject<TimingFeed>(undefined);
+	public timingFeed = new SyncEvent<TimingFeed>();
 
 	/**
 	 * The real activation is in minute.
@@ -125,7 +125,7 @@ export class TimingsBl {
 			}
 			logger.info(`[activeTiming] Invoke ${timing.timingName} id: ${timing.timingId} timing done`);
 
-			this.timingFeed.next({
+			this.timingFeed.post({
 				timing,
 				results,
 			});

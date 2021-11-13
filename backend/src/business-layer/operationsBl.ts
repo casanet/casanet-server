@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 import * as randomstring from 'randomstring';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { Configuration } from '../config';
 import { OperationsDal, OperationsDalSingleton } from '../data-layer/operationsDal';
 import { SetLockOptions } from '../models/backendInterfaces';
