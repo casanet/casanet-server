@@ -4,7 +4,7 @@
 Good question... depend on device protocol.
 
 ### Broadlink devices
-Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=com.broadlink.rmt).
+Connect the device to a local network by [official app](https://play.google.com/store/apps/details?id=cn.com.broadlink.econtrol.international).
 
 Then scan the local network by the Casanet server.
 
