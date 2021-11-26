@@ -638,6 +638,7 @@ export class MinionsBl {
     this.minionFeed.post({
       event: 'update',
       minion,
+			trigger: 'device'
     });
   }
 

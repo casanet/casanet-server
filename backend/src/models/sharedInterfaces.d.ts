@@ -477,6 +477,7 @@ export declare type FeedEvent = 'created' | 'update' | 'removed';
  */
 export declare type MinionChangeTrigger =
 	'user' |
+	'device' |
 	'timeout' |
 	'timing' |
 	'lock' |
