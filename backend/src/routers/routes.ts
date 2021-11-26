@@ -263,7 +263,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "MinionChangeTrigger": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["user"]},{"dataType":"enum","enums":["timeout"]},{"dataType":"enum","enums":["timing"]},{"dataType":"enum","enums":["lock"]},{"dataType":"enum","enums":["sync"]},{"dataType":"enum","enums":["rotation"]},{"dataType":"enum","enums":["external"]}],"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["user"]},{"dataType":"enum","enums":["device"]},{"dataType":"enum","enums":["timeout"]},{"dataType":"enum","enums":["timing"]},{"dataType":"enum","enums":["lock"]},{"dataType":"enum","enums":["sync"]},{"dataType":"enum","enums":["rotation"]},{"dataType":"enum","enums":["external"]}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "AuthScopes": {
