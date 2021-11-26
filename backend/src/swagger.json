@@ -551,6 +551,64 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"MinionChangeTrigger": {
+				"type": "string",
+				"enum": [
+					"user",
+					"timeout",
+					"timing",
+					"lock",
+					"sync",
+					"rotation",
+					"external"
+				],
+				"description": "The minion status change triggers"
+			},
+			"AuthScopes": {
+				"type": "string",
+				"enum": [
+					"adminAuth",
+					"userAuth",
+					"iftttAuth"
+				],
+				"description": "Scopes of authentication, right know in our system there are only 3 scopes.\r\nadmin and user. any API route protect by one of them."
+			},
+			"User": {
+				"description": "Represents a user in the system.",
+				"properties": {
+					"displayName": {
+						"type": "string",
+						"description": "Name"
+					},
+					"email": {
+						"type": "string",
+						"description": "User email"
+					},
+					"password": {
+						"type": "string",
+						"description": "User password."
+					},
+					"ignoreTfa": {
+						"type": "boolean",
+						"description": "Ignore 2-step verification on login or not."
+					},
+					"scope": {
+						"$ref": "#/components/schemas/AuthScopes",
+						"description": "User scopes."
+					},
+					"passwordChangeRequired": {
+						"type": "boolean",
+						"description": "Whenever the user required to set new password, during default password usage, password expiration, etc."
+					}
+				},
+				"required": [
+					"email",
+					"ignoreTfa",
+					"scope"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"MinionFeed": {
 				"description": "Minion feed object.",
 				"properties": {
@@ -559,6 +617,12 @@
 					},
 					"minion": {
 						"$ref": "#/components/schemas/Minion"
+					},
+					"trigger": {
+						"$ref": "#/components/schemas/MinionChangeTrigger"
+					},
+					"user": {
+						"$ref": "#/components/schemas/User"
 					}
 				},
 				"required": [
@@ -921,12 +985,31 @@
 					},
 					"status": {
 						"$ref": "#/components/schemas/MinionStatus"
+					},
+					"trigger": {
+						"$ref": "#/components/schemas/MinionChangeTrigger"
+					},
+					"user": {
+						"properties": {
+							"email": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"email",
+							"name"
+						],
+						"type": "object"
 					}
 				},
 				"required": [
 					"minionId",
 					"timestamp",
-					"status"
+					"status",
+					"trigger"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1093,51 +1176,6 @@
 				"required": [
 					"host",
 					"connectionKey"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"AuthScopes": {
-				"type": "string",
-				"enum": [
-					"adminAuth",
-					"userAuth",
-					"iftttAuth"
-				],
-				"description": "Scopes of authentication, right know in our system there are only 3 scopes.\r\nadmin and user. any API route protect by one of them."
-			},
-			"User": {
-				"description": "Represents a user in the system.",
-				"properties": {
-					"displayName": {
-						"type": "string",
-						"description": "Name"
-					},
-					"email": {
-						"type": "string",
-						"description": "User email"
-					},
-					"password": {
-						"type": "string",
-						"description": "User password."
-					},
-					"ignoreTfa": {
-						"type": "boolean",
-						"description": "Ignore 2-step verification on login or not."
-					},
-					"scope": {
-						"$ref": "#/components/schemas/AuthScopes",
-						"description": "User scopes."
-					},
-					"passwordChangeRequired": {
-						"type": "boolean",
-						"description": "Whenever the user required to set new password, during default password usage, password expiration, etc."
-					}
-				},
-				"required": [
-					"email",
-					"ignoreTfa",
-					"scope"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2000,6 +2038,58 @@
 					}
 				],
 				"parameters": []
+			}
+		},
+		"/minions/timeline/{minionId}": {
+			"get": {
+				"operationId": "GetMinionTimeline",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/MinionTimeline"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the timeline of minions status.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/minions/power-off": {

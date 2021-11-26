@@ -9,8 +9,10 @@ import {
   Minion,
   MinionCalibrate,
   MinionFeed,
+  MinionChangeTrigger,
   MinionStatus,
   ProgressStatus,
+	User,
 } from '../models/sharedInterfaces';
 import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
 import { DeepCopy } from '../utilities/deepCopy';
@@ -172,7 +174,7 @@ export class MinionsBl {
    * @param minionId minion to set new status to.
    * @param minionStatus the status to set.
    */
-  public async setMinionStatus(minionId: string, minionStatus: MinionStatus): Promise<void> {
+  public async setMinionStatus(minionId: string, minionStatus: MinionStatus, minionSetTrigger: MinionChangeTrigger, userAction?: User): Promise<void> {
     const minion = this.findMinion(minionId);
     if (!minion) {
       throw {
@@ -238,6 +240,8 @@ export class MinionsBl {
     this.minionFeed.post({
       event: 'update',
       minion,
+			trigger: minionSetTrigger,
+			user: userAction
     });
   }
 
@@ -322,7 +326,7 @@ export class MinionsBl {
 
       if (needToSetStatus) {
         try {
-          await this.setMinionStatus(minionId, statusToSet);
+          await this.setMinionStatus(minionId, statusToSet, 'lock');
         } catch (error) {
           logger.warn(`[MinionsBL] Failed to change minion "${minionId}" status, according to the new lock`);
         }
@@ -339,14 +343,14 @@ export class MinionsBl {
   /**
    * Set all minions status off.
    */
-  public async powerAllOff() {
+  public async powerAllOff(user: User) {
     logger.info(`Setting all minions power off ...`);
 
     for (const minion of this.minions) {
       try {
         const statusToSet = DeepCopy<MinionStatus>(minion.minionStatus);
         statusToSet[minion.minionType].status = 'off';
-        await this.setMinionStatus(minion.minionId, statusToSet);
+        await this.setMinionStatus(minion.minionId, statusToSet, 'user', user);
       } catch (error) {
         logger.warn(`Set minion ${minion.minionId} power off failed, ${error ? error.message : 'unknown'}`);
       }

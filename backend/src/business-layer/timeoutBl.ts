@@ -145,7 +145,7 @@ export class TimeoutBl {
         minionStatus[minion.minionType].status = 'off';
 
         logger.debug(`[TimeoutBl.timeoutActivation] Setting minion "${minion.minionId}" status "${JSON.stringify(minionStatus)}" ...`);
-        await this.minionsBl.setMinionStatus(timeoutMinion.minionId, minionStatus);
+        await this.minionsBl.setMinionStatus(timeoutMinion.minionId, minionStatus, 'timeout');
         logger.debug(`[TimeoutBl.timeoutActivation] Setting minion ${minion.minionId} timeout successfully activated`);
 
         /**
