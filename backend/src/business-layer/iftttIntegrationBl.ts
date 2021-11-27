@@ -51,7 +51,7 @@ export class IftttIntegrationBl {
   public async triggeredMinionAction(minionId: string, iftttActionTriggered: IftttActionTriggered): Promise<void> {
     const minion = DeepCopy<Minion>(await this.minionsBl.getMinionById(minionId));
     minion.minionStatus[minion.minionType].status = iftttActionTriggered.setStatus;
-    await this.minionsBl.setMinionStatus(minionId, minion.minionStatus);
+    await this.minionsBl.setMinionStatus(minionId, minion.minionStatus, 'external');
   }
 
   /** Trigger requested operation action. */

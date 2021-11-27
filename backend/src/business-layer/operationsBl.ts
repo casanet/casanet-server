@@ -163,7 +163,7 @@ export class OperationsBl {
 			}
 
 			try {
-				await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+				await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus, 'timing');
 				continue;
 			} catch (error) {
 				logger.warn(
@@ -178,7 +178,7 @@ export class OperationsBl {
 			logger.info(`Trying set status for  ${activity.minionId} agine...`);
 
 			try {
-				await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+				await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus, 'timing');
 				continue;
 			} catch (error) {
 				logger.warn(`The second try to set status for ${activity.minionId} fail too`);
@@ -189,7 +189,7 @@ export class OperationsBl {
 			logger.info(`Last chance of set status for  ${activity.minionId} ...`);
 
 			try {
-				await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus);
+				await this.minionsBl.setMinionStatus(activity.minionId, activity.minionStatus, 'timing');
 			} catch (error) {
 				logger.warn(`Last chance to set status for ${activity.minionId} fail too. sorry ;)`);
 				errors.push({

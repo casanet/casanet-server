@@ -35,7 +35,7 @@ export class TimelineDal {
    * Add minion status node to the timeline.
    * @param minionTimeline the new timeline node to add .
    */
-  public async addTimelinenode(minionTimeline: MinionTimeline): Promise<void> {
+  public async addTimelineNode(minionTimeline: MinionTimeline): Promise<void> {
     /** First, remove the olds nodes. */
     this.removeOldNodes();
 
