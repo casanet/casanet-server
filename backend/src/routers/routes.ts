@@ -261,11 +261,36 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "MinionChangeTrigger": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["user"]},{"dataType":"enum","enums":["device"]},{"dataType":"enum","enums":["timeout"]},{"dataType":"enum","enums":["timing"]},{"dataType":"enum","enums":["lock"]},{"dataType":"enum","enums":["sync"]},{"dataType":"enum","enums":["rotation"]},{"dataType":"enum","enums":["external"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AuthScopes": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["adminAuth"]},{"dataType":"enum","enums":["userAuth"]},{"dataType":"enum","enums":["iftttAuth"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "User": {
+        "dataType": "refObject",
+        "properties": {
+            "displayName": {"dataType":"string"},
+            "email": {"dataType":"string","required":true},
+            "password": {"dataType":"string"},
+            "ignoreTfa": {"dataType":"boolean","required":true},
+            "scope": {"ref":"AuthScopes","required":true},
+            "passwordChangeRequired": {"dataType":"boolean"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "MinionFeed": {
         "dataType": "refObject",
         "properties": {
             "event": {"ref":"FeedEvent","required":true},
             "minion": {"ref":"Minion","required":true},
+            "trigger": {"ref":"MinionChangeTrigger"},
+            "user": {"ref":"User"},
         },
         "additionalProperties": false,
     },
@@ -422,6 +447,8 @@ const models: TsoaRoute.Models = {
             "minionId": {"dataType":"string","required":true},
             "timestamp": {"dataType":"double","required":true},
             "status": {"ref":"MinionStatus","required":true},
+            "trigger": {"ref":"MinionChangeTrigger","required":true},
+            "user": {"dataType":"nestedObjectLiteral","nestedProperties":{"email":{"dataType":"string","required":true},"name":{"dataType":"string","required":true}}},
         },
         "additionalProperties": false,
     },
@@ -503,24 +530,6 @@ const models: TsoaRoute.Models = {
         "properties": {
             "host": {"dataType":"string","required":true},
             "connectionKey": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "AuthScopes": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["adminAuth"]},{"dataType":"enum","enums":["userAuth"]},{"dataType":"enum","enums":["iftttAuth"]}],"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "User": {
-        "dataType": "refObject",
-        "properties": {
-            "displayName": {"dataType":"string"},
-            "email": {"dataType":"string","required":true},
-            "password": {"dataType":"string"},
-            "ignoreTfa": {"dataType":"boolean","required":true},
-            "scope": {"ref":"AuthScopes","required":true},
-            "passwordChangeRequired": {"dataType":"boolean"},
         },
         "additionalProperties": false,
     },
@@ -998,11 +1007,36 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/API/minions/timeline/:minionId',
+            authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
+
+            function MinionsController_getMinionTimeline(request: any, response: any, next: any) {
+            const args = {
+                    minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new MinionsController();
+
+
+            const promise = controller.getMinionTimeline.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.put('/API/minions/power-off',
             authenticateMiddleware([{"userAuth":[]},{"adminAuth":[]}]),
 
             function MinionsController_powerAllOff(request: any, response: any, next: any) {
             const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1317,6 +1351,7 @@ export function RegisterRoutes(app: express.Router) {
 
             function MinionsController_setMinion(request: any, response: any, next: any) {
             const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     minionId: {"in":"path","name":"minionId","required":true,"dataType":"string"},
                     setStatus: {"in":"body","name":"setStatus","required":true,"ref":"MinionStatus"},
             };

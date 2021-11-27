@@ -10,8 +10,6 @@ Open-source server to control Smart Home IoT devices in a local network.
 
 The latest release binaries available to download from [casanet-server releases](https://github.com/casanet/casanet-server/releases)
 
-The dashboard app (APK) currently on alpha version only, temporary available [here](https://github.com/casanet/dashboard-app/actions/runs/1276262855).
-
 ## Philosophy
 This project aims to resolve a number of issues plaguing most Smart Home systems
 
@@ -34,15 +32,24 @@ This allows to easily add support in vast devices kinds, and separately, control
 
 Each module/driver design to work only through a local network, let us disconnect the device for good from the internet.
 
-## How does it look?
+### The Mobile Application
+
+<a href='https://play.google.com/store/apps/details?id=casa.casanet.dashboard' target="_blank">
+<img 
+	width='280px' height='110px'
+	alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/>
+</a>
+
+The dashboard Android application assets (APK/AAB) also available [here](https://github.com/casanet/dashboard-app/releases).
+
+
+### The Web Dashboard
 
 ## ✨✨✨ [Live Demo Dashboard](https://demo.dashboard.casanet.casa/) ✨✨✨
 
-### The web dashboard
-
 ![Screenshot](https://raw.githubusercontent.com/casanet/dashboard-app/develop/assets/capture/desktop-capture.gif)
 
-### The mobile app
+### The Mobile Dashboard
 <img src="https://raw.githubusercontent.com/casanet/dashboard-app/develop/assets/capture/app1.jpg" alt="app1-dashboard"
 	title="lite-dashboard screenshot" width="270" height="580" />
 <img src="https://raw.githubusercontent.com/casanet/dashboard-app/develop/assets/capture/app2.jpg" alt="app2-dashboard"
@@ -52,7 +59,7 @@ Each module/driver design to work only through a local network, let us disconnec
 
 > For more details and information about the web & mobile interface see [dashboard-app](https://github.com/casanet/dashboard-app) repository.
 
-### The web lightweight dashboard
+### The Web Lightweight Dashboard
 
 The (very) lightweight dashboard (only about 20kb of total assets) for old phones or very slow networks.
 
