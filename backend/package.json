@@ -85,7 +85,7 @@
     "swagger-ui-express": "^4.1.6",
     "ts-events": "^3.4.0",
     "tsoa": "^3.6.1",
-    "tuyapi": "^6.1.4",
+    "tuyapi": "^7.2.0",
     "unitsnet-js": "^1.0.26",
     "winston": "^3.2.1",
     "yeelight-awesome": "^1.0.12"
