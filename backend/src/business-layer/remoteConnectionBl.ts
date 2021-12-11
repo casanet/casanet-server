@@ -368,12 +368,14 @@ export class RemoteConnectionBl {
     this.webSocketClient = new WebSocketClient(3000, false);
 
     this.webSocketClient.on('open', () => {
+			this.ackPongReceived = true;
       this.remoteConnectionStatus = 'connectionOK';
       logger.info(`[RemoteConnectionBl.connectToRemote][on-open] Ws channel to ${remoteSettings.host} opened successfully`);
     });
 
     this.webSocketClient.on('message', async (rawRemoteMessage: string) => {
       try {
+				this.ackPongReceived = true;
         await this.onRemoteServerMessage(rawRemoteMessage);
       } catch (error) {
         logger.error(`[RemoteConnectionBl.connectToRemote][on-message] Ws message parsing & handling filed row message: ${rawRemoteMessage}\n error ${error.message || JSON.stringify(error)}`);
@@ -438,6 +440,7 @@ export class RemoteConnectionBl {
   }
 
   private async OnArkOk() {
+		logger.info('[RemoteConnectionBl][OnArkOk] Remote connection sent pong')
     this.ackPongReceived = true;
     this.remoteConnectionStatus = 'connectionOK';
   }
