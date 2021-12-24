@@ -44,6 +44,7 @@ class App {
 		/** Serve static client side assets */
 		this.serveDashboard();
 		this.serveLegacyDashboard();
+		this.serveSwaggerUI();
 
 		/** Serve swagger docs UI */
 		this.serveDocs();
@@ -96,6 +97,23 @@ class App {
 		/** Get any file in public directory */
 		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			const filePath = path.join(__dirname, '/dashboard/', req.url);
+			fse.exists(filePath, exists => {
+				if (exists) {
+					res.sendFile(filePath);
+				} else {
+					next();
+				}
+			});
+		});
+	}
+
+	/**
+	 * Serve docs files.
+	 */
+	 private serveSwaggerUI() {
+		/** Get any file in public directory */
+		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			const filePath = path.join(__dirname, '/docs/', req.url);
 			fse.exists(filePath, exists => {
 				if (exists) {
 					res.sendFile(filePath);
