@@ -31,7 +31,7 @@ async function downloadAndUnpackDashboard(dashboardArtifact, distDir) {
 	}
 }
 
-function copySwaggerUiAssets() {
+async function copySwaggerUiAssets() {
 	await fse.promises.mkdir(path.dirname(docksDist), { recursive: true });
 	fse.copyFileSync('./node_modules/swagger-ui-dist/swagger-ui.css', path.join(docksDist, 'swagger-ui.css'));
 	fse.copyFileSync('./node_modules/swagger-ui-dist/swagger-ui-bundle.js', path.join(docksDist, 'swagger-ui-bundle.js'));
@@ -47,5 +47,5 @@ function copySwaggerUiAssets() {
 	// await downloadAndUnpackDashboard(`https://nightly.link/casanet/frontend-v3/workflows/nodejs/${ENV_BRANCH}/internal.zip`, legacyDashboardDist);
 
 	// Copy swagger assets
-	copySwaggerUiAssets();
+	await copySwaggerUiAssets();
 })();
