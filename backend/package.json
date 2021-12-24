@@ -11,10 +11,14 @@
   "bin": "index.js",
   "pkg": {
     "assets": [
+      "versionInfo.json",
       "public/**/*",
-      "dashboard/**/*",
       "swagger.json",
-      "versionInfo.json"
+      "dashboard/**/*",
+      "dashboard/**/*",
+      "dashboard/swagger-ui.css",
+      "dashboard/favicon-16x16.png",
+      "dashboard/favicon-32x32.png"
     ]
   },
   "scripts": {
