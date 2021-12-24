@@ -35,4 +35,11 @@ async function downloadAndUnpackDashboard(dashboardArtifact, distDir) {
 	await downloadAndUnpackDashboard(`https://nightly.link/casanet/dashboard-app/workflows/build/${ENV_BRANCH}/internal.zip`, dashboardDist);
 	// Download the legacy v3 front dashboard
 	await downloadAndUnpackDashboard(`https://nightly.link/casanet/frontend-v3/workflows/nodejs/${ENV_BRANCH}/internal.zip`, legacyDashboardDist);
+
+	// Copy swagger assets
+	fse.copyFileSync('./node_modules/swagger-ui-dist/swagger-ui.css', path.join(dashboardDist, 'swagger-ui.css'));
+	fse.copyFileSync('./node_modules/swagger-ui-dist/swagger-ui-bundle.js', path.join(dashboardDist, 'swagger-ui-bundle.js'));
+	fse.copyFileSync('./node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js', path.join(dashboardDist, 'swagger-ui-standalone-preset.js'));
+	fse.copyFileSync('./node_modules/swagger-ui-dist/favicon-16x16.png', path.join(dashboardDist, 'favicon-16x16.png'));
+	fse.copyFileSync('./node_modules/swagger-ui-dist/favicon-32x32.png', path.join(dashboardDist, 'favicon-32x32.png'));
 })();
