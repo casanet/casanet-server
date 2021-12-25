@@ -11,9 +11,11 @@
   "bin": "index.js",
   "pkg": {
     "assets": [
+      "versionInfo.json",
       "public/**/*",
+      "swagger.json",
       "dashboard/**/*",
-      "versionInfo.json"
+      "docs/**/*"
     ]
   },
   "scripts": {
@@ -28,7 +30,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "lint:fix": "tslint --fix -p tsconfig.json",
-    "jscopy": "copyfiles -u 1 src/**/*.js dist",
+    "jscopy": "copyfiles -u 1 src/**/*.js dist && node ./scripts/copySwaggerAssets.js",
     "build": "tsoa routes && tsoa swagger && tsc && npm run jscopy && npm run version",
     "serve": "npm run build && node dist/index.js",
     "build:prod": "npm run format && npm run lint && npm run build",

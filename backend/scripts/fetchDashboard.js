@@ -8,7 +8,7 @@ const legacyDashboardDist = path.join('dist', 'public');
 
 const ENV_BRANCH = process.env.BRANCH !== 'master' ? 'develop' : 'main';
 
-console.log(`[fetchDashboard] Fetching dashboard for branch "${process.env.BRANCH }" from dashboard "${ENV_BRANCH}" branch...`);
+console.log(`[fetchDashboard] Fetching dashboard for branch "${process.env.BRANCH}" from dashboard "${ENV_BRANCH}" branch...`);
 
 async function downloadAndUnpackDashboard(dashboardArtifact, distDir) {
 	const latestArtifact = await nodeFetch(dashboardArtifact);
