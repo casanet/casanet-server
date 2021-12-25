@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Deprecated,
   Get,
   Header,
   Path,
@@ -17,8 +18,12 @@ import {
 import { OperationsBlSingleton } from '../business-layer/operationsBl';
 import { ErrorResponse, Operation, OperationResult } from '../models/sharedInterfaces';
 
+/**
+ * @deprecated - Use Timing API directly
+ */
 @Tags('Operations')
 @Route('operations')
+@Deprecated()
 export class OperationsController extends Controller {
   /**
    * Get all operations in the system.
@@ -28,6 +33,7 @@ export class OperationsController extends Controller {
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Get()
+	@Deprecated()
   public async getOperations(): Promise<Operation[]> {
     return await OperationsBlSingleton.getOperations();
   }
@@ -40,6 +46,7 @@ export class OperationsController extends Controller {
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Get('{operationId}')
+	@Deprecated()
   public async getOperation(operationId: string): Promise<Operation> {
     return await OperationsBlSingleton.getOperationById(operationId);
   }
@@ -53,6 +60,7 @@ export class OperationsController extends Controller {
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Put('{operationId}')
+	@Deprecated()
   public async setOperation(operationId: string, @Body() operation: Operation): Promise<void> {
     return await OperationsBlSingleton.SetOperation(operationId, operation);
   }
@@ -65,6 +73,7 @@ export class OperationsController extends Controller {
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Delete('{operationId}')
+	@Deprecated()
   public async deleteOperation(operationId: string): Promise<void> {
     return await OperationsBlSingleton.DeleteOperation(operationId);
   }
@@ -77,6 +86,7 @@ export class OperationsController extends Controller {
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Post()
+	@Deprecated()
   public async createOperation(@Body() operation: Operation): Promise<void> {
     return await OperationsBlSingleton.CreateOperation(operation);
   }
@@ -90,6 +100,7 @@ export class OperationsController extends Controller {
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Post('trigger/{operationId}')
+	@Deprecated()
   public async triggerOperation(operationId: string): Promise<OperationResult[]> {
     return await OperationsBlSingleton.triggerOperationById(operationId);
   }
