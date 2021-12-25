@@ -5,7 +5,6 @@ import nodeFetch from 'node-fetch';
 
 const dashboardDist = path.join('dist', 'dashboard');
 const legacyDashboardDist = path.join('dist', 'public');
-const docksDist = path.join('dist', 'docs');
 
 const ENV_BRANCH = process.env.BRANCH !== 'master' ? 'develop' : 'main';
 
