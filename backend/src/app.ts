@@ -110,9 +110,9 @@ class App {
 	/**
 	 * Serve docs files.
 	 */
-	 private serveSwaggerUI() {
+	private serveSwaggerUI() {
 		/** Get any file in public directory */
-		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+		this.express.use('/docs', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			const filePath = path.join(__dirname, '/docs/', req.url);
 			fse.exists(filePath, exists => {
 				if (exists) {

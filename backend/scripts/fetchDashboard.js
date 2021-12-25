@@ -9,7 +9,7 @@ const docksDist = path.join('dist', 'docs');
 
 const ENV_BRANCH = process.env.BRANCH !== 'master' ? 'develop' : 'main';
 
-console.log(`[fetchDashboard] Fetching dashboard for branch "${process.env.BRANCH }" from dashboard "${ENV_BRANCH}" branch...`);
+console.log(`[fetchDashboard] Fetching dashboard for branch "${process.env.BRANCH}" from dashboard "${ENV_BRANCH}" branch...`);
 
 async function downloadAndUnpackDashboard(dashboardArtifact, distDir) {
 	const latestArtifact = await nodeFetch(dashboardArtifact);
@@ -31,21 +31,9 @@ async function downloadAndUnpackDashboard(dashboardArtifact, distDir) {
 	}
 }
 
-async function copySwaggerUiAssets() {
-	await fse.promises.mkdir(path.dirname(docksDist), { recursive: true });
-	fse.copyFileSync('./node_modules/swagger-ui-dist/swagger-ui.css', path.join(docksDist, 'swagger-ui.css'));
-	fse.copyFileSync('./node_modules/swagger-ui-dist/swagger-ui-bundle.js', path.join(docksDist, 'swagger-ui-bundle.js'));
-	fse.copyFileSync('./node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js', path.join(docksDist, 'swagger-ui-standalone-preset.js'));
-	fse.copyFileSync('./node_modules/swagger-ui-dist/favicon-16x16.png', path.join(docksDist, 'favicon-16x16.png'));
-	fse.copyFileSync('./node_modules/swagger-ui-dist/favicon-32x32.png', path.join(docksDist, 'favicon-32x32.png'));
-}
-
 (async () => {
 	// Download the dashboard app
 	await downloadAndUnpackDashboard(`https://nightly.link/casanet/dashboard-app/workflows/build/${ENV_BRANCH}/internal.zip`, dashboardDist);
 	// Download the legacy v3 front dashboard
 	await downloadAndUnpackDashboard(`https://nightly.link/casanet/frontend-v3/workflows/nodejs/${ENV_BRANCH}/internal.zip`, legacyDashboardDist);
-
-	// Copy swagger assets
-	await copySwaggerUiAssets();
 })();
