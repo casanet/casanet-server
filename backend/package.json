@@ -72,7 +72,7 @@
     "local-network-scan": "^1.1.3",
     "macaddress": "^0.2.9",
     "miio": "^0.15.6",
-    "moment": "^2.23.0",
+    "moment": "^2.29.2",
     "node-orvibo-2": "^1.1.5",
     "node-yeelight-wifi": "^0.1.2",
     "nodemailer": "^6.6.0",
