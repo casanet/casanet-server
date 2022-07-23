@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [16.x]
     if: github.ref != 'refs/heads/master'
     steps:
     - uses: actions/checkout@v1 
