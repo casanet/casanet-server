@@ -140,8 +140,7 @@ You can edit in the `defaultLockCalibrationMinutes` field in the `casanet.json` 
 
 ## API
 
-The full specs of API are documented in [swagger API file](./src/swagger.json).
+The full specs of API are documented in [SwaggerHub](https://app.swaggerhub.com/apis/haimkastner/casanet-local-server).
 
-To explorer the full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/src/swagger.json` in explorer input.
 
 In a running Casanet server you can use Swagger UI to call API, the URL is `[local server IP]/docs`. 

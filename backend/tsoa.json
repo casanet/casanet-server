@@ -22,13 +22,13 @@
 				"in": "header"
 			}
 		},
-		"outputDirectory": "./src",
+		"outputDirectory": "./src/generated",
 		"basePath": "/API",
 		"specVersion": 3
 	},
 	"routes": {
 		"basePath": "/API",
 		"authenticationModule": "./src/security/authentication.ts",
-		"routesDir": "./src/routers"
+		"routesDir": "./src/generated"
 	}
 }

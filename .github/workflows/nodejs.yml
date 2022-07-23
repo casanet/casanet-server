@@ -34,7 +34,7 @@ jobs:
         sed -i 's/node-v16.16.0-linuxstatic-armv7/node-v16.16.0-linux-armv7/g' node_modules/pkg-fetch/lib-es5/expected.js
         sed -i 's/e26b713c159d38b09ba8db95e4c8220653386aad7bc6ec0921f6b6b20f4710c5/cbe14ff111fd3d1ecb82cf6aaec5a53588537008fdcfab4bc2c880d651f5580a/g' node_modules/pkg-fetch/lib-es5/expected.js
         npm run bundle
-        cp dist/swagger.json ../casanet_bin/swagger.json
+        cp dist/generated/swagger.json ../casanet_bin/swagger.json
         cp -v bundle/* ../casanet_bin
     - uses: actions/upload-artifact@v2
       with:
