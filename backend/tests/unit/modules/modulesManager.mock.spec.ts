@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import { SyncEvent } from 'ts-events';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../../../src/models/sharedInterfaces';
 import { Delay } from '../../../src/utilities/sleep';
 
@@ -7,13 +7,10 @@ export class ModulesManagerMock {
   /**
    * Let subscribe to any status minion changed. from any brand module.
    */
-  public minionStatusChangedEvent = new BehaviorSubject<{
+  public minionStatusChangedEvent = new SyncEvent<{
     minionId: string;
     status: MinionStatus;
-  }>({
-    minionId: '',
-    status: undefined,
-  });
+  }>();
 
   public get devicesKind(): DeviceKind[] {
     return [

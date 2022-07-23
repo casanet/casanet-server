@@ -6,3 +6,5 @@ logs/
 .env
 coverage
 .nyc_output
+
+generated/

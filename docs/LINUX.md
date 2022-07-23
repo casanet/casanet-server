@@ -1,6 +1,6 @@
 # Prepare casanet server on a Linux OS based devices
 
-Tested on Orange  pi zero + Armbian image, Orange pi one + Armbian image and Raspberry pi B+ with Rapsebian image.
+Tested on Orange  pi zero + Armbian image, Orange pi one + Armbian image and Raspberry pi B+ with Raspbian image.
 
 ## Pre requirements
 
@@ -91,7 +91,7 @@ Good Luck!
 #### If you wish to build the source-code on your own
 - Run ```git clone https://github.com/casanet/casanet-server.git```
 - Go to the backend directory ```cd ../backend/``
-- Install casanet server dependencies ```npm ci```
+- Install casanet server dependencies ```yarn --frozen-lockfile```
 - Build the backend by ```npm run build```
 - Run ```npm run fetch:dashboard``` if you wants the server to serve frontend dashboard
 

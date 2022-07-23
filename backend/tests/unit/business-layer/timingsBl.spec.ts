@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { OperationsBl } from '../../../src/business-layer/operationsBl';
 import { TimingsBl } from '../../../src/business-layer/timingsBl';
 import { TimingsDal } from '../../../src/data-layer/timingsDal';

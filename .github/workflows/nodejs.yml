@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [16.x]
     steps:
     - uses: actions/checkout@v1 
     - name: Install node
@@ -23,16 +23,18 @@ jobs:
         cd .pkg-cache
         export PKG_CACHE_PATH=$(pwd)
         echo $PKG_CACHE_PATH
-        mkdir v3.2
-        cd v3.2
-        curl -L https://github.com/zeit/pkg-fetch/releases/download/v3.2/node-v16.8.0-linuxstatic-armv7 --output fetched-v16.12.0-linux-armv7 
-        chmod 777 fetched-v16.12.0-linux-armv7
+        mkdir v3.4
+        cd v3.4
+        curl -L https://github.com/vercel/pkg-fetch/releases/download/v3.4/node-v16.16.0-linuxstatic-armv7 --output fetched-v16.16.0-linux-armv7 
+        chmod 777 fetched-v16.16.0-linux-armv7
         cd ../../
         cd backend
-        npm ci
-        sed -i 's/node-v16.12.0-linuxstatic-armv7/node-v16.12.0-linux-armv7/g' node_modules/pkg-fetch/lib-es5/expected.js
-        sed -i 's/e26b713c159d38b09ba8db95e4c8220653386aad7bc6ec0921f6b6b20f4710c5/51e503c90a9670c3f3be5382f229d818edbe128f989c8e7b467ed91c34386393/g' node_modules/pkg-fetch/lib-es5/expected.js
+        npm i -g yarn
+        yarn --frozen-lockfile
+        sed -i 's/node-v16.16.0-linuxstatic-armv7/node-v16.16.0-linux-armv7/g' node_modules/pkg-fetch/lib-es5/expected.js
+        sed -i 's/e26b713c159d38b09ba8db95e4c8220653386aad7bc6ec0921f6b6b20f4710c5/cbe14ff111fd3d1ecb82cf6aaec5a53588537008fdcfab4bc2c880d651f5580a/g' node_modules/pkg-fetch/lib-es5/expected.js
         npm run bundle
+        cp dist/generated/swagger.json ../casanet_bin/swagger.json
         cp -v bundle/* ../casanet_bin
     - uses: actions/upload-artifact@v2
       with:
@@ -43,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [16.x]
     if: github.ref != 'refs/heads/master'
     steps:
     - uses: actions/checkout@v1 
@@ -54,7 +56,8 @@ jobs:
     - name: test backend
       run: |
         cd backend
-        npm ci
+        npm i -g yarn
+        yarn --frozen-lockfile
         npm run test
 
   release:
@@ -62,10 +65,29 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [16.x]
     if: github.ref == 'refs/heads/master'
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Update version patch
+      id: update_version
+      run: |
+          cd backend
+          version=$(npm --no-git-tag-version version patch)
+          cd ..
+          echo version > version.txt
+          version=$(cat version.txt)
+          echo $version
+          echo ::set-output name=version::$version
+    - name: Commit and push changes
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        commit_message: Update to version ${{ steps.update_version.outputs.version }}
     - uses: actions/download-artifact@master
       with:
         name: casanet_bin
@@ -122,7 +144,7 @@ jobs:
         asset_name: casanet_linux_x64
         asset_content_type: application/octet-stream
     - name: Upload Release Asset - conf
-      id: upload-release-asset_lconf
+      id: upload-release-asset_conf
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -131,28 +153,22 @@ jobs:
         asset_path: ./casanet_bin/casanet.json
         asset_name: casanet.json
         asset_content_type: application/octet-stream
-     
-  bomb_version:
-    needs: release
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-    if: github.ref == 'refs/heads/master'
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Update version patch
-      id: update_version
-      run: |
-          version=$(cat version.txt)
-          echo $version
-          echo "${version%.*}.$(($(echo $version | tr '.' '\n' | tail -1) + 1))" > version.txt
-          version=$(cat version.txt)
-          echo $version
-          echo ::set-output name=version::$version
-    - name: Commit and push changes
-      uses: devops-infra/action-commit-push@master
+    - name: Upload Release Asset - spec
+      id: upload-release-asset_spec
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        commit_message: Update to version ${{ steps.update_version.outputs.version }}
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./casanet_bin/swagger.json
+        asset_name: swagger.json
+        asset_content_type: application/octet-stream
+    - name: Upload Spec To Hub # And finally all ready to upload new spec version to swagger hub
+      env:
+        SWAGGERHUB_API_KEY: '${{ secrets.SWAGGERHUB_API_KEY }}' # Export the SWAGGERHUB_API_KEY secret as environment variable, use to auth publish request
+        API_SERVER_URL: '${{ secrets.API_SERVER_URL }}' # Export the API_SERVER_URL secret as environment variable, used to set the API Server URL to the published spec.
+      if: github.ref == 'refs/heads/main'
+      run: | # Update the spec with the API Server URL
+        node ./backend/scripts/set-spec-server.js /casanet_bin/swagger.json $API_SERVER_URL
+        npx swaggerhub-cli api:create haimkastner/casanet-local-server --file /casanet_bin/swagger.json --published=publish --visibility=public --setdefault
+ 
