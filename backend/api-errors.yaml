@@ -5,7 +5,7 @@
 - { 3403 : 'authorization of local server in remote, fail'}
 - { 4403 : 'user not allowed to watch other accounts'}
 - { 5403 : 'invalid device id'}
-- { 6403 : 'user or code invalied'}
+- { 6403 : 'user or code invalid'}
 
 - { 1404 : 'minion not exist'}
 - { 2404 : 'device not exist in lan network'}
@@ -53,7 +53,7 @@
 - { 1503 : 'Connection to device fail.'}
 - { 2503 : 'Recording fail or timeout'}
 - { 3503 : 'There is no any command'}
-- { 4503 : 'Current opertion command not exist'}
+- { 4503 : 'Current operation command not exist'}
 - { 5503 : 'Current status is unknown, no history for current one-way transmitter'}
 - { 6503 : 'Setting status fail'}
 - { 7503 : 'Getting status fail'}

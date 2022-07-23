@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { DevicesBl } from '../../../src/business-layer/devicesBl';
 import { MinionsBl } from '../../../src/business-layer/minionsBl';
 import { DevicesDal } from '../../../src/data-layer/devicesDal';
@@ -185,7 +184,7 @@ describe('Minions BL tests', () => {
         },
       };
 
-      await minionsBl.setMinionStatus('m2', newStatus);
+      await minionsBl.setMinionStatus('m2', newStatus, 'user');
 
       const minion = await minionsBl.getMinionById('m2');
 
@@ -203,7 +202,7 @@ describe('Minions BL tests', () => {
       };
 
       try {
-        await minionsBl.setMinionStatus('m2', newStatus);
+        await minionsBl.setMinionStatus('m2', newStatus, 'user');
       } catch (error) {
         const expectedError: ErrorResponse = {
           responseCode: 1405,
@@ -225,7 +224,7 @@ describe('Minions BL tests', () => {
       };
 
       try {
-        await minionsBl.setMinionStatus('t404', newStatus);
+        await minionsBl.setMinionStatus('t404', newStatus, 'user');
       } catch (error) {
         const expectedError: ErrorResponse = {
           responseCode: 1404,

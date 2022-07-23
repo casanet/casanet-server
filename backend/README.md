@@ -15,7 +15,7 @@ If you prefer to build the server by your own:
 
 1. Download the project via git or download files as a zip
 1. Install [Node.js](https://nodejs.org/en/download/) on machine
-1. Navigate in a command line to `$/casanet-server/backend` and press `npm ci`
+1. Navigate in a command line to `$/casanet-server/backend` and press `yarn --frozen-lockfile`
 1. Run `npm run build` command
 1. If you wish to access the dashboard using the local network, run ```npm run fetch:dashboard``` to fetch the latest dashboard, or to build dashboard by tour own build the frontend too
     1. Pull repository `git clone https://github.com/casanet/dashboard-app.git`.
