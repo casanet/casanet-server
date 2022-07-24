@@ -9,7 +9,7 @@ jobs:
       matrix:
         node-version: [16.x]
     steps:
-    - uses: actions/checkout@v1 
+    - uses: actions/checkout@v2
     - name: Install node
       uses: actions/setup-node@v1
       with:
@@ -22,6 +22,7 @@ jobs:
           version=$(npm --no-git-tag-version --tag-version-prefix= version patch)
           cd ..
           echo $version > version.txt
+          echo $version
           echo ::set-output name=version::$version
     - name: Commit and push changes
       if: github.ref == 'refs/heads/master'
