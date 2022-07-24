@@ -14,6 +14,23 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Update version patch
+      if: github.ref == 'refs/heads/master'
+      id: update_version
+      run: |
+          cd backend
+          version=$(npm --no-git-tag-version version patch)
+          cd ..
+          echo version > version.txt
+          version=$(cat version.txt)
+          echo $version
+          echo ::set-output name=version::$version
+    - name: Commit and push changes
+      if: github.ref == 'refs/heads/master'
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        commit_message: Update to version ${{ steps.update_version.outputs.version }} [skip-ci]
     - name: Bundle packages
       # NOTE, the default ARMV bin (v16.12.0) not exists in the "https://github.com/vercel/pkg-fetch/releases" page, so download V16.8 and replace name and hash to build using it 
       run: |
@@ -73,25 +90,6 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
     - uses: actions/checkout@v2
-    - name: Install node
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Update version patch
-      id: update_version
-      run: |
-          cd backend
-          version=$(npm --no-git-tag-version version patch)
-          cd ..
-          echo version > version.txt
-          version=$(cat version.txt)
-          echo $version
-          echo ::set-output name=version::$version
-    - name: Commit and push changes
-      uses: devops-infra/action-commit-push@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        commit_message: Update to version ${{ steps.update_version.outputs.version }}
     - uses: actions/download-artifact@master
       with:
         name: casanet_bin
