@@ -10,7 +10,7 @@ import * as path from 'path';
 import { RemoteConnectionBlSingleton } from './business-layer/remoteConnectionBl';
 import { Configuration } from './config';
 import { FeedRouter } from './routers/feedRoute';
-import { RegisterRoutes } from './routers/routes';
+import { RegisterRoutes } from './generated/routes';
 import { logger } from './utilities/logger';
 import * as swaggerUi from 'swagger-ui-express';
 import * as cors from 'cors';
@@ -207,7 +207,7 @@ class App {
 
 	private serveDocs(): void {
 		this.express.use('/docs', swaggerUi.serve, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			return res.send(swaggerUi.generateHTML(await import('./swagger.json')));
+			return res.send(swaggerUi.generateHTML(await import('./generated/swagger.json')));
 		});
 	}
 

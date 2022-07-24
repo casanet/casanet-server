@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, Subscriber, Subscription } from 'rxjs';
 import { Minion } from '../../../../src/models/sharedInterfaces';
 import { MockHandler } from '../../../../src/modules/mock/mockHandler';
 

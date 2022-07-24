@@ -15,7 +15,7 @@ If you prefer to build the server by your own:
 
 1. Download the project via git or download files as a zip
 1. Install [Node.js](https://nodejs.org/en/download/) on machine
-1. Navigate in a command line to `$/casanet-server/backend` and press `npm ci`
+1. Navigate in a command line to `$/casanet-server/backend` and press `yarn --frozen-lockfile`
 1. Run `npm run build` command
 1. If you wish to access the dashboard using the local network, run ```npm run fetch:dashboard``` to fetch the latest dashboard, or to build dashboard by tour own build the frontend too
     1. Pull repository `git clone https://github.com/casanet/dashboard-app.git`.
@@ -140,8 +140,7 @@ You can edit in the `defaultLockCalibrationMinutes` field in the `casanet.json` 
 
 ## API
 
-The full specs of API are documented in [swagger API file](./src/swagger.json).
+The full specs of API are documented in [SwaggerHub](https://app.swaggerhub.com/apis/haimkastner/casanet-local-server).
 
-To explorer the full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/src/swagger.json` in explorer input.
 
 In a running Casanet server you can use Swagger UI to call API, the URL is `[local server IP]/docs`. 

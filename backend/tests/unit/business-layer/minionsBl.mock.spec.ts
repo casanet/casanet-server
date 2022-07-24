@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import * as randomstring from 'randomstring';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
+import { SyncEvent } from 'ts-events';
 import { DeviceKind, ErrorResponse, Minion, MinionFeed, MinionStatus } from '../../../src/models/sharedInterfaces';
 import { Delay } from '../../../src/utilities/sleep';
 
@@ -13,7 +13,7 @@ export class MinionsBlMock {
   /**
    * Minions status update feed.
    */
-  public minionFeed = new BehaviorSubject<MinionFeed>(undefined);
+   public minionFeed = new SyncEvent<MinionFeed>();
 
   constructor() {}
 
@@ -21,12 +21,13 @@ export class MinionsBlMock {
    * Find minion in minions array.
    * @param minionId minioin id.
    */
-  private findMinion(minionId: string): Minion {
+  private findMinion(minionId: string): Minion | undefined {
     for (const minion of this.minionsMock) {
       if (minion.minionId === minionId) {
         return minion;
       }
     }
+    
   }
 
   /**
@@ -34,7 +35,7 @@ export class MinionsBlMock {
    */
 
   /**
-   * Gets minons array.
+   * Gets minions array.
    */
   public async getMinions(): Promise<Minion[]> {
     return this.minionsMock;
@@ -122,7 +123,7 @@ export class MinionsBlMock {
     /**
      * Send minions feed update.
      */
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'update',
       minion,
     });
@@ -150,7 +151,7 @@ export class MinionsBlMock {
     /**
      * Send minion feed update
      */
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'update',
       minion: originalMinion,
     });
@@ -202,7 +203,7 @@ export class MinionsBlMock {
     /**
      * Send create new minion feed update (*befor* try to get the status!!!)
      */
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'created',
       minion,
     });
@@ -241,7 +242,7 @@ export class MinionsBlMock {
       this.minionsMock.splice(this.minionsMock.indexOf(originalMinion), 1);
     }
 
-    this.minionFeed.next({
+    this.minionFeed.post({
       event: 'removed',
       minion: originalMinion,
     });

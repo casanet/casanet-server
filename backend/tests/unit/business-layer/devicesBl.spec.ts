@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
 import { DevicesBl } from '../../../src/business-layer/devicesBl';
 import { DevicesDal } from '../../../src/data-layer/devicesDal';
 import {
@@ -121,14 +120,14 @@ describe('Devices BL tests', () => {
         vendor: 'bla bla brand name',
         name: 'update to a new other name',
       };
-      const subscription = devicesBlMock.devicesUpdate.subscribe(devices => {
+      const detach = devicesBlMock.devicesUpdate.attach(devices => {
         if (!devices || devices.length < 1) {
           return;
         }
 
         for (const device of devices) {
           if (device.mac === localDevices.mac && device.name === localDevices.name) {
-            subscription.unsubscribe();
+            detach();
             done();
             return;
           }
@@ -145,14 +144,14 @@ describe('Devices BL tests', () => {
       networkDevicesExpected.ip = '192.168.1.77';
 
       let specDone = false;
-      const subscription = devicesBlMock.devicesUpdate.subscribe(devices => {
+      const detach = devicesBlMock.devicesUpdate.attach(devices => {
         if (!devices || devices.length < 1) {
           return;
         }
 
         if (specDone) {
-          if (subscription) {
-            subscription.unsubscribe();
+          if (detach) {
+            detach();
           }
           return;
         }

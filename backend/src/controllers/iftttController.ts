@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Deprecated,
   Get,
   Header,
   Path,
@@ -33,6 +34,7 @@ export class IftttController extends Controller {
   @Security('adminAuth')
   @Security('userAuth')
   @Get('/settings')
+	@Deprecated()
   public async isIftttEnabled(): Promise<boolean> {
     const iftttSettings = await IftttIntegrationBlSingleton.getIftttIntergrationSettings();
     return iftttSettings.enableIntegration;
@@ -44,6 +46,7 @@ export class IftttController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Security('adminAuth')
   @Put('/settings')
+	@Deprecated()
   public async setIftttIntegrationSettings(@Body() iftttIntegrationSettings: IftttIntegrationSettings): Promise<void> {
     await IftttIntegrationBlSingleton.setIftttIntergrationSettings(iftttIntegrationSettings);
   }
@@ -59,6 +62,7 @@ export class IftttController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Security('iftttAuth')
   @Post('/trigger/minions/raw/')
+	@Deprecated()
   public async triggeredSomeAction(@Body() iftttRawActionTriggerd: IftttRawActionTriggered): Promise<void> {
     const { apiKey, minionId, setStatus } = iftttRawActionTriggerd;
     await IftttIntegrationBlSingleton.triggeredMinionAction(minionId, {
@@ -75,6 +79,7 @@ export class IftttController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Security('iftttAuth')
   @Post('/trigger/minions/{minionId}/')
+	@Deprecated()
   public async triggeredMinionAction(
     minionId: string,
     @Body() iftttActionTriggered: IftttActionTriggered,
@@ -90,6 +95,7 @@ export class IftttController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Security('iftttAuth')
   @Post('/trigger/operations/{operationId}/')
+	@Deprecated()
   public async triggeredOperationAction(
     operationId: string,
     @Body() iftttActionTriggeredRequest: IftttActionTriggeredRequest,

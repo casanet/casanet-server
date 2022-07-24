@@ -95,7 +95,7 @@ In order to set up Linux from scratch see [Linux deployment tutorial](./docs/LIN
 	* **Technologies:** [Vue.js](https://vuejs.org/) (using [vue material](https://vuematerial.io/)).
 * **[RF commands repository](https://github.com/casanet/rf-commands-repo):**
 	* **Purpose:** Light-weight server to keep and serve RF commands (such as: IR, 433 MHz etc.) for appliances.
-	* **Technologies:** Python 3.7.3 (using [Flask](https://palletsprojects.com/p/flask/) + [Mongodb](https://www.mongodb.com/)).
+	* **Technologies:** Python 3.10.5 (using [Flask](https://palletsprojects.com/p/flask/) + [Mongodb](https://www.mongodb.com/)).
 * **API (for local and remote server):**
 	* **Technologies:** [Swagger](https://swagger.io/).
 
@@ -186,25 +186,12 @@ Yes, it is possible and it's welcomed! see [modules documentation](./backend/src
 
 ## API
 
-To explorer the full API specs use [swagger UI](https://petstore.swagger.io/) and put `https://raw.githubusercontent.com/casanet/casanet-server/master/backend/src/swagger.json` in explorer input.
+The full specs of API are documented in [SwaggerHub](https://app.swaggerhub.com/apis/haimkastner/casanet-local-server).
+
 
 To try it out against the demo mock server go to [casanet-mock-server docs](https://casanet-mock-server.herokuapp.com/docs/#/)
 
 For a running Casanet server use Swagger UI to make API calls in the `[local server IP]/docs` URL. 
-
-## IFTTT integration
-
-The [IFTTT](https://ifttt.com/discover) ecosystem is great ;)
-
-Now, invoking triggers when a minion turned on/off or turning on/off minion when any IFTTT trigger invoked is possible.
-
-The integration is using [WebHooks](https://ifttt.com/maker_webhooks) API.
-
-Receiving invoked triggers allow only if the casa-net server accessible via public internet or via a remote server.
-
-Invoking triggers when a device turned on/off the local server requires an internet connection.  
-
-See [step by step instruction](./docs/IFTTT.md) to use IFTTT.
 
 ### The casanet server tested on
 * Windows - 10/7
