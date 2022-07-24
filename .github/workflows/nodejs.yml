@@ -19,11 +19,9 @@ jobs:
       id: update_version
       run: |
           cd backend
-          version=$(npm --no-git-tag-version version patch)
+          version=$(npm --no-git-tag-version --tag-version-prefix= version patch)
           cd ..
-          echo version > version.txt
-          version=$(cat version.txt)
-          echo $version
+          echo $version > version.txt
           echo ::set-output name=version::$version
     - name: Commit and push changes
       if: github.ref == 'refs/heads/master'
