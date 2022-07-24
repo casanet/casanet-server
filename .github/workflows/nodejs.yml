@@ -40,6 +40,10 @@ jobs:
       with:
         name: casanet_bin 
         path: casanet_bin
+    - uses: actions/upload-artifact@v2
+      with:
+        name: swagger-spec 
+        path: dist/generated/swagger.json
 
   tests:
     runs-on: ubuntu-latest
