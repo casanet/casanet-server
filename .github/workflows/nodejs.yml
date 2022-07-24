@@ -9,11 +9,27 @@ jobs:
       matrix:
         node-version: [16.x]
     steps:
-    - uses: actions/checkout@v1 
+    - uses: actions/checkout@v2
     - name: Install node
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Update version patch
+      if: github.ref == 'refs/heads/master'
+      id: update_version
+      run: |
+          cd backend
+          version=$(npm --no-git-tag-version --tag-version-prefix= version patch)
+          cd ..
+          echo $version > version.txt
+          echo $version
+          echo ::set-output name=version::$version
+    - name: Commit and push changes
+      if: github.ref == 'refs/heads/master'
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        commit_message: Update to version ${{ steps.update_version.outputs.version }} [skip-ci]
     - name: Bundle packages
       # NOTE, the default ARMV bin (v16.12.0) not exists in the "https://github.com/vercel/pkg-fetch/releases" page, so download V16.8 and replace name and hash to build using it 
       run: |
@@ -77,21 +93,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Update version patch
-      id: update_version
-      run: |
-          cd backend
-          version=$(npm --no-git-tag-version version patch)
-          cd ..
-          echo version > version.txt
-          version=$(cat version.txt)
-          echo $version
-          echo ::set-output name=version::$version
-    - name: Commit and push changes
-      uses: devops-infra/action-commit-push@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        commit_message: Update to version ${{ steps.update_version.outputs.version }}
     - uses: actions/download-artifact@master
       with:
         name: casanet_bin
@@ -99,6 +100,10 @@ jobs:
     - name: Get the version
       id: get_version
       run: |
+        cd backend
+        version=$(npm --no-git-tag-version --tag-version-prefix= version patch)
+        cd ..
+        echo $version > version.txt
         echo ::set-output name=version::$(cat ./version.txt)
         echo ::set-output name=title::$( git log -1 --pretty=%B | sed -n '1p')
         body=$(git log -1 --pretty=%B | sed 1d)
@@ -171,8 +176,7 @@ jobs:
       env:
         SWAGGERHUB_API_KEY: '${{ secrets.SWAGGERHUB_API_KEY }}' # Export the SWAGGERHUB_API_KEY secret as environment variable, use to auth publish request
         API_SERVER_URL: '${{ secrets.API_SERVER_URL }}' # Export the API_SERVER_URL secret as environment variable, used to set the API Server URL to the published spec.
-      if: github.ref == 'refs/heads/main'
       run: | # Update the spec with the API Server URL
-        node ./backend/scripts/set-spec-server.js /casanet_bin/swagger.json $API_SERVER_URL
-        npx swaggerhub-cli api:create haimkastner/casanet-local-server --file /casanet_bin/swagger.json --published=publish --visibility=public --setdefault
+        node ./backend/scripts/set-spec-server.js ./casanet_bin/swagger.json $API_SERVER_URL
+        npx swaggerhub-cli api:create haimkastner/casanet-local-server --file ./casanet_bin/swagger.json --published=publish --visibility=public --setdefault
  

@@ -1,6 +1,6 @@
 {
   "name": "casanet-local-server",
-  "version": "3.8.9",
+  "version": "4.0.2",
   "author": {
     "name": "Haim Kastner",
     "email": "haim.kastner@gmail.com",
@@ -19,7 +19,7 @@
     ]
   },
   "scripts": {
-    "version": "node ./scripts/buildVersion.js",
+    "build-version": "node ./scripts/buildVersion.js",
     "fetch:dashboard": "node ./scripts/fetchDashboard.js",
     "pack:arm": "pkg . -t node16-linux-armv7 --no-bytecode --output ../bundle/casanet_linux_arm",
     "pack:win64": "pkg . -t node16-win-x64 --output ../bundle/casanet_win_x64.exe",
@@ -31,7 +31,7 @@
     "lint": "tslint -p tsconfig.json",
     "lint:fix": "tslint --fix -p tsconfig.json",
     "jscopy": "copyfiles -u 1 src/**/*.js dist && node ./scripts/copySwaggerAssets.js",
-    "build": "tsoa routes && tsoa swagger && tsc && npm run jscopy && npm run version",
+    "build": "tsoa routes && tsoa swagger && tsc && npm run jscopy && npm run build-version",
     "serve": "npm run build && node dist/index.js",
     "build:prod": "npm run format && npm run lint && npm run build",
     "test:unit": "del-cli data/test -f && npm run build && cross-env NODE_ENV=test mocha --exit --require ts-node/register tests/unit/**/*.spec.ts",
