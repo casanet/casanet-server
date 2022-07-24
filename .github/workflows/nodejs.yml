@@ -177,6 +177,6 @@ jobs:
         SWAGGERHUB_API_KEY: '${{ secrets.SWAGGERHUB_API_KEY }}' # Export the SWAGGERHUB_API_KEY secret as environment variable, use to auth publish request
         API_SERVER_URL: '${{ secrets.API_SERVER_URL }}' # Export the API_SERVER_URL secret as environment variable, used to set the API Server URL to the published spec.
       run: | # Update the spec with the API Server URL
-        node ./backend/scripts/set-spec-server.js /casanet_bin/swagger.json $API_SERVER_URL
-        npx swaggerhub-cli api:create haimkastner/casanet-local-server --file /casanet_bin/swagger.json --published=publish --visibility=public --setdefault
+        node ./backend/scripts/set-spec-server.js ./casanet_bin/swagger.json $API_SERVER_URL
+        npx swaggerhub-cli api:create haimkastner/casanet-local-server --file ./casanet_bin/swagger.json --published=publish --visibility=public --setdefault
  
