@@ -89,6 +89,10 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
     - uses: actions/checkout@v2
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
     - uses: actions/download-artifact@master
       with:
         name: casanet_bin
@@ -96,6 +100,10 @@ jobs:
     - name: Get the version
       id: get_version
       run: |
+        cd backend
+        version=$(npm --no-git-tag-version --tag-version-prefix= version patch)
+        cd ..
+        echo $version > version.txt
         echo ::set-output name=version::$(cat ./version.txt)
         echo ::set-output name=title::$( git log -1 --pretty=%B | sed -n '1p')
         body=$(git log -1 --pretty=%B | sed 1d)
