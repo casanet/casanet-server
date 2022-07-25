@@ -510,8 +510,13 @@ export class RemoteConnectionBl {
   private async onAuthenticationFail(errorResponse: ErrorResponse) {
     logger.error(`[RemoteConnectionBl.onAuthenticationFail] Authenticate local server in remote server fail, ${errorResponse.message}`);
     this.closeRemoteConnection();
-    logger.info(`[RemoteConnectionBl.onAuthenticationFail] Setting remoteConnectionStatus as 'authorizationFail'`);
-    this.remoteConnectionStatus = 'authorizationFail';
+
+    if (errorResponse.responseCode !== 13501) {
+      logger.info(`[RemoteConnectionBl.onAuthenticationFail] Setting remoteConnectionStatus as 'authorizationFail'`);
+      this.remoteConnectionStatus = 'authorizationFail';
+    } else {
+      this.remoteConnectionStatus = 'cantReachRemoteServer';
+    }
   }
 
   /**
