@@ -14,6 +14,7 @@ import {
 	Security,
 	SuccessResponse,
 	Tags,
+	Deprecated,
 } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
 import { TimelineBlSingleton } from '../business-layer/timelineBl';
@@ -189,6 +190,7 @@ export class MinionsController extends Controller {
 	 */
 	@Response<ErrorResponse>(501, 'Server error')
 	@Security('iftttAuth')
+	@Deprecated()
 	@Put('{minionId}/ifttt')
 	public async notifyMinionStatusChanged(minionId: string, @Body() iftttOnChanged: IftttOnChanged): Promise<void> {
 		return await MinionsBlSingleton.notifyMinionChangedByIfttt(minionId, iftttOnChanged);

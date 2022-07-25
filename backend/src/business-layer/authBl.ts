@@ -54,7 +54,7 @@ export class AuthBl {
 			userTryToLogin = await this.usersBl.getUser(login.email);
 		} catch (error) {
 			/** case user not in system return generic error. */
-			logger.debug(`login email ${login.email} fail, invalid user name`);
+			logger.debug(`login email ${login.email} fail, unknown user name`);
 			throw this.GENERIC_ERROR_RESPONSE;
 		}
 

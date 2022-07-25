@@ -48,6 +48,7 @@
 - { 10501 : 'Get supported devices from commands repo fail'}
 - { 11501 : 'Fetch rf commands commands repo fail'}
 - { 12501 : 'Setting calibration failed'}
+- { 13501 : 'Remote Server Internal Error'}
 
 
 - { 1503 : 'Connection to device fail.'}
