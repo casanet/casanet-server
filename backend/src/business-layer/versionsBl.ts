@@ -12,6 +12,10 @@ import {
 } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
+const UPGRADE_TO_PRE_RELEASE = process.env.UPGRADE_TO_PRE_RELEASE === 'true';
+
+logger.info(`UPGRADE_TO_PRE_RELEASE to be ${UPGRADE_TO_PRE_RELEASE}`);
+
 export class VersionsBl {
   private updateStatus: ProgressStatus = 'finished';
 
@@ -153,14 +157,17 @@ export class VersionsBl {
 
   private async getLatestVersionName(): Promise<string> {
     const options = {
-      uri: 'https://api.github.com/repos/casanet/casanet-server/releases/latest',
+      uri: 'https://api.github.com/repos/casanet/casanet-server/releases',
       headers: {
         'User-Agent': 'Request-Promise',
       },
       json: true, // Automatically parses the JSON string in the response
     };
     const res = await rp(options);
-    return res.tag_name;
+    
+    const latestRelease = res?.find(release => UPGRADE_TO_PRE_RELEASE || !release?.prerelease);
+    
+    return latestRelease.tag_name;
   }
 
   /**
