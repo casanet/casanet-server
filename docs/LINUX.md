@@ -47,7 +47,7 @@ Go to the `init.d` directory
 ```cd /etc/init.d/```
 
 Then create and edit the script named `casanet`
-```nano casanet```
+```sudo nano casanet```
 
 In the editor paste the following content:
 ```bash
@@ -59,7 +59,7 @@ case "$1" in
 'start') 
         tmux kill-session -t "casanet" 
         tmux new -s "casanet" -d 
-        tmux send-keys -t "casanet" "cd /root" C-m # Go the the directory where the Casanet executable placed 
+        tmux send-keys -t "casanet" "cd /casanet-dir" C-m # Go the the directory where the Casanet executable placed 
         tmux send-keys -t "casanet" "sudo ./casanet_linux_arm" C-m # Or casanet_linux_x64, the sudo used to allows Casanet to scan the network
 ;; 
 'stop')  
@@ -68,7 +68,7 @@ esac
 ```
 Give file an exe permission 
 
-```chmod +x casanet```
+```sudo chmod +x casanet```
 
 Now the script is ready.
 
@@ -78,11 +78,11 @@ Go to the `rc3.d` directory to link the script there.
 
 Create the link 
 
-```ln -s /etc/init.d/casanet```
+```sudo ln -s /etc/init.d/casanet```
 
 And change the link name to a boot pattern.
 
-```mv casanet S01casanet```
+```sudo mv casanet S01casanet```
 
 Now reboot the device and check that all work properly. 
 
