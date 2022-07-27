@@ -121,7 +121,7 @@ jobs:
         release_name: ${{  steps.get_version.outputs.title }}
         body: ${{  steps.get_version.outputs.body }}
         draft: false
-        prerelease: false
+        prerelease: true
     - name: Upload Release Asset - arm
       id: upload-release-asset_arm
       uses: actions/upload-release-asset@v1
