@@ -165,7 +165,7 @@ export class VersionsBl {
     };
     const res = await rp(options);
     
-    const latestRelease = res?.find(release => UPGRADE_TO_PRE_RELEASE === release?.prerelease);
+    const latestRelease = res?.find(release => UPGRADE_TO_PRE_RELEASE || !release?.prerelease);
     
     return latestRelease.tag_name;
   }
