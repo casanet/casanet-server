@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import * as Tuyapi from 'tuyapi';
+import TuyaDevice from 'tuyapi';
 import { CommandsSet } from '../../models/backendInterfaces';
 import {
 	DeviceKind,
@@ -13,6 +13,12 @@ import {
 import { logger } from '../../utilities/logger';
 import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
+
+interface TuyApi extends TuyaDevice {
+	mac: string;
+	error?: string;
+	connectionTimeout: number;
+}
 
 /** The Tuya communication chanel is sensitive, so each X time disconnect and reconnect it */
 const MAX_SAME_CONNECTION_USES_MS = 1000 * 60 * 10; // each 10 minutes
@@ -66,7 +72,7 @@ export class TuyaHandler extends BrandModuleBase {
 	/**
 	 * Map devices by mac address
 	 */
-	private physicalDevicesMap: { [key: string]: Tuyapi } = {};
+	private physicalDevicesMap: { [key: string]: TuyApi } = {};
 
 	/** Cache last status, to ignore unnecessary updates.  */
 	private devicesStatusCache: { [key: string]: any } = {};
@@ -302,11 +308,11 @@ export class TuyaHandler extends BrandModuleBase {
 		try {
 			logger.info(`[tuyaAPI.getTuyaDevice] About to open new TCP channel for "${minionDevice.pysicalDevice.mac}" ...`);
 			// Create the new instance
-			const newTuyaApiObject = new Tuyapi({
+			const newTuyaApiObject = new TuyaDevice({
 				id: minionDevice.deviceId,
 				key: minionDevice.token,
 				// persistentConnection: true, // Dot flag it ON, to make sure in new creation that the old TCP is closed
-			});
+			}) as TuyApi;
 
 			// Find the device in the network
 			await newTuyaApiObject.find();
@@ -342,7 +348,7 @@ export class TuyaHandler extends BrandModuleBase {
 	 * @param tuyaDevice 
 	 * @param minionDevice 
 	 */
-	private async watchDevice(tuyaDevice: Tuyapi, minionDevice: MinionDevice) {
+	private async watchDevice(tuyaDevice: TuyaDevice, minionDevice: MinionDevice) {
 
 		/**
 		 * Subscribe to status changed event.
@@ -364,7 +370,7 @@ export class TuyaHandler extends BrandModuleBase {
 
 			if (minionDevice.model.includes('curtain')) {
 				try {
-					const rowStatus = await tuyaDevice.get();
+					const rowStatus = await tuyaDevice.get({});
 
 					const minions = await this.retrieveMinions.pull();
 
