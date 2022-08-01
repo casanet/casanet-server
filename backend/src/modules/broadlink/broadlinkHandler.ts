@@ -297,9 +297,9 @@ export class BroadlinkHandler extends BrandModuleBase {
 
     await this.sendBeamCommand(broadlink, hexCommandCode);
     /** In case AC has missed the sent command, send it again. */
-    await Delay(moment.duration(0.1, 'seconds'));
+    await Delay(moment.duration(1, 'seconds'));
     await this.sendBeamCommand(broadlink, hexCommandCode);
-    await Delay(moment.duration(0.2, 'seconds'));
+    await Delay(moment.duration(1, 'seconds'));
     await this.sendBeamCommand(broadlink, hexCommandCode);
 
     await this.commandsCacheManager.cacheLastStatus(minion, setStatus);

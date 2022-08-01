@@ -161,9 +161,9 @@ export class TasmotaHandler extends BrandModuleBase {
 
       const irSendFullUrl = `http://${minion.device.pysicalDevice.ip}/cm?cmnd=IRsend%20${pulsString}`;
       await request(irSendFullUrl);
-      await Delay(moment.duration(0.1, 'seconds'));
+      await Delay(moment.duration(1, 'seconds'));
       await request(irSendFullUrl);
-      await Delay(moment.duration(0.2, 'seconds'));
+      await Delay(moment.duration(1, 'seconds'));
       const rawResults = await request(irSendFullUrl);
       const results = JSON.parse(rawResults);
       if (results.IRSend !== 'Done') {
