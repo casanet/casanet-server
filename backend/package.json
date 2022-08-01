@@ -74,6 +74,7 @@
     "macaddress": "^0.2.9",
     "miio": "^0.15.6",
     "moment": "^2.23.0",
+    "morgan": "^1.10.0",
     "node-orvibo-2": "^1.1.5",
     "node-yeelight-wifi": "^0.1.2",
     "nodemailer": "^6.6.0",

@@ -6,6 +6,7 @@ import * as rateLimit from 'express-rate-limit';
 import * as fse from 'fs-extra';
 import { sanitizeExpressMiddleware } from 'generic-json-sanitizer';
 import * as helmet from 'helmet';
+import * as morgan from 'morgan';
 import * as path from 'path';
 import { RemoteConnectionBlSingleton } from './business-layer/remoteConnectionBl';
 import { Configuration } from './config';
@@ -15,6 +16,7 @@ import { logger } from './utilities/logger';
 import * as swaggerUi from 'swagger-ui-express';
 import * as cors from 'cors';
 import { ErrorResponse } from './models/sharedInterfaces';
+import { Writable } from 'stream';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
 
@@ -23,7 +25,7 @@ class App {
 	private feedRouter: FeedRouter = new FeedRouter();
 
 	constructor() {
-		/** Creat the express app */
+		/** Create the express app */
 		this.express = express();
 
 		/** Security is the first thing, right?  */
@@ -37,6 +39,9 @@ class App {
 
 		/** Load instance to remote server connection logic. */
 		this.loadRemoteServerConnection();
+
+		/** Log all API calls */
+		this.logCalls();
 
 		/** Finlay route to API */
 		this.routes();
@@ -122,6 +127,19 @@ class App {
 				}
 			});
 		});
+	}
+
+	/**
+	 * Log call requests to logger.
+	 */
+	private logCalls(): void {
+
+		const echoStream = new Writable.Writable();
+		echoStream._write = function (chunk, encoding, done) {
+			logger.debug(`[API-CALL] ${chunk?.toString()?.trim()}`);
+			done();
+		};
+		this.express.use(morgan(':method :url :status :response-time ms', { stream: echoStream }))
 	}
 
 	/**
