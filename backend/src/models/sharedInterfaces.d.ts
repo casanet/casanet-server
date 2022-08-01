@@ -480,6 +480,7 @@ export declare type MinionChangeTrigger =
 	'device' |
 	'timeout' |
 	'timing' |
+	'action' |
 	'lock' |
 	'sync' |
 	'rotation' |
@@ -799,4 +800,37 @@ export declare interface CommandsRepoDevice {
 	brand: string;
 	model: string;
 	category: MinionTypes;
+}
+
+/**
+ * The triggers types.
+ * - 'statusChange' to invoke only on status change, but allow change later the status
+ * - 'permanent' at while the status of the minion of action trigger still on the triggered status, force the action, always.
+ */
+export declare type ActionApply = 'statusChange' | 'permanent';
+
+/**
+ * The action set to do on an action trigger
+ */
+export declare interface ActionSet {
+	/** The minion to set  */
+	minionId: string;
+	/** The status to set to the minion */
+	setStatus: MinionStatus;
+}
+
+/**
+ * An action to trigger some minion/s status in case minion has some status 
+ */
+export declare interface Action {
+	/** The action id */
+	actionId: string;
+	/** The minion where his status will trigger this action set */
+	minionId: string;
+	/** The minion status that will trigger this action set */
+	ifStatus: MinionStatus;
+	/** The actions set to invoke in case of this action trigger */
+	thenSet: ActionSet[]
+	/** The trigger to apply the action */
+	apply: ActionApply;
 }

@@ -155,7 +155,7 @@ export class MinionsController extends Controller {
 	@Get('rescan')
 	public async getSescaningMinionsStatus(): Promise<ScanningStatus> {
 		return {
-			scanningStatus: await MinionsBlSingleton.getScaningStatus(),
+			scanningStatus: await MinionsBlSingleton.getScanningStatus(),
 		};
 	}
 
