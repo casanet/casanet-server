@@ -834,3 +834,21 @@ export declare interface Action {
 	/** The trigger to apply the action */
 	apply: ActionApply;
 }
+
+
+export declare interface CollectionItem {
+	/** The item id, can be minion, timing, device etc */
+	itemId: string;
+}
+
+/**
+ * An collection of items, can be used for view aggregation of any item/s in the system
+ */
+ export declare interface Collection {
+	/** The action id */
+	collectionId: string;
+	/** The trigger to apply the action */
+	collectionName: string;
+	/** The collection items */
+	items: CollectionItem[];
+}
