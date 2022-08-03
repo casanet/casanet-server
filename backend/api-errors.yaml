@@ -15,6 +15,7 @@
 - { 6404 : 'local server not exist'}
 - { 7404 : 'there is not module handler for minion brand'}
 - { 8404 : 'unknown minion model'}
+- { 9404 : 'action not exist'}
 
 - { 1405 : 'incorrect minion status for current minion type'}
 - { 2405 : 'incorrect minion status for activity minion type'}
@@ -22,6 +23,9 @@
 - { 5405 : 'user already exist'}
 - { 6405 : 'user not allowed to watch other account'}
 - { 7405 : 'cant change status, the current status are locked'}
+- { 8405 : 'action status not contained triggered minion status type'}
+- { 9405 : 'action set item status not contained target minion status type'}
+- { 10405 : 'action wrong schema'}
 
 - { 1409 : 'there is no supported model for brand + model'}
 - { 2409 : 'token is required'}

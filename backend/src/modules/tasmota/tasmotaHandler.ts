@@ -10,6 +10,8 @@ import { logger } from '../../utilities/logger';
 import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 
+const RESEND_BEAM_COMMAND_TIMES = +(process.env.RESEND_BEAM_COMMAND_TIMES || '1');
+
 export class TasmotaHandler extends BrandModuleBase {
   public readonly brandName: string = 'tasmota';
 
@@ -160,11 +162,14 @@ export class TasmotaHandler extends BrandModuleBase {
       pulsString = pulsString.substring(0, pulsString.length - 1);
 
       const irSendFullUrl = `http://${minion.device.pysicalDevice.ip}/cm?cmnd=IRsend%20${pulsString}`;
-      await request(irSendFullUrl);
-      await Delay(moment.duration(0.1, 'seconds'));
-      await request(irSendFullUrl);
-      await Delay(moment.duration(0.2, 'seconds'));
-      const rawResults = await request(irSendFullUrl);
+      let rawResults = await request(irSendFullUrl);
+      for (let index = 0; index < RESEND_BEAM_COMMAND_TIMES; index++) {
+        logger.debug(`[tasmotaHandler.sendIrCommand] Sleeping a second before re-sending beam command on the ${index}/${RESEND_BEAM_COMMAND_TIMES} attempts`);
+        /** In case AC has missed the sent command, send it again. */
+        await Delay(moment.duration(1, 'seconds'));
+        rawResults = await request(irSendFullUrl);
+      }
+    
       const results = JSON.parse(rawResults);
       if (results.IRSend !== 'Done') {
         throw new Error(`[tasmotaHandler.sendIrCommand] Sending IR command failed ${JSON.stringify(results)}`);

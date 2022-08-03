@@ -86,14 +86,14 @@ export class MinionsBl {
 	 */
 	public async scanMinionsStatus(scanNetwork: boolean = false): Promise<void> {
 		if (this.scanningStatus !== 'inProgress') {
-			this.scanMinioinsNetworkAndStatuses(scanNetwork);
+			this.scanMinionsNetworkAndStatuses(scanNetwork);
 		}
 	}
 
 	/**
 	 * Get the current scanning status
 	 */
-	public getScaningStatus(): ProgressStatus {
+	public getScanningStatus(): ProgressStatus {
 		return this.scanningStatus;
 	}
 
@@ -706,7 +706,7 @@ export class MinionsBl {
 		}
 
 		/**
-		 * If the modele is not for unlimited minoins count the used minions.
+		 * If the model is not for unlimited minions count the used minions.
 		 */
 		if (deviceKind.minionsPerDevice !== -1) {
 			let minionsCount = 0;
@@ -737,7 +737,7 @@ export class MinionsBl {
 	 * Scan the minions current status
 	 * @param scanNetwork Whenever scan also the local networks IP's map or not.
 	 */
-	private async scanMinioinsNetworkAndStatuses(scanNetwork: boolean = false) {
+	private async scanMinionsNetworkAndStatuses(scanNetwork: boolean = false) {
 		this.scanningStatus = 'inProgress';
 		try {
 			if (scanNetwork) {

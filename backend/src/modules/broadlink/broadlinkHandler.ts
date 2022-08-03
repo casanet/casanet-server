@@ -25,6 +25,8 @@ const Broadlink = require('./broadlinkProtocol');
 // tslint:disable-next-line:no-var-requires
 const BroadlinkCodeGeneration = require('./commands-generator');
 
+const RESEND_BEAM_COMMAND_TIMES = +(process.env.RESEND_BEAM_COMMAND_TIMES || '1');
+
 /** Represents the broadlink protocol handler API */
 interface BroadlinkAPI {
   sendData: (hexCommandCode: string, callback: (err: any) => void) => void;
@@ -296,11 +298,13 @@ export class BroadlinkHandler extends BrandModuleBase {
     const hexCommandCode = await this.commandsCacheManager.getIrCommand(minion, setStatus) as string;
 
     await this.sendBeamCommand(broadlink, hexCommandCode);
-    /** In case AC has missed the sent command, send it again. */
-    await Delay(moment.duration(0.1, 'seconds'));
-    await this.sendBeamCommand(broadlink, hexCommandCode);
-    await Delay(moment.duration(0.2, 'seconds'));
-    await this.sendBeamCommand(broadlink, hexCommandCode);
+
+    for (let index = 0; index < RESEND_BEAM_COMMAND_TIMES; index++) {
+      logger.debug(`[broadlinkHandler.fetchDevicesStateInterval] Sleeping a second before re-sending beam command on the ${index}/${RESEND_BEAM_COMMAND_TIMES} attempts`);
+      /** In case AC has missed the sent command, send it again. */
+      await Delay(moment.duration(1, 'seconds'));
+      await this.sendBeamCommand(broadlink, hexCommandCode);
+    }
 
     await this.commandsCacheManager.cacheLastStatus(minion, setStatus);
   }
