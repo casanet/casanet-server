@@ -151,11 +151,6 @@ The casa remote server is built for this, [casanet-remote](https://github.com/ca
     - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363)) 
     - Air-conditioning (IR Transmitter) (tested with [this](https://www.aliexpress.com/item/33004692351.html) (after [flashing to Tasmota](https://blog.castnet.club/en/blog/flashing-tasmota-on-tuya-ir-bridge))
 
-- [IFTTT](https://ifttt.com/discover) module. [module documentation](./backend/src/modules/ifttt/README.md)..
-
-    - Toggle.
-    - Switch.
-    
 - [MQTT](http://mqtt.org/) module. [module documentation](./backend/src/modules/mqtt/README.md).
     -  Toggle.
     -  Switch.
