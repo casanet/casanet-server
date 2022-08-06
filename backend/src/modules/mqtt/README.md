@@ -80,7 +80,7 @@ To use it:
 1) Paste the device's custom MQTT prefix as the device ID.
         
 
-## Implement converter
+## Implement a Driver
 It should be very simple.
 1) Create a new driver file, go to `backend/src/modules/mqtt/mqtt-drivers` directory and copy the `casanetMqttDriver.ts` and change the file name (to `xxxMqttDriver.ts`) and the class name `xxxMqttDriver`.
 1) Change the topic to subscribe and the messages to send as required.

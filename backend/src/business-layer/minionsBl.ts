@@ -248,6 +248,11 @@ export class MinionsBl {
 		minion.minionStatus = minionStatus;
 
 		/**
+		 * The status change timestamp
+		 */
+		minion.statusChangedTime = new Date().getTime();
+
+		/**
 		 * Send minions feed update.
 		 */
 		this.minionFeed.post({

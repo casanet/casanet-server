@@ -616,6 +616,11 @@ export declare interface Minion {
 	 * Represents the room where the minion is located at.
 	 */
 	room?: string;
+
+	/**
+	 * Last status change timestamp in UTC MS
+	 */
+	statusChangedTime?: number; 
 }
 
 /**
