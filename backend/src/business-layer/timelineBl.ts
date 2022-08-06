@@ -45,6 +45,11 @@ export class TimelineBl {
 			return;
 		}
 		
+		/**
+		 * The status change timestamp in the minion it self as well as in timeline collection
+		 */
+		minion.statusChangedTime = new Date().getTime();
+
 		this.timelineDal.addTimelineNode({
 			trigger,
 			user: !user ? undefined : {
