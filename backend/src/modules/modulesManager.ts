@@ -12,7 +12,6 @@ import { SyncEvent } from 'ts-events';
 ///////////////////////////////////////////////////////////////////////////////
 import { CommandsSet } from '../models/backendInterfaces';
 import { BroadlinkHandler } from './broadlink/broadlinkHandler';
-import { IftttHandler } from './ifttt/iftttHandler';
 import { MiioHandler } from './miio/miioHandler';
 import { MockHandler } from './mock/mockHandler';
 import { MqttHandler } from './mqtt/mqttHandler';
@@ -334,7 +333,6 @@ export class ModulesManager {
     this.initHandler(new BroadlinkHandler());
     this.initHandler(new YeelightHandler());
     this.initHandler(new OrviboHandler());
-    this.initHandler(new IftttHandler());
     this.initHandler(new MiioHandler());
     this.initHandler(new MqttHandler());
   }

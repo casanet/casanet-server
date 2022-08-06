@@ -7,8 +7,6 @@ import { Session } from '../models/backendInterfaces';
 import {
 	AuthScopes,
 	ErrorResponse,
-	IftttActionTriggeredRequest,
-	IftttIntegrationSettings,
 	User,
 } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';

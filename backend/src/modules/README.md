@@ -54,14 +54,6 @@ After you get the id and key (called token in Casanet) then scan it insert the i
 
 > Note that the Tuya device can communicate by only one TCP connection, so if the Tuya app is open the Casanet server could not communicate with the device. 
 
-### Ifttt devices
-If a device doesn't have API to control it via the local network, 
-it's possible to use the device manufacturer Ifttt service (if exist).
-to control the device from the Casanet server.
-
-[Using Ifttt as device API step by step instructions.](./ifttt/README.md#step-by-step-instructions).
-
-> Note that internet connection is required to control devices via Ifttt.
 # *** FOR DEVELOPMENT ONLY ***
 
 To allow a server to communicate with many models and manufacturers each brand needs to write

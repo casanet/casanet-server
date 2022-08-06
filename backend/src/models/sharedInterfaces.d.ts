@@ -188,7 +188,7 @@ export declare interface DeviceKind {
  * Scopes of authentication, right know in our system there are only 3 scopes.
  * admin and user. any API route protect by one of them.
  */
-export declare type AuthScopes = 'adminAuth' | 'userAuth' | 'iftttAuth';
+export declare type AuthScopes = 'adminAuth' | 'userAuth';
 
 /**
  * Represents a user in the system.
@@ -724,46 +724,6 @@ export declare interface Timing {
 	 * Override lock, if exists (default false)
 	 */
 	overrideLock?: boolean;
-}
-
-/**
- * Ifttt webhook request body to notify minion status changed.
- * *Used in ifttt module interface only*
- */
-export declare interface IftttOnChanged {
-	/** Allow remote-server to forward request to local server */
-	localMac?: string;
-	/** Device id (AKA Ifttt webhook API key), this is the authentication of request. */
-	deviceId: string;
-	/** The new status */
-	newStatus: SwitchOptions;
-}
-
-/** Ifttt integration settings */
-export declare interface IftttIntegrationSettings {
-	/** WebHooks API key */
-	apiKey?: string;
-	/** Open or close ifttt integration. */
-	enableIntegration: boolean;
-}
-
-/** Ifttt trigger action auth and forward fields */
-export declare interface IftttActionTriggeredRequest {
-	/** WebHooks API key */
-	apiKey: string;
-	/** Allow remote-server to forward request to local server */
-	localMac?: string;
-}
-
-/** Ifttt trigger set status action */
-export declare interface IftttActionTriggered extends IftttActionTriggeredRequest {
-	setStatus: SwitchOptions;
-}
-
-/** Ifttt trigger with all request data in one JSON structure. */
-export declare interface IftttRawActionTriggered extends IftttActionTriggeredRequest {
-	minionId: string;
-	setStatus: SwitchOptions;
 }
 
 /** Update version results */
