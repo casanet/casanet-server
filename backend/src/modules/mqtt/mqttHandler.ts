@@ -3,8 +3,10 @@ import { CommandsSet } from '../../models/backendInterfaces';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../../models/sharedInterfaces';
 import { logger } from '../../utilities/logger';
 import { BrandModuleBase } from '../brandModuleBase';
-import { MqttConverterBase } from './mqtt-converters/mqttConverterBase';
-import { TasmotaConverter } from './mqtt-converters/tasmotaConverter';
+import { CasanetMqttDriver } from './mqtt-converters/casanetMqttDriver';
+import { MqttBaseDriver } from './mqtt-converters/mqttBaseDriver';
+import { ShellyMqttDriver } from './mqtt-converters/shellyMqttDriver';
+import { TasmotaMqttDriver } from './mqtt-converters/tasmotaMqttDriver';
 import { MqttBroker } from './mqttBroker';
 
 const mqttBrokerUri = process.env.MQTT_BROKER_URI;
@@ -17,7 +19,7 @@ export class MqttHandler extends BrandModuleBase {
     {
       brand: this.brandName,
       isTokenRequired: false,
-      isIdRequired: false,
+      isIdRequired: true,
       minionsPerDevice: -1,
       model: 'toggle',
       supportedMinionType: 'toggle',
@@ -27,7 +29,7 @@ export class MqttHandler extends BrandModuleBase {
     {
       brand: this.brandName,
       isTokenRequired: false,
-      isIdRequired: false,
+      isIdRequired: true,
       minionsPerDevice: -1,
       model: 'switch',
       supportedMinionType: 'switch',
@@ -37,7 +39,7 @@ export class MqttHandler extends BrandModuleBase {
     {
       brand: this.brandName,
       isTokenRequired: false,
-      isIdRequired: false,
+      isIdRequired: true,
       minionsPerDevice: -1,
       model: 'air conditioning',
       supportedMinionType: 'airConditioning',
@@ -47,7 +49,7 @@ export class MqttHandler extends BrandModuleBase {
     {
       brand: this.brandName,
       isTokenRequired: false,
-      isIdRequired: false,
+      isIdRequired: true,
       minionsPerDevice: -1,
       model: 'light',
       supportedMinionType: 'light',
@@ -57,7 +59,7 @@ export class MqttHandler extends BrandModuleBase {
     {
       brand: this.brandName,
       isTokenRequired: false,
-      isIdRequired: false,
+      isIdRequired: true,
       minionsPerDevice: -1,
       model: 'temperature light',
       supportedMinionType: 'temperatureLight',
@@ -67,7 +69,7 @@ export class MqttHandler extends BrandModuleBase {
     {
       brand: this.brandName,
       isTokenRequired: false,
-      isIdRequired: false,
+      isIdRequired: true,
       minionsPerDevice: -1,
       model: 'color light',
       supportedMinionType: 'colorLight',
@@ -77,7 +79,7 @@ export class MqttHandler extends BrandModuleBase {
     {
       brand: this.brandName,
       isTokenRequired: false,
-      isIdRequired: false,
+      isIdRequired: true,
       minionsPerDevice: -1,
       model: 'roller',
       supportedMinionType: 'roller',
@@ -91,23 +93,30 @@ export class MqttHandler extends BrandModuleBase {
 
   private brokerUri: string;
 
-  private mqttConverters: MqttConverterBase[] = [];
+  private mqttDrivers: MqttBaseDriver[] = [];
 
   constructor() {
     super();
-
     this.loadMqttBroker();
   }
 
   public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
-    await this.mqttClient.publish(`get/casanet/${minion.minionId}`, '');
+    for (const mqttDriver of this.mqttDrivers) {
+      const message = mqttDriver.convertRequestStateMessage(minion);
+      if (message) {
+        await this.mqttClient.publish(message.topic, message.data);
+      }
+    }
     /** Current there is no option to 'ask' and wait for respone, only to send request and the update will arrive by status topic. */
     return minion.minionStatus;
   }
 
   public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     /** Publish set status topic */
-    await this.mqttClient.publish(`set/casanet/${minion.minionId}`, JSON.stringify(setStatus));
+    for (const mqttDriver of this.mqttDrivers) {
+      const message = mqttDriver.convertSetStatusMessage(minion, setStatus);
+      await this.mqttClient.publish(message.topic, message.data);
+    }
   }
 
   public async enterRecordMode(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
@@ -135,15 +144,17 @@ export class MqttHandler extends BrandModuleBase {
   /**
    * Load all mqtt converters
    */
-  private async loadMqttConverters() {
+  private async loadMqttDrivers() {
     ///////////////////////////////////////////
-    ////////// HERE LOAD THE CONVERTERS ///////
+    ////////// HERE LOAD THE DERIVER //////////
     ///////////////////////////////////////////
-    this.mqttConverters.push(new TasmotaConverter());
+    this.mqttDrivers.push(new CasanetMqttDriver());
+    this.mqttDrivers.push(new ShellyMqttDriver());
+    this.mqttDrivers.push(new TasmotaMqttDriver());
 
     /** Init converters */
-    for (const mqttConverter of this.mqttConverters) {
-      await mqttConverter.initClient(this.brokerUri);
+    for (const mqttConverter of this.mqttDrivers) {
+      mqttConverter.initClient(this.deviceStatusChangedEvent);
     }
   }
 
@@ -173,55 +184,66 @@ export class MqttHandler extends BrandModuleBase {
 
   /** Load mqtt client */
   private async loadMqttClient() {
+
+    /** Load the drivers */
+    this.loadMqttDrivers();
+
     this.mqttClient = mqttapi.connect(this.brokerUri);
 
     this.mqttClient.on('connect', async () => {
-      /** Subscribe to topic that sent to casanet */
-      await this.mqttClient.subscribe(`stat/casanet/#`);
+      /** Subscribe to topic all of drivers */
+      for (const mqttDriver of this.mqttDrivers) {
+        await this.mqttClient.subscribe(mqttDriver.deviceTopics);
+      }
     });
 
     this.mqttClient.on('message', async (topic: string, payload: Buffer) => {
       try {
-        /** Extract the minion id from the topic */
-        const minionId = topic.split('/')[2];
 
-        /** TODO: check data struct by schema validator. */
+        // Once a message arrived, find the driver that going to handle it
+        const mqttDriver = this.mqttDrivers.find(mqttDriver => mqttDriver.isDeviceMessage(topic));
 
-        /** Parse the content */
-        const status: MinionStatus = JSON.parse(payload.toString());
+        if (!mqttDriver) {
+          logger.warn(`[MqttHandler.onMessage] No MQTT driver found to handle message topic "${topic}"`)
+          return;
+        }
+
+        const messageData = payload?.toString?.() || '';
+
+        const parsedMqttMessage = mqttDriver.convertMqttMessage(topic, messageData);
 
         /** Get all minions */
         const minions = await this.retrieveMinions.pull();
 
-        /** Find the minion that mention in the message */
-        for (const minion of minions) {
-          /**
-           * Find the minions that used current pysical tuya device
-           */
-          if (minion.minionId !== minionId) {
-            continue;
+        const minion = minions.find(m => {
+          if (mqttDriver.deviceIdentity === 'minionId') {
+            return m?.minionId === parsedMqttMessage.id;
           }
 
-          if (!status[minion.minionType]) {
-            logger.warn(`MQTT message for ${topic}:${payload.toString()} data not match's the minion type`);
-            return;
-          }
+          return m?.device?.deviceId === parsedMqttMessage.id
+        });
 
-          /** Publish the update to casanet system */
-          this.minionStatusChangedEvent.post({
-            minionId,
-            status,
-          });
-
+        if (!minion) {
+          logger.warn(`[MqttHandler.onMessage] Fail to update minion ${parsedMqttMessage.id} from MQTT message, minion/device not exist`);
           return;
         }
-        logger.debug(`Fail to update minion ${minionId} from mqttt message, minion not exist`);
+
+        if (!parsedMqttMessage.minionStatus[minion.minionType]) {
+          logger.warn(`[MqttHandler.onMessage] Message topic ${topic} for minion ${minion.minionId} contained invalid status payload "${messageData}", aborting...`);
+          return;
+        }
+
+        /** Publish the update to casanet system */
+        this.minionStatusChangedEvent.post({
+          minionId: parsedMqttMessage.id,
+          status: {
+            [minion.minionType]: parsedMqttMessage.minionStatus[minion.minionType]
+          }
+        });
+
       } catch (error) {
-        logger.warn(`Parsing mqtt message for ${topic}:${payload.toString()} fail ${JSON.stringify(error)}`);
+        logger.error(`[MqttHandler.onMessage] Parsing mqtt message for ${topic}:${payload?.toString?.()} failed, error: ${JSON.stringify(error)}`);
       }
     });
-
-    /** Load the converters */
-    await this.loadMqttConverters();
   }
 }

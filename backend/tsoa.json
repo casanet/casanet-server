@@ -15,11 +15,6 @@
 				"type": "apiKey",
 				"name": "authentication",
 				"in": "header"
-			},
-			"iftttAuth": {
-				"type": "apiKey",
-				"name": "apiKey",
-				"in": "header"
 			}
 		},
 		"outputDirectory": "./src/generated",

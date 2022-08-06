@@ -253,6 +253,14 @@ class App {
 					return;
 				}
 
+				if(err.name === 'ValidateError') {
+					logger.error(
+						`Validation error,  req: ${req.method} ${req.path} error: ${err.message} body: ${JSON.stringify(
+							req.body,
+						)} fields : ${JSON.stringify(err.fields)}`,
+					);
+				}
+
 				logger.error(
 					`express route crash,  req: ${req.method} ${req.path} error: ${err.message} body: ${JSON.stringify(
 						req.body,

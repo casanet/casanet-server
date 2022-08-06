@@ -68,6 +68,13 @@ export declare interface LoginMfa {
 	localServerId?: string;
 }
 
+export declare interface DeviceStatus {
+	/**
+	 * The battery power, if relevant, in %.
+	 */
+	battery?: number;
+}
+
 /**
  * Represents any physical device in a local network.
  */
@@ -91,6 +98,11 @@ export declare interface LocalNetworkDevice {
 	 * The device IP address, if exist it should be unique in network.
 	 */
 	ip?: string;
+
+	/**
+	 * The physical devices status, such as internal temp, battery etc.
+	 */
+	deviceStatus?: DeviceStatus;
 }
 
 /**
@@ -844,7 +856,7 @@ export declare interface CollectionItem {
 /**
  * An collection of items, can be used for view aggregation of any item/s in the system
  */
- export declare interface Collection {
+export declare interface Collection {
 	/** The action id */
 	collectionId: string;
 	/** The trigger to apply the action */

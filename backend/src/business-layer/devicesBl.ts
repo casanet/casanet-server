@@ -1,11 +1,15 @@
 import { SyncEvent } from 'ts-events';
+import { Duration } from 'unitsnet-js';
+import { inspect } from 'util';
 import { DevicesDal, DevicesDalSingleton } from '../data-layer/devicesDal';
 import { DeviceKind, LocalNetworkDevice } from '../models/sharedInterfaces';
-import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
+import { ModulesManager, modulesManager } from '../modules/modulesManager';
 import { LocalNetworkReader } from '../utilities/lanManager';
 import { logger } from '../utilities/logger';
 
-export class DevicesBl {
+const DETECT_NETWORK_CHANGES_ACTIVATION = Duration.FromHours(1);
+
+export class DevicesService {
   /**
    * Local devices changes feed.
    */
@@ -33,6 +37,26 @@ export class DevicesBl {
     this.devicesDal = devicesDal;
     this.localNetworkReader = localNetworkReader;
     this.modulesManager = modulesManager;
+
+    // Attach subscription to the drivers update regarding device status update. such as battery status etc.
+    this.modulesManager.deviceStatusChangedEvent.attach((deviceUpdate) => {
+      for (const device of this.localDevices) {
+        if (device.mac === deviceUpdate.mac) {
+          logger.info(`[DevicesService] Updating device "${device.mac}" due to update from driver with new status "${JSON.stringify(deviceUpdate.status)}"`);
+          device.deviceStatus = deviceUpdate.status;
+          return;
+        }
+      }
+    });
+
+    setInterval(async () => {
+      logger.info(`[DevicesService] About to scan netwrok changes as activation each ${DETECT_NETWORK_CHANGES_ACTIVATION}`);
+      try {
+        await this.rescanNetwork();
+      } catch (error) {
+        logger.info(`[DevicesService] Scan network failed ${inspect(error, false, 5)}`);
+      }
+    }, DETECT_NETWORK_CHANGES_ACTIVATION.Milliseconds);
   }
 
   /**
@@ -104,4 +128,4 @@ export class DevicesBl {
   }
 }
 
-export const DevicesBlSingleton = new DevicesBl(DevicesDalSingleton, LocalNetworkReader, ModulesManagerSingltone);
+export const devicesService = new DevicesService(DevicesDalSingleton, LocalNetworkReader, modulesManager);

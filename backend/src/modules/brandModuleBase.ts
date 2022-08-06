@@ -3,7 +3,7 @@ import { PullBehavior } from 'pull-behavior';
 import { SyncEvent } from 'ts-events';
 import { Configuration } from '../config';
 import { AcCommands, CommandsSet, RollerCommands, ToggleCommands } from '../models/backendInterfaces';
-import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../models/sharedInterfaces';
+import { DeviceKind, DeviceStatus, ErrorResponse, Minion, MinionStatus } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
 
 export const CACHE_DIRECTORY = path.join('./data/', Configuration.runningMode, '/cache/');
@@ -35,6 +35,14 @@ export abstract class BrandModuleBase {
   public minionStatusChangedEvent = new SyncEvent<{
     minionId: string;
     status: MinionStatus;
+  }>();
+
+  /**
+   * Let minions manager to know if any minion physical devices status has been changed.
+   */
+  public deviceStatusChangedEvent = new SyncEvent<{
+    deviceId: string;
+    status: DeviceStatus;
   }>();
 
   /**

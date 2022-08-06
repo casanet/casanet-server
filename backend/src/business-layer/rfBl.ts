@@ -2,10 +2,8 @@ import * as request from 'request-promise';
 import { Configuration } from '../config';
 import { AcCommands, CommandsSet, RollerCommands, ToggleCommands } from '../models/backendInterfaces';
 import { CommandsRepoDevice, ErrorResponse, MinionStatus } from '../models/sharedInterfaces';
-import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
+import { ModulesManager, modulesManager } from '../modules/modulesManager';
 import { logger } from '../utilities/logger';
-import { Delay } from '../utilities/sleep';
-import { DevicesBl, DevicesBlSingleton } from './devicesBl';
 import { MinionsBl, MinionsBlSingleton } from './minionsBl';
 
 export class RfBl {
@@ -113,4 +111,4 @@ export class RfBl {
   }
 }
 
-export const RfBlSingleton = new RfBl(MinionsBlSingleton, ModulesManagerSingltone);
+export const RfBlSingleton = new RfBl(MinionsBlSingleton, modulesManager);

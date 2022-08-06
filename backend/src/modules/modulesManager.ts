@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import { timeout as withTimeout, TimeoutError } from 'promise-timeout';
 import { PullBehavior } from 'pull-behavior';
 import { Configuration } from '../config';
-import { DeviceKind, ErrorResponse, Minion, MinionDevice, MinionStatus } from '../models/sharedInterfaces';
+import { DeviceKind, DeviceStatus, ErrorResponse, Minion, MinionDevice, MinionStatus } from '../models/sharedInterfaces';
 import { MutexMinionsAccess } from '../utilities/mutex';
 import { BrandModuleBase } from './brandModuleBase';
 import { SyncEvent } from 'ts-events';
@@ -40,7 +40,15 @@ export class ModulesManager {
   public minionStatusChangedEvent = new SyncEvent<{
     minionId: string;
     status: MinionStatus;
-  }>(); 
+  }>();
+
+  /**
+   * Let subscribe to any status minion changed. from any brand module.
+   */
+  public deviceStatusChangedEvent = new SyncEvent<{
+    mac: string;
+    status: DeviceStatus;
+  }>();
 
   /**
    * Allows to retrieve minions array. (used as proxy for all modulus).
@@ -86,7 +94,7 @@ export class ModulesManager {
     } catch (error) {
       logger.warn(`[ModulesManager.getStatus] getting minion "${minion.minionId}" status failed ${error.message || JSON.stringify(error)}`);
 
-       if (error instanceof TimeoutError) {
+      if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -123,7 +131,7 @@ export class ModulesManager {
       logger.debug(`[ModulesManager.setStatus] setting minion "${minion.minionId}" status succeed`);
     } catch (error) {
       logger.warn(`[ModulesManager.getStatus] setting minion "${minion.minionId}" status failed ${error.message || JSON.stringify(error)}`);
-       if (error instanceof TimeoutError) {
+      if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -169,7 +177,7 @@ export class ModulesManager {
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
     } catch (error) {
-       if (error instanceof TimeoutError) {
+      if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -215,7 +223,7 @@ export class ModulesManager {
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
     } catch (error) {
-       if (error instanceof TimeoutError) {
+      if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -260,7 +268,7 @@ export class ModulesManager {
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
     } catch (error) {
-       if (error instanceof TimeoutError) {
+      if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -302,7 +310,7 @@ export class ModulesManager {
     try {
       return await withTimeout(minionModule.refreshCommunication(), this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds());
     } catch (error) {
-       if (error instanceof TimeoutError) {
+      if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,
           message: 'communication with device fail, timeout',
@@ -352,6 +360,10 @@ export class ModulesManager {
       this.minionStatusChangedEvent.post(changedMinionStatus);
     });
 
+    brandModule.deviceStatusChangedEvent.attach(changedMinionDeviceStatus => {
+      this.onDeviceStatusUpdate(changedMinionDeviceStatus);
+    });
+
     this.modulesHandlers.push(brandModule);
   }
 
@@ -381,6 +393,21 @@ export class ModulesManager {
       }
     }
   }
+
+  private async onDeviceStatusUpdate(deviceStatusUpdate: { deviceId: string; status: DeviceStatus }) {
+    if (!this.retrieveMinions.isPullingAvailble) {
+      return;
+    }
+    const minions = await this.retrieveMinions.pull();
+    const minion = minions.find(m => m?.device?.deviceId === deviceStatusUpdate.deviceId);
+    if (!minion) {
+      return;
+    }
+    this.deviceStatusChangedEvent.post({
+      mac: minion.device?.pysicalDevice?.mac || '',
+      status: { ...(minion?.device?.pysicalDevice?.deviceStatus || {}), ...deviceStatusUpdate.status }
+    });
+  }
 }
 
-export const ModulesManagerSingltone = new ModulesManager();
+export const modulesManager = new ModulesManager();
