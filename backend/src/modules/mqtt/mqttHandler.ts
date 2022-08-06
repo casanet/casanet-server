@@ -3,10 +3,10 @@ import { CommandsSet } from '../../models/backendInterfaces';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../../models/sharedInterfaces';
 import { logger } from '../../utilities/logger';
 import { BrandModuleBase } from '../brandModuleBase';
-import { CasanetMqttDriver } from './mqtt-converters/casanetMqttDriver';
-import { MqttBaseDriver } from './mqtt-converters/mqttBaseDriver';
-import { ShellyMqttDriver } from './mqtt-converters/shellyMqttDriver';
-import { TasmotaMqttDriver } from './mqtt-converters/tasmotaMqttDriver';
+import { CasanetMqttDriver } from './mqtt-drivers/casanetMqttDriver';
+import { MqttBaseDriver } from './mqtt-drivers/mqttBaseDriver';
+import { ShellyMqttDriver } from './mqtt-drivers/shellyMqttDriver';
+import { TasmotaMqttDriver } from './mqtt-drivers/tasmotaMqttDriver';
 import { MqttBroker } from './mqttBroker';
 
 const mqttBrokerUri = process.env.MQTT_BROKER_URI;

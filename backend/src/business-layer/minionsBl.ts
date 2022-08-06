@@ -21,7 +21,7 @@ import { DevicesService, devicesService } from './devicesBl';
 import { SyncEvent } from 'ts-events';
 import { Duration } from 'unitsnet-js';
 
-const DELAY_FOR_MINIONS_MISSING_DEVICE_SCAN = Duration.FromMinutes(5);
+const DELAY_FOR_MINIONS_MISSING_DEVICE_SCAN = Duration.FromMinutes(2);
 
 export class MinionsBl {
 	/**
@@ -557,13 +557,14 @@ export class MinionsBl {
 				// Try get status for all missing IP minions
 				for (const minion of missingDevices) {
 					if (!minion?.device?.pysicalDevice?.ip) {
-						logger.info(`[MinionsBl.scanMissingDevices] Minion "${minion.minionId}" still dont has IP`);
+						logger.info(`[MinionsBl.scanMissingDevices] Minion "${minion.minionId}:${minion.name}" still dont has IP`);
 						continue;
 					}
 
 					try {
 						logger.info(`[MinionsBl.scanMissingDevices] About to read minions "${minion.minionId}" status`);
 						await this.readMinionStatus(minion);
+						logger.info(`[MinionsBl.scanMissingDevices] Minions "${minion.minionId}" status updated successfully`);
 					} catch (error) {
 						logger.error(`[MinionsBl.scanMissingDevices] Failed to read minions "${minion.minionId}" status "${error.message}" `);
 					}
