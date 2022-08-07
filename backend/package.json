@@ -15,6 +15,7 @@
       "public/**/*",
       "swagger.json",
       "dashboard/**/*",
+      "casaqueue/**/*",
       "docs/**/*"
     ]
   },

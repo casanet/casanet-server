@@ -49,6 +49,7 @@ class App {
 		/** Serve static client side assets */
 		this.serveDashboard();
 		this.serveLegacyDashboard();
+		this.serveCasaqueueDashboard();
 		this.serveSwaggerUI();
 
 		/** Serve swagger docs UI */
@@ -75,6 +76,36 @@ class App {
 			if (url.startsWith('v3') || url.startsWith('/v3')) {
 				url = url.replace('v3', 'public');
 			} else {
+				next();
+				return;
+			}
+
+			const filePath = path.join(__dirname, url);
+			fse.exists(filePath, exists => {
+				if (exists) {
+					res.sendFile(filePath);
+				} else {
+					next();
+				}
+			});
+		});
+	}
+
+	/**
+	 * Serve static files of front-end.
+	 */
+	 private serveCasaqueueDashboard() {
+		/** In /casaqueue path only serve the index.html file */
+		this.express.get('/casaqueue', (req: express.Request, res: express.Response) =>
+			res.sendFile(path.join(__dirname, '/casaqueue/index.html')),
+		);
+
+		/** Get any file in public directory */
+		this.express.use(async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+			// The casaqueue assets placed in the casaqueue dir, so redirect the casaqueue requests to there.
+			let url = req.url || '';
+			if (!url.startsWith('casaqueue') && !url.startsWith('/casaqueue')) {
 				next();
 				return;
 			}
