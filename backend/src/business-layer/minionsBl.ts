@@ -4,7 +4,6 @@ import { MinionsDal, MinionsDalSingleton } from '../data-layer/minionsDal';
 import {
 	DeviceKind,
 	ErrorResponse,
-	IftttOnChanged,
 	LocalNetworkDevice,
 	Minion,
 	MinionCalibrate,
@@ -14,12 +13,15 @@ import {
 	ProgressStatus,
 	User,
 } from '../models/sharedInterfaces';
-import { ModulesManager, ModulesManagerSingltone } from '../modules/modulesManager';
+import { ModulesManager, modulesManager } from '../modules/modulesManager';
 import { DeepCopy } from '../utilities/deepCopy';
 import { logger } from '../utilities/logger';
-import { Delay } from '../utilities/sleep';
-import { DevicesBl, DevicesBlSingleton } from './devicesBl';
+import { Delay, sleep } from '../utilities/sleep';
+import { DevicesService, devicesService } from './devicesBl';
 import { SyncEvent } from 'ts-events';
+import { Duration } from 'unitsnet-js';
+
+const DELAY_FOR_MINIONS_MISSING_DEVICE_SCAN = Duration.FromMinutes(2);
 
 export class MinionsBl {
 	/**
@@ -28,7 +30,7 @@ export class MinionsBl {
 	public minionFeed = new SyncEvent<MinionFeed>();
 	// Dependencies
 	private minionsDal: MinionsDal;
-	private devicesBl: DevicesBl;
+	private devicesBl: DevicesService;
 	private modulesManager: ModulesManager;
 	private scanningStatus: ProgressStatus = 'finished';
 
@@ -46,7 +48,7 @@ export class MinionsBl {
 	 * Init minions bl. using dependency injection pattern to allow units testings.
 	 * @param minionsDal Inject the dal instance.
 	 */
-	constructor(minionsDal: MinionsDal, devicesBl: DevicesBl, modulesManager: ModulesManager) {
+	constructor(minionsDal: MinionsDal, devicesBl: DevicesService, modulesManager: ModulesManager) {
 		this.minionsDal = minionsDal;
 		this.devicesBl = devicesBl;
 		this.modulesManager = modulesManager;
@@ -459,51 +461,6 @@ export class MinionsBl {
 	}
 
 	/**
-	 * Notify minion status changed by ifttt
-	 * @param minionId Minion id.
-	 * @param iftttOnChanged Minion key amd status to set.
-	 */
-	public async notifyMinionChangedByIfttt(minionId: string, iftttOnChanged: IftttOnChanged) {
-		const minion = this.findMinion(minionId);
-
-		if (!minion) {
-			throw {
-				responseCode: 1404,
-				message: 'minion not exist',
-			} as ErrorResponse;
-		}
-
-		/** Make sure the deviceId match to minion deviceId (there is no other authentication!!!) */
-		if (iftttOnChanged.deviceId !== minion.device.deviceId) {
-			throw {
-				responseCode: 5403,
-				message: 'invalid device id',
-			} as ErrorResponse;
-		}
-
-		/** Case it's first time update. */
-		if (!minion.minionStatus[minion.minionType]) {
-			const initStatus = {
-				status: 'on',
-			};
-			const initMinionStatus = {};
-			initMinionStatus[minion.minionType] = initStatus;
-			minion.minionStatus = initMinionStatus as MinionStatus;
-		}
-
-		/** Update the minion status */
-		minion.minionStatus[minion.minionType].status = iftttOnChanged.newStatus;
-
-		/**
-		 * Send minions feed update.
-		 */
-		this.minionFeed.post({
-			event: 'update',
-			minion,
-		});
-	}
-
-	/**
 	 * Init minions.
 	 */
 	public async initMinionsModule(): Promise<void> {
@@ -533,7 +490,7 @@ export class MinionsBl {
 		/**
 		 * Let`s modules retrieve updated minions array.
 		 */
-		ModulesManagerSingltone.retrieveMinions.setPullMethod(
+		modulesManager.retrieveMinions.setPullMethod(
 			async (): Promise<Minion[]> => {
 				return await this.getMinions();
 			},
@@ -569,6 +526,53 @@ export class MinionsBl {
 
 		/** Now mark all tasks finished */
 		this.scanningStatus = 'finished';
+
+		this.scanMissingDevices();
+	}
+
+	/**
+	 * In case of network not yet fully discovered due to timing in machine upload or any other reason
+	 * Scan network till all minions IPs will be discovered
+	 * @returns 
+	 */
+	private async scanMissingDevices() {
+		while (true) {
+			// Sleep for a while
+			await sleep(DELAY_FOR_MINIONS_MISSING_DEVICE_SCAN);
+			// Get all minion without a valid IP discovered during initialization.
+			const missingDevices = this.minions.filter(m => !m?.device?.pysicalDevice?.ip);
+
+			// If all discovered, abort.
+			if (missingDevices.length === 0) {
+				logger.info(`[MinionsBl.scanMissingDevices] All minion has IP, initialization process done`);
+				return;
+			}
+
+			logger.info(`[MinionsBl.scanMissingDevices] Minions "${missingDevices.map(m => m.minionId).join(',')}" does not have yet IP, about to scan again...`);
+
+			try {
+				// Scan network again
+				await this.devicesBl.rescanNetwork();
+
+				// Try get status for all missing IP minions
+				for (const minion of missingDevices) {
+					if (!minion?.device?.pysicalDevice?.ip) {
+						logger.info(`[MinionsBl.scanMissingDevices] Minion "${minion.minionId}:${minion.name}" still dont has IP`);
+						continue;
+					}
+
+					try {
+						logger.info(`[MinionsBl.scanMissingDevices] About to read minions "${minion.minionId}" status`);
+						await this.readMinionStatus(minion);
+						logger.info(`[MinionsBl.scanMissingDevices] Minions "${minion.minionId}" status updated successfully`);
+					} catch (error) {
+						logger.error(`[MinionsBl.scanMissingDevices] Failed to read minions "${minion.minionId}" status "${error.message}" `);
+					}
+				}
+			} catch (error) {
+				logger.error(`[MinionsBl.scanMissingDevices] Failed to scan network "${error.message}" `);
+			}
+		}
 	}
 
 	/**
@@ -589,7 +593,7 @@ export class MinionsBl {
 	}
 
 	/**
-	 * Read minoin current status.
+	 * Read minion current status.
 	 * @param minion minion to read status for.
 	 */
 	private async readMinionStatus(minion: Minion) {
@@ -628,7 +632,7 @@ export class MinionsBl {
 
 	/**
 	 * Find minion in minions array.
-	 * @param minionId minioin id.
+	 * @param minionId minion id.
 	 */
 	private findMinion(minionId: string): Minion {
 		for (const minion of this.minions) {
@@ -754,4 +758,4 @@ export class MinionsBl {
 	}
 }
 
-export const MinionsBlSingleton = new MinionsBl(MinionsDalSingleton, DevicesBlSingleton, ModulesManagerSingltone);
+export const MinionsBlSingleton = new MinionsBl(MinionsDalSingleton, devicesService, modulesManager);

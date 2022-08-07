@@ -3,7 +3,9 @@ import * as express from 'express';
 import * as fse from 'fs-extra';
 import * as path from 'path';
 import { Controller, Get, Request, Response, Route, Security } from 'tsoa';
-import { DevicesBlSingleton } from '../business-layer/devicesBl';
+import { actionsService } from '../business-layer/actionsService';
+import { collectionsService } from '../business-layer/collectionService';
+import { devicesService } from '../business-layer/devicesBl';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
 import { OperationsBlSingleton } from '../business-layer/operationsBl';
 import { TimelineBlSingleton } from '../business-layer/timelineBl';
@@ -25,13 +27,13 @@ export class BackupController extends Controller {
   public async getSettingsBackup(@Request() request: express.Request) {
     const zip = new AdmZip();
 
-		try {
-			zip.addLocalFolder(CACHE_DIRECTORY, 'cache');
-		} catch (error) {
-			logger.debug(`[getSettingsBackup] zipping cache directory failed ${error.message}`)
-			// Do nothing, it's OK, not always there is cache.		
-		}
-    
+    try {
+      zip.addLocalFolder(CACHE_DIRECTORY, 'cache');
+    } catch (error) {
+      logger.debug(`[getSettingsBackup] zipping cache directory failed ${error.message}`)
+      // Do nothing, it's OK, not always there is cache.		
+    }
+
     const dataToZip: Array<{ name: string, data: any }> = [{
       name: 'minions',
       data: await MinionsBlSingleton.getMinions()
@@ -46,17 +48,23 @@ export class BackupController extends Controller {
       data: await TimelineBlSingleton.getTimeline()
     }, {
       name: 'devices',
-      data: await DevicesBlSingleton.getDevices()
+      data: await devicesService.getDevices()
     }, {
       name: 'users',
       data: await UsersBlSingleton.getUsers()
-    }]
+    }, {
+      name: 'actions',
+      data: await actionsService.getActions()
+    }, {
+      name: 'collections',
+      data: await collectionsService.getCollections()
+    }];
 
     for (const data of dataToZip) {
       const dataAsString = JSON.stringify(data.data, null, 2);
       zip.addFile(`${data.name}.json`, Buffer.from(dataAsString), data.name);
     }
-  
+
     const res = request.res as express.Response;
     res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', `attachment; filename=casanet_backup_${new Date().toLocaleDateString()}.zip`);

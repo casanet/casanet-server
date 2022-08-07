@@ -16,6 +16,7 @@
 - { 7404 : 'there is not module handler for minion brand'}
 - { 8404 : 'unknown minion model'}
 - { 9404 : 'action not exist'}
+- { 10404 : 'collection not exist'}
 
 - { 1405 : 'incorrect minion status for current minion type'}
 - { 2405 : 'incorrect minion status for activity minion type'}
@@ -33,7 +34,6 @@
 - { 4409 : 'device already in max uses with other minion'}
 - { 5409 : 'you have to select local server to connect to it'}
 - { 6409 : 'the minion not support command recording or sending'}
-- { 7409 : 'ifttt trigger fail'}
 
 - { 1422 : 'wrong schema'}
 - { 2422 : 'wrong schema, with wrong message'}

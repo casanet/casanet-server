@@ -14,7 +14,7 @@ import {
   SuccessResponse,
   Tags,
 } from 'tsoa';
-import { DevicesBlSingleton } from '../business-layer/devicesBl';
+import { devicesService } from '../business-layer/devicesBl';
 import { DeviceKind, ErrorResponse, LocalNetworkDevice } from '../models/sharedInterfaces';
 
 @Tags('Devices')
@@ -29,7 +29,7 @@ export class DevicesController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Get()
   public async getDevices(): Promise<LocalNetworkDevice[]> {
-    return await DevicesBlSingleton.getDevices();
+    return await devicesService.getDevices();
   }
 
   /**
@@ -41,7 +41,7 @@ export class DevicesController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Get('kinds')
   public async getDevicesKinds(): Promise<DeviceKind[]> {
-    return await DevicesBlSingleton.getDevicesKins();
+    return await devicesService.getDevicesKins();
   }
 
   /**
@@ -55,7 +55,7 @@ export class DevicesController extends Controller {
   @Put('{deviceMac}')
   public async setDeviceName(deviceMac: string, @Body() device: LocalNetworkDevice): Promise<void> {
     device.mac = deviceMac;
-    await DevicesBlSingleton.setDeviceName(device);
+    await devicesService.setDeviceName(device);
   }
 
   /**
@@ -68,6 +68,6 @@ export class DevicesController extends Controller {
   @Response<ErrorResponse>(501, 'Server error')
   @Post('rescan')
   public async rescanDevices(): Promise<void> {
-    await DevicesBlSingleton.rescanNetwork();
+    await devicesService.rescanNetwork();
   }
 }

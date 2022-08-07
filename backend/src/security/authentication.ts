@@ -3,13 +3,10 @@ import { Application, NextFunction, Request, Response } from 'express';
 import { sessionExpiresMs } from '../business-layer/authBl';
 import { SessionsBlSingleton } from '../business-layer/sessionsBl';
 import { UsersBlSingleton } from '../business-layer/usersBl';
-import { IftttIntergrationDalSingleton } from '../data-layer/iftttIntegrationDal';
 import { Session } from '../models/backendInterfaces';
 import {
 	AuthScopes,
 	ErrorResponse,
-	IftttActionTriggeredRequest,
-	IftttIntegrationSettings,
 	User,
 } from '../models/sharedInterfaces';
 import { logger } from '../utilities/logger';
@@ -23,11 +20,9 @@ export const SESSION_COOKIE_NAME = 'session';
 export const SystemAuthScopes: {
 	adminScope: AuthScopes;
 	userScope: AuthScopes;
-	iftttScope: AuthScopes;
 } = {
 	adminScope: 'adminAuth',
 	userScope: 'userAuth',
-	iftttScope: 'iftttAuth',
 };
 
 export async function verifyBySecurity(request: express.Request, securityNames: string[]) {
@@ -59,20 +54,6 @@ export const expressAuthentication = async (
 		logger.error('invalid or empty security scope');
 		throw {
 			responseCode: 1503,
-		} as ErrorResponse;
-	}
-
-	if (securityName == SystemAuthScopes.iftttScope) {
-		const authedRequest: IftttActionTriggeredRequest = request.body;
-		if (typeof authedRequest === 'object' && authedRequest.apiKey) {
-			const iftttIntegrationSettings: IftttIntegrationSettings = await IftttIntergrationDalSingleton.getIntegrationSettings();
-			if (iftttIntegrationSettings.enableIntegration && authedRequest.apiKey === iftttIntegrationSettings.apiKey) {
-				return;
-			}
-		}
-
-		throw {
-			responseCode: 1401,
 		} as ErrorResponse;
 	}
 

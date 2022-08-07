@@ -68,6 +68,13 @@ export declare interface LoginMfa {
 	localServerId?: string;
 }
 
+export declare interface DeviceStatus {
+	/**
+	 * The battery power, if relevant, in %.
+	 */
+	battery?: number;
+}
+
 /**
  * Represents any physical device in a local network.
  */
@@ -91,6 +98,11 @@ export declare interface LocalNetworkDevice {
 	 * The device IP address, if exist it should be unique in network.
 	 */
 	ip?: string;
+
+	/**
+	 * The physical devices status, such as internal temp, battery etc.
+	 */
+	deviceStatus?: DeviceStatus;
 }
 
 /**
@@ -176,7 +188,7 @@ export declare interface DeviceKind {
  * Scopes of authentication, right know in our system there are only 3 scopes.
  * admin and user. any API route protect by one of them.
  */
-export declare type AuthScopes = 'adminAuth' | 'userAuth' | 'iftttAuth';
+export declare type AuthScopes = 'adminAuth' | 'userAuth';
 
 /**
  * Represents a user in the system.
@@ -604,6 +616,11 @@ export declare interface Minion {
 	 * Represents the room where the minion is located at.
 	 */
 	room?: string;
+
+	/**
+	 * Last status change timestamp in UTC MS
+	 */
+	statusChangedTime?: number; 
 }
 
 /**
@@ -714,46 +731,6 @@ export declare interface Timing {
 	overrideLock?: boolean;
 }
 
-/**
- * Ifttt webhook request body to notify minion status changed.
- * *Used in ifttt module interface only*
- */
-export declare interface IftttOnChanged {
-	/** Allow remote-server to forward request to local server */
-	localMac?: string;
-	/** Device id (AKA Ifttt webhook API key), this is the authentication of request. */
-	deviceId: string;
-	/** The new status */
-	newStatus: SwitchOptions;
-}
-
-/** Ifttt integration settings */
-export declare interface IftttIntegrationSettings {
-	/** WebHooks API key */
-	apiKey?: string;
-	/** Open or close ifttt integration. */
-	enableIntegration: boolean;
-}
-
-/** Ifttt trigger action auth and forward fields */
-export declare interface IftttActionTriggeredRequest {
-	/** WebHooks API key */
-	apiKey: string;
-	/** Allow remote-server to forward request to local server */
-	localMac?: string;
-}
-
-/** Ifttt trigger set status action */
-export declare interface IftttActionTriggered extends IftttActionTriggeredRequest {
-	setStatus: SwitchOptions;
-}
-
-/** Ifttt trigger with all request data in one JSON structure. */
-export declare interface IftttRawActionTriggered extends IftttActionTriggeredRequest {
-	minionId: string;
-	setStatus: SwitchOptions;
-}
-
 /** Update version results */
 export declare interface UpdateResults {
 	/** Application already in the latest version  */
@@ -844,7 +821,7 @@ export declare interface CollectionItem {
 /**
  * An collection of items, can be used for view aggregation of any item/s in the system
  */
- export declare interface Collection {
+export declare interface Collection {
 	/** The action id */
 	collectionId: string;
 	/** The trigger to apply the action */
