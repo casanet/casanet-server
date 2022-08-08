@@ -1,5 +1,5 @@
 import { IDataIO } from '../models/backendInterfaces';
-import { ErrorResponse, Minion, MinionCalibrate } from '../models/sharedInterfaces';
+import { ErrorResponse, LocalNetworkDevice, Minion, MinionCalibrate } from '../models/sharedInterfaces';
 import { DataIO } from './dataIO';
 
 const MINIONS_FILE_NAME = 'minions.json';
@@ -160,6 +160,28 @@ export class MinionsDal {
 
     await this.dataIo.setData(this.minions).catch(() => {
       throw new Error('fail to save minion calibrate update request');
+    });
+  }
+
+  /**
+   * Update minion networkDevice property.
+   * @param minionId minion to edit.
+   * @param networkDevice networkDevice to set.
+   */
+  public async updateMinionDevice(minionId: string, networkDevice: LocalNetworkDevice): Promise<void> {
+    const originalMinion = this.findMinion(minionId);
+
+    if (!originalMinion) {
+      throw {
+        responseCode: 1404,
+        message: 'minion not exist',
+      } as ErrorResponse;
+    }
+
+    originalMinion.device.pysicalDevice = networkDevice;
+
+    await this.dataIo.setData(this.minions).catch(() => {
+      throw new Error('fail to save minion networkDevice update request');
     });
   }
 

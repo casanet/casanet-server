@@ -563,6 +563,14 @@ export declare interface MinionSetRoomName {
 }
 
 /**
+ * Used to set minion physical device.
+ */
+ export declare interface MinionSetDevice {
+	/** The device mac to set. */
+	mac: string;
+}
+
+/**
  * Represents a minion in system.
  * Minion is a logic device in the system, meaning that a device is a physical device and minion is a logic device
  * that uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device
