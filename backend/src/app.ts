@@ -51,7 +51,6 @@ class App {
 		this.serveDashboard();
 		this.serveLegacyDashboard();
 		this.serveCasaqueueDashboard();
-		this.serveSwaggerUI();
 
 		/** Serve swagger docs UI */
 		this.serveDocs();
@@ -144,25 +143,6 @@ class App {
 		});
 	}
 
-	/**
-	 * Serve docs files.
-	 */
-	private serveSwaggerUI() {
-
-		
-
-		/** Get any file in public directory */
-		// this.express.use('/docs', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-		// 	const filePath = path.join(__dirname, '/docs/', req.url);
-		// 	fse.exists(filePath, exists => {
-		// 		if (exists) {
-		// 			res.sendFile(filePath);
-		// 		} else {
-		// 			next();
-		// 		}
-		// 	});
-		// });
-	}
 
 	/**
 	 * Log call requests to logger.
@@ -260,16 +240,10 @@ class App {
 
 	private serveDocs(): void {
 
+		/** For the CSS file only, since the "swagger-ui-express" running within a PKG, the CSS is missing in the build process, so serve it manually.  */
 		this.express.use('/docs/swagger-ui.css', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			const filePath = path.join(__dirname, '/docs/swagger-ui.css');
-			fse.exists(filePath, exists => {
-				if (exists) {
-					res.sendFile(filePath);
-				} else {
-					logger.error(`file ${filePath} not exists`);
-					next();
-				}
-			});
+			res.sendFile(filePath);
 		});
 
 		this.express.use('/docs', swaggerUi.serve, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
