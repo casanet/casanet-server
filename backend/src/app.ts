@@ -259,6 +259,19 @@ class App {
 	}
 
 	private serveDocs(): void {
+
+		this.express.use('/docs/swagger-ui.css', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			const filePath = path.join(__dirname, '/docs/swagger-ui.css');
+			fse.exists(filePath, exists => {
+				if (exists) {
+					res.sendFile(filePath);
+				} else {
+					logger.error(`file ${filePath} not exists`);
+					next();
+				}
+			});
+		});
+
 		this.express.use('/docs', swaggerUi.serve, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 			return res.send(swaggerUi.generateHTML(swaggerSpec));
 		});
