@@ -17,6 +17,7 @@ import * as swaggerUi from 'swagger-ui-express';
 import * as cors from 'cors';
 import { ErrorResponse } from './models/sharedInterfaces';
 import { Writable } from 'stream';
+import * as swaggerSpec from './generated/swagger.json';
 
 // controllers need to be referenced in order to get crawled by the TSOA generator
 
@@ -147,17 +148,20 @@ class App {
 	 * Serve docs files.
 	 */
 	private serveSwaggerUI() {
+
+		
+
 		/** Get any file in public directory */
-		this.express.use('/docs', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			const filePath = path.join(__dirname, '/docs/', req.url);
-			fse.exists(filePath, exists => {
-				if (exists) {
-					res.sendFile(filePath);
-				} else {
-					next();
-				}
-			});
-		});
+		// this.express.use('/docs', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+		// 	const filePath = path.join(__dirname, '/docs/', req.url);
+		// 	fse.exists(filePath, exists => {
+		// 		if (exists) {
+		// 			res.sendFile(filePath);
+		// 		} else {
+		// 			next();
+		// 		}
+		// 	});
+		// });
 	}
 
 	/**
@@ -256,7 +260,7 @@ class App {
 
 	private serveDocs(): void {
 		this.express.use('/docs', swaggerUi.serve, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-			return res.send(swaggerUi.generateHTML(await import('./generated/swagger.json')));
+			return res.send(swaggerUi.generateHTML(swaggerSpec));
 		});
 	}
 
