@@ -80,21 +80,31 @@ export class MockHandler extends BrandModuleBase {
       isRecordingSupported: false,
       isFetchCommandsAvailable: false,
     },
+    {
+      brand: this.brandName,
+      isTokenRequired: false,
+      isIdRequired: false,
+      minionsPerDevice: -1,
+      model: 'Temperature Sensor Demo',
+      supportedMinionType: 'temperatureSensor',
+      isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
+    },
   ];
   /**
-   * Time duratin to mock pysical device status update for switch minion.
+   * Time duration to mock physical device status update for switch minion.
    */
   private readonly SWITCH_CHANGED_INTERVAL: Duration = moment.duration(4, 'seconds');
 
   /**
-   * Time duratin to mock pysical device status update for ac minion.
+   * Time duration to mock physical device status update for ac minion.
    */
   private readonly AC_CHANGED_INTERVAL: Duration = moment.duration(5, 'seconds');
 
   constructor() {
     super();
 
-    // for debug updattes remove 'return'
+    // for debug updates remove 'return'
     return;
     setInterval(async () => {
       const minions = await this.retrieveMinions.pull();
@@ -180,6 +190,13 @@ export class MockHandler extends BrandModuleBase {
             direction: 'up',
           },
         };
+      case 'Temperature Sensor Demo':
+        return {
+          temperatureSensor: {
+            status: 'on',
+            temperature:  Math.floor(Math.random() * 1000) / 10,
+          },
+        };
     }
 
     throw {
@@ -197,7 +214,8 @@ export class MockHandler extends BrandModuleBase {
       minion.device.model === 'Roller demo' ||
       minion.device.model === 'Light demo' ||
       minion.device.model === 'Temperature Light demo' ||
-      minion.device.model === 'Color Light demo'
+      minion.device.model === 'Color Light demo' ||
+      minion.device.model === 'Temperature Sensor Demo'
     ) {
       return;
     }

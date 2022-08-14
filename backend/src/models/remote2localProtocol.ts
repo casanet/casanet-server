@@ -102,6 +102,7 @@ export declare interface InitializationRequest {
   remoteAuthKey: string;
   platform: NodeJS.Platform;
   version: string;
+  localIp?: string;
 }
 
 /** WS message from local to remote strut */
