@@ -1,15 +1,17 @@
-import { Minion, MinionStatus, SwitchOptions } from '../../../models/sharedInterfaces';
+import { DeviceKind, Minion, MinionStatus, SwitchOptions } from '../../../models/sharedInterfaces';
 import { MqttBaseDriver, MqttMessage, ParsedMqttMessage } from './mqttBaseDriver';
 
 export class CasanetMqttDriver extends MqttBaseDriver {
 
-  public deviceIdentity: 'minionId' | 'deviceId' = 'minionId';
-  
+  public readonly brandName: string[] = [];
+
+  public devices: DeviceKind[] = [];
+
   public deviceTopics = [
     'casanet/state/+',
   ];
 
-  
+
   public isDeviceMessage(topic: string): boolean {
     const topics = topic.split('/');
     const publisher = topics?.[0];
@@ -17,28 +19,38 @@ export class CasanetMqttDriver extends MqttBaseDriver {
   }
 
 
-  public convertSetStatusMessage(minion: Minion, setStatus: MinionStatus): MqttMessage {
+  public convertSetStatusMessage(minion: Minion, setStatus: MinionStatus): MqttMessage[] {
 
 
-    return {
+    return [{
       topic: `casanet/set/${minion.minionId}`,
       data: JSON.stringify(setStatus),
-    };
+    }];
   }
 
-  public convertRequestStateMessage(minion: Minion): MqttMessage | undefined {
-    return {
+  public convertRequestStateMessage(minion: Minion): MqttMessage[] {
+    return [{
       topic: `casanet/get/${minion.minionId}`,
       data: '',
-    };
+    }];
+  }
+  
+  public async getStatus(minion: Minion): Promise<MinionStatus> {
+    return;
   }
 
-  public convertMqttMessage(topic: string, data: string): ParsedMqttMessage | undefined {
+  public async convertMqttMessage(topic: string, data: string): Promise<ParsedMqttMessage> {
     const topics = topic.split('/');
     const minionId = topics[1];
-  
+
+    const minions = await this.retrieveMinions.pull();
+
+    const minion = minions.find(m => {
+      return m?.minionId === minionId;
+    });
+
     return {
-      id: minionId,
+      minion,
       minionStatus: JSON.parse(data)
     };
   }

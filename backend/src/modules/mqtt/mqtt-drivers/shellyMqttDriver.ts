@@ -1,15 +1,81 @@
-import { Minion, MinionStatus, SwitchOptions } from '../../../models/sharedInterfaces';
+import { DeviceKind, Minion, MinionStatus, SwitchOptions } from '../../../models/sharedInterfaces';
 import { MqttBaseDriver, MqttMessage, ParsedMqttMessage } from './mqttBaseDriver';
 
 export class ShellyMqttDriver extends MqttBaseDriver {
+  
+  public readonly brandName: string[] = ['mqtt-shelly'];
 
-  public deviceIdentity: 'minionId' | 'deviceId' = 'deviceId';
+  public devices: DeviceKind[] = [{
+    brand: this.brandName[0],
+    isFetchCommandsAvailable: false,
+    isIdRequired: true,
+    isRecordingSupported: false,
+    isTokenRequired: false,
+    minionsPerDevice: 1,
+    model: 'MP1',
+    supportedMinionType: 'switch'
+  }, {
+    brand: this.brandName[0],
+    isFetchCommandsAvailable: false,
+    isIdRequired: true,
+    isRecordingSupported: false,
+    isTokenRequired: false,
+    minionsPerDevice: 4,
+    model: 'MP1 with sensor extension - switch',
+    supportedMinionType: 'switch'
+  }, {
+    brand: this.brandName[0],
+    isFetchCommandsAvailable: false,
+    isIdRequired: true,
+    isRecordingSupported: false,
+    isTokenRequired: false,
+    minionsPerDevice: 4,
+    model: 'MP1 with sensor extension - the first',
+    supportedMinionType: 'temperatureSensor'
+  }, {
+    brand: this.brandName[0],
+    isFetchCommandsAvailable: false,
+    isIdRequired: true,
+    isRecordingSupported: false,
+    isTokenRequired: false,
+    minionsPerDevice: 4,
+    model: 'MP1 with sensor extension - the second',
+    supportedMinionType: 'temperatureSensor'
+  }, {
+    brand: this.brandName[0],
+    isFetchCommandsAvailable: false,
+    isIdRequired: true,
+    isRecordingSupported: false,
+    isTokenRequired: false,
+    minionsPerDevice: 4,
+    model: 'MP1 with sensor extension - the third',
+    supportedMinionType: 'temperatureSensor'
+  }, {
+    brand: this.brandName[0],
+    isFetchCommandsAvailable: false,
+    isIdRequired: true,
+    isRecordingSupported: false,
+    isTokenRequired: false,
+    minionsPerDevice: 1,
+    model: 'Duo - RGBW',
+    supportedMinionType: 'colorLight'
+  }, {
+    brand: this.brandName[0],
+    isFetchCommandsAvailable: false,
+    isIdRequired: true,
+    isRecordingSupported: false,
+    isTokenRequired: false,
+    minionsPerDevice: 1,
+    model: 'Button1',
+    supportedMinionType: 'toggle'
+  }];
 
   public deviceTopics = [
     'shellies/+/relay/0', // Switches update, such as shelly 1PM
     'shellies/+/color/0/status', // Blob light updates
     'shellies/+/input_event/0', // Button clicked update
     'shellies/+/sensor/battery', // Battery (in percentage) update.
+    'shellies/+/ext_temperature/+', // Temperature sensor update.
   ];
 
   public isDeviceMessage(topic: string): boolean {
@@ -18,7 +84,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     return publisher === 'shellies';
   }
 
-  public convertSetStatusMessage(minion: Minion, setStatus: MinionStatus): MqttMessage {
+  public convertSetStatusMessage(minion: Minion, setStatus: MinionStatus): MqttMessage[] {
     let data;
     let topic;
     let command;
@@ -48,17 +114,31 @@ export class ShellyMqttDriver extends MqttBaseDriver {
       });
     }
 
-    return {
+    return [{
       topic: `shellies/${minion?.device?.deviceId || 'unknown'}/${topic}/0/${command}`,
       data: data,
-    };
+    }];
   }
 
-  public convertRequestStateMessage(minion: Minion): MqttMessage | undefined {
-    return undefined;
+  public async getStatus(minion: Minion): Promise<MinionStatus> {
+
+    // For temperature sensor, set hard-coded to be always on
+    if (minion.device.brand === this.brandName[0] && minion.minionType === 'temperatureSensor') {
+      return {
+        temperatureSensor: {
+          status: 'on',
+          temperature: minion?.minionStatus?.temperatureSensor?.temperature || 0
+        }
+      }
+    }
+    return;
   }
 
-  public convertMqttMessage(topic: string, data: string): ParsedMqttMessage | undefined {
+  public convertRequestStateMessage(minion: Minion): MqttMessage[] {
+    return [];
+  }
+
+  public async convertMqttMessage(topic: string, data: string): Promise<ParsedMqttMessage> {
     const topics = topic.split('/');
     const deviceId = topics[1];
     const deviceType = topics[2];
@@ -66,13 +146,19 @@ export class ShellyMqttDriver extends MqttBaseDriver {
 
     let minionStatus: MinionStatus;
 
-    if (deviceType === 'relay') {
+    let minion: Minion;
+
+    const minions = await this.retrieveMinions.pull();
+
+    if (deviceType === 'relay') {  // case of smart switch as MP1
+      minion = minions.find(m => m?.device?.deviceId === deviceId && m?.device?.brand === this.brandName[0] && m?.device?.model === 'MP1');
       minionStatus = {
         switch: {
           status: data.toLowerCase() as SwitchOptions,
         },
       };
     } else if (deviceType === 'color') {
+      minion = minions.find(m => m?.device?.deviceId === deviceId);
       const asJson = JSON.parse(data);
       minionStatus = {
         colorLight: {
@@ -84,7 +170,8 @@ export class ShellyMqttDriver extends MqttBaseDriver {
           temperature: asJson.white || 1
         },
       };
-    } else if (deviceType === 'input_event') {
+    } else if (deviceType === 'input_event') { // case of button
+      minion = minions.find(m => m?.device?.deviceId === deviceId);
       const asJson = JSON.parse(data);
       const status = asJson.event?.startsWith('S') ? 'on' : 'off' as SwitchOptions;
       minionStatus = {
@@ -93,6 +180,30 @@ export class ShellyMqttDriver extends MqttBaseDriver {
         },
         switch: {
           status,
+        },
+      };
+    } else if (deviceType === 'ext_temperature') { // Case of temp. sensor
+      const sensorIndex = topics[3];
+      let modelExt: string;
+      switch (sensorIndex) {
+        case '0':
+          modelExt = 'first';
+          break;
+        case '1':
+          modelExt = 'second';
+          break;
+        case '2':
+          modelExt = 'third';
+          break;
+        default:
+          break;
+      }
+      minion = minions.find(m => m?.device?.deviceId === deviceId && m?.device?.brand === this.brandName[0] && m?.device?.model === `MP1 with sensor extension - the ${modelExt}`);
+      const temperature = JSON.parse(data.split(':')[1]);
+      minionStatus = {
+        temperatureSensor: {
+          temperature,
+          status: minion?.minionStatus?.['temperatureSensor']?.status || 'on',
         },
       };
     } else if (deviceType === 'sensor' && topics?.[3] === 'battery') {
@@ -109,7 +220,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     }
 
     return {
-      id: deviceId,
+      minion,
       minionStatus,
     };
   }

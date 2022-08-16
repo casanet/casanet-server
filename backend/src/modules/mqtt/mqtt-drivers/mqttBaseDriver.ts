@@ -1,5 +1,6 @@
+import { PullBehavior } from 'pull-behavior';
 import { SyncEvent } from 'ts-events';
-import { DeviceStatus, Minion, MinionStatus } from '../../../models/sharedInterfaces';
+import { DeviceKind, DeviceStatus, Minion, MinionStatus } from '../../../models/sharedInterfaces';
 
 /**
  * Message data to send to a device via mqtt.
@@ -13,8 +14,7 @@ export declare interface MqttMessage {
  * Data arrived from a device using mqtt message.
  */
 export declare interface ParsedMqttMessage {
-  /** Minion Id / Device ID (driver depend @see MqttBaseDriver.deviceIdentity ) */
-  id: string;
+  minion: Minion;
   minionStatus: MinionStatus;
 }
 
@@ -23,40 +23,47 @@ export declare interface ParsedMqttMessage {
  */
 export abstract class MqttBaseDriver {
 
+  /**
+   * Brand name, should be unique in system with format as `mqtt-XXXX`.
+   */
+  public abstract readonly brandName: string[];
+
+  /**
+   * All supported devices via current driver metadata.
+   */
+  public abstract readonly devices: DeviceKind[];
+
   /** The MQTT topics to listen for a given devise driver */
   public abstract readonly deviceTopics: string | string[];
 
-  /** The identity in use in a given device type driver */
-  public abstract readonly deviceIdentity: 'minionId' | 'deviceId';
-
-  /** The devices feed, in case of a update in device physical status, such as battery status */
-  protected deviceFeed: SyncEvent<{
-    deviceId: string;
-    status: DeviceStatus;
-  }>;
 
   /**
    * Init the converter mqtt client.
    */
-  public initClient(deviceFeed: SyncEvent<{
+  public constructor(protected deviceFeed: SyncEvent<{
     deviceId: string;
     status: DeviceStatus;
-  }>) {
-    this.deviceFeed = deviceFeed;
+  }>, protected retrieveMinions: PullBehavior<Minion[]>) {
   }
 
   /**
-   * Convert casanet set status message to a MQTT message format.
+   * Convert casanet set status message to a MQTT messages collection format.
    * @param minion The minion
    * @param setStatus Status to set
    */
-  public abstract convertSetStatusMessage(minion: Minion, setStatus: MinionStatus): MqttMessage;
+  public abstract convertSetStatusMessage(minion: Minion, setStatus: MinionStatus): MqttMessage[];
 
   /**
    * Convert a request for status update to MQTT message format, return undefined if option not supported.
    * @param minion The minion
    */
-  public abstract convertRequestStateMessage(minion: Minion): MqttMessage | undefined;
+  public abstract convertRequestStateMessage(minion: Minion): MqttMessage[];
+
+  /**
+   * Get status, if possible.
+   * @param minion The minion
+   */
+  public abstract getStatus(minion: Minion): Promise<MinionStatus | undefined>;
 
   /**
    * Parse a MQTT incoming message to a Casanet valid status.
@@ -64,7 +71,7 @@ export abstract class MqttBaseDriver {
    * @param topic The message topic.
    * @param data The message payload string.
    */
-  public abstract convertMqttMessage(topic: string, data: string): ParsedMqttMessage | undefined;
+  public abstract convertMqttMessage(topic: string, data: string): Promise<ParsedMqttMessage>;
 
   /**
    * Check whenever the given topic is belong to the this driver. 

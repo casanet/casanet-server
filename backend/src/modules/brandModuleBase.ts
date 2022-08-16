@@ -16,13 +16,13 @@ export abstract class BrandModuleBase {
    * Cache file pull path.
    */
   protected get cacheFilePath(): string {
-    return `${path.join(CACHE_DIRECTORY, this.brandName)}.json`;
+    return `${path.join(CACHE_DIRECTORY, typeof this.brandName === 'string' ? this.brandName : this.brandName?.join?.('-') )}.json`;
   }
 
   /**
    * Brand name, should be unique in system.
    */
-  public abstract readonly brandName: string;
+  public abstract readonly brandName: string | string[];
 
   /**
    * All supported devices via current module metadata.
