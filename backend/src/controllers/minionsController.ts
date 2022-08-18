@@ -237,7 +237,8 @@ export class MinionsController extends Controller {
 	 */
 	private cleanUpMinionBeforeRelease(minion: Minion): Minion {
 		const minionCopy = DeepCopy<Minion>(minion);
-		delete minionCopy.device.deviceId;
+		// For now, show device id, and only hide the token
+		// delete minionCopy.device.deviceId;
 		delete minionCopy.device.token;
 		return minionCopy;
 	}
