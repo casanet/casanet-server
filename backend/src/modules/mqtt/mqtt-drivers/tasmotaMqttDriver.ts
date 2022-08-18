@@ -115,11 +115,11 @@ export class TasmotaMqttDriver extends MqttBaseDriver {
       minionStatus = {
         colorLight: {
           status: asJson?.POWER?.toLowerCase() || minion?.minionStatus?.colorLight?.status || 'off',
-          brightness: asJson?.Dimmer ?? minion?.minionStatus?.colorLight?.brightness ?? 1,
-          temperature: minion?.minionStatus?.colorLight?.temperature ?? 1, // NOT SUPPORTED YET
-          red: (!asJson?.Color ? minion?.minionStatus?.colorLight?.red : parseInt(asJson.Color.substring(0, 2), 16)) ?? 1,
-          green: (!asJson?.Color ? minion?.minionStatus?.colorLight?.green : parseInt(asJson.Color.substring(2, 4), 16)) ?? 1,
-          blue: (!asJson?.Color ? minion?.minionStatus?.colorLight?.blue : parseInt(asJson.Color.substring(4, 6), 16)) ?? 1,
+          brightness: (asJson?.Dimmer || 1) ?? minion?.minionStatus?.colorLight?.brightness ?? 1,
+          temperature: minion?.minionStatus?.colorLight?.temperature || 1, // NOT SUPPORTED YET
+          red: (!asJson?.Color ? minion?.minionStatus?.colorLight?.red : parseInt(asJson.Color.substring(0, 2), 16)) || 1,
+          green: (!asJson?.Color ? minion?.minionStatus?.colorLight?.green : parseInt(asJson.Color.substring(2, 4), 16)) || 1,
+          blue: (!asJson?.Color ? minion?.minionStatus?.colorLight?.blue : parseInt(asJson.Color.substring(4, 6), 16)) || 1,
         },
       };
     }
