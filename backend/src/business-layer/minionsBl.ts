@@ -177,6 +177,49 @@ export class MinionsBl {
 	}
 
 	/**
+	 * Replace physical device of given minion
+	 * @param minionId minion id.
+	 * @param macToSet The device to change it to
+	 */
+	 public async replaceNetworkDevice(minionId: string, macToSet: string): Promise<void> {
+		const minion = this.findMinion(minionId);
+
+		if (!minion) {
+			throw {
+				responseCode: 1404,
+				message: 'minion not exist',
+			} as ErrorResponse;
+		}
+
+		// Start with a copy, then, only if validated, do it to the original minion
+		const minionCopy = DeepCopy(minion);
+
+		const deviceToSet = (await this.devicesBl.getDevices()).find(d => d.mac === macToSet);
+
+		if (!deviceToSet) {
+			throw {
+				responseCode: 2404,
+				message: 'device not exist in lan network',
+			} as ErrorResponse;
+		}
+	
+		minionCopy.device.pysicalDevice = deviceToSet;
+		const error = this.validateMinionDevice(minion);
+		if (error) {
+			logger.error(`Fail to validate set ${macToSet} as the minion ${minionId} device ${error.message}`);
+			throw error;
+		}
+
+
+		try {
+			await this.minionsDal.updateMinionDevice(minionId, deviceToSet);
+		} catch (error) {
+			logger.error(`Fail to set ${macToSet} as the minion ${minionId} device ${error.message}`);
+			throw error;
+		}
+	}
+
+	/**
 	 * Set minion status
 	 * @param minionId minion to set new status to.
 	 * @param minionStatus the status to set.
@@ -378,7 +421,7 @@ export class MinionsBl {
 		/**
 		 * check if minion valid.
 		 */
-		const error = this.validateNewMinion(minion);
+		const error = this.validateMinionDevice(minion);
 		if (error) {
 			throw error;
 		}
@@ -668,7 +711,7 @@ export class MinionsBl {
 	 * Validate new minion properties to make sure that they compatible to requires.
 	 * @param minionToCheck new minion to validate.
 	 */
-	private validateNewMinion(minionToCheck: Minion): ErrorResponse {
+	private validateMinionDevice(minionToCheck: Minion): ErrorResponse {
 		/**
 		 * Get brand & model
 		 */
@@ -690,17 +733,17 @@ export class MinionsBl {
 		}
 
 		/**
-		 * Check if token reqired and not exist.
+		 * Check if token required and not exist.
 		 */
 		if (deviceKind.isTokenRequired && !minionToCheck.device.token) {
 			return {
 				responseCode: 2409,
-				message: 'token is requird',
+				message: 'token is required',
 			};
 		}
 
 		/**
-		 * Check if id reqired and not exist.
+		 * Check if id required and not exist.
 		 */
 		if (deviceKind.isIdRequired && !minionToCheck.device.deviceId) {
 			return {
@@ -732,7 +775,7 @@ export class MinionsBl {
 		}
 
 		/**
-		 * ignore user selection and set corrent minion type based on model.
+		 * ignore user selection and set current minion type based on model.
 		 */
 		minionToCheck.minionType = deviceKind.supportedMinionType;
 	}

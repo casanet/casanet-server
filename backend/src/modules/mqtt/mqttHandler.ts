@@ -13,11 +13,11 @@ const mqttBrokerUri = process.env.MQTT_BROKER_URI;
 const mqttInternalBrokerPort = process.env.MQTT_INTERNAL_BROKER_PORT;
 
 export class MqttHandler extends BrandModuleBase {
-  public readonly brandName: string = 'mqtt';
+  public brandName: string[] = ['mqtt'];
 
-  public readonly devices: DeviceKind[] = [
+  public devices: DeviceKind[] = [
     {
-      brand: this.brandName,
+      brand: this.brandName[0],
       isTokenRequired: false,
       isIdRequired: true,
       minionsPerDevice: -1,
@@ -27,7 +27,7 @@ export class MqttHandler extends BrandModuleBase {
       isFetchCommandsAvailable: false,
     },
     {
-      brand: this.brandName,
+      brand: this.brandName[0],
       isTokenRequired: false,
       isIdRequired: true,
       minionsPerDevice: -1,
@@ -37,7 +37,7 @@ export class MqttHandler extends BrandModuleBase {
       isFetchCommandsAvailable: false,
     },
     {
-      brand: this.brandName,
+      brand: this.brandName[0],
       isTokenRequired: false,
       isIdRequired: true,
       minionsPerDevice: -1,
@@ -47,7 +47,7 @@ export class MqttHandler extends BrandModuleBase {
       isFetchCommandsAvailable: false,
     },
     {
-      brand: this.brandName,
+      brand: this.brandName[0],
       isTokenRequired: false,
       isIdRequired: true,
       minionsPerDevice: -1,
@@ -57,7 +57,7 @@ export class MqttHandler extends BrandModuleBase {
       isFetchCommandsAvailable: false,
     },
     {
-      brand: this.brandName,
+      brand: this.brandName[0],
       isTokenRequired: false,
       isIdRequired: true,
       minionsPerDevice: -1,
@@ -67,7 +67,7 @@ export class MqttHandler extends BrandModuleBase {
       isFetchCommandsAvailable: false,
     },
     {
-      brand: this.brandName,
+      brand: this.brandName[0],
       isTokenRequired: false,
       isIdRequired: true,
       minionsPerDevice: -1,
@@ -77,12 +77,22 @@ export class MqttHandler extends BrandModuleBase {
       isFetchCommandsAvailable: false,
     },
     {
-      brand: this.brandName,
+      brand: this.brandName[0],
       isTokenRequired: false,
       isIdRequired: true,
       minionsPerDevice: -1,
       model: 'roller',
       supportedMinionType: 'roller',
+      isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
+    },
+    {
+      brand: this.brandName[0],
+      isTokenRequired: false,
+      isIdRequired: true,
+      minionsPerDevice: -1,
+      model: 'temperature sensor',
+      supportedMinionType: 'temperatureSensor',
       isRecordingSupported: false,
       isFetchCommandsAvailable: false,
     },
@@ -102,20 +112,26 @@ export class MqttHandler extends BrandModuleBase {
 
   public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     for (const mqttDriver of this.mqttDrivers) {
-      const message = mqttDriver.convertRequestStateMessage(minion);
-      if (message) {
+      const messages = mqttDriver.convertRequestStateMessage(minion);
+      for (const message of messages) {
         await this.mqttClient.publish(message.topic, message.data);
       }
+      const status = await mqttDriver.getStatus(minion);
+      if (status) {
+        return status;
+      }
     }
-    /** Current there is no option to 'ask' and wait for respone, only to send request and the update will arrive by status topic. */
+    /** Current mustily there is no option to 'ask' and wait for response, only to send request and the update will arrive by status topic. */
     return minion.minionStatus;
   }
 
   public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     /** Publish set status topic */
     for (const mqttDriver of this.mqttDrivers) {
-      const message = mqttDriver.convertSetStatusMessage(minion, setStatus);
-      await this.mqttClient.publish(message.topic, message.data);
+      const messages = mqttDriver.convertSetStatusMessage(minion, setStatus);
+      for (const message of messages) {
+        await this.mqttClient.publish(message.topic, message.data);
+      }
     }
   }
 
@@ -148,13 +164,14 @@ export class MqttHandler extends BrandModuleBase {
     ///////////////////////////////////////////
     ////////// HERE LOAD THE DERIVER //////////
     ///////////////////////////////////////////
-    this.mqttDrivers.push(new CasanetMqttDriver());
-    this.mqttDrivers.push(new ShellyMqttDriver());
-    this.mqttDrivers.push(new TasmotaMqttDriver());
+    this.mqttDrivers.push(new CasanetMqttDriver(this.deviceStatusChangedEvent, this.retrieveMinions));
+    this.mqttDrivers.push(new ShellyMqttDriver(this.deviceStatusChangedEvent, this.retrieveMinions));
+    this.mqttDrivers.push(new TasmotaMqttDriver(this.deviceStatusChangedEvent, this.retrieveMinions));
 
     /** Init converters */
-    for (const mqttConverter of this.mqttDrivers) {
-      mqttConverter.initClient(this.deviceStatusChangedEvent);
+    for (const mqttDriver of this.mqttDrivers) {
+      this.devices.push(...mqttDriver.devices);
+      this.brandName.push(...mqttDriver.brandName);
     }
   }
 
@@ -210,34 +227,25 @@ export class MqttHandler extends BrandModuleBase {
 
         const messageData = payload?.toString?.() || '';
 
-        const parsedMqttMessage = mqttDriver.convertMqttMessage(topic, messageData);
+        const parsedMqttMessage = await mqttDriver.convertMqttMessage(topic, messageData);
 
-        /** Get all minions */
-        const minions = await this.retrieveMinions.pull();
+        
 
-        const minion = minions.find(m => {
-          if (mqttDriver.deviceIdentity === 'minionId') {
-            return m?.minionId === parsedMqttMessage.id;
-          }
-
-          return m?.device?.deviceId === parsedMqttMessage.id
-        });
-
-        if (!minion) {
-          logger.warn(`[MqttHandler.onMessage] Fail to update minion ${parsedMqttMessage.id} from MQTT message, minion/device not exist`);
+        if (!parsedMqttMessage.minion) {
+          logger.warn(`[MqttHandler.onMessage] Fail to update minion status from MQTT message, minion/device not exist`);
           return;
         }
 
-        if (!parsedMqttMessage.minionStatus[minion.minionType]) {
-          logger.warn(`[MqttHandler.onMessage] Message topic ${topic} for minion ${minion.minionId} contained invalid status payload "${messageData}", aborting...`);
+        if (!parsedMqttMessage.minionStatus[parsedMqttMessage.minion.minionType]) {
+          logger.warn(`[MqttHandler.onMessage] Message topic ${topic} for minion ${parsedMqttMessage.minion.minionId} contained invalid status payload "${messageData}", aborting...`);
           return;
         }
 
         /** Publish the update to casanet system */
         this.minionStatusChangedEvent.post({
-          minionId: parsedMqttMessage.id,
+          minionId: parsedMqttMessage.minion.minionId,
           status: {
-            [minion.minionType]: parsedMqttMessage.minionStatus[minion.minionType]
+            [parsedMqttMessage.minion.minionType]: parsedMqttMessage.minionStatus[parsedMqttMessage.minion.minionType]
           }
         });
 

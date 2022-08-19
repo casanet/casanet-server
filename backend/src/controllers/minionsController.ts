@@ -23,6 +23,7 @@ import {
 	Minion,
 	MinionCalibrate,
 	MinionRename,
+	MinionSetDevice,
 	MinionSetRoomName,
 	MinionStatus,
 	MinionTimeline,
@@ -47,8 +48,8 @@ export class MinionsController extends Controller {
 	}
 
 	/**
- 	 * Get the timeline of minions status.
- 	 */
+	   * Get the timeline of minions status.
+	   */
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
@@ -92,6 +93,19 @@ export class MinionsController extends Controller {
 	@Put('room/{minionId}')
 	public async renameRoom(minionId: string, @Body() roomName: MinionSetRoomName): Promise<void> {
 		return await MinionsBlSingleton.setMinionRoom(minionId, roomName.room);
+	}
+
+	/**
+	 * Replace physical device of given minion.
+	 * @param minionId Minion id.
+	 * @param macToSet Device mac address to replace to.
+	 */
+	@Security('userAuth')
+	@Security('adminAuth')
+	@Response<ErrorResponse>(501, 'Server error')
+	@Put('network-device/{minionId}')
+	public async replaceNetworkDevice(minionId: string, @Body() macToSet: MinionSetDevice): Promise<void> {
+		return await MinionsBlSingleton.replaceNetworkDevice(minionId, macToSet.mac);
 	}
 
 	/**
@@ -223,7 +237,8 @@ export class MinionsController extends Controller {
 	 */
 	private cleanUpMinionBeforeRelease(minion: Minion): Minion {
 		const minionCopy = DeepCopy<Minion>(minion);
-		delete minionCopy.device.deviceId;
+		// For now, show device id, and only hide the token
+		// delete minionCopy.device.deviceId;
 		delete minionCopy.device.token;
 		return minionCopy;
 	}

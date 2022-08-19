@@ -372,7 +372,7 @@ export class ModulesManager {
    */
   private getMinionModule(brandName: string): BrandModuleBase {
     for (const brandHandler of this.modulesHandlers) {
-      if (brandName === brandHandler.brandName) {
+      if (brandName === brandHandler?.brandName || brandHandler?.brandName?.includes?.(brandName)) {
         return brandHandler;
       }
     }

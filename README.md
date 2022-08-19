@@ -146,20 +146,11 @@ The casa remote server is built for this, [casanet-remote](https://github.com/ca
     -  Philips LED Ceiling Lamp. [link](https://www.gearbest.com/smart-ceiling-lights/pp_009933492211.html)
 	-  Robot Vacuum. [link](https://www.gearbest.com/robot-vacuum/pp_440546.html)
 
-- Tasmota
+- Tasmota (Rest API)
     
     - Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363)) 
     - Air-conditioning (IR Transmitter) (tested with [this](https://www.aliexpress.com/item/33004692351.html) (after [flashing to Tasmota](https://blog.castnet.club/en/blog/flashing-tasmota-on-tuya-ir-bridge))
 
-- [MQTT](http://mqtt.org/) module. [module documentation](./backend/src/modules/mqtt/README.md).
-    -  Toggle.
-    -  Switch.
-    -  Air-conditioning.
-    -  Light
-    -  Temperature light.
-    -  Color light.
-    -  Roller.
-    
 - Mock (for testing purpose)
     
     -  Toggle demo.
@@ -169,6 +160,29 @@ The casa remote server is built for this, [casanet-remote](https://github.com/ca
     -  Temperature light demo.
     -  Color light demo.
     -  Roller demo.
+    -  Temperature Sensor.
+
+
+- #[MQTT](http://mqtt.org/) module [MQTT drivers documentation](./backend/src/modules/mqtt/README.md).
+
+	- *Supported types:*
+    	-  Toggle.
+    	-  Switch.
+    	-  Air-conditioning.
+    	-  Light
+    	-  Temperature light.
+    	-  Color light.
+    	-  Roller.
+	- *Supported drivers:*
+		- Tasmota (MQTT API)
+			- Switch (tested with [this](https://www.gearbest.com/robot-vacuum-accessories/pp_009661965579.html?wid=1433363) and [this](https://www.gearbest.com/alarm-systems/pp_009227681096.html?wid=1433363))
+			- Color Bulb (tested with [this](https://www.aliexpress.com/item/1005001879808728.html?spm=a2g0o.cart.0.0.469738daTbeuwA&mp=1))
+
+		- Shelly (MQTT API)
+			- Button1 - (tested with [this](https://shop.shelly.cloud/shelly-button1-wifi-smart-home-automation#438))
+			- Switch 1PM - (tested with [this](https://shop.shelly.cloud/shelly-1pm-wifi-smart-home-automation-1#51))
+			- Duo - RGBW - (tested with [this](https://shop.shelly.cloud/shelly-bulb-rgbw-e27-wifi-smart-home-automation#436))
+			- Temperature Sensor AddOn - (tested with [this](https://shop.shelly.cloud/temperature-sensor-addon-for-shelly-1-1pm-wifi-smart-home-automation#315))
     
 ## Connecting devices
 

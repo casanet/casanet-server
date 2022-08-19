@@ -5,6 +5,7 @@ import nodeFetch from 'node-fetch';
 
 const dashboardDist = path.join('dist', 'dashboard');
 const legacyDashboardDist = path.join('dist', 'public');
+const casaqueueDashboardDist = path.join('dist', 'casaqueue');
 
 const ENV_BRANCH = process.env.BRANCH !== 'master' ? 'develop' : 'main';
 
@@ -31,8 +32,24 @@ async function downloadAndUnpackDashboard(dashboardArtifact, distDir) {
 }
 
 (async () => {
-	// Download the dashboard app
-	await downloadAndUnpackDashboard(`https://nightly.link/casanet/dashboard-app/workflows/build/${ENV_BRANCH}/internal.zip`, dashboardDist);
-	// Download the legacy v3 front dashboard
-	await downloadAndUnpackDashboard(`https://nightly.link/casanet/frontend-v3/workflows/nodejs/${ENV_BRANCH}/internal.zip`, legacyDashboardDist);
+	try {
+		// Download the dashboard app
+		await downloadAndUnpackDashboard(`https://nightly.link/casanet/dashboard-app/workflows/build/${ENV_BRANCH}/internal.zip`, dashboardDist);
+	} catch (error) {
+		console.error(`[fetchDashboard] Fetching "dashboard-app" for branch "${process.env.BRANCH}" from dashboard "${ENV_BRANCH}" branch failed ${error.message}`);
+	}
+
+	try {
+		// Download the legacy v3 front dashboard
+		await downloadAndUnpackDashboard(`https://nightly.link/casanet/frontend-v3/workflows/nodejs/${ENV_BRANCH}/internal.zip`, legacyDashboardDist);
+	} catch (error) {
+		console.error(`[fetchDashboard] Fetching "frontend-v3" for branch "${process.env.BRANCH}" from dashboard "${ENV_BRANCH}" branch failed ${error.message}`);
+	}
+
+	try {
+		// Download the casa queue view
+		await downloadAndUnpackDashboard(`https://nightly.link/casanet/casaqueue-dashboard/workflows/build/${ENV_BRANCH}/internal.zip`, casaqueueDashboardDist);
+	} catch (error) {
+		console.error(`[fetchDashboard] Fetching "casaqueue-dashboard" for branch "${process.env.BRANCH}" from dashboard "${ENV_BRANCH}" branch failed ${error.message}`);
+	}
 })();
