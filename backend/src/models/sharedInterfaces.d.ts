@@ -511,6 +511,7 @@ export declare type MinionChangeTrigger =
 export declare interface MinionFeed {
 	event: FeedEvent;
 	minion: Minion;
+	oldMinion: Minion;
 	trigger?: MinionChangeTrigger;
 	user?: User;
 }
@@ -534,7 +535,11 @@ export declare type CalibrationMode =
 	 * Just make sure that casanet and the physical device have the same status
 	 * By sending the last casanet status to the device.
 	 */
-	| 'AUTO';
+	| 'AUTO'
+	/**
+	 * Allow modify a device only from the dashboard, and reject any attempt to modify status by changing status by physical action.
+	 */
+	| 'LOCK_DASHBOARD';
 
 /**
  * Used to change the minion calibration property value.
@@ -819,6 +824,10 @@ export declare interface Action {
 	actionId: string;
 	/** The minion where his status will trigger this action set */
 	minionId: string;
+	/** Whenever the action is active */
+	active: boolean;
+	/** Free text, as the action name */
+	name?: string;
 	/** The minion status that will trigger this action set */
 	ifStatus: MinionStatus;
 	/** The actions set to invoke in case of this action trigger */

@@ -20,6 +20,7 @@ import { Delay, sleep } from '../utilities/sleep';
 import { DevicesService, devicesService } from './devicesBl';
 import { SyncEvent } from 'ts-events';
 import { Duration } from 'unitsnet-js';
+import isequal = require('lodash.isequal');
 
 const DELAY_FOR_MINIONS_MISSING_DEVICE_SCAN = Duration.FromMinutes(2);
 
@@ -128,6 +129,7 @@ export class MinionsBl {
 			} as ErrorResponse;
 		}
 
+		const oldMinion = DeepCopy(minion);
 		minion.name = nameToSet;
 
 		try {
@@ -142,6 +144,7 @@ export class MinionsBl {
 		this.minionFeed.post({
 			event: 'update',
 			minion,
+			oldMinion,
 		});
 	}
 
@@ -158,6 +161,7 @@ export class MinionsBl {
 				message: 'minion not exist',
 			} as ErrorResponse;
 		}
+		const oldMinion = DeepCopy(minion);
 
 		minion.room = nameToSet;
 
@@ -173,6 +177,7 @@ export class MinionsBl {
 		this.minionFeed.post({
 			event: 'update',
 			minion,
+			oldMinion,
 		});
 	}
 
@@ -243,6 +248,8 @@ export class MinionsBl {
 			} as ErrorResponse;
 		}
 
+		const oldMinion = DeepCopy(minion);
+
 		/** Make sure the calibration lock are not ignored */
 		if (minion.calibration && minion.calibration.calibrationCycleMinutes) {
 			if (minionStatus[minion.minionType].status === 'on' && minion.calibration.calibrationMode === 'LOCK_OFF') {
@@ -270,6 +277,7 @@ export class MinionsBl {
 			this.minionFeed.post({
 				event: 'update',
 				minion,
+				oldMinion,
 			});
 			// Remove the minion as "setting mode"
 			this.settingStatusMode = '';
@@ -296,6 +304,7 @@ export class MinionsBl {
 		this.minionFeed.post({
 			event: 'update',
 			minion,
+			oldMinion,
 			trigger: minionSetTrigger,
 			user: userAction
 		});
@@ -313,6 +322,8 @@ export class MinionsBl {
 			} as ErrorResponse;
 		}
 
+		const oldMinion = DeepCopy(minion);
+
 		minion.minionAutoTurnOffMS = setAutoTurnOffMS;
 
 		/**
@@ -328,6 +339,7 @@ export class MinionsBl {
 		this.minionFeed.post({
 			event: 'update',
 			minion,
+			oldMinion
 		});
 	}
 
@@ -342,6 +354,7 @@ export class MinionsBl {
 				message: 'minion not exist',
 			} as ErrorResponse;
 		}
+		const oldMinion = DeepCopy(minion);
 
 		minion.calibration = minionCalibrate;
 
@@ -358,6 +371,7 @@ export class MinionsBl {
 			this.minionFeed.post({
 				event: 'update',
 				minion,
+				oldMinion,
 			});
 
 			// Change minion status only if the current is violated the new lock
@@ -462,6 +476,7 @@ export class MinionsBl {
 		this.minionFeed.post({
 			event: 'created',
 			minion,
+			oldMinion: minion,
 		});
 
 		/**
@@ -497,6 +512,7 @@ export class MinionsBl {
 		this.minionFeed.post({
 			event: 'removed',
 			minion: originalMinion,
+			oldMinion: originalMinion
 		});
 
 		// Finally clean module communication
@@ -693,8 +709,10 @@ export class MinionsBl {
 			return;
 		}
 
+		const oldMinion = DeepCopy(minion);
+
 		/** If there is no change from last minion status */
-		if (minion.isProperlyCommunicated && JSON.stringify(minion.minionStatus) === JSON.stringify(updateToStatus)) {
+		if (minion.isProperlyCommunicated && isequal(minion.minionStatus?.[minion.minionType], updateToStatus?.[minion.minionType])) {
 			return;
 		}
 
@@ -703,7 +721,8 @@ export class MinionsBl {
 		this.minionFeed.post({
 			event: 'update',
 			minion,
-			trigger: 'device'
+			oldMinion,
+			trigger: 'device',
 		});
 	}
 

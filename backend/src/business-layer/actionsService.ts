@@ -55,7 +55,13 @@ export class ActionsService {
 			return;
 		}
 
-		logger.info(`[ActionsService.applyAction] action ${action.actionId} triggered due to minion ${minion.minionId} status "${JSON.stringify(status)}" ..."`);
+		// If action is inactive, skip it
+		if (!action.active) {
+			logger.info(`[ActionsService.applyAction] action ${action.actionId}, "${action.name}" is inactive, skipping..."`);
+			return;
+		}
+
+		logger.info(`[ActionsService.applyAction] action ${action.actionId} "${action.name}" triggered due to minion ${minion.minionId} status "${JSON.stringify(status)}" ..."`);
 		// Apply the action 'then' part
 		await this.applyAction(action.thenSet);
 	}
@@ -108,6 +114,18 @@ export class ActionsService {
 	 * @param action The action to validate
 	 */
 	private async validateActionParams(action: Action) {
+
+		// Make sure the minion it self, is not in the trigger list...
+		if (action.thenSet.find(set => set.minionId === action.minionId)) {
+			logger.error(`[ActionsService.validateActionParams] Action is invalid, unable to set minion ${action.minionId} as trigger to it self`);
+			throw {
+				responseCode: 11405,
+				message: 'setting self minion status by action is invalid',
+			} as ErrorResponse;
+		}
+
+		// TODO: Make sure to abort circular action. (recursive walk...)
+		// TODO: Make sure to not set same status, trigger same device twice...
 
 		logger.info(`[ActionsService.validateActionParams] validating action..."`);
 
