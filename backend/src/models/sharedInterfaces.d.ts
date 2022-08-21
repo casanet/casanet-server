@@ -739,12 +739,7 @@ export declare interface Timing {
 	/**
 	 * Lock the status that changed by the timing (default false)
 	 */
-	lockStatus?: boolean;
-
-	/**
-	 * Set minion lock to be Shabbat mode  
-	 */
-	shabbatMode?: boolean;
+	setLock?: CalibrationMode;
 	/**
 	 * Override lock, if exists (default false)
 	 */

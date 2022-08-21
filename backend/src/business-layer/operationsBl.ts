@@ -69,8 +69,8 @@ export class OperationsBl {
 
 	/**
 	 * Validate activities. (minion and status to set).
- 	 * @param operationActivities activities array to validate.
- 	 */
+	   * @param operationActivities activities array to validate.
+	   */
 	private async validateNewOperationActivities(operationActivities: OperationActivity[]): Promise<ErrorResponse> {
 		for (const activity of operationActivities) {
 			const activityMinion = await this.minionsBl.getMinionById(activity.minionId);
@@ -138,24 +138,11 @@ export class OperationsBl {
 				}
 			}
 
-			// If need to set 'Sabbat' lock, set it.
-			if (options.shabbatMode) {
+			if (options.setLock) {
 				try {
 					await this.minionsBl.setMinionCalibrate(activity.minionId, {
-						calibrationCycleMinutes: Configuration.defaultLockCalibrationMinutes,
-						calibrationMode: 'SHABBAT',
-					});
-				} catch (error) {
-					logger.error(`[operation] Fail to set minion "${activity.minionId}" operation activity lock`);
-				}
-				// Else if need to set a 'lock', select the correct lock depend on the 'set status' value
-			} else if (options.lockStatus) {
-				try {
-					await this.minionsBl.setMinionCalibrate(activity.minionId, {
-						calibrationCycleMinutes: Configuration.defaultLockCalibrationMinutes,
-						calibrationMode: activity.minionStatus[minion.minionType].status === 'on'
-							? 'LOCK_ON'
-							: 'LOCK_OFF',
+						calibrationMode: options.setLock,
+						calibrationCycleMinutes: Configuration.defaultLockCalibrationMinutes
 					});
 				} catch (error) {
 					logger.error(`[operation] Fail to set minion "${activity.minionId}" operation activity lock`);

@@ -7,6 +7,7 @@ import {
   ErrorResponse,
   AirConditioning,
   MinionTypes,
+  CalibrationMode,
 } from './sharedInterfaces';
 
 declare global {
@@ -34,9 +35,8 @@ export declare type RunningMode = 'prod' | 'test' | 'debug';
 
 /** Set lock to timing/operation options */
 export declare interface SetLockOptions {
-  lockStatus?: boolean;
+  setLock?: CalibrationMode;
   overrideLock?: boolean;
-  shabbatMode?: boolean;
 }
 
 /** Config structure for all system */
