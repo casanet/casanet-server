@@ -71,6 +71,19 @@ export class ActionsController extends Controller {
   }
 
   /**
+   * Set action active mode
+   * @param actionId The action to set
+   * @param active The mode to set
+   */
+  @Security('userAuth')
+  @Security('adminAuth')
+  @Response<ErrorResponse>(501, 'Server error')
+  @Put('set-active/{actionId}')
+  public async setActionActive(actionId: string, @Query() active: boolean): Promise<void> {
+    return await actionsService.setActionActive(actionId, active);
+  }
+
+  /**
    * Delete action from the system.
    * @param actionId Action id.
    */

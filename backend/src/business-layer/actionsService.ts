@@ -5,6 +5,7 @@ import { MinionsBl, MinionsBlSingleton } from './minionsBl';
 import { Duration } from 'unitsnet-js';
 import isequal = require('lodash.isequal');
 import * as randomstring from 'randomstring';
+import { DeepCopy } from '../utilities/deepCopy';
 
 const ACTIONS_ACTIVATION = Duration.FromSeconds(1);
 
@@ -194,6 +195,13 @@ export class ActionsService {
 		await this.validateActionParams(action);
 		action.actionId = actionId;
 		return await this.actionsDal.updateAction(action);
+	}
+
+	public async setActionActive(actionId: string, active: boolean): Promise<void> {
+		const action = await this.getActionById(actionId);
+		const actionCopy = DeepCopy(action);
+		actionCopy.active = active;
+		return await this.actionsDal.updateAction(actionCopy);
 	}
 
 	/**
