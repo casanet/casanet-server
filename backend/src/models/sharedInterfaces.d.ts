@@ -61,6 +61,11 @@ export declare interface Login {
 	localServerId?: string;
 }
 
+export declare interface LoginResponse {
+	isRemote?: boolean;
+	localAddress?: string;
+}
+
 export declare interface LoginMfa {
 	email: string;
 	mfa: string;
