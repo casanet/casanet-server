@@ -85,7 +85,7 @@ export class CalibrateBl {
       }
 
       // Only if the update is violated the lock
-      if (legalStatus === minion.minionStatus[minion.minionType]?.status || 'on') {
+      if (legalStatus === (minion.minionStatus[minion.minionType]?.status || 'on')) {
         return;
       }
 
