@@ -6,7 +6,7 @@
         "scope": "adminAuth"
     },
     "timelineDaysLength": 15,
-    "defaultLockCalibrationMinutes" : 10,
+    "defaultLockCalibrationMinutes" : 1,
     "http": {
         "httpPort": 80,
         "httpsPort": 443,

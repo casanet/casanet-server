@@ -52,6 +52,20 @@ export class CalibrateBl {
         return;
       }
 
+      if (minionFeed.trigger === 'device' && minion?.calibration?.calibrationMode === 'LOCK_DASHBOARD') {
+
+        // Block any status change from the physical device
+        try {
+          logger.debug(`[CalibrateBl.calibrateMinion] Minion "${minion.minionId}" is locked for physical changes status "${JSON.stringify(minionFeed.oldMinion.minionStatus)}" ...`);
+          await Delay(moment.duration(1, 'seconds'));
+          await this.minionsBl.setMinionStatus(minion.minionId, minionFeed.oldMinion.minionStatus, 'lock');
+          logger.debug(`[CalibrateBl.calibrateMinion] Undo minion ${minion.minionId} physical changes successfully done`);
+        } catch (error) {
+          logger.warn(`[CalibrateBl.calibrateMinion] Calibrate minion ${minion.minionId} fail, ${JSON.stringify(error)}`);
+        }
+        return;
+      }
+
       // Calibrate only in case the update are violated the lock.
 
       let legalStatus: SwitchOptions = 'on';
@@ -71,7 +85,7 @@ export class CalibrateBl {
       }
 
       // Only if the update is violated the lock
-      if (legalStatus === minion.minionStatus[minion.minionType]?.status || 'on') {
+      if (legalStatus === (minion.minionStatus[minion.minionType]?.status || 'on')) {
         return;
       }
 

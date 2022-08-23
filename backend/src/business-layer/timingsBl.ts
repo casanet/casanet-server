@@ -113,15 +113,15 @@ export class TimingsBl {
 	private async activeTiming(timing: Timing): Promise<void> {
 		logger.info(`[activeTiming] Invoke ${timing.timingName} id: ${timing.timingId} timing starting...`);
 
-		const { overrideLock, lockStatus, shabbatMode } = timing;
+		const { overrideLock, setLock } = timing;
 		try {
 			let results: OperationResult[];
 			if (timing.triggerDirectAction) {
 				logger.info(`[activeTiming] Invoking id: ${timing.timingId} as trigger by direct action for minion "${timing.triggerDirectAction.minionId}" ...`);
-				results = await this.operationBl.triggerOperationActivities([timing.triggerDirectAction], { overrideLock, lockStatus, shabbatMode });
+				results = await this.operationBl.triggerOperationActivities([timing.triggerDirectAction], { overrideLock, setLock });
 			} else {
 				logger.info(`[activeTiming] Invoking id: ${timing.timingId} as trigger by operation id ...`);
-				results = await this.operationBl.triggerOperationById(timing.triggerOperationId, { overrideLock, lockStatus, shabbatMode });
+				results = await this.operationBl.triggerOperationById(timing.triggerOperationId, { overrideLock, setLock });
 			}
 			logger.info(`[activeTiming] Invoke ${timing.timingName} id: ${timing.timingId} timing done`);
 

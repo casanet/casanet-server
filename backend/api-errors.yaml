@@ -27,6 +27,7 @@
 - { 8405 : 'action status not contained triggered minion status type'}
 - { 9405 : 'action set item status not contained target minion status type'}
 - { 10405 : 'action wrong schema'}
+- { 11405: 'setting self minion status by action is invalid'}
 
 - { 1409 : 'there is no supported model for brand + model'}
 - { 2409 : 'token is required'}

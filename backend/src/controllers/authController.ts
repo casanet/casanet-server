@@ -19,9 +19,10 @@ import { AuthBlSingleton, sessionExpiresMs } from '../business-layer/authBl';
 import { SessionsBlSingleton } from '../business-layer/sessionsBl';
 import { UsersBlSingleton } from '../business-layer/usersBl';
 import { Configuration } from '../config';
-import { ErrorResponse, Login, LoginMfa, User } from '../models/sharedInterfaces';
+import { ErrorResponse, Login, LoginMfa, LoginResponse, User } from '../models/sharedInterfaces';
 import { AUTHENTICATION_HEADER, SESSION_COOKIE_NAME } from '../security/authentication';
 import { LoginMfaSchema, LoginSchema, RequestSchemaValidator, SchemaValidator } from '../security/schemaValidator';
+import * as ip from 'ip';
 
 
 @Tags('Authentication')
@@ -61,13 +62,16 @@ export class AuthController extends Controller {
 			if (loginResults.key && loginResults.success && !loginResults.requireMfa) {
 				this.activeSession(loginResults.key);
 				this.setStatus(200);
-				return;
+				return {
+					isRemote: false,
+					localAddress: ip.address()
+				} as LoginResponse as unknown as void;;
 			}
 
 			if (loginResults.success && loginResults.requireMfa) {
 				/** Mark status to 201, means, the login is OK but needs extra, MFA. */
 				this.setStatus(201);
-				return;
+				return {} as LoginResponse as unknown as void;;
 			}
 
 			if (loginResults.error) {
@@ -77,10 +81,10 @@ export class AuthController extends Controller {
 
 		} catch (error) {
 			this.setStatus(403);
-			return error?.responseCode && { responseCode: error.responseCode}  as unknown as void;;
+			return error?.responseCode && { responseCode: error.responseCode } as unknown as void;
 		}
 		this.setStatus(501);
-		return;
+		return {} as LoginResponse as unknown as void;;
 	}
 
 	/**
@@ -96,7 +100,7 @@ export class AuthController extends Controller {
 			loginData = await SchemaValidator(login, LoginMfaSchema);
 		} catch {
 			this.setStatus(422);
-			return;
+			return {} as LoginResponse as unknown as void;
 		}
 
 		try {
@@ -105,12 +109,15 @@ export class AuthController extends Controller {
 			if (loginResults.success) {
 				this.activeSession(loginResults.key);
 				this.setStatus(200);
-				return;
+				return {
+					isRemote: false,
+					localAddress: ip.address()
+				} as LoginResponse as unknown as void;;
 			}
 
 			if (loginResults.error) {
 				this.setStatus(403);
-				return loginResults?.error?.responseCode && { responseCode: loginResults.error.responseCode} as unknown as void;
+				return loginResults?.error?.responseCode && { responseCode: loginResults.error.responseCode } as unknown as void;
 			}
 
 		} catch (error) {
@@ -118,7 +125,7 @@ export class AuthController extends Controller {
 			return (error?.responseCode && { responseCode: error.responseCode }) as unknown as void;
 		}
 		this.setStatus(501);
-		return;
+		return {} as LoginResponse as unknown as void;
 	}
 
 
