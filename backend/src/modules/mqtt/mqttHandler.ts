@@ -1,7 +1,9 @@
 import * as mqttapi from 'async-mqtt';
+import { Duration } from 'unitsnet-js';
 import { CommandsSet } from '../../models/backendInterfaces';
 import { DeviceKind, ErrorResponse, Minion, MinionStatus } from '../../models/sharedInterfaces';
 import { logger } from '../../utilities/logger';
+import { sleep } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 import { CasanetMqttDriver } from './mqtt-drivers/casanetMqttDriver';
 import { MqttBaseDriver } from './mqtt-drivers/mqttBaseDriver';
@@ -104,6 +106,8 @@ export class MqttHandler extends BrandModuleBase {
   private brokerUri: string;
 
   private mqttDrivers: MqttBaseDriver[] = [];
+  // Map drivers by brand name
+  private mqttDriversMap: { [key in string]: MqttBaseDriver } = {};
 
   constructor() {
     super();
@@ -111,15 +115,14 @@ export class MqttHandler extends BrandModuleBase {
   }
 
   public async getStatus(minion: Minion): Promise<MinionStatus | ErrorResponse> {
-    for (const mqttDriver of this.mqttDrivers) {
-      const messages = mqttDriver.convertRequestStateMessage(minion);
-      for (const message of messages) {
-        await this.mqttClient.publish(message.topic, message.data);
-      }
-      const status = await mqttDriver.getStatus(minion);
-      if (status) {
-        return status;
-      }
+    const mqttDriver = this.mqttDriversMap[minion.device.brand] || this.mqttDriversMap['mqtt-casanet'];
+    const messages = mqttDriver.convertRequestStateMessage(minion);
+    for (const message of messages) {
+      await this.mqttClient.publish(message.topic, message.data);
+    }
+    const status = await mqttDriver.getStatus(minion);
+    if (status) {
+      return status;
     }
     /** Current mustily there is no option to 'ask' and wait for response, only to send request and the update will arrive by status topic. */
     return minion.minionStatus;
@@ -127,10 +130,13 @@ export class MqttHandler extends BrandModuleBase {
 
   public async setStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
     /** Publish set status topic */
-    for (const mqttDriver of this.mqttDrivers) {
-      const messages = mqttDriver.convertSetStatusMessage(minion, setStatus);
-      for (const message of messages) {
-        await this.mqttClient.publish(message.topic, message.data);
+    const mqttDriver = this.mqttDriversMap[minion.device.brand] || this.mqttDriversMap['mqtt-casanet'];
+    const messages = mqttDriver.convertSetStatusMessage(minion, setStatus);
+    for (const message of messages) {
+      await this.mqttClient.publish(message.topic, message.data);
+      // If there is several topics to sent to set the correct status, give grace of half-seconds between
+      if (messages.length > 1) {
+        await sleep(Duration.FromSeconds(0.5));
       }
     }
   }
@@ -161,6 +167,8 @@ export class MqttHandler extends BrandModuleBase {
    * Load all mqtt converters
    */
   private async loadMqttDrivers() {
+    this.mqttDrivers = [];
+
     ///////////////////////////////////////////
     ////////// HERE LOAD THE DERIVER //////////
     ///////////////////////////////////////////
@@ -171,7 +179,8 @@ export class MqttHandler extends BrandModuleBase {
     /** Init converters */
     for (const mqttDriver of this.mqttDrivers) {
       this.devices.push(...mqttDriver.devices);
-      this.brandName.push(...mqttDriver.brandName);
+      this.brandName.push(mqttDriver.brandName);
+      this.mqttDriversMap[mqttDriver.brandName] = mqttDriver;
     }
   }
 
@@ -208,10 +217,27 @@ export class MqttHandler extends BrandModuleBase {
     this.mqttClient = mqttapi.connect(this.brokerUri);
 
     this.mqttClient.on('connect', async () => {
+      logger.info(`[MqttHandler.offline] MQTT broker is connect`);
       /** Subscribe to topic all of drivers */
       for (const mqttDriver of this.mqttDrivers) {
         await this.mqttClient.subscribe(mqttDriver.deviceTopics);
       }
+    });
+
+    this.mqttClient.on('offline', async () => {
+      logger.warn(`[MqttHandler.offline] MQTT broker is offline`);
+    });
+
+    this.mqttClient.on('disconnect', async () => {
+      logger.warn(`[MqttHandler.offline] MQTT broker is disconnect`);
+    });
+
+    this.mqttClient.on('end', async () => {
+      logger.warn(`[MqttHandler.offline] MQTT broker is end`);
+    });
+
+    this.mqttClient.on('error', async () => {
+      logger.warn(`[MqttHandler.offline] MQTT broker is error`);
     });
 
     this.mqttClient.on('message', async (topic: string, payload: Buffer) => {
@@ -229,7 +255,11 @@ export class MqttHandler extends BrandModuleBase {
 
         const parsedMqttMessage = await mqttDriver.convertMqttMessage(topic, messageData);
 
-        
+        if (!parsedMqttMessage) {
+          logger.info(`[MqttHandler.onMessage] "${topic}" is not a ${mqttDriver.brandName} status message`);
+          return;
+        }
+
 
         if (!parsedMqttMessage.minion) {
           logger.warn(`[MqttHandler.onMessage] Fail to update minion status from MQTT message, minion/device not exist`);

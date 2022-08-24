@@ -26,7 +26,7 @@ export abstract class MqttBaseDriver {
   /**
    * Brand name, should be unique in system with format as `mqtt-XXXX`.
    */
-  public abstract readonly brandName: string[];
+  public abstract readonly brandName: string;
 
   /**
    * All supported devices via current driver metadata.
