@@ -7,7 +7,8 @@ import isequal = require('lodash.isequal');
 import * as randomstring from 'randomstring';
 import { DeepCopy } from '../utilities/deepCopy';
 
-const ACTIONS_ACTIVATION = Duration.FromSeconds(1);
+// Validate actions period
+const ACTIONS_ACTIVATION = Duration.FromSeconds(60);
 
 export class ActionsService {
 
@@ -35,7 +36,7 @@ export class ActionsService {
 
 		// Check all action force set
 		for (const action of permanentActions) {
-			await this.detectActionTrigger(action);
+			await this.detectActionTrigger(action, false);
 		}
 
 	}
@@ -43,8 +44,9 @@ export class ActionsService {
 	/**
 	 * Detect if action need to be triggered
 	 * @param action The action to detect 
+	 * @param forceSet Set the action's status even if it's the current status 
 	 */
-	private async detectActionTrigger(action: Action) {
+	private async detectActionTrigger(action: Action, forceSet: boolean) {
 		// Get the minion of this action trigger, along with his status...
 		const minion = await this.minionsService.getMinionById(action.minionId);
 		// Get the minion trigger status
@@ -64,7 +66,7 @@ export class ActionsService {
 
 		logger.info(`[ActionsService.applyAction] action ${action.actionId} "${action.name}" triggered due to minion ${minion.minionId} status "${JSON.stringify(status)}" ..."`);
 		// Apply the action 'then' part
-		await this.applyAction(action.thenSet);
+		await this.applyAction(action.thenSet, forceSet);
 	}
 
 	/**
@@ -92,18 +94,29 @@ export class ActionsService {
 		// Detect all of them if need to be triggered
 		for (const minionAction of minionActions) {
 			logger.info(`[ActionsService.triggerMinionStatusChangedActions] Triggering minion ${minion.minionId} action ${minionAction.actionId}..."`);
-			await this.detectActionTrigger(minionAction);
+			await this.detectActionTrigger(minionAction, true);
 		}
 		logger.info(`[ActionsService.triggerMinionStatusChangedActions] Triggering minion ${minion.minionId} actions done"`);
+
+		await this.forceActionsActions()
 	}
 
 	/**
 	 * Apply action set
 	 * @param actionsAct The set to invoke 
+	 * @param forceSet Set the action's status even if it's the current status 
 	 */
-	private async applyAction(actionsAct: ActionSet[]) {
+	private async applyAction(actionsAct: ActionSet[], forceSet: boolean) {
 		logger.info(`[ActionsService.applyAction] applying action set ..."`);
 		for (const actionAct of actionsAct) {
+			// If not marked to force status, just then get minion status to compare with
+			if (!forceSet) {
+				const minion = await this.minionsService.getMinionById(actionAct.minionId);
+				if (isequal(actionAct.setStatus, minion.minionStatus)) {
+					// If it's the same, continue to the next action act
+					continue;
+				}
+			}
 			logger.info(`[ActionsService.applyAction] applying action set for ${actionAct.minionId}... "`);
 			await this.minionsService.setMinionStatus(actionAct.minionId, actionAct.setStatus, 'action');
 		}
@@ -194,6 +207,7 @@ export class ActionsService {
 	public async setAction(actionId: string, action: Action): Promise<void> {
 		await this.validateActionParams(action);
 		action.actionId = actionId;
+		this.forceActionsActions();
 		return await this.actionsDal.updateAction(action);
 	}
 
@@ -201,6 +215,7 @@ export class ActionsService {
 		const action = await this.getActionById(actionId);
 		const actionCopy = DeepCopy(action);
 		actionCopy.active = active;
+		this.forceActionsActions();
 		return await this.actionsDal.updateAction(actionCopy);
 	}
 
@@ -216,6 +231,7 @@ export class ActionsService {
 		 */
 		action.actionId = randomstring.generate(6);
 		await this.actionsDal.createAction(action);
+		this.forceActionsActions();
 		return action;
 	}
 

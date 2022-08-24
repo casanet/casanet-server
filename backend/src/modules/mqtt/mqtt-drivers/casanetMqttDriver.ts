@@ -3,7 +3,7 @@ import { MqttBaseDriver, MqttMessage, ParsedMqttMessage } from './mqttBaseDriver
 
 export class CasanetMqttDriver extends MqttBaseDriver {
 
-  public readonly brandName: string[] = [];
+  public readonly brandName: string = 'mqtt-casanet';
 
   public devices: DeviceKind[] = [];
 

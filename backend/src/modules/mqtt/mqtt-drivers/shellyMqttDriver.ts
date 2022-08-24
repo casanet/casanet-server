@@ -2,11 +2,11 @@ import { DeviceKind, Minion, MinionStatus, SwitchOptions } from '../../../models
 import { MqttBaseDriver, MqttMessage, ParsedMqttMessage } from './mqttBaseDriver';
 
 export class ShellyMqttDriver extends MqttBaseDriver {
-  
-  public readonly brandName: string[] = ['mqtt-shelly'];
+
+  public readonly brandName: string = 'mqtt-shelly';
 
   public devices: DeviceKind[] = [{
-    brand: this.brandName[0],
+    brand: this.brandName,
     isFetchCommandsAvailable: false,
     isIdRequired: true,
     isRecordingSupported: false,
@@ -15,7 +15,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     model: 'MP1',
     supportedMinionType: 'switch'
   }, {
-    brand: this.brandName[0],
+    brand: this.brandName,
     isFetchCommandsAvailable: false,
     isIdRequired: true,
     isRecordingSupported: false,
@@ -24,7 +24,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     model: 'MP1 with sensor extension - switch',
     supportedMinionType: 'switch'
   }, {
-    brand: this.brandName[0],
+    brand: this.brandName,
     isFetchCommandsAvailable: false,
     isIdRequired: true,
     isRecordingSupported: false,
@@ -33,7 +33,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     model: 'MP1 with sensor extension - the first',
     supportedMinionType: 'temperatureSensor'
   }, {
-    brand: this.brandName[0],
+    brand: this.brandName,
     isFetchCommandsAvailable: false,
     isIdRequired: true,
     isRecordingSupported: false,
@@ -42,7 +42,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     model: 'MP1 with sensor extension - the second',
     supportedMinionType: 'temperatureSensor'
   }, {
-    brand: this.brandName[0],
+    brand: this.brandName,
     isFetchCommandsAvailable: false,
     isIdRequired: true,
     isRecordingSupported: false,
@@ -51,7 +51,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     model: 'MP1 with sensor extension - the third',
     supportedMinionType: 'temperatureSensor'
   }, {
-    brand: this.brandName[0],
+    brand: this.brandName,
     isFetchCommandsAvailable: false,
     isIdRequired: true,
     isRecordingSupported: false,
@@ -60,7 +60,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     model: 'Duo - RGBW',
     supportedMinionType: 'colorLight'
   }, {
-    brand: this.brandName[0],
+    brand: this.brandName,
     isFetchCommandsAvailable: false,
     isIdRequired: true,
     isRecordingSupported: false,
@@ -101,15 +101,15 @@ export class ShellyMqttDriver extends MqttBaseDriver {
       topic = 'color';
       data = JSON.stringify({
         "mode": "color",    /* "color" or "white" */
-        "red": colorLight.red,           /* red brightness, 0..255, applies in mode="color" */
-        "green": colorLight.green,         /* green brightness, 0..255, applies in mode="color" */
-        "blue": colorLight.blue,        /* blue brightness, 0..255, applies in mode="color" */
-        "gain": colorLight.brightness,        /* gain for all channels, 0..100, applies in mode="color" */
-        "brightness": colorLight.brightness,  /* brightness, 0..100, applies in mode="white" */
-        "white": colorLight.temperature,         /* white brightness, 0..255, applies in mode="color" */
+        "red": colorLight.red || 1,           /* red brightness, 0..255, applies in mode="color" */
+        "green": colorLight.green || 1,         /* green brightness, 0..255, applies in mode="color" */
+        "blue": colorLight.blue || 1,        /* blue brightness, 0..255, applies in mode="color" */
+        "gain": colorLight.brightness || 1,        /* gain for all channels, 0..100, applies in mode="color" */
+        "brightness": colorLight.brightness || 1,  /* brightness, 0..100, applies in mode="white" */
+        "white": colorLight.temperature || 1,         /* white brightness, 0..255, applies in mode="color" */
         "temp": 4750,       /* color temperature in K, 3000..6500, applies in mode="white" */
         "effect": 0,        /* applies an effect when set */
-        "turn": colorLight.status,       /* "on", "off" or "toggle" */
+        "turn": colorLight.status || 'off',       /* "on", "off" or "toggle" */
         "transition": 500   /* One-shot transition, `0..5000` [ms] */
       });
     }
@@ -123,7 +123,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
   public async getStatus(minion: Minion): Promise<MinionStatus> {
 
     // For temperature sensor, set hard-coded to be always on
-    if (minion.device.brand === this.brandName[0] && minion.minionType === 'temperatureSensor') {
+    if (minion.device.brand === this.brandName && minion.minionType === 'temperatureSensor') {
       return {
         temperatureSensor: {
           status: 'on',
@@ -151,7 +151,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     const minions = await this.retrieveMinions.pull();
 
     if (deviceType === 'relay') {  // case of smart switch as MP1
-      minion = minions.find(m => m?.device?.deviceId === deviceId && m?.device?.brand === this.brandName[0] && m?.device?.model === 'MP1');
+      minion = minions.find(m => m?.device?.deviceId === deviceId && m?.device?.brand === this.brandName && m?.device?.model === 'MP1');
       minionStatus = {
         switch: {
           status: data.toLowerCase() as SwitchOptions,
@@ -198,7 +198,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
         default:
           break;
       }
-      minion = minions.find(m => m?.device?.deviceId === deviceId && m?.device?.brand === this.brandName[0] && m?.device?.model === `MP1 with sensor extension - the ${modelExt}`);
+      minion = minions.find(m => m?.device?.deviceId === deviceId && m?.device?.brand === this.brandName && m?.device?.model === `MP1 with sensor extension - the ${modelExt}`);
       const temperature = JSON.parse(data.split(':')[1]);
       minionStatus = {
         temperatureSensor: {

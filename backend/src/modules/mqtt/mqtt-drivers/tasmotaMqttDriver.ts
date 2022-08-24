@@ -1,15 +1,12 @@
 import { DeviceKind, Minion, MinionStatus, SwitchOptions } from '../../../models/sharedInterfaces';
 import { MqttBaseDriver, MqttMessage, ParsedMqttMessage } from './mqttBaseDriver';
-import { 
-  normalizeFromPercents, 
-} from 'percent-normalizer';
 
 export class TasmotaMqttDriver extends MqttBaseDriver {
 
-  public readonly brandName: string[] = ['mqtt-tasmota'];
+  public readonly brandName: string = 'mqtt-tasmota';
 
   public devices: DeviceKind[] = [{
-    brand: this.brandName[0],
+    brand: this.brandName,
     isFetchCommandsAvailable: false,
     isIdRequired: true,
     isRecordingSupported: false,
@@ -18,7 +15,7 @@ export class TasmotaMqttDriver extends MqttBaseDriver {
     model: 'switch',
     supportedMinionType: 'switch'
   }, {
-    brand: this.brandName[0],
+    brand: this.brandName,
     isFetchCommandsAvailable: false,
     isIdRequired: true,
     isRecordingSupported: false,
@@ -47,26 +44,27 @@ export class TasmotaMqttDriver extends MqttBaseDriver {
 
     if (minion.minionType === 'colorLight' && setStatus?.colorLight?.status === 'on') {
       const setLight = setStatus.colorLight;
+      const originalLight = minion?.minionStatus?.colorLight;
 
-      // If brightness changes, calculate the the new RGB to set.
       // Since tasmota calculates brightness on RGB mode, from the RGB values.
-      if (setLight.brightness !== minion.minionStatus.colorLight.brightness) {
-        const brightnessDiff = (setLight.brightness ?? 100) - (minion.minionStatus.colorLight.brightness ?? 100);
-        const normalizedToRGBBrightnessDiff = normalizeFromPercents({
-          value: brightnessDiff,
-          topRangeBorder: 255,
-          bottomRangeBorder: 1
-        });
-        // Adjust as the diff, with min 0 max 255.
-        setLight.red = Math.round(Math.max(Math.min(setLight.red + normalizedToRGBBrightnessDiff, 255), 0));
-        setLight.green = Math.round(Math.max(Math.min(setLight.green + normalizedToRGBBrightnessDiff, 255), 0));
-        setLight.blue = Math.round(Math.max(Math.min(setLight.blue + normalizedToRGBBrightnessDiff, 255), 0));
-      }
 
-      baseMqttMessage.push({
-        topic: `cmnd/${minion?.device?.deviceId || 'unknown'}/Color`,
-        data: `${(setLight.red).toString(16).padStart(2, '0')}${(setLight.green).toString(16).padStart(2, '0')}${(setLight.blue).toString(16).padStart(2, '0')}`
-      });
+      // If RGB has been changes, add topic to to that
+      if (setLight.red !== originalLight?.red
+        || setLight.green !== originalLight?.green
+        || setLight.blue !== originalLight?.blue) {
+        baseMqttMessage.push({
+          topic: `cmnd/${minion?.device?.deviceId || 'unknown'}/Color`,
+          data: `${(setLight.red).toString(16).padStart(2, '0')}${(setLight.green).toString(16).padStart(2, '0')}${(setLight.blue).toString(16).padStart(2, '0')}`
+        });
+      }
+      // If brightness has been changes, add topic to to that
+      if (setLight.brightness !== originalLight?.brightness) {
+
+        baseMqttMessage.push({
+          topic: `cmnd/${minion?.device?.deviceId || 'unknown'}/Dimmer`,
+          data: `${setLight.brightness || 1}`
+        });
+      }
     }
     return baseMqttMessage
   }
