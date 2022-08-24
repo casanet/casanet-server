@@ -2,7 +2,7 @@ import { DeviceKind, Minion, MinionStatus, SwitchOptions } from '../../../models
 import { MqttBaseDriver, MqttMessage, ParsedMqttMessage } from './mqttBaseDriver';
 
 export class ShellyMqttDriver extends MqttBaseDriver {
-  
+
   public readonly brandName: string[] = ['mqtt-shelly'];
 
   public devices: DeviceKind[] = [{
@@ -101,15 +101,15 @@ export class ShellyMqttDriver extends MqttBaseDriver {
       topic = 'color';
       data = JSON.stringify({
         "mode": "color",    /* "color" or "white" */
-        "red": colorLight.red,           /* red brightness, 0..255, applies in mode="color" */
-        "green": colorLight.green,         /* green brightness, 0..255, applies in mode="color" */
-        "blue": colorLight.blue,        /* blue brightness, 0..255, applies in mode="color" */
-        "gain": colorLight.brightness,        /* gain for all channels, 0..100, applies in mode="color" */
-        "brightness": colorLight.brightness,  /* brightness, 0..100, applies in mode="white" */
-        "white": colorLight.temperature,         /* white brightness, 0..255, applies in mode="color" */
+        "red": colorLight.red || 1,           /* red brightness, 0..255, applies in mode="color" */
+        "green": colorLight.green || 1,         /* green brightness, 0..255, applies in mode="color" */
+        "blue": colorLight.blue || 1,        /* blue brightness, 0..255, applies in mode="color" */
+        "gain": colorLight.brightness || 1,        /* gain for all channels, 0..100, applies in mode="color" */
+        "brightness": colorLight.brightness || 1,  /* brightness, 0..100, applies in mode="white" */
+        "white": colorLight.temperature || 1,         /* white brightness, 0..255, applies in mode="color" */
         "temp": 4750,       /* color temperature in K, 3000..6500, applies in mode="white" */
         "effect": 0,        /* applies an effect when set */
-        "turn": colorLight.status,       /* "on", "off" or "toggle" */
+        "turn": colorLight.status || 'off',       /* "on", "off" or "toggle" */
         "transition": 500   /* One-shot transition, `0..5000` [ms] */
       });
     }
