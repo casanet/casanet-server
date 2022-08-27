@@ -20,6 +20,7 @@ import { TasmotaHandler } from './tasmota/tasmotaHandler';
 import { TuyaHandler } from './tuya/tuyaHandler';
 import { YeelightHandler } from './yeelight/yeelightHandler';
 import { logger } from '../utilities/logger';
+import { DeepCopy } from '../utilities/deepCopy';
 
 export class ModulesManager {
   /**
@@ -124,7 +125,7 @@ export class ModulesManager {
     try {
       logger.debug(`[ModulesManager.setStatus] setting minion "${minion.minionId}" status "${JSON.stringify(setStatus)}" using "${minionModule.brandName}" module ...`);
       await withTimeout(
-        minionModule.setStatus(minion, setStatus),
+        minionModule.setStatus(minion,  DeepCopy(setStatus)), // Clone object, to make sure no drivers changing it to all 
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
       logger.debug(`[ModulesManager.setStatus] setting minion "${minion.minionId}" status succeed`);

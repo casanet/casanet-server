@@ -14,7 +14,7 @@ export class RfBl {
   constructor(private minionsBl: MinionsBl, private modulesManager: ModulesManager) {}
 
   /**
-   * Get all aupported devices in commands repo.
+   * Get all supported devices in commands repo.
    * @returns supported devices collection.
    */
   public async getAvailableDevicesToFetch(): Promise<CommandsRepoDevice[]> {
