@@ -75,6 +75,9 @@ export class ShellyMqttDriver extends MqttBaseDriver {
         [minion.minionType]: { ...minion.minionStatus[minion.minionType], status: status }
       }
     });
+
+    res.writeHead(200);
+    res.end('DONE');
   }
 
   public devices: DeviceKind[] = [{
