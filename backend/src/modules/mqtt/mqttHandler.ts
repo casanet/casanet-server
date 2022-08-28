@@ -172,9 +172,9 @@ export class MqttHandler extends BrandModuleBase {
     ///////////////////////////////////////////
     ////////// HERE LOAD THE DERIVER //////////
     ///////////////////////////////////////////
-    this.mqttDrivers.push(new CasanetMqttDriver(this.deviceStatusChangedEvent, this.retrieveMinions));
-    this.mqttDrivers.push(new ShellyMqttDriver(this.deviceStatusChangedEvent, this.retrieveMinions));
-    this.mqttDrivers.push(new TasmotaMqttDriver(this.deviceStatusChangedEvent, this.retrieveMinions));
+    this.mqttDrivers.push(new CasanetMqttDriver(this.deviceStatusChangedEvent, this.retrieveMinions, this.minionStatusChangedEvent));
+    this.mqttDrivers.push(new ShellyMqttDriver(this.deviceStatusChangedEvent, this.retrieveMinions, this.minionStatusChangedEvent));
+    this.mqttDrivers.push(new TasmotaMqttDriver(this.deviceStatusChangedEvent, this.retrieveMinions, this.minionStatusChangedEvent));
 
     /** Init converters */
     for (const mqttDriver of this.mqttDrivers) {
