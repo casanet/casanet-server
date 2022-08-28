@@ -78,6 +78,11 @@ export declare interface DeviceStatus {
 	 * The battery power, if relevant, in %.
 	 */
 	battery?: number;
+
+	/**
+	 * Is the device in charging mode
+	 */
+	charging?: boolean;
 }
 
 /**
