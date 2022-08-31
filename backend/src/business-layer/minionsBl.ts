@@ -23,6 +23,7 @@ import { Duration } from 'unitsnet-js';
 import isequal = require('lodash.isequal');
 
 const DELAY_FOR_MINIONS_MISSING_DEVICE_SCAN = Duration.FromMinutes(2);
+const MAX_SCAN_ATTEMPT_ON_INIT = 15;
 
 export class MinionsBl {
 	/**
@@ -186,7 +187,7 @@ export class MinionsBl {
 	 * @param minionId minion id.
 	 * @param macToSet The device to change it to
 	 */
-	 public async replaceNetworkDevice(minionId: string, macToSet: string): Promise<void> {
+	public async replaceNetworkDevice(minionId: string, macToSet: string): Promise<void> {
 		const minion = this.findMinion(minionId);
 
 		if (!minion) {
@@ -207,7 +208,7 @@ export class MinionsBl {
 				message: 'device not exist in lan network',
 			} as ErrorResponse;
 		}
-	
+
 		minionCopy.device.pysicalDevice = deviceToSet;
 		const error = this.validateMinionDevice(minion);
 		if (error) {
@@ -595,7 +596,16 @@ export class MinionsBl {
 	 * @returns 
 	 */
 	private async scanMissingDevices() {
+		let attempts = 0;
 		while (true) {
+
+			if (attempts > MAX_SCAN_ATTEMPT_ON_INIT) {
+				logger.warn(`[MinionsBl.scanMissingDevices] Too many attempts to scan on init, aborting`);
+				return;
+			}
+			attempts++;
+			logger.info(`[MinionsBl.scanMissingDevices] Starting the ${attempts}'s attempt to scan on start`);
+
 			// Sleep for a while
 			await sleep(DELAY_FOR_MINIONS_MISSING_DEVICE_SCAN);
 			// Get all minion without a valid IP discovered during initialization.
