@@ -1,9 +1,84 @@
-import { DeviceKind, Minion, MinionStatus, SwitchOptions } from '../../../models/sharedInterfaces';
+import { DeviceKind, DeviceStatus, Minion, MinionStatus, SwitchOptions } from '../../../models/sharedInterfaces';
 import { MqttBaseDriver, MqttMessage, ParsedMqttMessage } from './mqttBaseDriver';
+import * as http from 'http';
+import { SyncEvent } from 'ts-events';
+import { PullBehavior } from 'pull-behavior';
+import { logger } from '../../../utilities/logger';
 
+const { SHELLY_ACTIONS_PORT } = process.env;
 export class ShellyMqttDriver extends MqttBaseDriver {
 
   public readonly brandName: string = 'mqtt-shelly';
+
+  constructor(deviceFeed: SyncEvent<{
+    deviceId: string;
+    status: DeviceStatus;
+  }>, retrieveMinions: PullBehavior<Minion[]>, minionStatusChangedEvent: SyncEvent<{
+    minionId: string;
+    status: MinionStatus;
+  }>) {
+    super(deviceFeed, retrieveMinions, minionStatusChangedEvent);
+
+    if (!SHELLY_ACTIONS_PORT) {
+      logger.info(`[ShellyMqttDriver] No SHELLY_ACTIONS_PORT provided`);
+      return;
+    }
+    const server = http.createServer(async (...arg) => {
+      try {
+        await this.actionsListener(...arg);
+      } catch (error) {
+        logger.warn(`[ShellyMqttDriver] Handing shelly action failed ${error?.message}`);
+      }
+    });
+    server.listen(+SHELLY_ACTIONS_PORT, () => {
+      logger.info(`[ShellyMqttDriver] Server is running on http://0.0.0.0:${SHELLY_ACTIONS_PORT}`);
+    });
+  }
+
+  private async actionsListener(req, res) {
+    const urlParts = req?.url?.split?.('/') || [];
+
+    if (urlParts.length < 3) {
+      const msg = `Unknown url ${req?.url} params`;
+      logger.warn(`[ShellyMqttDriver.actionsListener] ${msg}`)
+      res.writeHead(404);
+      res.end(msg);
+      return;
+    }
+
+    const [space, deviceId, status] = urlParts;
+
+    if (!deviceId || !['on', 'off'].includes(status)) {
+      const msg = `Invalid url ${req.url} params`;
+      logger.warn(`[ShellyMqttDriver.actionsListener] ${msg}`)
+      res.writeHead(422);
+      res.end(msg);
+      return;
+    }
+
+    const minions = await this.retrieveMinions.pull();
+    const minion = minions.find(m => m.device.deviceId === deviceId);
+
+    if (!minion) {
+      const msg = `Unknown device url ${deviceId}`;
+      logger.warn(`[ShellyMqttDriver.actionsListener] ${msg}`)
+      res.writeHead(503);
+      res.end(msg);
+      return;
+    }
+
+    logger.info(`[ShellyMqttDriver.actionsListener] minion ${minion.minionId} ${minion.name} status update via Shelly actions to ${status}`)
+
+    this.minionStatusChangedEvent.post({
+      minionId: minion.minionId,
+      status: {
+        [minion.minionType]: { ...minion.minionStatus[minion.minionType], status: status }
+      }
+    });
+
+    res.writeHead(200);
+    res.end('DONE');
+  }
 
   public devices: DeviceKind[] = [{
     brand: this.brandName,
@@ -75,6 +150,7 @@ export class ShellyMqttDriver extends MqttBaseDriver {
     'shellies/+/color/0/status', // Blob light updates
     'shellies/+/input_event/0', // Button clicked update
     'shellies/+/sensor/battery', // Battery (in percentage) update.
+    'shellies/+/sensor/charger', // Is charging now.
     'shellies/+/ext_temperature/+', // Temperature sensor update.
   ];
 
@@ -213,6 +289,17 @@ export class ShellyMqttDriver extends MqttBaseDriver {
         deviceId,
         status: {
           battery: asJson
+        }
+      });
+      // No status to update
+      return undefined;
+    } else if (deviceType === 'sensor' && topics?.[3] === 'charger') {
+      const asJson = JSON.parse(data);
+      // Update devices module about new battery percentage
+      this.deviceFeed.post({
+        deviceId,
+        status: {
+          charging: asJson
         }
       });
       // No status to update

@@ -121,16 +121,19 @@ export class ModulesManager {
       };
       throw errorResponse;
     }
+    // Clone object, to make sure no drivers changing it to all 
+    const setStatusCopy = DeepCopy(setStatus);
 
     try {
       logger.debug(`[ModulesManager.setStatus] setting minion "${minion.minionId}" status "${JSON.stringify(setStatus)}" using "${minionModule.brandName}" module ...`);
       await withTimeout(
-        minionModule.setStatus(minion,  DeepCopy(setStatus)), // Clone object, to make sure no drivers changing it to all 
+        minionModule.setStatus(minion, setStatusCopy), 
         this.COMMUNICATE_DEVICE_TIMEOUT.asMilliseconds(),
       );
       logger.debug(`[ModulesManager.setStatus] setting minion "${minion.minionId}" status succeed`);
     } catch (error) {
-      logger.warn(`[ModulesManager.getStatus] setting minion "${minion.minionId}" status failed ${error.message || JSON.stringify(error)}`);
+      logger.error(`[ModulesManager.getStatus] setting minion "${minion.minionId}" status failed error:"${error.message || JSON.stringify(error)}"`);
+      logger.error(`[ModulesManager.getStatus] setting minion "${minion.minionId}" status failed set status attempt "${JSON.stringify(setStatusCopy)}}" minion full state "${JSON.stringify(minion)}"`);
       if (error instanceof TimeoutError) {
         throw {
           responseCode: 1503,

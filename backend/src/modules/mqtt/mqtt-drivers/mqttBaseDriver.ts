@@ -43,7 +43,11 @@ export abstract class MqttBaseDriver {
   public constructor(protected deviceFeed: SyncEvent<{
     deviceId: string;
     status: DeviceStatus;
-  }>, protected retrieveMinions: PullBehavior<Minion[]>) {
+  }>, protected retrieveMinions: PullBehavior<Minion[]>,
+    protected minionStatusChangedEvent: SyncEvent<{
+      minionId: string;
+      status: MinionStatus;
+    }>) {
   }
 
   /**

@@ -49,6 +49,8 @@ export declare interface RemoteSettings {
 	host: string;
 	/** Access key for authorization local server in the remote server */
 	connectionKey: string;
+	/** Prevent remote server from feting logs */
+	blockLogsFetchByRemote?: boolean;
 }
 
 /**
@@ -78,6 +80,11 @@ export declare interface DeviceStatus {
 	 * The battery power, if relevant, in %.
 	 */
 	battery?: number;
+
+	/**
+	 * Is the device in charging mode
+	 */
+	charging?: boolean;
 }
 
 /**

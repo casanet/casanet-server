@@ -13,6 +13,7 @@ export const RemoteSettingsSchema: ObjectSchema = Joi.object()
 		connectionKey: Joi.string()
 			.not('')
 			.required(),
+		blockLogsFetchByRemote: Joi.boolean(),
 	})
 	.required();
 
