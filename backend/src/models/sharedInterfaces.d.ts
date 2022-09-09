@@ -49,6 +49,8 @@ export declare interface RemoteSettings {
 	host: string;
 	/** Access key for authorization local server in the remote server */
 	connectionKey: string;
+	/** Prevent remote server from feting logs */
+	blockLogsFetchByRemote?: boolean;
 }
 
 /**
