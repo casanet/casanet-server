@@ -563,7 +563,7 @@ export class RemoteConnectionBl {
             remoteAuthKey: remoteSettings.connectionKey,
             platform: process.platform,
             version: (await VersionsBlSingleton.getCurrentVersion())?.version || 'unknown',
-            localIp: serverFqdn,
+            localIp: serverFqdn(),
           },
         },
       });

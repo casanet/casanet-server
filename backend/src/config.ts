@@ -32,8 +32,8 @@ try {
   configuration = fse.readJSONSync('./casanet.json');
 } catch (error) {
   logger.warn('Fail to read casanet.json configuration file. using default...');
-	// Use primitive json load just, to make sure the dist relative path stays the same, but the PKG will pack it inside the bundle.
-	configuration = require('../casanet.json') as Config;
+  // Use primitive json load just, to make sure the dist relative path stays the same, but the PKG will pack it inside the bundle.
+  configuration = require('../casanet.json') as Config;
 }
 
 /**
@@ -123,4 +123,8 @@ export const Configuration: Config = configuration;
 /**
  * The local server FQDN's
  */
-export const serverFqdn = `http${configuration.http.useHttps ? 's' : ''}://${ip.address()}:${configuration.http.useHttps ? configuration.http.httpsPort : configuration.http.httpPort}`
+export function serverFqdn() {
+  // Don't load it on boot, when the network adapter may not be ready
+  return `http${configuration.http.useHttps ? 's' : ''}://${ip.address()}:${configuration.http.useHttps ? configuration.http.httpsPort : configuration.http.httpPort}`;
+}
+
