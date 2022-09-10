@@ -18,11 +18,10 @@ import {
 import { AuthBlSingleton, sessionExpiresMs } from '../business-layer/authBl';
 import { SessionsBlSingleton } from '../business-layer/sessionsBl';
 import { UsersBlSingleton } from '../business-layer/usersBl';
-import { Configuration } from '../config';
+import { Configuration, serverFqdn } from '../config';
 import { ErrorResponse, Login, LoginMfa, LoginResponse, User } from '../models/sharedInterfaces';
 import { AUTHENTICATION_HEADER, SESSION_COOKIE_NAME } from '../security/authentication';
 import { LoginMfaSchema, LoginSchema, RequestSchemaValidator, SchemaValidator } from '../security/schemaValidator';
-import * as ip from 'ip';
 
 
 @Tags('Authentication')
@@ -64,7 +63,7 @@ export class AuthController extends Controller {
 				this.setStatus(200);
 				return {
 					isRemote: false,
-					localAddress: ip.address()
+					localAddress: serverFqdn
 				} as LoginResponse as unknown as void;;
 			}
 
@@ -111,7 +110,7 @@ export class AuthController extends Controller {
 				this.setStatus(200);
 				return {
 					isRemote: false,
-					localAddress: ip.address()
+					localAddress: serverFqdn
 				} as LoginResponse as unknown as void;;
 			}
 

@@ -25,7 +25,7 @@ import { MinionsBlSingleton } from './minionsBl';
 import { TimingsBl } from './timingsBl';
 import { TimingsBlSingleton } from './timingsBl';
 import { VersionsBlSingleton } from './versionsBl';
-import * as ip from 'ip';
+import { serverFqdn } from '../config';
 
 /**
  * Used to connect remote server via web socket, and let`s users access
@@ -563,7 +563,7 @@ export class RemoteConnectionBl {
             remoteAuthKey: remoteSettings.connectionKey,
             platform: process.platform,
             version: (await VersionsBlSingleton.getCurrentVersion())?.version || 'unknown',
-            localIp: ip.address(),
+            localIp: serverFqdn,
           },
         },
       });

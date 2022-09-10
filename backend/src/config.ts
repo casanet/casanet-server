@@ -4,6 +4,7 @@ import * as fse from 'fs-extra';
 import * as randomstring from 'randomstring';
 import { Config, RunningMode } from './models/backendInterfaces';
 import { logger } from './utilities/logger';
+import * as ip from 'ip';
 
 // load environment variable from .env file
 if (existsSync('./.env')) {
@@ -118,3 +119,8 @@ if (!configuration.defaultLockCalibrationMinutes) {
 
 /** System configuration */
 export const Configuration: Config = configuration;
+
+/**
+ * The local server FQDN's
+ */
+export const serverFqdn = `http${configuration.http.useHttps ? 's' : ''}://${ip.address()}:${configuration.http.useHttps ? configuration.http.httpsPort : configuration.http.httpPort}`
