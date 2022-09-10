@@ -63,7 +63,7 @@ export class AuthController extends Controller {
 				this.setStatus(200);
 				return {
 					isRemote: false,
-					localAddress: serverFqdn
+					localAddress: serverFqdn()
 				} as LoginResponse as unknown as void;;
 			}
 
@@ -110,7 +110,7 @@ export class AuthController extends Controller {
 				this.setStatus(200);
 				return {
 					isRemote: false,
-					localAddress: serverFqdn
+					localAddress: serverFqdn()
 				} as LoginResponse as unknown as void;;
 			}
 
