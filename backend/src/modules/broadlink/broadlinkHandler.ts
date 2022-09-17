@@ -19,9 +19,10 @@ import { CommandsCacheManager } from '../../utilities/cacheManager';
 import { logger } from '../../utilities/logger';
 import { Delay } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
+import * as broadlink from 'node-broadlink';
 
 // tslint:disable-next-line:no-var-requires
-const Broadlink = require('./broadlinkProtocol');
+// const Broadlink = require('./broadlinkProtocol');
 // tslint:disable-next-line:no-var-requires
 const BroadlinkCodeGeneration = require('./commands-generator');
 
@@ -29,10 +30,25 @@ const RESEND_BEAM_COMMAND_TIMES = +(process.env.RESEND_BEAM_COMMAND_TIMES || '1'
 
 /** Represents the broadlink protocol handler API */
 interface BroadlinkAPI {
-  sendData: (hexCommandCode: string, callback: (err: any) => void) => void;
+  sendData: (hexCommandCode: Uint8Array) => Promise<any>;
   enterLearning: (timeoutDurationInMs: number, callback: (err: any, hexStringCommand: string) => void) => void;
   checkPower: (callback: (err: any, status: boolean) => void) => void;
   setPower: (status: boolean, callback: (err: any) => void) => void;
+}
+
+function toNormalMac(array) {
+  let finalMac = '';
+  for (const item of array) {
+    finalMac = `${finalMac}${item.toString(16).padStart(2, '0')}`
+  }
+  return finalMac;
+}
+
+const hexStringToBinArray = (data) => {
+  var binArray = new Uint8Array(data.match(/[\da-f]{2}/gi).map(function (hex) {
+    return parseInt(hex, 16)
+  }))
+  return binArray;
 }
 
 export class BroadlinkHandler extends BrandModuleBase {
@@ -159,39 +175,58 @@ export class BroadlinkHandler extends BrandModuleBase {
 
   /** Get broadlink protocol handler instance for given minion */
   private async getBroadlinkInstance(minion: Minion): Promise<BroadlinkAPI | ErrorResponse> {
-    return new Promise<BroadlinkAPI | ErrorResponse>((resolve, reject) => {
-      const broadlinkDevice = new Broadlink(
-        { address: minion.device.pysicalDevice.ip, port: 80 },
-        minion.device.pysicalDevice.mac,
-        err => {
-          if (err) {
-            reject({
-              responseCode: 1503,
-              message: 'Connection to device fail',
-            } as ErrorResponse);
-            return;
-          }
+    try {
+      const list = await broadlink.discover();
 
-          resolve(broadlinkDevice);
-        },
-      );
-    });
+      logger.info(`[BroadlinkModule.getBroadlinkInstance] Devices founded ${list.map(i => toNormalMac(i.mac)).join(',')}`);
+
+      const device = list.find(i => toNormalMac(i.mac) === minion.device.pysicalDevice.mac);
+
+      if (!device) {
+        logger.error(`[BroadlinkModule.getBroadlinkInstance] Device ${minion.minionId} ${minion.device.pysicalDevice.mac} not discovered`);
+        throw {
+          responseCode: 1503,
+          message: 'No device discovered',
+        } as ErrorResponse;
+      }
+
+      await device.auth();
+      return device as unknown as BroadlinkAPI;
+
+    } catch (error) {
+      logger.error(`[BroadlinkModule.getBroadlinkInstance] Device ${minion.minionId} ${minion.device.pysicalDevice.mac} Commination failed $`);
+      throw {
+        responseCode: 1503,
+        message: 'Commination failed',
+      } as ErrorResponse;
+    }
   }
 
   /** Send RF/IR command */
   private async sendBeamCommand(broadlink: BroadlinkAPI, beamCommand: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      broadlink.sendData(beamCommand, err => {
-        if (err) {
-          reject({
-            responseCode: 11503,
-            message: 'Sending beam command fail.',
-          } as ErrorResponse);
-          return;
-        }
-        resolve();
-      });
-    });
+    try {
+      const responseRaw = await broadlink.sendData(hexStringToBinArray(beamCommand));
+      console.log(responseRaw);
+    } catch (error) {
+      logger.error(` ${error?.message}`);
+      throw {
+        responseCode: 11503,
+        message: 'Sending beam command fail.',
+      } as ErrorResponse;
+    }
+
+    // return new Promise<void>((resolve, reject) => {
+    //   broadlink.sendData(hexStringToBinArray(beamCommand), err => {
+    //     if (err) {
+    //       reject({
+    //         responseCode: 11503,
+    //         message: 'Sending beam command fail.',
+    //       } as ErrorResponse);
+    //       return;
+    //     }
+    //     resolve();
+    //   });
+    // });
   }
 
   /** Enter learn mode */
