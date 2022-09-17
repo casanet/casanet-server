@@ -1,5 +1,4 @@
 import * as moment from 'moment';
-import { Duration } from 'moment';
 import {
   AcCommands,
   AirConditioningCommand,
@@ -17,9 +16,13 @@ import {
 } from '../../models/sharedInterfaces';
 import { CommandsCacheManager } from '../../utilities/cacheManager';
 import { logger } from '../../utilities/logger';
-import { Delay } from '../../utilities/sleep';
+import { Delay, sleep } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 import * as broadlink from 'node-broadlink';
+import Device from 'node-broadlink/dist/device';
+import { Sp2 } from 'node-broadlink/dist/switch';
+import { Rmpro } from 'node-broadlink/dist/remote';
+import { Duration, Temperature } from 'unitsnet-js';
 
 // tslint:disable-next-line:no-var-requires
 // const Broadlink = require('./broadlinkProtocol');
@@ -44,11 +47,11 @@ function toNormalMac(array) {
   return finalMac;
 }
 
-const hexStringToBinArray = (data) => {
+function hexStringToBinArray(data: string): number[] {
   var binArray = new Uint8Array(data.match(/[\da-f]{2}/gi).map(function (hex) {
     return parseInt(hex, 16)
   }))
-  return binArray;
+  return binArray as unknown as number[];
 }
 
 export class BroadlinkHandler extends BrandModuleBase {
@@ -96,6 +99,16 @@ export class BroadlinkHandler extends BrandModuleBase {
       isRecordingSupported: true,
       isFetchCommandsAvailable: true,
     },
+    {
+      brand: this.brandName,
+      isTokenRequired: false,
+      isIdRequired: false,
+      minionsPerDevice: -1,
+      model: 'RM Pro as temperature',
+      supportedMinionType: 'temperatureSensor',
+      isRecordingSupported: false,
+      isFetchCommandsAvailable: false,
+    },
   ];
 
   private commandsCacheManager = new CommandsCacheManager(super.cacheFilePath)
@@ -113,6 +126,8 @@ export class BroadlinkHandler extends BrandModuleBase {
       case 'RM3 / RM Pro as IR AC':
       case 'RM Pro as RF roller':
         return await this.getCachedStatus(minion);
+      case 'RM Pro as temperature':
+        return await this.getTemperature(minion);
     }
     throw {
       responseCode: 8404,
@@ -130,6 +145,8 @@ export class BroadlinkHandler extends BrandModuleBase {
         return await this.setIrAcStatus(minion, setStatus);
       case 'RM Pro as RF roller':
         return await this.setRFRollerStatus(minion, setStatus);
+      case 'RM Pro as temperature':
+        return; // Nothing to do...
     }
     throw {
       responseCode: 8404,
@@ -174,7 +191,7 @@ export class BroadlinkHandler extends BrandModuleBase {
   }
 
   /** Get broadlink protocol handler instance for given minion */
-  private async getBroadlinkInstance(minion: Minion): Promise<BroadlinkAPI | ErrorResponse> {
+  private async getBroadlinkInstance(minion: Minion): Promise<Device | ErrorResponse> {
     try {
       const list = await broadlink.discover();
 
@@ -191,7 +208,7 @@ export class BroadlinkHandler extends BrandModuleBase {
       }
 
       await device.auth();
-      return device as unknown as BroadlinkAPI;
+      return device;
 
     } catch (error) {
       logger.error(`[BroadlinkModule.getBroadlinkInstance] Device ${minion.minionId} ${minion.device.pysicalDevice.mac} Commination failed $`);
@@ -203,10 +220,9 @@ export class BroadlinkHandler extends BrandModuleBase {
   }
 
   /** Send RF/IR command */
-  private async sendBeamCommand(broadlink: BroadlinkAPI, beamCommand: string): Promise<void> {
+  private async sendBeamCommand(broadlink: Rmpro, beamCommand: string): Promise<void> {
     try {
-      const responseRaw = await broadlink.sendData(hexStringToBinArray(beamCommand));
-      console.log(responseRaw);
+      await broadlink.sendData(hexStringToBinArray(beamCommand));
     } catch (error) {
       logger.error(` ${error?.message}`);
       throw {
@@ -214,70 +230,51 @@ export class BroadlinkHandler extends BrandModuleBase {
         message: 'Sending beam command fail.',
       } as ErrorResponse;
     }
-
-    // return new Promise<void>((resolve, reject) => {
-    //   broadlink.sendData(hexStringToBinArray(beamCommand), err => {
-    //     if (err) {
-    //       reject({
-    //         responseCode: 11503,
-    //         message: 'Sending beam command fail.',
-    //       } as ErrorResponse);
-    //       return;
-    //     }
-    //     resolve();
-    //   });
-    // });
   }
 
   /** Enter learn mode */
-  private async enterBeamLearningMode(broadlink: BroadlinkAPI): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      broadlink.enterLearning(moment.duration(5, 'seconds').asMilliseconds(), (err, hexStringCommand) => {
-        if (err) {
-          reject({
-            responseCode: 2503,
-            message: 'Recording fail or timeout',
-          } as ErrorResponse);
-          return;
-        }
-        resolve(hexStringCommand);
-      });
-    });
+  private async enterBeamLearningMode(broadlink: Rmpro): Promise<string> {
+    try {
+      await broadlink.enterLearning();
+      const buff = await broadlink.checkData();
+      return buff.toString('hex');
+    } catch (error) {
+      logger.error(` ${error?.message}`);
+      throw {
+        responseCode: 2503,
+        message: 'Recording fail or timeout',
+      } as ErrorResponse;
+    }
   }
 
   /** Get current broadlink power */
-  private async getBroadlinkPowerMode(broadlink: BroadlinkAPI): Promise<SwitchOptions | ErrorResponse> {
-    return new Promise<SwitchOptions | ErrorResponse>((resolve, reject) => {
-      broadlink.checkPower((err, state) => {
-        if (err) {
-          reject({
-            responseCode: 7503,
-            message: 'Getting status fail',
-          } as ErrorResponse);
-          return;
-        }
-        resolve(state ? 'on' : 'off');
-      });
-    });
+  private async getBroadlinkPowerMode(broadlink: Sp2): Promise<SwitchOptions | ErrorResponse> {
+    try {
+      const power = await broadlink.checkPower();
+      return power ? 'on' : 'off';
+    } catch (error) {
+      logger.error(` ${error?.message}`);
+      throw {
+        responseCode: 7503,
+        message: 'Getting status fail',
+      } as ErrorResponse;
+    }
   }
 
   /** Set broadlink power */
   private async setBroadlinkPowerMode(
-    broadlink: BroadlinkAPI,
+    broadlink: Sp2,
     switchOptions: SwitchOptions,
   ): Promise<void | ErrorResponse> {
-    return new Promise<void | ErrorResponse>((resolve, reject) => {
-      broadlink.setPower(switchOptions === 'on', err => {
-        if (err) {
-          reject({
-            responseCode: 6503,
-            message: 'Setting status fail',
-          } as ErrorResponse);
-          return;
-        }
-        resolve();
-      });
-    });
+    try {
+      await broadlink.setPower(switchOptions === 'on');
+    } catch (error) {
+      logger.error(` ${error?.message}`);
+      throw {
+        responseCode: 6503,
+        message: 'Setting status fail',
+      } as ErrorResponse;
+    }
   }
 
   /**
@@ -291,7 +288,7 @@ export class BroadlinkHandler extends BrandModuleBase {
   }
 
   private async getSP2Status(minion: Minion): Promise<MinionStatus | ErrorResponse> {
-    const broadlink = (await this.getBroadlinkInstance(minion)) as BroadlinkAPI;
+    const broadlink = (await this.getBroadlinkInstance(minion)) as Sp2;
 
     const status = (await this.getBroadlinkPowerMode(broadlink)) as SwitchOptions;
     return {
@@ -301,14 +298,25 @@ export class BroadlinkHandler extends BrandModuleBase {
     };
   }
 
+  private async getTemperature(minion: Minion): Promise<MinionStatus | ErrorResponse> {
+    const broadlink = (await this.getBroadlinkInstance(minion)) as Rmpro;
+    const temperature = await broadlink.checkTemperature();
+    return {
+      temperatureSensor: {
+        temperature: Temperature.FromDegreesFahrenheit(temperature).DegreesCelsius,
+        status: 'on',
+      },
+    };
+  }
+
   private async setSP2Status(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
-    const broadlink = (await this.getBroadlinkInstance(minion)) as BroadlinkAPI;
+    const broadlink = (await this.getBroadlinkInstance(minion)) as Sp2;
 
     await this.setBroadlinkPowerMode(broadlink, setStatus.switch.status);
   }
 
   private async setRFToggleStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
-    const broadlink = (await this.getBroadlinkInstance(minion)) as BroadlinkAPI;
+    const broadlink = (await this.getBroadlinkInstance(minion)) as Rmpro;
 
     const hexCommandCode = await this.commandsCacheManager.getRFToggleCommand(minion, setStatus) as string;
 
@@ -318,7 +326,7 @@ export class BroadlinkHandler extends BrandModuleBase {
   }
 
   private async setRFRollerStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
-    const broadlink = (await this.getBroadlinkInstance(minion)) as BroadlinkAPI;
+    const broadlink = (await this.getBroadlinkInstance(minion)) as Rmpro;
 
     const hexCommandCode = await this.commandsCacheManager.getRFRollerCommand(minion, setStatus) as string;
 
@@ -328,7 +336,7 @@ export class BroadlinkHandler extends BrandModuleBase {
   }
 
   private async setIrAcStatus(minion: Minion, setStatus: MinionStatus): Promise<void | ErrorResponse> {
-    const broadlink = (await this.getBroadlinkInstance(minion)) as BroadlinkAPI;
+    const broadlink = (await this.getBroadlinkInstance(minion)) as Rmpro;
 
     const hexCommandCode = await this.commandsCacheManager.getIrCommand(minion, setStatus) as string;
 
@@ -345,7 +353,7 @@ export class BroadlinkHandler extends BrandModuleBase {
   }
 
   private async recordIRACommands(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
-    const broadlink = (await this.getBroadlinkInstance(minion)) as BroadlinkAPI;
+    const broadlink = (await this.getBroadlinkInstance(minion)) as Rmpro;
 
     const hexIRCommand = await this.enterBeamLearningMode(broadlink);
 
@@ -353,7 +361,7 @@ export class BroadlinkHandler extends BrandModuleBase {
   }
 
   private async recordRollerRFCommand(minion: Minion, statusToRecordFor: MinionStatus): Promise<void | ErrorResponse> {
-    const broadlink = (await this.getBroadlinkInstance(minion)) as BroadlinkAPI;
+    const broadlink = (await this.getBroadlinkInstance(minion)) as Rmpro;
     const hexIRCommand = await this.enterBeamLearningMode(broadlink);
     await this.commandsCacheManager.cacheRFRollerCommand(minion, statusToRecordFor, hexIRCommand);
   }
