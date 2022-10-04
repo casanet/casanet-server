@@ -24,8 +24,6 @@ import { Rmpro, Sp2  } from 'node-broadlink';
 import { Duration, Temperature } from 'unitsnet-js';
 
 // tslint:disable-next-line:no-var-requires
-// const Broadlink = require('./broadlinkProtocol');
-// tslint:disable-next-line:no-var-requires
 const BroadlinkCodeGeneration = require('./commands-generator');
 
 const RESEND_BEAM_COMMAND_TIMES = +(process.env.RESEND_BEAM_COMMAND_TIMES || '1');
