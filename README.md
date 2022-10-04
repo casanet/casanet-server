@@ -127,9 +127,9 @@ The casa remote server is built for this, [casanet-remote](https://github.com/ca
 
 -  Broadlink
 
-	-  SP3 (socket). [link](https://www.gearbest.com/smart-access-lock/pp_009282693865.html)
-	-  RM mini 3 (As AC). [link](https://www.gearbest.com/alarm-systems/pp_009753807797.html)
-	-  RM Pro (As AC / RF toggle / RF curtain). [link](https://www.gearbest.com/home-appliances-accessories/pp_009281768756.html)
+	-  SP2, SP3, SP4 (socket). [link](https://www.ibroadlink.com/productinfo/777928.html)
+	-  RM3 mini 3 / RM4 mini (As AC). [link](https://www.ibroadlink.com/productinfo/762674.html)
+	-  RM Pro / RM4 Pro (As AC / RF toggle / RF curtain). [link](https://www.ibroadlink.com/productinfo/762672.html)
 
 -  Yeelight
 
