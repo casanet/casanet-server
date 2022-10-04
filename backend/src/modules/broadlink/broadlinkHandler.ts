@@ -20,8 +20,7 @@ import { Delay, sleep } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 import * as broadlink from 'node-broadlink';
 import Device from 'node-broadlink/dist/device';
-import { Sp2 } from 'node-broadlink/dist/switch';
-import { Rmpro } from 'node-broadlink/dist/remote';
+import { Rmpro, Sp2  } from 'node-broadlink';
 import { Duration, Temperature } from 'unitsnet-js';
 
 // tslint:disable-next-line:no-var-requires
@@ -45,13 +44,6 @@ function toNormalMac(array) {
     finalMac = `${finalMac}${item.toString(16).padStart(2, '0')}`
   }
   return finalMac;
-}
-
-function hexStringToBinArray(data: string): number[] {
-  var binArray = new Uint8Array(data.match(/[\da-f]{2}/gi).map(function (hex) {
-    return parseInt(hex, 16)
-  }))
-  return binArray as unknown as number[];
 }
 
 export class BroadlinkHandler extends BrandModuleBase {
@@ -193,7 +185,7 @@ export class BroadlinkHandler extends BrandModuleBase {
   /** Get broadlink protocol handler instance for given minion */
   private async getBroadlinkInstance(minion: Minion): Promise<Device | ErrorResponse> {
     try {
-      const list = await broadlink.discover();
+      const list : Device[] = await broadlink.discover();
 
       logger.info(`[BroadlinkModule.getBroadlinkInstance] Devices founded ${list.map(i => toNormalMac(i.mac)).join(',')}`);
 
@@ -222,7 +214,7 @@ export class BroadlinkHandler extends BrandModuleBase {
   /** Send RF/IR command */
   private async sendBeamCommand(broadlink: Rmpro, beamCommand: string): Promise<void> {
     try {
-      await broadlink.sendData(hexStringToBinArray(beamCommand));
+      await broadlink.sendData(beamCommand);
     } catch (error) {
       logger.error(` ${error?.message}`);
       throw {
@@ -300,10 +292,13 @@ export class BroadlinkHandler extends BrandModuleBase {
 
   private async getTemperature(minion: Minion): Promise<MinionStatus | ErrorResponse> {
     const broadlink = (await this.getBroadlinkInstance(minion)) as Rmpro;
-    const temperature = await broadlink.checkTemperature();
+    const temperatureFahrenheit = await broadlink.checkTemperature();
+    const temperature = parseFloat(Temperature.FromDegreesFahrenheit(temperatureFahrenheit).DegreesCelsius.toFixed(2));
+
+
     return {
       temperatureSensor: {
-        temperature: Temperature.FromDegreesFahrenheit(temperature).DegreesCelsius,
+        temperature,
         status: 'on',
       },
     };

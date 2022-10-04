@@ -4238,10 +4238,10 @@ node-arp@^1.0.6:
   resolved "https://registry.yarnpkg.com/node-arp/-/node-arp-1.0.6.tgz#8ab4f6fff1c57e147a20a32a1e39e577aeb45898"
   integrity sha512-miX3CXZv1CvsWeAeoB66GVbn8X0WEbcZTmpZBnIzK4t02YF7+JDeFxYWFcqcDDaM2d/vzUFTx4zxr+G1NBRmGQ==
 
-node-broadlink@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/node-broadlink/-/node-broadlink-2.2.0.tgz#d9ec258c40dc35ccccb61efbaed02999f4b4d7ce"
-  integrity sha512-Wz3Ssbqpd0q+B6mGwb3Io50KdRO69pWa3mKbMOOjjLoQfgUOb4vnSIvs5Kb2uJi7IQX59o6Xcxjh5vTyJP25PQ==
+node-broadlink@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/node-broadlink/-/node-broadlink-2.3.0.tgz#dda50e79c362a35f3a8ff5c209bc18f7ae3a138e"
+  integrity sha512-EXUJEXA0WSmY6Of9j/ambidDHyoYyXRcW14FPVFbErw2++0+iAmloyYe47S5vMAmOcIqEeRfakfj+ZiIchKnJg==
   dependencies:
     "@aksel/structjs" "^1.0.0"
 
