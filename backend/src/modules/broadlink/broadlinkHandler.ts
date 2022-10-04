@@ -28,14 +28,6 @@ const BroadlinkCodeGeneration = require('./commands-generator');
 
 const RESEND_BEAM_COMMAND_TIMES = +(process.env.RESEND_BEAM_COMMAND_TIMES || '1');
 
-/** Represents the broadlink protocol handler API */
-interface BroadlinkAPI {
-  sendData: (hexCommandCode: Uint8Array) => Promise<any>;
-  enterLearning: (timeoutDurationInMs: number, callback: (err: any, hexStringCommand: string) => void) => void;
-  checkPower: (callback: (err: any, status: boolean) => void) => void;
-  setPower: (status: boolean, callback: (err: any) => void) => void;
-}
-
 function toNormalMac(array) {
   let finalMac = '';
   for (const item of array) {
