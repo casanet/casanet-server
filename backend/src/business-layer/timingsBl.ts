@@ -10,6 +10,8 @@ import {
 	DailyTiming,
 	DaysOptions,
 	ErrorResponse,
+	Minion,
+	MinionFeed,
 	OnceTiming,
 	OperationResult,
 	TimeoutTiming,
@@ -19,6 +21,7 @@ import {
 import { logger } from '../utilities/logger';
 import { OperationsBl, OperationsBlSingleton } from './operationsBl';
 import { SyncEvent } from 'ts-events';
+import { MinionsBl, MinionsBlSingleton } from './minionsBl';
 
 const TIMING_INTERVAL_ACTIVATION = moment.duration(5, 'seconds');
 
@@ -39,8 +42,9 @@ export class TimingsBl {
 	 * @param timingsDal Inject timings dal.
 	 * @param localNetworkReader Inject the reader function.
 	 */
-	constructor(private timingsDal: TimingsDal, private operationBl: OperationsBl) {
-
+	constructor(private timingsDal: TimingsDal, private operationBl: OperationsBl, private minionsService: MinionsBl) {
+		// Subscribe to each minion change
+		this.minionsService.minionFeed.attach((minionFeed) => { this.onMinionStatusChange(minionFeed); });
 	}
 
 	/**
@@ -104,6 +108,33 @@ export class TimingsBl {
 	 */
 	public async DeleteTiming(timingId: string): Promise<void> {
 		return await this.timingsDal.deleteTiming(timingId);
+	}
+
+	/**
+	 * Handle minion update event
+	 * @param minionFeed The minions feed object
+	 */
+	private async onMinionStatusChange(minionFeed: MinionFeed) {
+		if (minionFeed.event === 'removed') {
+			await this.deleteMinionTimings(minionFeed.minion);
+			return;
+		}
+	}
+
+	/**
+	 * Delete all minion's actions
+	 * @param minion The minion to drop all his actions
+	 */
+	private async deleteMinionTimings(minion: Minion) {
+		logger.info(`[TimingsService.deleteMinionTimings] Collecting all "${minion.minionId}" minion's timings in order to delete them all`);
+		const timings = await this.getTimings();
+
+		const minionTimings = timings.filter(t => t?.triggerDirectAction?.minionId === minion.minionId);
+		for (const timing of minionTimings) {
+			logger.info(`[ActionsService.deleteMinionActions] Deleting "${timing.timingId}" timing`);
+			await this.DeleteTiming(timing.timingId);
+		}
+		logger.info(`[TimingsService.deleteMinionTimings] Deleting all "${minion.minionId}" timings done`);
 	}
 
 	/**
@@ -316,4 +347,4 @@ export class TimingsBl {
 	}
 }
 
-export const TimingsBlSingleton = new TimingsBl(TimingsDalSingleton, OperationsBlSingleton);
+export const TimingsBlSingleton = new TimingsBl(TimingsDalSingleton, OperationsBlSingleton, MinionsBlSingleton);
