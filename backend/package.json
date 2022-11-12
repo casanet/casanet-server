@@ -94,7 +94,7 @@
     "ts-events": "^3.4.0",
     "tsoa": "^3.6.1",
     "tuyapi": "^7.4.0",
-    "unitsnet-js": "^1.0.26",
+    "unitsnet-js": "^1.0.42",
     "winston": "^3.2.1",
     "yeelight-awesome": "^1.0.12"
   },

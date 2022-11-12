@@ -21,13 +21,13 @@ export class ActionsService {
 		// Subscribe to each minion change
 		this.minionsService.minionFeed.attach((minionFeed) => { this.onMinionStatusChange(minionFeed); });
 		// Run in interval to force the action set, in case of ActionApply permanent.
-		setInterval(() => { this.forceActionsActions(); }, ACTIONS_ACTIVATION.Milliseconds);
+		setInterval(() => { this.forceActionsSet(); }, ACTIONS_ACTIVATION.Milliseconds);
 	}
 
 	/**
 	 * Force the permanent actions
 	 */
-	private async forceActionsActions() {
+	private async forceActionsSet() {
 		// Get all actions in system
 		const actions = await this.actionsDal.getActions();
 
@@ -74,6 +74,11 @@ export class ActionsService {
 	 * @param minionFeed The minions feed object
 	 */
 	private async onMinionStatusChange(minionFeed: MinionFeed) {
+		if (minionFeed.event === 'removed') {
+			await this.deleteMinionActions(minionFeed.minion);
+			return;
+		}
+
 		// If it's not an update, do nothing
 		if (minionFeed.event !== 'update') {
 			return;
@@ -81,6 +86,20 @@ export class ActionsService {
 
 		// Trigger actions for this updated minion
 		await this.triggerMinionStatusChangedActions(minionFeed.minion);
+	}
+
+	/**
+	 * Delete all minion's actions
+	 * @param minion The minion to drop all his actions
+	 */
+	private async deleteMinionActions(minion: Minion) {
+		logger.info(`[ActionsService.deleteMinionActions] Collecting all "${minion.minionId}" minion's actions in order to delete them all`);
+		const actions = await this.getMinionActions(minion.minionId);
+		for (const action of actions) {
+			logger.info(`[ActionsService.deleteMinionActions] Deleting "${action.actionId}" action`);
+			await this.deleteAction(action.actionId);
+		}
+		logger.info(`[ActionsService.deleteMinionActions] Deleting all "${minion.minionId}" actions done`);
 	}
 
 
@@ -98,7 +117,7 @@ export class ActionsService {
 		}
 		logger.info(`[ActionsService.triggerMinionStatusChangedActions] Triggering minion ${minion.minionId} actions done"`);
 
-		await this.forceActionsActions()
+		await this.forceActionsSet()
 	}
 
 	/**
@@ -207,7 +226,7 @@ export class ActionsService {
 	public async setAction(actionId: string, action: Action): Promise<void> {
 		await this.validateActionParams(action);
 		action.actionId = actionId;
-		this.forceActionsActions();
+		this.forceActionsSet();
 		return await this.actionsDal.updateAction(action);
 	}
 
@@ -215,7 +234,7 @@ export class ActionsService {
 		const action = await this.getActionById(actionId);
 		const actionCopy = DeepCopy(action);
 		actionCopy.active = active;
-		this.forceActionsActions();
+		this.forceActionsSet();
 		return await this.actionsDal.updateAction(actionCopy);
 	}
 
@@ -231,7 +250,7 @@ export class ActionsService {
 		 */
 		action.actionId = randomstring.generate(6);
 		await this.actionsDal.createAction(action);
-		this.forceActionsActions();
+		this.forceActionsSet();
 		return action;
 	}
 
