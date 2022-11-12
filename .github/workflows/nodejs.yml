@@ -9,9 +9,9 @@ jobs:
       matrix:
         node-version: [16.x]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
     - name: Update version patch
@@ -52,11 +52,11 @@ jobs:
         npm run bundle
         cp dist/generated/swagger.json ../casanet_bin/swagger.json
         cp -v bundle/* ../casanet_bin
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: casanet_bin 
         path: casanet_bin
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: swagger-spec 
         path: backend/dist/generated/swagger.json
@@ -68,9 +68,9 @@ jobs:
         node-version: [16.x]
     if: github.ref != 'refs/heads/master'
     steps:
-    - uses: actions/checkout@v1 
+    - uses: actions/checkout@v3
     - name: Install node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
     - name: test backend
@@ -88,9 +88,9 @@ jobs:
         node-version: [16.x]
     if: github.ref == 'refs/heads/master'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
     - uses: actions/download-artifact@master
