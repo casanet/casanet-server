@@ -248,7 +248,15 @@ export class ShellyMqttDriver extends MqttBaseDriver {
       };
     } else if (deviceType === 'input_event') { // case of button
       minion = minions.find(m => m?.device?.deviceId === deviceId);
+
       const asJson = JSON.parse(data);
+
+      // In case it's not a button (MP1 for instance) ignore empty event, since it can be ON with no event... 
+      if (minion?.minionType !== 'toggle' && !asJson?.event) {
+        return undefined;
+      }
+
+      
       const status = asJson.event?.startsWith('S') ? 'on' : 'off' as SwitchOptions;
       minionStatus = {
         toggle: {

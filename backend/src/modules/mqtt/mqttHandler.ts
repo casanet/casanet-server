@@ -217,7 +217,7 @@ export class MqttHandler extends BrandModuleBase {
     this.mqttClient = mqttapi.connect(this.brokerUri);
 
     this.mqttClient.on('connect', async () => {
-      logger.info(`[MqttHandler.offline] MQTT broker is connect`);
+      logger.info(`[MqttHandler.connect] MQTT broker is connect`);
       /** Subscribe to topic all of drivers */
       for (const mqttDriver of this.mqttDrivers) {
         await this.mqttClient.subscribe(mqttDriver.deviceTopics);
@@ -229,15 +229,15 @@ export class MqttHandler extends BrandModuleBase {
     });
 
     this.mqttClient.on('disconnect', async () => {
-      logger.warn(`[MqttHandler.offline] MQTT broker is disconnect`);
+      logger.warn(`[MqttHandler.disconnect] MQTT broker is disconnect`);
     });
 
     this.mqttClient.on('end', async () => {
-      logger.warn(`[MqttHandler.offline] MQTT broker is end`);
+      logger.warn(`[MqttHandler.end] MQTT broker is end`);
     });
 
     this.mqttClient.on('error', async () => {
-      logger.warn(`[MqttHandler.offline] MQTT broker is error`);
+      logger.warn(`[MqttHandler.error] MQTT broker is error`);
     });
 
     this.mqttClient.on('message', async (topic: string, payload: Buffer) => {
