@@ -44,7 +44,7 @@ export class MinionsBl {
 	 * The current minion in "setting" mode flag
 	 * Used to avoid race between the module that call the "set" and the device module change update to the timeline
 	 */
-	private settingStatusMode: string = '';
+	private settingStatusMode: { [minionId in string]: boolean } = {};
 
 	/**
 	 * Init minions bl. using dependency injection pattern to allow units testings.
@@ -269,11 +269,13 @@ export class MinionsBl {
 		}
 
 		// Mark the minion as "setting mode"
-		this.settingStatusMode = minion.minionId;
+		this.settingStatusMode[minion.minionId] = true;
 		/**
 		 * set the status.
 		 */
-		await this.modulesManager.setStatus(minion, minionStatus).catch(err => {
+		try {
+			await this.modulesManager.setStatus(minion, minionStatus)
+		} catch (error) {
 			minion.isProperlyCommunicated = false;
 			this.minionFeed.post({
 				event: 'update',
@@ -281,11 +283,9 @@ export class MinionsBl {
 				oldMinion,
 			});
 			// Remove the minion as "setting mode"
-			this.settingStatusMode = '';
-			throw err;
-		});
-		// Remove the minion as "setting mode"
-		this.settingStatusMode = '';
+			this.settingStatusMode[minion.minionId] = false;
+			throw error;
+		}
 
 		/** If there is no change from the last minion status */
 		if (minion.isProperlyCommunicated && JSON.stringify(minion.minionStatus) === JSON.stringify(minionStatus)) {
@@ -309,6 +309,13 @@ export class MinionsBl {
 			trigger: minionSetTrigger,
 			user: userAction
 		});
+
+		// TODO: set-better-solution
+		// This is a temp fix for the issue with MQTT comm based devices, that updates from MQTT con arrived with 
+		// old status *after* new status sent to the broker successfully, this confuse the timeline trigger and status history.
+		await sleep(Duration.FromSeconds(1));
+		// Remove the minion as "setting mode"
+		this.settingStatusMode[minion.minionId] = false;
 	}
 
 	/**
@@ -715,16 +722,17 @@ export class MinionsBl {
 
 		// If the current minion in "set status" mode
 		// don't override the setter module to be the one that updating the new status
-		if (this.settingStatusMode === minion.minionId) {
+		if (this.settingStatusMode[minion.minionId]) {
 			return;
 		}
 
-		const oldMinion = DeepCopy(minion);
 
 		/** If there is no change from last minion status */
 		if (minion.isProperlyCommunicated && isequal(minion.minionStatus?.[minion.minionType], updateToStatus?.[minion.minionType])) {
 			return;
 		}
+
+		const oldMinion = DeepCopy(minion);
 
 		minion.isProperlyCommunicated = true;
 		minion.minionStatus = updateToStatus;
