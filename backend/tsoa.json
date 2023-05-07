@@ -24,6 +24,7 @@
 	"routes": {
 		"basePath": "/API",
 		"authenticationModule": "./src/security/authentication.ts",
+		"middlewareTemplate" : "src/routers/routes.template.hbs",
 		"routesDir": "./src/generated"
 	}
 }

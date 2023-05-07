@@ -595,6 +595,18 @@ export declare interface MinionSetDevice {
 }
 
 /**
+ * Type of resection of access
+ */
+export declare type RestrictionType = 'BLOCK' | 'READ' | 'WRITE'; 
+
+export declare interface RestrictionItem {
+	/** The use to restrict */
+	userEmail: string;
+	/** The limited access type to grant user */
+	restrictionType: RestrictionType;
+} 
+
+/**
  * Represents a minion in system.
  * Minion is a logic device in the system, meaning that a device is a physical device and minion is a logic device
  * that uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device
@@ -653,6 +665,11 @@ export declare interface Minion {
 	 * Last status change timestamp in UTC MS
 	 */
 	statusChangedTime?: number;
+
+	/**
+	 * The restriction of access on this minion
+	 */
+	restrictions?: RestrictionItem[];
 }
 
 /**
