@@ -29,7 +29,6 @@ export class OperationsController extends Controller {
    * Get all operations in the system.
    * @returns Operations array.
    */
-  @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Get()
@@ -42,7 +41,6 @@ export class OperationsController extends Controller {
    * Get operation by id.
    * @returns Operation.
    */
-  @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Get('{operationId}')
@@ -56,7 +54,6 @@ export class OperationsController extends Controller {
    * @param operationId OperationId id.
    * @param operation Operation object to update to.
    */
-  @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Put('{operationId}')
@@ -69,7 +66,6 @@ export class OperationsController extends Controller {
    * Delete operation from the system.
    * @param operationId Operation id.
    */
-  @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Delete('{operationId}')
@@ -82,7 +78,6 @@ export class OperationsController extends Controller {
    * Creates a new operation.
    * @param operation The new operation to create.
    */
-  @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Post()
@@ -96,7 +91,6 @@ export class OperationsController extends Controller {
    * @param operationId Operation id.
    * @returns Array of minions set status errors (if any).
    */
-  @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
   @Post('trigger/{operationId}')

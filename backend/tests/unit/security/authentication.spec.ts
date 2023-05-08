@@ -8,13 +8,13 @@ import { expressAuthentication, SystemAuthScopes } from '../../../src/security/a
 describe('Security scopes validation middelwere', () => {
   describe('Test certification', () => {
     it('it should pass successfully', async () => {
-      const faksRequest = {
+      const fakeRequest = {
         cookies: {
           session: validSession.userSessionKey,
         },
 				headers: {},
       };
-      const user = (await expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope).catch(
+      const user = (await expressAuthentication(fakeRequest as express.Request, SystemAuthScopes.userScope).catch(
         () => {
           throw new Error('auth fail');
         },
@@ -26,44 +26,46 @@ describe('Security scopes validation middelwere', () => {
       return;
     });
 
-    it('it should denied', async () => {
-      const faksRequest = {
+    it('it should denied #1', async () => {
+      const fakeRequest = {
         cookies: {
           session: 'abc1234567',
         },
 				headers: {},
       };
-      expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope)
+      expressAuthentication(fakeRequest as express.Request, SystemAuthScopes.userScope)
         .then(() => {
           throw new Error('Access should denied, but bad cert passed');
         })
         .catch((err: ErrorResponse | Error) => {
           const expectedError: ErrorResponse = {
-            responseCode: 1403,
-          };
-          expect(err).to.deep.equal(expectedError);
-        });
-    });
-
-    it('it should denied', async () => {
-      const faksRequest = {
-        cookies: {},
-				headers: {},
-      };
-      expressAuthentication(faksRequest as express.Request, SystemAuthScopes.userScope)
-        .then(() => {
-          throw new Error('Access should denied, but empty cert passed');
-        })
-        .catch((err: ErrorResponse) => {
-          const expectedError: ErrorResponse = {
+            message: "Authorization failed",
             responseCode: 1401,
           };
           expect(err).to.deep.equal(expectedError);
         });
     });
 
-    it('it should denied', async () => {
-      // TODO : session expierd
+    it('it should denied #2', async () => {
+      const fakeRequest = {
+        cookies: {},
+				headers: {},
+      };
+      expressAuthentication(fakeRequest as express.Request, SystemAuthScopes.userScope)
+        .then(() => {
+          throw new Error('Access should denied, but empty cert passed');
+        })
+        .catch((err: ErrorResponse) => {
+          const expectedError: ErrorResponse = {
+            message: "No session found",
+            responseCode: 1401,
+          };
+          expect(err).to.deep.equal(expectedError);
+        });
+    });
+
+    it('it should denied #3', async () => {
+      // TODO : session expired
     });
   });
 
@@ -88,17 +90,18 @@ describe('Security scopes validation middelwere', () => {
     });
 
     it('it should denied any access', async () => {
-      const faksRequest = {
+      const fakeRequest = {
         cookies: {
           session: validSession.userSessionKey,
         },
 				headers: {},
       };
       try {
-        await expressAuthentication(faksRequest as express.Request, 'testScop');
+        await expressAuthentication(fakeRequest as express.Request, 'testScop');
       } catch (err) {
         const expectedError: ErrorResponse = {
-          responseCode: 1401,
+          message: "Unauthorized scope",
+          responseCode: 1403,
         };
         expect(err).to.deep.equal(expectedError);
         return;
@@ -107,16 +110,17 @@ describe('Security scopes validation middelwere', () => {
     });
 
     it('it should denied any access', async () => {
-      const faksRequest = {
+      const fakeRequest = {
         cookies: {
           session: validSession.userSessionKey,
         },
 				headers: {},
       };
       try {
-        await expressAuthentication(faksRequest as express.Request, '');
+        await expressAuthentication(fakeRequest as express.Request, '');
       } catch (err) {
         const expectedError: ErrorResponse = {
+          message: "Internal Error",
           responseCode: 1503,
         };
         expect(err).to.deep.equal(expectedError);

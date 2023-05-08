@@ -12,6 +12,7 @@ import {
 	MinionStatus,
 	ProgressStatus,
 	User,
+	RestrictionItem,
 } from '../models/sharedInterfaces';
 import { ModulesManager, modulesManager } from '../modules/modulesManager';
 import { DeepCopy } from '../utilities/deepCopy';
@@ -319,9 +320,40 @@ export class MinionsBl {
 	}
 
 	/**
+	 * Set minion restrictions
+	 */
+	public async setMinionRestrictions(minionId: string, restrictions: RestrictionItem[]): Promise<void> {
+		const minion = this.findMinion(minionId);
+		if (!minion) {
+			throw {
+				responseCode: 1404,
+				message: 'minion not exist',
+			} as ErrorResponse;
+		}
+
+		const oldMinion = DeepCopy(minion);
+
+		minion.restrictions = restrictions;
+
+		/**
+		 * Save timeout update in Dal for next app running.
+		 */
+		await this.minionsDal.updateMinionRestriction(minionId, restrictions);
+
+		/**
+		 * Send minion feed update
+		 */
+		this.minionFeed.post({
+			event: 'update',
+			minion,
+			oldMinion
+		});
+	}
+
+	/**
 	 * Set minion timeout property.
 	 */
-	public async setMinionTimeout(minionId: string, setAutoTurnOffMS: number): Promise<void> {
+	 public async setMinionTimeout(minionId: string, setAutoTurnOffMS: number): Promise<void> {
 		const minion = this.findMinion(minionId);
 		if (!minion) {
 			throw {

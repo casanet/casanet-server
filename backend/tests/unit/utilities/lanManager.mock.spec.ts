@@ -48,6 +48,6 @@ export const localNetworkDevicesMock: LocalNetworkDevice[] = [
 ];
 
 export const localNetworkReaderMock = async (): Promise<LocalNetworkDevice[]> => {
-  await Delay(moment.duration(1, 'seconds'));
+  await Delay(moment.duration(0.5, 'seconds'));
   return localNetworkDevicesMock;
 };

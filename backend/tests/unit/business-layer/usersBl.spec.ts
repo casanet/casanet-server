@@ -60,14 +60,16 @@ describe('Users BL tests', () => {
       const user = await usersBl.getUser(additionalUser.email);
 
       /** Make sure tha password hashed */
-      if (!bcrypt.compareSync(additionalUser.password, user.password)) {
+      if (!bcrypt.compareSync(additionalUser.password, user.password || '')) {
         throw new Error('Password not hashed correctly');
       }
 
       /** For test other user properties math only */
       user.password = additionalUser.password;
 
-      expect(user).to.deep.equal(additionalUser);
+      const testU = { ...additionalUser };
+      testU.passwordChangeRequired = false;
+      expect(user).to.deep.equal(testU);
     });
   });
 

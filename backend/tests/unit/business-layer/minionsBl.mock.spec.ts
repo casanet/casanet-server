@@ -126,6 +126,7 @@ export class MinionsBlMock {
     this.minionFeed.post({
       event: 'update',
       minion,
+      oldMinion: minion,
     });
   }
 
@@ -154,6 +155,7 @@ export class MinionsBlMock {
     this.minionFeed.post({
       event: 'update',
       minion: originalMinion,
+      oldMinion: originalMinion,
     });
   }
 
@@ -206,6 +208,7 @@ export class MinionsBlMock {
     this.minionFeed.post({
       event: 'created',
       minion,
+      oldMinion: minion,
     });
 
     /**
@@ -245,6 +248,7 @@ export class MinionsBlMock {
     this.minionFeed.post({
       event: 'removed',
       minion: originalMinion,
+      oldMinion: originalMinion,
     });
   }
 }

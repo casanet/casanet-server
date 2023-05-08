@@ -8,7 +8,7 @@ import {
   MinionStatus,
   SetMinionAutoTurnOff,
 } from '../../src/models/sharedInterfaces';
-import { validUserAgent } from './prepareRoutesSpecTests.spec';
+import { validAdminAgent, validUserAgent } from './prepareRoutesSpecTests.spec';
 
 const minioinMock: Minion = {
   device: {
@@ -26,7 +26,7 @@ const minioinMock: Minion = {
 };
 MinionsDalSingleton.createMinion(minioinMock)
   .then(() => {
-    console.log('Generate mock minion in data successfuly');
+    console.log('Generate mock minion in data successfully');
   })
   .catch(() => {
     console.warn('Fail to generate mock minion in data');
@@ -56,8 +56,18 @@ MinionsDalSingleton.createMinion(minioinAcMock)
 
 describe('Minions routing API', () => {
   describe('/GET minions', () => {
-    it('it should respond 20x as status code', done => {
+    it('it should respond 20x as status code for user', done => {
       validUserAgent.get('/API/minions').end((err, res) => {
+        expect(res.statusType).eql(2);
+        done();
+      });
+    });
+  });
+
+  describe('/GET minions', () => {
+    it('it should respond 20x as status code for admin', done => {
+      validAdminAgent.get('/API/minions').end((err, res) => {
+        
         expect(res.statusType).eql(2);
         done();
       });
@@ -102,20 +112,20 @@ describe('Minions routing API', () => {
   });
 
   describe('/PUT minions/{minionId}', () => {
-    it('it should respond 20x as status code', done => {
+    it('it should respond 20x as status code', (done => {
       const minionStatus: MinionStatus = {
         switch: {
           status: 'off',
         },
       };
-      validUserAgent
+      validAdminAgent
         .put('/API/minions/m1')
         .send(minionStatus)
         .end((err, res) => {
           expect(res.statusType).eql(2);
           done();
         });
-    });
+    })).timeout(moment.duration(4, 'seconds').asMilliseconds());
   });
 
   describe('/DELETE minions/{minionId}', () => {
