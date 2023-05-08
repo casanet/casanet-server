@@ -20,17 +20,19 @@ import { MinionsBlSingleton } from '../business-layer/minionsBl';
 import { TimelineBlSingleton } from '../business-layer/timelineBl';
 import {
 	ErrorResponse,
-	Minion,
 	MinionCalibrate,
 	MinionRename,
 	MinionSetDevice,
 	MinionSetRoomName,
 	MinionStatus,
 	MinionTimeline,
+	RestrictionItem,
 	ScanningStatus,
 	SetMinionAutoTurnOff,
+	User,
 	VersionUpdateStatus,
 } from '../models/sharedInterfaces';
+import { MinionsResultsRestriction, MinionsRestriction, MinionSanitation, Minion } from '../security/restrictions';
 import { DeepCopy } from '../utilities/deepCopy';
 
 @Tags('Minions')
@@ -53,6 +55,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ restrictPermission: 'BLOCK', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Get('timeline/{minionId}')
 	public async getMinionTimeline(minionId: string): Promise<MinionTimeline[]> {
 		return await TimelineBlSingleton.getTimeline(minionId);
@@ -61,7 +64,6 @@ export class MinionsController extends Controller {
 	/**
 	 * Power off all minions
 	 */
-	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
 	@Put('power-off')
@@ -72,11 +74,12 @@ export class MinionsController extends Controller {
 	/**
 	 * Update minion name.
 	 * @param minionId Minion id.
-	 * @param name Minion new name to set.
+	 * @param minionRename The new name to set.
 	 */
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Put('rename/{minionId}')
 	public async renameMinion(minionId: string, @Body() minionRename: MinionRename): Promise<void> {
 		return await MinionsBlSingleton.renameMinion(minionId, minionRename.name);
@@ -90,6 +93,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Put('room/{minionId}')
 	public async renameRoom(minionId: string, @Body() roomName: MinionSetRoomName): Promise<void> {
 		return await MinionsBlSingleton.setMinionRoom(minionId, roomName.room);
@@ -103,6 +107,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Put('network-device/{minionId}')
 	public async replaceNetworkDevice(minionId: string, @Body() macToSet: MinionSetDevice): Promise<void> {
 		return await MinionsBlSingleton.replaceNetworkDevice(minionId, macToSet.mac);
@@ -116,6 +121,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Put('timeout/{minionId}')
 	public async setMinionTimeout(minionId: string, @Body() setTimeout: SetMinionAutoTurnOff): Promise<void> {
 		return await MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS);
@@ -129,6 +135,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Put('calibrate/{minionId}')
 	public async setMinionCalibrate(minionId: string, @Body() calibration: MinionCalibrate): Promise<void> {
 		return await MinionsBlSingleton.setMinionCalibrate(minionId, calibration);
@@ -140,6 +147,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Post('rescan/{minionId}')
 	public async rescanMinionStatus(minionId: string): Promise<void> {
 		return await MinionsBlSingleton.scanMinionStatus(minionId);
@@ -173,12 +181,25 @@ export class MinionsController extends Controller {
 	}
 
 	/**
+	 * Set minion access restrictions
+	 * @param minionId Minion id.
+	 * @param restrictions The collection of restriction to set.
+	 */
+	@Security('adminAuth')
+	@Response<ErrorResponse>(501, 'Server error')
+	@Put('restrictions/{minionId}')
+	public async setMinionRestriction(minionId: string, @Body() restrictions: RestrictionItem[]): Promise<void> {
+		return await MinionsBlSingleton.setMinionRestrictions(minionId, restrictions);
+	}
+
+	/**
 	 * Delete minion from the system.
 	 * @param minionId Minion id.
 	 */
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Delete('{minionId}')
 	public async deleteMinion(minionId: string): Promise<void> {
 		return await MinionsBlSingleton.deleteMinion(minionId);
@@ -202,10 +223,12 @@ export class MinionsController extends Controller {
 	 */
 	@Security('userAuth')
 	@Security('adminAuth')
+	@MinionSanitation()
+	@MinionsResultsRestriction((m: Minion) => m.minionId)
 	@Response<ErrorResponse>(501, 'Server error')
 	@Get()
 	public async getMinions(): Promise<Minion[]> {
-		return this.cleanUpMinionsBeforeRelease(await MinionsBlSingleton.getMinions());
+		return await MinionsBlSingleton.getMinions();
 	}
 
 	/**
@@ -214,9 +237,11 @@ export class MinionsController extends Controller {
 	 */
 	@Security('userAuth')
 	@Security('adminAuth')
+	@MinionSanitation()
+	@MinionsRestriction({ restrictPermission: 'BLOCK', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Get('{minionId}')
 	public async getMinion(minionId: string): Promise<Minion> {
-		return this.cleanUpMinionBeforeRelease(await MinionsBlSingleton.getMinionById(minionId));
+		return await MinionsBlSingleton.getMinionById(minionId)
 	}
 
 	/**
@@ -227,31 +252,9 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 1, extractMinionIds: (minionId: string) => minionId })
 	@Put('{minionId}')
 	public async setMinion(@Request() request, minionId: string, @Body() setStatus: MinionStatus): Promise<void> {
 		return await MinionsBlSingleton.setMinionStatus(minionId, setStatus, 'user', request.user);
-	}
-	/**
-	 * NEVER let anyone get device API keys.
-	 * @param minion minion to remove keys from.
-	 */
-	private cleanUpMinionBeforeRelease(minion: Minion): Minion {
-		const minionCopy = DeepCopy<Minion>(minion);
-		// For now, show device id, and only hide the token
-		// delete minionCopy.device.deviceId;
-		delete minionCopy.device.token;
-		return minionCopy;
-	}
-
-	/**
-	 * NEVER let anyone get device API keys.
-	 * @param minions minions to remove keys from.
-	 */
-	private cleanUpMinionsBeforeRelease(minions: Minion[]): Minion[] {
-		const minionsCopy: Minion[] = [];
-		for (const minion of minions) {
-			minionsCopy.push(this.cleanUpMinionBeforeRelease(minion));
-		}
-		return minionsCopy;
 	}
 }

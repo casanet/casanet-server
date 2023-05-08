@@ -53,6 +53,7 @@ export const expressAuthentication = async (
 	if (!securityName) {
 		logger.error('invalid or empty security scope');
 		throw {
+			message: 'Internal Error',
 			responseCode: 1503,
 		} as ErrorResponse;
 	}
@@ -67,6 +68,7 @@ export const expressAuthentication = async (
 	// If the session cookie empty, there is nothing to check.
 	if (!request.cookies[SESSION_COOKIE_NAME]) {
 		throw {
+			message: 'No session found',
 			responseCode: 1401,
 		} as ErrorResponse;
 	}
@@ -81,6 +83,7 @@ export const expressAuthentication = async (
 		if (new Date().getTime() - session.timeStamp > sessionExpiresMs) {
 			await SessionsBlSingleton.deleteSession(session);
 			throw {
+				message: 'Session expired',
 				responseCode: 1401,
 			} as ErrorResponse;
 		}
@@ -94,10 +97,17 @@ export const expressAuthentication = async (
 
 		throw {
 			// throw no permission (403) and not the unauthorized (401) 
+			message: 'Unauthorized scope',
 			responseCode: 1403,
 		} as ErrorResponse;
 	} catch (error) {
+
+		if (error?.responseCode && error?.message) {
+			throw error;
+		}
+	
 		throw {
+			message: 'Authorization failed',
 			responseCode: 1401,
 		} as ErrorResponse;
 	}

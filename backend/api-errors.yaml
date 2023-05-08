@@ -6,6 +6,7 @@
 - { 4403 : 'user not allowed to watch other accounts'}
 - { 5403 : 'invalid device id'}
 - { 6403 : 'user or code invalid'}
+- { 7403 : 'object is restricted to current user'}
 
 - { 1404 : 'minion not exist'}
 - { 2404 : 'device not exist in lan network'}

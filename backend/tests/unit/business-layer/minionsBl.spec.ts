@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
-import { DevicesBl } from '../../../src/business-layer/devicesBl';
+import { DevicesService } from '../../../src/business-layer/devicesBl';
 import { MinionsBl } from '../../../src/business-layer/minionsBl';
 import { DevicesDal } from '../../../src/data-layer/devicesDal';
 import { MinionsDal } from '../../../src/data-layer/minionsDal';
@@ -25,7 +25,7 @@ const devicesDalMock = new DevicesDalMock();
 const modulesManagerMock = new ModulesManagerMock();
 const minionsDalMock = new MinionsDalMock();
 
-const devicesBlMock = new DevicesBl(
+const devicesBlMock = new DevicesService(
   (devicesDalMock as unknown) as DevicesDal,
   localNetworkReaderMock,
   (modulesManagerMock as unknown) as ModulesManager,
@@ -246,7 +246,7 @@ describe('Minions BL tests', () => {
         minionAutoTurnOffMS: 342677771111,
       } as Minion;
 
-      await minionsBl.setMinionTimeout(minionBefor.minionId, minionBefor.minionAutoTurnOffMS);
+      await minionsBl.setMinionTimeout(minionBefor.minionId || '', minionBefor.minionAutoTurnOffMS || 0);
 
       const minionafter = await minionsBl.getMinionById('m2');
 
@@ -259,7 +259,7 @@ describe('Minions BL tests', () => {
         minionAutoTurnOffMS: 845642321,
       } as Minion;
 
-      await minionsBl.setMinionTimeout(minionBefor.minionId, minionBefor.minionAutoTurnOffMS);
+      await minionsBl.setMinionTimeout(minionBefor.minionId || '', minionBefor.minionAutoTurnOffMS || 0);
 
       const minionafter = await minionsDalMock.getMinionById('m2');
 
@@ -273,7 +273,7 @@ describe('Minions BL tests', () => {
       } as Minion;
 
       try {
-        await minionsBl.setMinionTimeout(minionBefor.minionId, minionBefor.minionAutoTurnOffMS);
+        await minionsBl.setMinionTimeout(minionBefor.minionId || '', minionBefor.minionAutoTurnOffMS || 0);
       } catch (error) {
         const expectedError: ErrorResponse = {
           responseCode: 1404,
@@ -324,7 +324,7 @@ describe('Minions BL tests', () => {
 
       const minions = await minionsBl.getMinions();
 
-      let createdMinion: Minion;
+      let createdMinion: Minion = undefined as unknown as Minion;
       for (const minion of minions) {
         if (minion.device.pysicalDevice.mac === minionToCreate.device.pysicalDevice.mac) {
           createdMinion = minion;
@@ -376,7 +376,7 @@ describe('Minions BL tests', () => {
 
       const minions = await minionsBl.getMinions();
 
-      let createdMinion: Minion;
+      let createdMinion: Minion = undefined as any;
       for (const minion of minions) {
         if (minion.device.pysicalDevice.mac === minionToCreate.device.pysicalDevice.mac) {
           createdMinion = minion;
@@ -392,7 +392,7 @@ describe('Minions BL tests', () => {
           temperature: 21,
         },
       };
-      expect(createdMinion.minionStatus).to.be.deep.equal(expectedStatus);
+      expect(createdMinion?.minionStatus).to.be.deep.equal(expectedStatus);
     });
 
     it('it should create minion successfuly', async () => {
@@ -413,7 +413,7 @@ describe('Minions BL tests', () => {
 
       const minions = await minionsBl.getMinions();
 
-      let createdMinion: Minion;
+      let createdMinion: Minion = undefined as any;
       for (const minion of minions) {
         if (minion.device.pysicalDevice.mac === minionToCreate.device.pysicalDevice.mac) {
           createdMinion = minion;
@@ -536,7 +536,7 @@ describe('Minions BL tests', () => {
       } catch (error) {
         const errorResponse: ErrorResponse = {
           responseCode: 2409,
-          message: 'token is requird',
+          message: 'token is required',
         };
 
         expect(error).to.be.deep.equal(errorResponse);
@@ -610,7 +610,7 @@ describe('Minions BL tests', () => {
   describe('Delete minion', () => {
     it('it should delete minion successfuly', async () => {
       const minions = await minionsBl.getMinions();
-      let selectedMinion: Minion;
+      let selectedMinion: Minion = undefined as any;
       for (const minion of minions) {
         if (minion.device.pysicalDevice.mac === '777777bb') {
           selectedMinion = minion;
@@ -620,7 +620,7 @@ describe('Minions BL tests', () => {
       // Needs to copy by val.
       const beforDeleteMonionsCount = minions.length;
 
-      await minionsBl.deleteMinion(selectedMinion.minionId);
+      await minionsBl.deleteMinion(selectedMinion.minionId || '');
 
       const minionsAfterDelete = await minionsBl.getMinions();
       expect(minionsAfterDelete.length).eqls(beforDeleteMonionsCount - 1);
