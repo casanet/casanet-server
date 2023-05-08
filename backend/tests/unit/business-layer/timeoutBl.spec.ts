@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
-import { DevicesBl } from '../../../src/business-layer/devicesBl';
 import { MinionsBl } from '../../../src/business-layer/minionsBl';
 import { TimeoutBl } from '../../../src/business-layer/timeoutBl';
 import {
@@ -26,8 +25,9 @@ describe('Timeout BL tests', () => {
        * specs lib UI.
        */
       try {
-        minionsBlMock.minionFeed.next({
+        minionsBlMock.minionFeed.post({
           event: 'created',
+          oldMinion: {} as any,
           minion: {
             device: {
               brand: 'a',

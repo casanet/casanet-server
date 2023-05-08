@@ -127,6 +127,12 @@ export const MinionsResultsRestriction = <T>(extractMinionId: (data: T) => (stri
         for (const item of result) {
             // Extract the minion
             const minionId = extractMinionId(item);
+
+            // If no minion extracted, just skip it
+            if (!minionId) {
+                continue;
+            }
+        
             const minion = await MinionsBlSingleton.getMinionById(minionId);
 
             // Find the restriction if there is

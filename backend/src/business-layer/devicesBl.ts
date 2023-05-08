@@ -39,7 +39,7 @@ export class DevicesService {
     this.modulesManager = modulesManager;
 
     // Attach subscription to the drivers update regarding device status update. such as battery status etc.
-    this.modulesManager.deviceStatusChangedEvent.attach((deviceUpdate) => {
+    this.modulesManager.deviceStatusChangedEvent?.attach?.((deviceUpdate) => {
       for (const device of this.localDevices) {
         if (device.mac === deviceUpdate.mac) {
           logger.info(`[DevicesService] Updating device "${device.mac}" due to update from driver with new status "${JSON.stringify(deviceUpdate.status)}"`);

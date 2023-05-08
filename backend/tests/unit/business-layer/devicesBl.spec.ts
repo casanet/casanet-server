@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import { assert, expect } from 'chai';
 import * as moment from 'moment';
-import { DevicesBl } from '../../../src/business-layer/devicesBl';
+import { DevicesService } from '../../../src/business-layer/devicesBl';
 import { DevicesDal } from '../../../src/data-layer/devicesDal';
 import {
   DeviceKind,
@@ -20,7 +20,7 @@ import { localNetworkDevicesMock, localNetworkReaderMock } from '../utilities/la
 const devicesDalMock = new DevicesDalMock();
 const modulesManagerMock = new ModulesManagerMock();
 
-const devicesBlMock = new DevicesBl(
+const devicesBlMock = new DevicesService(
   (devicesDalMock as unknown) as DevicesDal,
   localNetworkReaderMock,
   (modulesManagerMock as unknown) as ModulesManager,
@@ -28,7 +28,7 @@ const devicesBlMock = new DevicesBl(
 
 describe('Devices BL tests', () => {
   describe('Get local devices', () => {
-    it('it should get devices succsessfully', async () => {
+    it('it should get devices successfully', async () => {
       /**
        * Befor getting any device, needs to scan network.
        */
@@ -164,7 +164,7 @@ describe('Devices BL tests', () => {
         }
       });
 
-      Delay(moment.duration(1, 'seconds')).then(() => {
+      Delay(moment.duration(0.2, 'seconds')).then(() => {
         devicesBlMock.rescanNetwork();
       });
     });

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { TimingsDalSingleton } from '../../src/data-layer/timingsDal';
 import { Timing } from '../../src/models/sharedInterfaces';
-import { validUserAgent } from './prepareRoutesSpecTests.spec';
+import { validAdminAgent, validUserAgent } from './prepareRoutesSpecTests.spec';
 
 const timingMock: Timing = {
   isActive: true,
@@ -27,6 +27,13 @@ describe('Timings routing API', () => {
   describe('/GET timings', () => {
     it('it should respond 20x as status code', done => {
       validUserAgent.get('/API/timings').end((err, res) => {
+        expect(res.statusType).eql(2);
+        done();
+      });
+    });
+
+    it('it should respond 20x as status code, as admin', done => {
+      validAdminAgent.get('/API/timings').end((err, res) => {
         expect(res.statusType).eql(2);
         done();
       });

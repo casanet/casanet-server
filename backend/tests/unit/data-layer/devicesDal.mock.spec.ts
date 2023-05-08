@@ -26,6 +26,7 @@ export class DevicesDalMock {
         return device;
       }
     }
+    return undefined as unknown as LocalNetworkDevice;
   }
 
   public async getDevices(): Promise<LocalNetworkDevice[]> {
