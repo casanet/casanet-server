@@ -1,6 +1,7 @@
 import { MinionsBlSingleton } from "../business-layer/minionsBl";
 import { ErrorResponse, Minion as InternalMinion, RestrictionItem, RestrictionType, User } from "../models/sharedInterfaces";
 import { DeepCopy } from "../utilities/deepCopy";
+import { logger } from "../utilities/logger";
 
 export interface Minion extends InternalMinion {
     /** True if user has only readonly access to current minion */
@@ -132,16 +133,21 @@ export const MinionsResultsRestriction = <T>(extractMinionId: (data: T) => (stri
             if (!minionId) {
                 continue;
             }
-        
-            const minion = await MinionsBlSingleton.getMinionById(minionId);
 
-            // Find the restriction if there is
-            const restriction = minion?.restrictions?.find(r => r.userEmail === this.request.user.email);
+            try {
+                const minion = await MinionsBlSingleton.getMinionById(minionId);
 
-            // If user have read access, add the minion to the final collection
-            if (restriction?.restrictionType !== 'BLOCK') {
-                filteredMinions.push(item);
+                // Find the restriction if there is
+                const restriction = minion?.restrictions?.find(r => r.userEmail === this.request.user.email);
+
+                // If user have read access, add the minion to the final collection
+                if (restriction?.restrictionType !== 'BLOCK') {
+                    filteredMinions.push(item);
+                }
+            } catch (error) {
+                logger.warn(`[MinionsResultsRestriction] Failed to validate minion "${minionId}" restriction, skipping adding to collection err: ${error?.message}`);
             }
+
         }
 
         return filteredMinions;
