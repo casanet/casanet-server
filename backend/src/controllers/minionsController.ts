@@ -18,6 +18,7 @@ import {
 } from 'tsoa';
 import { MinionsBlSingleton } from '../business-layer/minionsBl';
 import { TimelineBlSingleton } from '../business-layer/timelineBl';
+import { TimeoutBlSingleton } from '../business-layer/timeoutBl';
 import {
 	ErrorResponse,
 	MinionCalibrate,
@@ -26,6 +27,7 @@ import {
 	MinionSetRoomName,
 	MinionStatus,
 	MinionTimeline,
+	MinionTimeout,
 	RestrictionItem,
 	ScanningStatus,
 	SetMinionAutoTurnOff,
@@ -55,11 +57,50 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'BLOCK', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Get('timeline/{minionId}')
 	public async getMinionTimeline(minionId: string): Promise<MinionTimeline[]> {
 		return await TimelineBlSingleton.getTimeline(minionId);
 	}
+
+	/**
+	 * Update minion auto turns off timeout.
+	 */
+	@Security('userAuth')
+	@Security('adminAuth')
+	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsResultsRestriction((m: MinionTimeout) => m.minionId)
+	@Get('timeout')
+	public async getMinionsTimeout(): Promise<MinionTimeout[]> {
+		return await TimeoutBlSingleton.getTimeoutStatus();
+	}
+
+	/**
+	 * URestart minion timeout countdown.
+	 */
+	@Security('userAuth')
+	@Security('adminAuth')
+	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@Post('timeout/restart/{minionId}')
+	public async restartMinionTimeout(minionId: string): Promise<void> {
+		return await TimeoutBlSingleton.restartMinionTimeout(minionId);
+	}
+
+	/**
+	 * Update minion auto turns off timeout.
+	 * @param minionId Minion id.
+	 * @param setTimeout Timeout property.
+	 */
+	@Security('userAuth')
+	@Security('adminAuth')
+	@Response<ErrorResponse>(501, 'Server error')
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@Put('timeout/{minionId}')
+	public async setMinionTimeout(minionId: string, @Body() setTimeout: SetMinionAutoTurnOff): Promise<void> {
+		return await MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS);
+	}
+
 
 	/**
 	 * Power off all minions
@@ -79,7 +120,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Put('rename/{minionId}')
 	public async renameMinion(minionId: string, @Body() minionRename: MinionRename): Promise<void> {
 		return await MinionsBlSingleton.renameMinion(minionId, minionRename.name);
@@ -93,7 +134,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Put('room/{minionId}')
 	public async renameRoom(minionId: string, @Body() roomName: MinionSetRoomName): Promise<void> {
 		return await MinionsBlSingleton.setMinionRoom(minionId, roomName.room);
@@ -107,25 +148,14 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Put('network-device/{minionId}')
 	public async replaceNetworkDevice(minionId: string, @Body() macToSet: MinionSetDevice): Promise<void> {
 		return await MinionsBlSingleton.replaceNetworkDevice(minionId, macToSet.mac);
 	}
 
-	/**
-	 * Update minion auto turns off timeout.
-	 * @param minionId Minion id.
-	 * @param setTimeout Timeout property.
-	 */
-	@Security('userAuth')
-	@Security('adminAuth')
-	@Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
-	@Put('timeout/{minionId}')
-	public async setMinionTimeout(minionId: string, @Body() setTimeout: SetMinionAutoTurnOff): Promise<void> {
-		return await MinionsBlSingleton.setMinionTimeout(minionId, setTimeout.setAutoTurnOffMS);
-	}
+
+
 
 	/**
 	 * Update minion auto turns off timeout.
@@ -135,7 +165,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Put('calibrate/{minionId}')
 	public async setMinionCalibrate(minionId: string, @Body() calibration: MinionCalibrate): Promise<void> {
 		return await MinionsBlSingleton.setMinionCalibrate(minionId, calibration);
@@ -147,7 +177,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Post('rescan/{minionId}')
 	public async rescanMinionStatus(minionId: string): Promise<void> {
 		return await MinionsBlSingleton.scanMinionStatus(minionId);
@@ -199,7 +229,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Delete('{minionId}')
 	public async deleteMinion(minionId: string): Promise<void> {
 		return await MinionsBlSingleton.deleteMinion(minionId);
@@ -238,7 +268,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@MinionSanitation()
-	@MinionsRestriction({ restrictPermission: 'BLOCK', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
 	@Get('{minionId}')
 	public async getMinion(minionId: string): Promise<Minion> {
 		return await MinionsBlSingleton.getMinionById(minionId)
@@ -252,7 +282,7 @@ export class MinionsController extends Controller {
 	@Security('userAuth')
 	@Security('adminAuth')
 	@Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 1, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 1, extractMinionIds: (minionId: string) => minionId })
 	@Put('{minionId}')
 	public async setMinion(@Request() request, minionId: string, @Body() setStatus: MinionStatus): Promise<void> {
 		return await MinionsBlSingleton.setMinionStatus(minionId, setStatus, 'user', request.user);
