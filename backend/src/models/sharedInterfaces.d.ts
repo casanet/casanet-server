@@ -197,6 +197,17 @@ export declare interface DeviceKind {
 }
 
 /**
+ * Minion timeout countdown information
+ */
+export declare interface MinionTimeout {
+	minionId: string;
+	/** IS countdown active */
+	active: boolean;
+	/** EPOCH time when countdown started */
+	countdownTimestamp: number;
+}
+
+/**
  * Scopes of authentication, right know in our system there are only 3 scopes.
  * admin and user. any API route protect by one of them.
  */
@@ -597,14 +608,14 @@ export declare interface MinionSetDevice {
 /**
  * Type of resection of access
  */
-export declare type RestrictionType = 'BLOCK' | 'READ' | 'WRITE'; 
+export declare type RestrictionType = 'BLOCK' | 'READ' | 'WRITE';
 
 export declare interface RestrictionItem {
 	/** The use to restrict */
 	userEmail: string;
 	/** The limited access type to grant user */
 	restrictionType: RestrictionType;
-} 
+}
 
 /**
  * Represents a minion in system.

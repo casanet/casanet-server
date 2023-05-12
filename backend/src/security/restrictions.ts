@@ -9,8 +9,8 @@ export interface Minion extends InternalMinion {
 }
 
 export interface MinionsRestrictionOptions {
-    /** The permission that not allowed by it to authorize access  */
-    restrictPermission: RestrictionType;
+    /** The permission required to access this resource  */
+    requirePermission: RestrictionType;
     /** The function argument index, to extract from it the minion id */
     elementArgIndex: number;
     /** A function to extract from args payload the minion id  */
@@ -24,7 +24,7 @@ export interface MinionsRestrictionOptions {
  * @param restrictPermission The permission that not allowed by it to authorize access
  * @returns The restriction object, if exists and has access.
  */
-async function validateMinionRestriction(user: User, minionId: string, restrictPermission: RestrictionType): Promise<RestrictionItem | undefined> {
+async function validateMinionRestriction(user: User, minionId: string, requirePermission: RestrictionType): Promise<RestrictionItem | undefined> {
     // No restriction applied to admins
     if (user.scope === 'adminAuth') {
         return;
@@ -40,8 +40,8 @@ async function validateMinionRestriction(user: User, minionId: string, restrictP
         return;
     }
 
-    // If user has write access, or action is blocked only for total blocked users, and user has read access
-    if (restriction.restrictionType === 'WRITE' || (restrictPermission === 'BLOCK' && restriction.restrictionType === 'READ')) {
+    // If user has write access, or action is allowed to who that has read access, and use has read access
+    if (restriction.restrictionType === 'WRITE' || (requirePermission === 'READ' && restriction.restrictionType === 'READ')) {
         return restriction;
     }
 
@@ -60,7 +60,7 @@ async function validateMinionRestriction(user: User, minionId: string, restrictP
 async function sanitizeMinion(user: User, minion: Minion): Promise<Minion> {
 
     // First make sure user has no restriction to access read this minion, then get the restriction object belong to the current user
-    const restriction = await validateMinionRestriction(user, minion.minionId, 'BLOCK');
+    const restriction = await validateMinionRestriction(user, minion.minionId, 'READ');
     // Copy the payload
     const minionCopy = DeepCopy<Minion>(minion);
     // For now, show device id, and only hide the token
@@ -84,7 +84,7 @@ async function sanitizeMinion(user: User, minion: Minion): Promise<Minion> {
  * @param options The restriction validator options
  */
 export const MinionsRestriction = (options: MinionsRestrictionOptions) => (target: any, key: string, descriptor: PropertyDescriptor) => {
-    const { restrictPermission: action, elementArgIndex, extractMinionIds } = options;
+    const { requirePermission: action, elementArgIndex, extractMinionIds } = options;
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: any[]) {
 

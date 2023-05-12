@@ -3,6 +3,7 @@ import {
   // tslint:disable-next-line:ordered-imports
   Minion,
   MinionStatus,
+  MinionTimeout,
   Switch,
   SwitchOptions,
   Toggle,
@@ -93,6 +94,26 @@ export class TimeoutBl {
   }
 
   /**
+   * Restart timeout countdown for a minion
+   */
+  public async restartMinionTimeout(minionId: string) {
+    const minionTimeout = this.minionsTimeoutInfo.find(mti => mti.minionId === minionId);
+    minionTimeout!.turnOnTimeStump = new Date();
+  }
+
+  /**
+   * Get all minions timeout countdown state
+   * @returns 
+   */
+  public async getTimeoutStatus(): Promise<MinionTimeout[]> {
+    return this.minionsTimeoutInfo.map(mti => ({
+      minionId: mti?.minionId,
+      active: mti?.status === 'on',
+      countdownTimestamp: mti?.turnOnTimeStump?.getTime(),
+    } as MinionTimeout));
+  }
+
+  /**
    * Get minion info sturuct if exist for given minion id.
    * @param minionId minion id to get info for.
    */
@@ -107,7 +128,7 @@ export class TimeoutBl {
   private async timeoutActivation(): Promise<void> {
 
     // If currently the timeoutActivation in action, ignore other calls
-    if(this.isTimeoutPossessing){
+    if (this.isTimeoutPossessing) {
       return;
     }
 
@@ -232,6 +253,7 @@ export class TimeoutBl {
     const timeoutMinion = this.findMinionInfo(minion.minionId);
     this.minionsTimeoutInfo.splice(this.minionsTimeoutInfo.indexOf(timeoutMinion), 1);
   }
+
 }
 
 export const TimeoutBlSingleton = new TimeoutBl(MinionsBlSingleton);
