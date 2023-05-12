@@ -41,7 +41,7 @@ export class ActionsController extends Controller {
   @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'BLOCK', elementArgIndex: 0, extractMinionIds: async (actionId: string) => (await actionsService.getActionById(actionId)).minionId })
+	@MinionsRestriction({ requirePermission: 'READ', elementArgIndex: 0, extractMinionIds: async (actionId: string) => (await actionsService.getActionById(actionId)).minionId })
   @Get('{actionId}')
   public async getAction(actionId: string): Promise<Action> {
     return await actionsService.getActionById(actionId);
@@ -54,7 +54,7 @@ export class ActionsController extends Controller {
   @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'BLOCK', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
+	@MinionsRestriction({ requirePermission: 'READ', elementArgIndex: 0, extractMinionIds: (minionId: string) => minionId })
   @Get('/minion/{minionId}')
   public async getActionByMinion(minionId: string): Promise<Action[]> {
     return await actionsService.getMinionActions(minionId);
@@ -68,8 +68,8 @@ export class ActionsController extends Controller {
   @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: async (actionId: string) => (await actionsService.getActionById(actionId)).minionId })
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 1, extractMinionIds: (action: Action) => action.minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: async (actionId: string) => (await actionsService.getActionById(actionId)).minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 1, extractMinionIds: (action: Action) => action.minionId })
   @Put('{actionId}')
   public async setAction(actionId: string, @Body() action: Action): Promise<void> {
     return await actionsService.setAction(actionId, action);
@@ -83,7 +83,7 @@ export class ActionsController extends Controller {
   @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: async (actionId: string) => (await actionsService.getActionById(actionId)).minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: async (actionId: string) => (await actionsService.getActionById(actionId)).minionId })
   @Put('set-active/{actionId}')
   public async setActionActive(actionId: string, @Query() active: boolean): Promise<void> {
     return await actionsService.setActionActive(actionId, active);
@@ -96,7 +96,7 @@ export class ActionsController extends Controller {
   @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: async (actionId: string) => (await actionsService.getActionById(actionId)).minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: async (actionId: string) => (await actionsService.getActionById(actionId)).minionId })
   @Delete('{actionId}')
   public async deleteAction(actionId: string): Promise<void> {
     return await actionsService.deleteAction(actionId);
@@ -110,7 +110,7 @@ export class ActionsController extends Controller {
   @Security('userAuth')
   @Security('adminAuth')
   @Response<ErrorResponse>(501, 'Server error')
-	@MinionsRestriction({ restrictPermission: 'READ', elementArgIndex: 0, extractMinionIds: async (action: Action) => action.minionId })
+	@MinionsRestriction({ requirePermission: 'WRITE', elementArgIndex: 0, extractMinionIds: async (action: Action) => action.minionId })
   @Post()
   public async createAction(@Body() action: Action): Promise<Action> {
     return await actionsService.createAction(action);
