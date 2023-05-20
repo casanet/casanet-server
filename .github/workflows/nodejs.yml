@@ -23,13 +23,14 @@ jobs:
           cd ..
           echo $version > version.txt
           echo $version
-          echo ::set-output name=version::$version
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+
     - name: Commit and push changes
       if: github.ref == 'refs/heads/master'
       uses: devops-infra/action-commit-push@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        commit_message: Update to version ${{ steps.update_version.outputs.version }} [skip-ci]
+        commit_message: Update to version ${{ steps.update_version.outputs.VERSION }} [skip-ci]
     - name: Bundle packages
       # NOTE, the default ARMV bin (v16.12.0) not exists in the "https://github.com/vercel/pkg-fetch/releases" page, so download V16.8 and replace name and hash to build using it 
       run: |
@@ -104,74 +105,33 @@ jobs:
         version=$(npm --no-git-tag-version --tag-version-prefix= version patch)
         cd ..
         echo $version > version.txt
-        echo ::set-output name=version::$(cat ./version.txt)
-        echo ::set-output name=title::$( git log -1 --pretty=%B | sed -n '1p')
+        echo "VERSION=$version" >> $GITHUB_OUTPUT
+        title=$(git log -1 --pretty=%B | sed -n '1p')
+        echo "TITLE=$title" >> $GITHUB_OUTPUT
         body=$(git log -1 --pretty=%B | sed 1d)
         body="${body//'%'/'%25'}"
         body="${body//$'\n'/'%0A'}"
         body="${body//$'\r'/'%0D'}"
-        echo ::set-output name=body::$body
+        echo "BODY=$body" >> $GITHUB_OUTPUT
+  
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.get_version.outputs.version }}
-        release_name: ${{  steps.get_version.outputs.title }}
-        body: ${{  steps.get_version.outputs.body }}
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        name: ${{ steps.get_version.outputs.TITLE }}
+        body: ${{ steps.get_version.outputs.BODY }}
         draft: false
         prerelease: true
-    - name: Upload Release Asset - arm
-      id: upload-release-asset_arm
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./casanet_bin/casanet_linux_arm
-        asset_name: casanet_linux_arm
-        asset_content_type: application/octet-stream
-    - name: Upload Release Asset - win
-      id: upload-release-asset_win
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./casanet_bin/casanet_win_x64.exe
-        asset_name: casanet_win_x64.exe
-        asset_content_type: application/octet-stream
-    - name: Upload Release Asset - linux x86
-      id: upload-release-asset_linux86
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./casanet_bin/casanet_linux_x64
-        asset_name: casanet_linux_x64
-        asset_content_type: application/octet-stream
-    - name: Upload Release Asset - conf
-      id: upload-release-asset_conf
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./casanet_bin/casanet.json
-        asset_name: casanet.json
-        asset_content_type: application/octet-stream
-    - name: Upload Release Asset - spec
-      id: upload-release-asset_spec
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./casanet_bin/swagger.json
-        asset_name: swagger.json
-        asset_content_type: application/octet-stream
+        files: |
+          ./casanet_bin/casanet_linux_arm
+          ./casanet_bin/casanet_win_x64.exe
+          ./casanet_bin/casanet_linux_x64
+          ./casanet_bin/casanet.json
+          ./casanet_bin/swagger.json
+
     - name: Upload Spec To Hub # And finally all ready to upload new spec version to swagger hub
       env:
         SWAGGERHUB_API_KEY: '${{ secrets.SWAGGERHUB_API_KEY }}' # Export the SWAGGERHUB_API_KEY secret as environment variable, use to auth publish request

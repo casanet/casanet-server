@@ -69,9 +69,6 @@ For the lightweight interface navigate to `[server-ip/host]/light-app/index.html
 
 > For more details and information about the lightweight interface see [lightweight-dashboard](https://github.com/casanet/lightweight-dashboard) repository.
 
-
-> For the legacy dashboard see [frontend-v3](https://github.com/casanet/frontend-v3) repository.
-
 ## Running Casanet server on a local computer
 
 To make it easy to use there are ready-to-use binaries [here](https://github.com/casanet/casanet-server/releases) just download the binary file (depend on your OS) and the `casanet.json` configuration file and run the executable file.
@@ -198,7 +195,7 @@ Yes, it is possible and it's welcomed! see [modules documentation](./backend/src
 The full specs of API are documented in [SwaggerHub](https://app.swaggerhub.com/apis/haimkastner/casanet-local-server).
 
 
-To try it out against the demo mock server go to [casanet-mock-server docs](https://casanet-mock-server.herokuapp.com/docs/#/)
+To try it out against the demo mock server go to [casanet-mock-server docs](https://demo.remote.casanet.casa/docs/#/)
 
 For a running Casanet server use Swagger UI to make API calls in the `[local server IP]/docs` URL. 
 
@@ -229,10 +226,6 @@ By using this project you agree to the [privacy policy](./docs/privacy-policy.md
 ## License
 
 This application is an open-source code, under the GNU license.
-
-In addition to the GNU terms of the license, any non-personal use requires full credit in a prominent position in the interface including a link to this page and [https://casanet.biz/](https://casanet.biz/)
-
-בנוסף לתנאי הרישיון של GNU, כל שימוש לא אישי מצריך קרדיט מלא במיקום בולט בממשק כולל קישור לעמוד זה ול [https://casanet.biz/](https://casanet.biz/)
 
 ## Credits
 * Logo and UX consulting [Ofek Avergil](https://il.linkedin.com/in/ofek-avergil-348260144).
