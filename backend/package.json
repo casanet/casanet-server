@@ -12,10 +12,8 @@
   "pkg": {
     "assets": [
       "versionInfo.json",
-      "public/**/*",
       "swagger.json",
       "dashboard/**/*",
-      "casaqueue/**/*",
       "docs/**/*"
     ]
   },
