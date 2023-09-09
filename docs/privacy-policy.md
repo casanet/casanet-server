@@ -53,4 +53,4 @@ This policy is effective as of 2021-10-31
 
 **Contact Us**
 
-If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at haim.kastner@gmail.com.
+If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at hello@haim-kastner.com.

@@ -1,0 +1,4838 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"SwitchOptions": {
+				"type": "string",
+				"enum": [
+					"on",
+					"off"
+				],
+				"description": "Switches option"
+			},
+			"Toggle": {
+				"description": "A toggle value, the toggle is on way communicated device,\r\nFor example wall light switches with 433 RF that can turn on or off\r\nbut there is no way to know the real light status if someone changes the light status using physical switch.",
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/SwitchOptions"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Switch": {
+				"description": "A switch status.\r\n Used for simple devices that can be turned on or off. *and minion status is readable*\r\nThe properties same as a toggle, and the difference is logic only (if that status is readable or not).",
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/SwitchOptions"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RollerDirection": {
+				"type": "string",
+				"enum": [
+					"up",
+					"down"
+				],
+				"description": "Roller direction"
+			},
+			"Roller": {
+				"description": "A roller switch status.\r\nA roller is a switch for curtains or blinds (or for any other needs) that can drag up/down or stop.",
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/SwitchOptions"
+					},
+					"direction": {
+						"$ref": "#/components/schemas/RollerDirection",
+						"description": "drag direction"
+					}
+				},
+				"required": [
+					"status",
+					"direction"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CleanerMode": {
+				"type": "string",
+				"enum": [
+					"dock",
+					"clean"
+				],
+				"description": "Cleaner mode"
+			},
+			"FanStrengthOptions": {
+				"type": "string",
+				"enum": [
+					"low",
+					"med",
+					"high",
+					"auto"
+				],
+				"description": "Valid fan strength."
+			},
+			"Cleaner": {
+				"description": "A Cleaner (robot) status.\r\nCleaner is a smart robot for cleaning home.",
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/SwitchOptions"
+					},
+					"mode": {
+						"$ref": "#/components/schemas/CleanerMode",
+						"description": "Cleaner mode"
+					},
+					"fanSpeed": {
+						"$ref": "#/components/schemas/FanStrengthOptions",
+						"description": "Suction strength"
+					}
+				},
+				"required": [
+					"status",
+					"mode",
+					"fanSpeed"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ACModeOptions": {
+				"type": "string",
+				"enum": [
+					"hot",
+					"cold",
+					"dry",
+					"auto"
+				],
+				"description": "Valid AC mode."
+			},
+			"AirConditioning": {
+				"description": "An AC status.",
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/SwitchOptions"
+					},
+					"temperature": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Valid AC temperature. (minimum 16° maximum 30°).",
+						"minimum": 16,
+						"maximum": 30
+					},
+					"mode": {
+						"$ref": "#/components/schemas/ACModeOptions"
+					},
+					"fanStrength": {
+						"$ref": "#/components/schemas/FanStrengthOptions"
+					}
+				},
+				"required": [
+					"status",
+					"temperature",
+					"mode",
+					"fanStrength"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Light": {
+				"description": "A simple light status.\r\nUsed to devices that can chang it's brightness.",
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/SwitchOptions"
+					},
+					"brightness": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Minimum 1% maximum 100% of light brightness.",
+						"minimum": 1,
+						"maximum": 100
+					}
+				},
+				"required": [
+					"status",
+					"brightness"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TemperatureLight": {
+				"description": "A light simple light status.\r\nUsed to devices that can chang also light temperature (warm or cold light).",
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/SwitchOptions"
+					},
+					"brightness": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Minimum 1% maximum 100% of light brightness.",
+						"minimum": 1,
+						"maximum": 100
+					},
+					"temperature": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Spectrum is 1% to warm light and 100% to cold light.",
+						"minimum": 1,
+						"maximum": 100
+					}
+				},
+				"required": [
+					"status",
+					"brightness",
+					"temperature"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ColorLight": {
+				"description": "A light simple light status.\r\nUsed to devices that can change also light color (RGB).",
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/SwitchOptions"
+					},
+					"brightness": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Minimum 1% maximum 100% of light brightness.",
+						"minimum": 1,
+						"maximum": 100
+					},
+					"temperature": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Spectrum is 1% to warm light and 100% to cold light.",
+						"minimum": 1,
+						"maximum": 100
+					},
+					"red": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Minimum 0 maximum 255 from red color.\r\nValid color value. (8 bits number, minimum 0 maximum 255).",
+						"minimum": 0,
+						"maximum": 255
+					},
+					"green": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Minimum 0 maximum 255 from green color.\r\nValid color value. (8 bits number, minimum 0 maximum 255).",
+						"minimum": 0,
+						"maximum": 255
+					},
+					"blue": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Minimum 0 maximum 255 from blue color.\r\nValid color value. (8 bits number, minimum 0 maximum 255).",
+						"minimum": 0,
+						"maximum": 255
+					}
+				},
+				"required": [
+					"status",
+					"brightness",
+					"temperature",
+					"red",
+					"green",
+					"blue"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TemperatureSensor": {
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/SwitchOptions"
+					},
+					"temperature": {
+						"type": "number",
+						"format": "double",
+						"description": "Temperature in celsius (X°)"
+					}
+				},
+				"required": [
+					"status",
+					"temperature"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MinionStatus": {
+				"description": "Minion status, the available values depend on the minion type.",
+				"properties": {
+					"toggle": {
+						"$ref": "#/components/schemas/Toggle"
+					},
+					"switch": {
+						"$ref": "#/components/schemas/Switch"
+					},
+					"roller": {
+						"$ref": "#/components/schemas/Roller"
+					},
+					"cleaner": {
+						"$ref": "#/components/schemas/Cleaner"
+					},
+					"airConditioning": {
+						"$ref": "#/components/schemas/AirConditioning"
+					},
+					"light": {
+						"$ref": "#/components/schemas/Light"
+					},
+					"temperatureLight": {
+						"$ref": "#/components/schemas/TemperatureLight"
+					},
+					"colorLight": {
+						"$ref": "#/components/schemas/ColorLight"
+					},
+					"temperatureSensor": {
+						"$ref": "#/components/schemas/TemperatureSensor"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ActionSet": {
+				"description": "The action set to do on an action trigger",
+				"properties": {
+					"minionId": {
+						"type": "string",
+						"description": "The minion to set"
+					},
+					"setStatus": {
+						"$ref": "#/components/schemas/MinionStatus",
+						"description": "The status to set to the minion"
+					}
+				},
+				"required": [
+					"minionId",
+					"setStatus"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ActionApply": {
+				"type": "string",
+				"enum": [
+					"statusChange",
+					"permanent"
+				],
+				"description": "The triggers types.\r\n- 'statusChange' to invoke only on status change, but allow change later the status\r\n- 'permanent' at while the status of the minion of action trigger still on the triggered status, force the action, always."
+			},
+			"Action": {
+				"description": "An action to trigger some minion/s status in case minion has some status",
+				"properties": {
+					"actionId": {
+						"type": "string",
+						"description": "The action id"
+					},
+					"minionId": {
+						"type": "string",
+						"description": "The minion where his status will trigger this action set"
+					},
+					"active": {
+						"type": "boolean",
+						"description": "Whenever the action is active"
+					},
+					"name": {
+						"type": "string",
+						"description": "Free text, as the action name"
+					},
+					"ifStatus": {
+						"$ref": "#/components/schemas/MinionStatus",
+						"description": "The minion status that will trigger this action set"
+					},
+					"thenSet": {
+						"items": {
+							"$ref": "#/components/schemas/ActionSet"
+						},
+						"type": "array",
+						"description": "The actions set to invoke in case of this action trigger"
+					},
+					"apply": {
+						"$ref": "#/components/schemas/ActionApply",
+						"description": "The trigger to apply the action"
+					}
+				},
+				"required": [
+					"actionId",
+					"minionId",
+					"active",
+					"ifStatus",
+					"thenSet",
+					"apply"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ErrorResponse": {
+				"description": "Error response.",
+				"properties": {
+					"responseCode": {
+						"type": "number",
+						"format": "double",
+						"description": "error code in system."
+					},
+					"message": {
+						"type": "string",
+						"description": "Readable message."
+					}
+				},
+				"required": [
+					"responseCode"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Login": {
+				"description": "Login schema model.",
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"localServerId": {
+						"type": "string",
+						"description": "Optional for remote request forwards only"
+					}
+				},
+				"required": [
+					"email",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LoginMfa": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"mfa": {
+						"type": "string"
+					},
+					"localServerId": {
+						"type": "string",
+						"description": "Optional for remote request forwards only"
+					}
+				},
+				"required": [
+					"email",
+					"mfa"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CollectionItem": {
+				"properties": {
+					"itemId": {
+						"type": "string",
+						"description": "The item id, can be minion, timing, device etc"
+					}
+				},
+				"required": [
+					"itemId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Collection": {
+				"description": "An collection of items, can be used for view aggregation of any item/s in the system",
+				"properties": {
+					"collectionId": {
+						"type": "string",
+						"description": "The action id"
+					},
+					"collectionName": {
+						"type": "string",
+						"description": "The trigger to apply the action"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/CollectionItem"
+						},
+						"type": "array",
+						"description": "The collection items"
+					}
+				},
+				"required": [
+					"collectionId",
+					"collectionName",
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"DeviceStatus": {
+				"properties": {
+					"battery": {
+						"type": "number",
+						"format": "double",
+						"description": "The battery power, if relevant, in %."
+					},
+					"charging": {
+						"type": "boolean",
+						"description": "Is the device in charging mode"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LocalNetworkDevice": {
+				"description": "Represents any physical device in a local network.",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Display name."
+					},
+					"mac": {
+						"type": "string",
+						"description": "The MAC address of the device, the value is unique to each device."
+					},
+					"vendor": {
+						"type": "string",
+						"description": "Info about device manufacturer."
+					},
+					"ip": {
+						"type": "string",
+						"description": "The device IP address, if exist it should be unique in network."
+					},
+					"deviceStatus": {
+						"$ref": "#/components/schemas/DeviceStatus",
+						"description": "The physical devices status, such as internal temp, battery etc."
+					}
+				},
+				"required": [
+					"mac"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MinionTypes": {
+				"type": "string",
+				"enum": [
+					"toggle",
+					"switch",
+					"temperatureSensor",
+					"roller",
+					"cleaner",
+					"airConditioning",
+					"light",
+					"temperatureLight",
+					"colorLight"
+				],
+				"description": "Supported minions types."
+			},
+			"DeviceKind": {
+				"description": "For each supported device, there are limitations and abilities of it.",
+				"properties": {
+					"brand": {
+						"type": "string",
+						"description": "The brand of the current minion type. (see device model)."
+					},
+					"model": {
+						"type": "string",
+						"description": "The specific model of minion type. (see device model)."
+					},
+					"minionsPerDevice": {
+						"type": "number",
+						"format": "double",
+						"description": "The max minions that can be in one device, or -1 if unlimited.\r\nFor example, a simple smart socket can be 1 minion per device,\r\nWall switch with 3 switches can be 3 minions per device,\r\nAnd IR transmitter can be unlimited minions per device."
+					},
+					"isTokenRequired": {
+						"type": "boolean",
+						"description": "Is the device require a token for communication API."
+					},
+					"isIdRequired": {
+						"type": "boolean",
+						"description": "Is device require id for communication API."
+					},
+					"supportedMinionType": {
+						"$ref": "#/components/schemas/MinionTypes",
+						"description": "Supported minion type for the current device."
+					},
+					"isRecordingSupported": {
+						"type": "boolean",
+						"description": "Some of the devices supported recording (for example IR transmitter)."
+					},
+					"isFetchCommandsAvailable": {
+						"type": "boolean",
+						"description": "Whenever the device and module supported fetching commands data from \r\nthe https://github.com/casanet/rf-commands-repo project"
+					}
+				},
+				"required": [
+					"brand",
+					"model",
+					"minionsPerDevice",
+					"isTokenRequired",
+					"isIdRequired",
+					"supportedMinionType",
+					"isRecordingSupported",
+					"isFetchCommandsAvailable"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"FeedEvent": {
+				"type": "string",
+				"enum": [
+					"created",
+					"update",
+					"removed"
+				],
+				"description": "Feed update type enum."
+			},
+			"MinionDevice": {
+				"description": "Represents a physical device kind with network info.",
+				"properties": {
+					"pysicalDevice": {
+						"$ref": "#/components/schemas/LocalNetworkDevice",
+						"description": "The physical network device."
+					},
+					"brand": {
+						"type": "string",
+						"description": "The brand of device."
+					},
+					"model": {
+						"type": "string",
+						"description": "The specific model of the device."
+					},
+					"token": {
+						"type": "string",
+						"description": "Some devices require a token for communication API."
+					},
+					"deviceId": {
+						"type": "string",
+						"description": "Some devices require id for communication API."
+					}
+				},
+				"required": [
+					"pysicalDevice",
+					"brand",
+					"model"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CalibrationMode": {
+				"type": "string",
+				"enum": [
+					"LOCK_ON",
+					"LOCK_OFF",
+					"SHABBAT",
+					"AUTO",
+					"LOCK_DASHBOARD"
+				]
+			},
+			"MinionCalibrate": {
+				"description": "Used to change the minion calibration property value.",
+				"properties": {
+					"calibrationCycleMinutes": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Minutes to calibrate status, set 0 to turn off calibration",
+						"minimum": 0
+					},
+					"calibrationMode": {
+						"$ref": "#/components/schemas/CalibrationMode",
+						"description": "The calibration mode to calibrate"
+					}
+				},
+				"required": [
+					"calibrationCycleMinutes",
+					"calibrationMode"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RestrictionType": {
+				"type": "string",
+				"enum": [
+					"BLOCK",
+					"READ",
+					"WRITE"
+				],
+				"description": "Type of resection of access"
+			},
+			"RestrictionItem": {
+				"properties": {
+					"userEmail": {
+						"type": "string",
+						"description": "The use to restrict"
+					},
+					"restrictionType": {
+						"$ref": "#/components/schemas/RestrictionType",
+						"description": "The limited access type to grant user"
+					}
+				},
+				"required": [
+					"userEmail",
+					"restrictionType"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Minion": {
+				"description": "Represents a minion in system.\r\nMinion is a logic device in the system, meaning that a device is a physical device and minion is a logic device\r\nthat uses a physical device to switch home kit status. For example, an IR transmitter can be one physical device\r\nfor a few minions, one to central AC control and second for secondary AC control\r\nso in it will be two totally different minions that use one physical device.",
+				"properties": {
+					"minionId": {
+						"type": "string",
+						"description": "Minion unique id."
+					},
+					"name": {
+						"type": "string",
+						"description": "The display name for a minion."
+					},
+					"device": {
+						"$ref": "#/components/schemas/MinionDevice",
+						"description": "Physical device of minion."
+					},
+					"isProperlyCommunicated": {
+						"type": "boolean",
+						"description": "Is communication with device status ok."
+					},
+					"minionStatus": {
+						"$ref": "#/components/schemas/MinionStatus",
+						"description": "Status of minion (based on minion type)."
+					},
+					"minionType": {
+						"$ref": "#/components/schemas/MinionTypes",
+						"description": "Minion type."
+					},
+					"minionAutoTurnOffMS": {
+						"type": "number",
+						"format": "double",
+						"description": "Auto turns  off duration, *if* set member value then the minion will turn off in X ms after turning it on,\r\nUsed for example in boiler minion etc."
+					},
+					"calibration": {
+						"$ref": "#/components/schemas/MinionCalibrate",
+						"description": "Calibrate the physical device with the server known status, in a periodic cycle,\r\nand allow locking the status."
+					},
+					"room": {
+						"type": "string",
+						"description": "Represents the room where the minion is located at."
+					},
+					"statusChangedTime": {
+						"type": "number",
+						"format": "double",
+						"description": "Last status change timestamp in UTC MS"
+					},
+					"restrictions": {
+						"items": {
+							"$ref": "#/components/schemas/RestrictionItem"
+						},
+						"type": "array",
+						"description": "The restriction of access on this minion"
+					}
+				},
+				"required": [
+					"name",
+					"device",
+					"minionStatus",
+					"minionType"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MinionChangeTrigger": {
+				"type": "string",
+				"enum": [
+					"user",
+					"device",
+					"timeout",
+					"timing",
+					"action",
+					"lock",
+					"sync",
+					"rotation",
+					"external"
+				],
+				"description": "The minion status change triggers"
+			},
+			"AuthScopes": {
+				"type": "string",
+				"enum": [
+					"adminAuth",
+					"userAuth"
+				],
+				"description": "Scopes of authentication, right know in our system there are only 3 scopes.\r\nadmin and user. any API route protect by one of them."
+			},
+			"User": {
+				"description": "Represents a user in the system.",
+				"properties": {
+					"displayName": {
+						"type": "string",
+						"description": "Name"
+					},
+					"email": {
+						"type": "string",
+						"description": "User email"
+					},
+					"password": {
+						"type": "string",
+						"description": "User password."
+					},
+					"ignoreTfa": {
+						"type": "boolean",
+						"description": "Ignore 2-step verification on login or not."
+					},
+					"scope": {
+						"$ref": "#/components/schemas/AuthScopes",
+						"description": "User scopes."
+					},
+					"passwordChangeRequired": {
+						"type": "boolean",
+						"description": "Whenever the user required to set new password, during default password usage, password expiration, etc."
+					}
+				},
+				"required": [
+					"email",
+					"ignoreTfa",
+					"scope"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MinionFeed": {
+				"description": "Minion feed object.",
+				"properties": {
+					"event": {
+						"$ref": "#/components/schemas/FeedEvent"
+					},
+					"minion": {
+						"$ref": "#/components/schemas/Minion"
+					},
+					"oldMinion": {
+						"$ref": "#/components/schemas/Minion"
+					},
+					"trigger": {
+						"$ref": "#/components/schemas/MinionChangeTrigger"
+					},
+					"user": {
+						"$ref": "#/components/schemas/User"
+					}
+				},
+				"required": [
+					"event",
+					"minion",
+					"oldMinion"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OperationActivity": {
+				"description": "Represents activity.",
+				"properties": {
+					"minionId": {
+						"type": "string",
+						"description": "Minion id to set"
+					},
+					"minionStatus": {
+						"$ref": "#/components/schemas/MinionStatus",
+						"description": "Status to set to minion."
+					}
+				},
+				"required": [
+					"minionId",
+					"minionStatus"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TimingTypes": {
+				"type": "string",
+				"enum": [
+					"dailySunTrigger",
+					"dailyTimeTrigger",
+					"once",
+					"timeout"
+				],
+				"description": "Supported timings types."
+			},
+			"SunTriggerOptions": {
+				"type": "string",
+				"enum": [
+					"sunrise",
+					"sunset"
+				],
+				"description": "Sun triggers."
+			},
+			"DaysOptions": {
+				"type": "string",
+				"enum": [
+					"sunday",
+					"monday",
+					"tuesday",
+					"wednesday",
+					"thursday",
+					"friday",
+					"saturday"
+				],
+				"description": "Days in week."
+			},
+			"DailySunTrigger": {
+				"description": "Daily timing based on sun triggers.",
+				"properties": {
+					"days": {
+						"items": {
+							"$ref": "#/components/schemas/DaysOptions"
+						},
+						"type": "array",
+						"description": "Selected days in a week."
+					},
+					"durationMinutes": {
+						"type": "number",
+						"format": "double",
+						"description": "Minutes from the sun trigger.\r\ncan be before or after the sun triggers.\r\nFor example, to invoke 40 minutes before sunset set -40 and to invoke 40 minutes after sunset set 40.\r\n\r\nNOTE! if the duration is more then minutes available in the day from the sun trigger time, the timing will not activate.\r\nfor example if the sunset is in 18:00 and the duration set to 7*60 minutes,\r\nthe activate time is not on the same day, so it will not activate at all."
+					},
+					"sunTrigger": {
+						"$ref": "#/components/schemas/SunTriggerOptions",
+						"description": "Sun trigger."
+					}
+				},
+				"required": [
+					"days",
+					"durationMinutes",
+					"sunTrigger"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"DailyTimeTrigger": {
+				"description": "Daily timing based on time in a day.",
+				"properties": {
+					"days": {
+						"items": {
+							"$ref": "#/components/schemas/DaysOptions"
+						},
+						"type": "array",
+						"description": "Selected days in a week."
+					},
+					"hour": {
+						"type": "integer",
+						"format": "int32",
+						"description": "The hour in a day.",
+						"minimum": 0,
+						"maximum": 23
+					},
+					"minutes": {
+						"type": "integer",
+						"format": "int32",
+						"description": "Minutes in an hour.",
+						"minimum": 0,
+						"maximum": 59
+					}
+				},
+				"required": [
+					"days",
+					"hour",
+					"minutes"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OnceTiming": {
+				"description": "Once timing structure.",
+				"properties": {
+					"date": {
+						"type": "number",
+						"format": "double",
+						"description": "UTC time."
+					}
+				},
+				"required": [
+					"date"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TimeoutTiming": {
+				"description": "Timeout timing structure.",
+				"properties": {
+					"startDate": {
+						"type": "number",
+						"format": "double",
+						"description": "UTC time."
+					},
+					"durationInMinutes": {
+						"type": "number",
+						"format": "double",
+						"description": "Duration to activate timing from the start timeout time in minutes."
+					}
+				},
+				"required": [
+					"startDate",
+					"durationInMinutes"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TimingProperties": {
+				"description": "Timing properties, values depend on timing type.",
+				"properties": {
+					"dailySunTrigger": {
+						"$ref": "#/components/schemas/DailySunTrigger"
+					},
+					"dailyTimeTrigger": {
+						"$ref": "#/components/schemas/DailyTimeTrigger"
+					},
+					"once": {
+						"$ref": "#/components/schemas/OnceTiming"
+					},
+					"timeout": {
+						"$ref": "#/components/schemas/TimeoutTiming"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Timing": {
+				"description": "Represents a timing in the system.",
+				"properties": {
+					"timingId": {
+						"type": "string",
+						"description": "Timing unique id."
+					},
+					"timingName": {
+						"type": "string",
+						"description": "Timing display name."
+					},
+					"triggerOperationId": {
+						"type": "string",
+						"description": "Operation id to invoke (optional)."
+					},
+					"triggerDirectAction": {
+						"$ref": "#/components/schemas/OperationActivity",
+						"description": "Allow (optional) to trigger (only) one minion directly"
+					},
+					"isActive": {
+						"type": "boolean",
+						"description": "Is timing active or not."
+					},
+					"timingType": {
+						"$ref": "#/components/schemas/TimingTypes",
+						"description": "The timing type."
+					},
+					"timingProperties": {
+						"$ref": "#/components/schemas/TimingProperties",
+						"description": "The timing properties."
+					},
+					"setLock": {
+						"$ref": "#/components/schemas/CalibrationMode",
+						"description": "Lock the status that changed by the timing (default false)"
+					},
+					"overrideLock": {
+						"type": "boolean",
+						"description": "Override lock, if exists (default false)"
+					}
+				},
+				"required": [
+					"timingId",
+					"isActive",
+					"timingType",
+					"timingProperties"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OperationResult": {
+				"description": "Operation result s, hold set minion status result per minion.",
+				"properties": {
+					"minionId": {
+						"type": "string",
+						"description": "Minion Id."
+					},
+					"error": {
+						"$ref": "#/components/schemas/ErrorResponse",
+						"description": "Set a minion status results. (undefined if sets successfully)."
+					}
+				},
+				"required": [
+					"minionId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TimingFeed": {
+				"description": "Timing feed object.",
+				"properties": {
+					"timing": {
+						"$ref": "#/components/schemas/Timing"
+					},
+					"results": {
+						"items": {
+							"$ref": "#/components/schemas/OperationResult"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"timing",
+					"results"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MinionTimeline": {
+				"description": "Minion timeline node",
+				"properties": {
+					"minionId": {
+						"type": "string"
+					},
+					"timestamp": {
+						"type": "number",
+						"format": "double"
+					},
+					"status": {
+						"$ref": "#/components/schemas/MinionStatus"
+					},
+					"trigger": {
+						"$ref": "#/components/schemas/MinionChangeTrigger"
+					},
+					"user": {
+						"properties": {
+							"email": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"email",
+							"name"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"minionId",
+					"timestamp",
+					"status",
+					"trigger"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MinionTimeout": {
+				"description": "Minion timeout countdown information",
+				"properties": {
+					"minionId": {
+						"type": "string"
+					},
+					"active": {
+						"type": "boolean",
+						"description": "IS countdown active"
+					},
+					"countdownTimestamp": {
+						"type": "number",
+						"format": "double",
+						"description": "EPOCH time when countdown started"
+					}
+				},
+				"required": [
+					"minionId",
+					"active",
+					"countdownTimestamp"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SetMinionAutoTurnOff": {
+				"description": "Used to change the minion auto turn off the timeout value.",
+				"properties": {
+					"setAutoTurnOffMS": {
+						"type": "number",
+						"format": "double",
+						"description": "The timeout duration in ms, to turn off set 0 as valse."
+					}
+				},
+				"required": [
+					"setAutoTurnOffMS"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MinionRename": {
+				"description": "Used to rename minion.",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "The new name to set."
+					}
+				},
+				"required": [
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MinionSetRoomName": {
+				"description": "Used to set minion room name.",
+				"properties": {
+					"room": {
+						"type": "string",
+						"description": "The new room name to set."
+					}
+				},
+				"required": [
+					"room"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MinionSetDevice": {
+				"description": "Used to set minion physical device.",
+				"properties": {
+					"mac": {
+						"type": "string",
+						"description": "The device mac to set."
+					}
+				},
+				"required": [
+					"mac"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ProgressStatus": {
+				"type": "string",
+				"enum": [
+					"inProgress",
+					"finished",
+					"fail"
+				],
+				"description": "Long-time job status"
+			},
+			"ScanningStatus": {
+				"description": "Scanning progress status",
+				"properties": {
+					"scanningStatus": {
+						"$ref": "#/components/schemas/ProgressStatus"
+					}
+				},
+				"required": [
+					"scanningStatus"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Operation": {
+				"description": "Represents an operation in the system.\r\nAn operation is a set of activities to do.\r\nFor example, to turn on all home light operation\r\nsets an array of activity for each light in the home to set light status 'on'.",
+				"properties": {
+					"operationId": {
+						"type": "string",
+						"description": "Operation unique id."
+					},
+					"operationName": {
+						"type": "string",
+						"description": "Operation display name."
+					},
+					"activities": {
+						"items": {
+							"$ref": "#/components/schemas/OperationActivity"
+						},
+						"type": "array",
+						"description": "Activities array."
+					}
+				},
+				"required": [
+					"operationId",
+					"operationName",
+					"activities"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CommandsRepoDevice": {
+				"description": "Device in commands repo project. see https://github.com/casanet/rf-commands-repo. API section",
+				"properties": {
+					"brand": {
+						"type": "string"
+					},
+					"model": {
+						"type": "string"
+					},
+					"category": {
+						"$ref": "#/components/schemas/MinionTypes"
+					}
+				},
+				"required": [
+					"brand",
+					"model",
+					"category"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RemoteConnectionStatus": {
+				"type": "string",
+				"enum": [
+					"notConfigured",
+					"cantReachRemoteServer",
+					"authorizationFail",
+					"localServerDisconnected",
+					"connectionOK"
+				],
+				"description": "Optional status on a remote connection"
+			},
+			"RemoteSettings": {
+				"description": "Remote server settings.",
+				"properties": {
+					"host": {
+						"type": "string",
+						"description": "hostname / IP of the remote server"
+					},
+					"connectionKey": {
+						"type": "string",
+						"description": "Access key for authorization local server in the remote server"
+					},
+					"blockLogsFetchByRemote": {
+						"type": "boolean",
+						"description": "Prevent remote server from feting logs"
+					}
+				},
+				"required": [
+					"host",
+					"connectionKey"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserForwardAuth": {
+				"properties": {
+					"code": {
+						"type": "string",
+						"description": "Generated code that sent to user email account",
+						"minLength": 6,
+						"maxLength": 6
+					}
+				},
+				"required": [
+					"code"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateResults": {
+				"description": "Update version results",
+				"properties": {
+					"alreadyUpToDate": {
+						"type": "boolean",
+						"description": "Application already in the latest version"
+					}
+				},
+				"required": [
+					"alreadyUpToDate"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VersionUpdateStatus": {
+				"description": "Version update progress status",
+				"properties": {
+					"updateStatus": {
+						"$ref": "#/components/schemas/ProgressStatus"
+					}
+				},
+				"required": [
+					"updateStatus"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VersionInfo": {
+				"description": "Version info",
+				"properties": {
+					"version": {
+						"type": "string",
+						"description": "Latest version (Git Tag) name"
+					},
+					"commitHash": {
+						"type": "string",
+						"description": "Current local master/HEAD commit hash"
+					},
+					"timestamp": {
+						"type": "number",
+						"format": "double",
+						"description": "Time stamp of HEAD commit in UTC format"
+					}
+				},
+				"required": [
+					"version",
+					"commitHash",
+					"timestamp"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {
+			"userAuth": {
+				"type": "apiKey",
+				"name": "authentication",
+				"in": "header"
+			},
+			"adminAuth": {
+				"type": "apiKey",
+				"name": "authentication",
+				"in": "header"
+			}
+		}
+	},
+	"info": {
+		"title": "casanet-local-server",
+		"version": "4.0.2",
+		"description": "IoT server for local home network - Server side",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {
+			"name": "Haim Kastner",
+			"email": "hello@haim-kastner.com",
+			"url": "https://github.com/casanet/casanet-server"
+		}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/actions": {
+			"get": {
+				"operationId": "GetActions",
+				"responses": {
+					"200": {
+						"description": "Actions array.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Action"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all the actions in the system.",
+				"tags": [
+					"Actions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateAction",
+				"responses": {
+					"200": {
+						"description": "The created action",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Action"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new action.",
+				"tags": [
+					"Actions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"description": "The new action to create.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Action"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/actions/{actionId}": {
+			"get": {
+				"operationId": "GetAction",
+				"responses": {
+					"200": {
+						"description": "Action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Action"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get action by id.",
+				"tags": [
+					"Actions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "actionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetAction",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update action properties.",
+				"tags": [
+					"Actions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Action id.",
+						"in": "path",
+						"name": "actionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Action object to update to.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Action"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteAction",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete action from the system.",
+				"tags": [
+					"Actions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Action id.",
+						"in": "path",
+						"name": "actionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/actions/minion/{minionId}": {
+			"get": {
+				"operationId": "GetActionByMinion",
+				"responses": {
+					"200": {
+						"description": "Action.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Action"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get minion's actions.",
+				"tags": [
+					"Actions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/actions/set-active/{actionId}": {
+			"put": {
+				"operationId": "SetActionActive",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Set action active mode",
+				"tags": [
+					"Actions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "The action to set",
+						"in": "path",
+						"name": "actionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "The mode to set",
+						"in": "query",
+						"name": "active",
+						"required": true,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
+			}
+		},
+		"/auth/login": {
+			"post": {
+				"operationId": "Login",
+				"responses": {
+					"201": {
+						"description": "2-factors code sent"
+					},
+					"204": {
+						"description": "No content"
+					},
+					"403": {
+						"description": "Auth fail",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Invalid schema",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Login.",
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Login"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/login/tfa": {
+			"post": {
+				"operationId": "LoginTfa",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"403": {
+						"description": "Auth fail",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Invalid schema",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "2-step verification login.",
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LoginMfa"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/logout": {
+			"post": {
+				"operationId": "Logout",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Logout manually from the system.",
+				"tags": [
+					"Authentication"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/auth/logout-sessions/{userId}": {
+			"post": {
+				"operationId": "LogoutSessions",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Logout from all activate sessions.",
+				"tags": [
+					"Authentication"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/backup": {
+			"get": {
+				"operationId": "GetSettingsBackup",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the current server data as a ZIP file",
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/collections": {
+			"get": {
+				"operationId": "GetCollections",
+				"responses": {
+					"200": {
+						"description": "Collections array.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Collection"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all the collections in the system.",
+				"tags": [
+					"Collections"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateCollection",
+				"responses": {
+					"200": {
+						"description": "The created collection",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Collection"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new collection.",
+				"tags": [
+					"Collections"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"description": "The new collection to create.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Collection"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}": {
+			"get": {
+				"operationId": "GetCollection",
+				"responses": {
+					"200": {
+						"description": "Collection.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Collection"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get collection by id.",
+				"tags": [
+					"Collections"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "collectionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetCollection",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update collection properties.",
+				"tags": [
+					"Collections"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Collection id.",
+						"in": "path",
+						"name": "collectionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Collection object to update to.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Collection"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteCollection",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete collection from the system.",
+				"tags": [
+					"Collections"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Collection id.",
+						"in": "path",
+						"name": "collectionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/devices": {
+			"get": {
+				"operationId": "GetDevices",
+				"responses": {
+					"200": {
+						"description": "Local network devices array.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/LocalNetworkDevice"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all devices in the local network.",
+				"tags": [
+					"Devices"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/devices/kinds": {
+			"get": {
+				"operationId": "GetDevicesKinds",
+				"responses": {
+					"200": {
+						"description": "Local network devices array.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/DeviceKind"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all supported devices kind info.",
+				"tags": [
+					"Devices"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/devices/{deviceMac}": {
+			"put": {
+				"operationId": "SetDeviceName",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Set name to a device.",
+				"tags": [
+					"Devices"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Device mac address.",
+						"in": "path",
+						"name": "deviceMac",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LocalNetworkDevice"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/devices/rescan": {
+			"post": {
+				"operationId": "RescanDevices",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Rescan all devices in LAN.\r\nUsed when there are changes in the local network.\r\nFor example, if the router (DHCP server) change IP's of devices or new device connect to the local network etc.",
+				"tags": [
+					"Devices"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/feed/minions": {
+			"get": {
+				"operationId": "GetMinionsFeed",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MinionFeed"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Minions feed.\r\nwhen minion status changed minion created etc.",
+				"tags": [
+					"Feeds"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/feed/timings": {
+			"get": {
+				"operationId": "GetTimingFeed",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TimingFeed"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Timing feed.\r\nwhen timing activated.",
+				"tags": [
+					"Feeds"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/logs": {
+			"get": {
+				"operationId": "GetLastLogs",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the last logs of the local-server (download as text file)",
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/minions/timeline": {
+			"get": {
+				"operationId": "GetMinionsTimeline",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/MinionTimeline"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the timeline of minions status.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/minions/timeline/{minionId}": {
+			"get": {
+				"operationId": "GetMinionTimeline",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/MinionTimeline"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the timeline of minions status.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/minions/timeout": {
+			"get": {
+				"operationId": "GetMinionsTimeout",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/MinionTimeout"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update minion auto turns off timeout.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/minions/timeout/restart/{minionId}": {
+			"post": {
+				"operationId": "RestartMinionTimeout",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "URestart minion timeout countdown.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/minions/timeout/{minionId}": {
+			"put": {
+				"operationId": "SetMinionTimeout",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update minion auto turns off timeout.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minion id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Timeout property.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SetMinionAutoTurnOff"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/minions/power-off": {
+			"put": {
+				"operationId": "PowerAllOff",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Power off all minions",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/minions/rename/{minionId}": {
+			"put": {
+				"operationId": "RenameMinion",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update minion name.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minion id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "The new name to set.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MinionRename"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/minions/room/{minionId}": {
+			"put": {
+				"operationId": "RenameRoom",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update minion room name.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minion id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Minion room name to set.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MinionSetRoomName"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/minions/network-device/{minionId}": {
+			"put": {
+				"operationId": "ReplaceNetworkDevice",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Replace physical device of given minion.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minion id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Device mac address to replace to.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MinionSetDevice"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/minions/calibrate/{minionId}": {
+			"put": {
+				"operationId": "SetMinionCalibrate",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update minion auto turns off timeout.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minion id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MinionCalibrate"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/minions/rescan/{minionId}": {
+			"post": {
+				"operationId": "RescanMinionStatus",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Recheck minion device status (update server status cache).",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/minions/rescan": {
+			"post": {
+				"operationId": "RescanMinionsStatus",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Recheck every minion device status (update server status cache).\r\nNote that this is not the devices scan!\r\nThis scanning only checks every minion API to know the current status.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Whenever scan also the local networks IP's map or not",
+						"in": "query",
+						"name": "scanNetwork",
+						"required": false,
+						"schema": {
+							"default": false,
+							"type": "boolean"
+						}
+					}
+				]
+			},
+			"get": {
+				"operationId": "GetSescaningMinionsStatus",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ScanningStatus"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the current scanning status",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/minions/restrictions/{minionId}": {
+			"put": {
+				"operationId": "SetMinionRestriction",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Set minion access restrictions",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minion id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "The collection of restriction to set.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/RestrictionItem"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/minions/{minionId}": {
+			"delete": {
+				"operationId": "DeleteMinion",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete minion from the system.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minion id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"get": {
+				"operationId": "GetMinion",
+				"responses": {
+					"200": {
+						"description": "Minion.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Minion"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get minion by id.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetMinion",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update minion status.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minion id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Minion status to set.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MinionStatus"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/minions": {
+			"post": {
+				"operationId": "CreateMinion",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new minion.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"description": "The new minion to create.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Minion"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetMinions",
+				"responses": {
+					"200": {
+						"description": "Minions array.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Minion"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all minions in the system.",
+				"tags": [
+					"Minions"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/operations": {
+			"get": {
+				"operationId": "GetOperations",
+				"responses": {
+					"200": {
+						"description": "Operations array.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Operation"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all operations in the system.",
+				"tags": [
+					"Operations"
+				],
+				"deprecated": true,
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateOperation",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new operation.",
+				"tags": [
+					"Operations"
+				],
+				"deprecated": true,
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"description": "The new operation to create.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Operation"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/operations/{operationId}": {
+			"get": {
+				"operationId": "GetOperation",
+				"responses": {
+					"200": {
+						"description": "Operation.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Operation"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get operation by id.",
+				"tags": [
+					"Operations"
+				],
+				"deprecated": true,
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "operationId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetOperation",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update operation properties.",
+				"tags": [
+					"Operations"
+				],
+				"deprecated": true,
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "OperationId id.",
+						"in": "path",
+						"name": "operationId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Operation object to update to.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Operation"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteOperation",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete operation from the system.",
+				"tags": [
+					"Operations"
+				],
+				"deprecated": true,
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Operation id.",
+						"in": "path",
+						"name": "operationId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/operations/trigger/{operationId}": {
+			"post": {
+				"operationId": "TriggerOperation",
+				"responses": {
+					"200": {
+						"description": "Array of minions set status errors (if any).",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/OperationResult"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Invoke operation.",
+				"tags": [
+					"Operations"
+				],
+				"deprecated": true,
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Operation id.",
+						"in": "path",
+						"name": "operationId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/rf/devices": {
+			"get": {
+				"operationId": "GetCommandsRepoAvailableDevices",
+				"responses": {
+					"200": {
+						"description": "supported devices collection.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/CommandsRepoDevice"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all aupported devices in commands repo see https://github.com/casanet/rf-commands-repo API.",
+				"tags": [
+					"RF"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/rf/fetch-commands/{minionId}": {
+			"put": {
+				"operationId": "FetchDeviceCommandsToMinion",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Fetch commands set for certain minion see https://github.com/casanet/rf-commands-repo API.",
+				"tags": [
+					"RF"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "minion to fetch commands for.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "devices commands set to fetch.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CommandsRepoDevice"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/rf/record/{minionId}": {
+			"post": {
+				"operationId": "RecordMinionCommand",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Record a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status.",
+				"tags": [
+					"RF"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minon id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Minion object status to get command for.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MinionStatus"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/rf/generate/{minionId}": {
+			"post": {
+				"operationId": "GenerateMinionCommand",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Generate a command (IR, 433-RF or any other supported RF tech)\r\nfor current minion status.",
+				"tags": [
+					"RF"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Minon id.",
+						"in": "path",
+						"name": "minionId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Minion object status to generate command for.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MinionStatus"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/remote": {
+			"get": {
+				"operationId": "GetRemoteHost",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get remote server host/IP.\r\nor empty if not set.",
+				"tags": [
+					"Remote"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "SetRemoteSettings",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Connect to remote server with given remote settings.",
+				"tags": [
+					"Remote"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/RemoteSettings"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "RemoveRemoteSettings",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Remove and disconnect remote server connection.",
+				"tags": [
+					"Remote"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/remote/status": {
+			"get": {
+				"operationId": "GetConnectionStatus",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/RemoteConnectionStatus"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get connection status to remote status.",
+				"tags": [
+					"Remote"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/remote/machine-mac": {
+			"get": {
+				"operationId": "GetMachineMac",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get local casa-server machine mac address.\r\nUsed when creating a new local server in a remote server.",
+				"tags": [
+					"Remote"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/timings": {
+			"get": {
+				"operationId": "GetTimings",
+				"responses": {
+					"200": {
+						"description": "Timings array.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Timing"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all the timings in the system.",
+				"tags": [
+					"Timings"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateTiming",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new timing.",
+				"tags": [
+					"Timings"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"description": "The new timing to create.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Timing"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/timings/{timingId}": {
+			"get": {
+				"operationId": "GetTiming",
+				"responses": {
+					"200": {
+						"description": "Timing.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Timing"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get timing by id.",
+				"tags": [
+					"Timings"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "timingId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetTiming",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update timing properties.",
+				"tags": [
+					"Timings"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Timing id.",
+						"in": "path",
+						"name": "timingId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Timing object to update to.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Timing"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteTiming",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete timing from the system.",
+				"tags": [
+					"Timings"
+				],
+				"security": [
+					{
+						"userAuth": []
+					},
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "Timing id.",
+						"in": "path",
+						"name": "timingId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/users/profile": {
+			"get": {
+				"operationId": "GetProfile",
+				"responses": {
+					"200": {
+						"description": "User.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get user profile.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/users/forward-auth/{userId}": {
+			"post": {
+				"operationId": "RequestUserForwarding",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Request registration code.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "User id/email to send code to.",
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/users/forward": {
+			"get": {
+				"operationId": "GetRegisteredUsers",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"type": "string"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get registered users for forwarding from remote to local.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/users/forward/{userId}": {
+			"post": {
+				"operationId": "RequestUserForwardingAuth",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Register account to allow forward HTTP requests from remote to local server.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "User id/email to register.",
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserForwardAuth"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "RemoveUserForwarding",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Remove account from local server valid account to forward from remote to local",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "User id/email to unregister.",
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/users": {
+			"get": {
+				"operationId": "GetUsers",
+				"responses": {
+					"200": {
+						"description": "Users array.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/User"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all users in the system.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateUser",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Creates a new user.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"description": "The new user to create.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/User"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/users/{userId}": {
+			"get": {
+				"operationId": "GetUser",
+				"responses": {
+					"200": {
+						"description": "User.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get user by id.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "SetUser",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update user properties.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "User id.",
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "User object to update to.",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/User"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteUser",
+				"responses": {
+					"204": {
+						"description": "No content"
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete user from the system.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"description": "User id.",
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/version/latest": {
+			"put": {
+				"operationId": "UpdateVersion",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UpdateResults"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update Casanet application to the latest version (Restart required for the version update complete).",
+				"tags": [
+					"Version"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/version/update-status": {
+			"get": {
+				"operationId": "GetUpdateStatus",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/VersionUpdateStatus"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get current version update progress status",
+				"tags": [
+					"Version"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/version": {
+			"get": {
+				"operationId": "GetCurrentVersion",
+				"responses": {
+					"200": {
+						"description": "Current version.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/VersionInfo"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get current version.",
+				"tags": [
+					"Version"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/version/is-up-date": {
+			"get": {
+				"operationId": "IsLatestVersion",
+				"responses": {
+					"200": {
+						"description": "Empty if latest, if not the version name.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"501": {
+						"description": "Server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Detect if the current version is last, and if not return the latest version.",
+				"tags": [
+					"Version"
+				],
+				"security": [
+					{
+						"adminAuth": []
+					},
+					{
+						"userAuth": []
+					}
+				],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/API"
+		}
+	]
+}

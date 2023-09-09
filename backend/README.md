@@ -37,7 +37,14 @@ Also in the [casanet.json](./casanet.json) file, you can edit the configuration 
 
 #### Default user
 
-The default user placed in the [casanet.json](./casanet.json) configuration file, but the password for the default user is the machine mac address.
+The default user placed in the [casanet.json](./casanet.json) configuration file, the password for the default user is the machine mac address.
+
+To see the default password in the first boot of the service, in logs/output you should see the following line:
+
+```
+[warn] There is no ANY user in system, using the default user places in the 'casanet.json' configuration file to allow first time access, the default user password is:
+```
+
 This password is insecure and will marked as "need to be replaced", so an alert will shown in the UI dashboard till the admin will set a new valid password.
 
 The reason for using the machine mac as default pass, is to the default user password less vulnerable, the only owner of the machine should know the machine address.
