@@ -20,7 +20,7 @@ import { Delay, sleep } from '../../utilities/sleep';
 import { BrandModuleBase } from '../brandModuleBase';
 import * as broadlink from 'node-broadlink';
 import Device from 'node-broadlink/dist/device';
-import { Rmpro, Sp2  } from 'node-broadlink';
+import { Rmpro, Sp2 } from 'node-broadlink';
 import { Duration, Temperature } from 'unitsnet-js';
 
 // tslint:disable-next-line:no-var-requires
@@ -175,7 +175,7 @@ export class BroadlinkHandler extends BrandModuleBase {
   /** Get broadlink protocol handler instance for given minion */
   private async getBroadlinkInstance(minion: Minion): Promise<Device | ErrorResponse> {
     try {
-      const list : Device[] = await broadlink.discover();
+      const list: Device[] = await broadlink.discover();
 
       logger.info(`[BroadlinkModule.getBroadlinkInstance] Devices founded ${list.map(i => toNormalMac(i.mac)).join(',')}`);
 
@@ -202,9 +202,17 @@ export class BroadlinkHandler extends BrandModuleBase {
   }
 
   /** Send RF/IR command */
-  private async sendBeamCommand(broadlink: Rmpro, beamCommand: string): Promise<void> {
+  private async sendBeamCommand(broadlink: Rmpro, beamCommand: string | string[]): Promise<void> {
     try {
-      await broadlink.sendData(beamCommand);
+
+      if (typeof beamCommand === 'string') {
+        await broadlink.sendData(beamCommand);
+      } else {
+        for (const command of beamCommand) {
+          await broadlink.sendData(command);
+        }
+      }
+
     } catch (error) {
       logger.error(` ${error?.message}`);
       throw {

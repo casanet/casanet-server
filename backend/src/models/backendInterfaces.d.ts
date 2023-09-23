@@ -122,27 +122,27 @@ export declare class IDataIO {
 
 /** AC particular status command  */
 export declare interface AirConditioningCommand {
-  command: string;
+  command: string | string [];
   status: AirConditioning;
 }
 
 /** Toggle commands set */
 export declare interface ToggleCommands {
-  on: string;
-  off: string;
+  on: string | string [];
+  off: string | string [];
 }
 
 /** Ac commands set */
 export declare interface AcCommands {
-  off: string;
+  off: string | string [];
   statusCommands: AirConditioningCommand[];
 }
 
 /** Roller commands set */
 export declare interface RollerCommands {
-  off: string;
-  up: string;
-  down: string;
+  off: string | string [];
+  up: string | string [];
+  down: string | string [];
 }
 
 /** RF (IR/433MHz etc.) commands set based of device type */
