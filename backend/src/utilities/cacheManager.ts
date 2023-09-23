@@ -110,7 +110,7 @@ export class CommandsCacheManager extends CacheManager {
     return minionCache.lastStatus;
   }
 
-  public async getRFToggleCommand(minion: Minion, status: MinionStatus): Promise<string | ErrorResponse> {
+  public async getRFToggleCommand(minion: Minion, status: MinionStatus): Promise<string | string [] | ErrorResponse> {
 
     const minionCache = this.getOrCreateMinionCache(minion);
 
@@ -134,7 +134,7 @@ export class CommandsCacheManager extends CacheManager {
     return hexCommandCode;
   }
 
-  public async getRFRollerCommand(minion: Minion, status: MinionStatus): Promise<string | ErrorResponse> {
+  public async getRFRollerCommand(minion: Minion, status: MinionStatus): Promise<string | string [] | ErrorResponse> {
 
     const minionCache = this.getOrCreateMinionCache(minion);
 
@@ -162,7 +162,7 @@ export class CommandsCacheManager extends CacheManager {
     return hexCommandCode;
   }
 
-  public async getIrCommand(minion: Minion, setStatus: MinionStatus): Promise<string | ErrorResponse> {
+  public async getIrCommand(minion: Minion, setStatus: MinionStatus): Promise<string | string [] | ErrorResponse> {
 
     const minionCache = this.getOrCreateMinionCache(minion);
 
@@ -173,7 +173,7 @@ export class CommandsCacheManager extends CacheManager {
       } as ErrorResponse;
     }
 
-    let hexCommandCode: string;
+    let hexCommandCode: string | string [];
 
     /**
      * If the request is to set off, get the off command.
@@ -193,7 +193,7 @@ export class CommandsCacheManager extends CacheManager {
     if (!hexCommandCode) {
       throw {
         responseCode: 4503,
-        message: 'there is no availble command for current status. record a new command.',
+        message: 'there is no available command for current status. record a new command.',
       } as ErrorResponse;
     }
 
@@ -206,7 +206,7 @@ export class CommandsCacheManager extends CacheManager {
     await this.saveCache();
   }
 
-  public async cacheIRACommand(minion: Minion, statusToRecordFor: MinionStatus, hexIRCommand: string): Promise<void | ErrorResponse> {
+  public async cacheIRACommand(minion: Minion, statusToRecordFor: MinionStatus, hexIRCommand: string | string[]): Promise<void | ErrorResponse> {
 
     const minionCache = this.getOrCreateMinionCache(minion);
 
@@ -234,7 +234,7 @@ export class CommandsCacheManager extends CacheManager {
     await this.saveCache();
   }
 
-  public async cacheRFRollerCommand(minion: Minion, statusToRecordFor: MinionStatus, hexRfCommand: string): Promise<void | ErrorResponse> {
+  public async cacheRFRollerCommand(minion: Minion, statusToRecordFor: MinionStatus, hexRfCommand: string | string[]): Promise<void | ErrorResponse> {
 
     const minionCache = this.getOrCreateMinionCache(minion);
 
