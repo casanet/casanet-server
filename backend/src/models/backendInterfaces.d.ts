@@ -135,6 +135,7 @@ export declare interface ToggleCommands {
 /** Ac commands set */
 export declare interface AcCommands {
   off: string | string [];
+  on?: string | string [];
   statusCommands: AirConditioningCommand[];
 }
 

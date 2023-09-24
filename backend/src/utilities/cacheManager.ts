@@ -196,6 +196,18 @@ export class CommandsCacheManager extends CacheManager {
         message: 'there is no available command for current status. record a new command.',
       } as ErrorResponse;
     }
+  
+    // If there is a unique command for on mode, and now device is off, append "on" command/s to the top of command/s array 
+    if (minionCache.acCommands.on
+      && minionCache?.lastStatus?.airConditioning?.status === 'off') {
+        if (typeof hexCommandCode === 'string') {
+          hexCommandCode = [hexCommandCode];
+        }
+        const onCommand = typeof minionCache.acCommands.on === 'string' ? [minionCache.acCommands.on] : minionCache.acCommands.on;
+        hexCommandCode.unshift(...onCommand);
+    }
+  
+   
 
     return hexCommandCode;
   }
