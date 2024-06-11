@@ -6141,10 +6141,10 @@ unique-string@^1.0.0:
   dependencies:
     crypto-random-string "^1.0.0"
 
-unitsnet-js@^1.0.42:
-  version "1.0.42"
-  resolved "https://registry.yarnpkg.com/unitsnet-js/-/unitsnet-js-1.0.42.tgz#a21046a8c20ac04718389ace6a643aea165906f5"
-  integrity sha512-NN5qOnLpg5rC/DoLf+5GSSldNtGvfTGli37dijGedLj2t70Wt8CgGpkNd544NohCTcaL07zEDOq5lSrDQVXzEQ==
+unitsnet-js@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/unitsnet-js/-/unitsnet-js-3.0.5.tgz#8e6796edffec045630705a329a00befd1d492d89"
+  integrity sha512-aYQ1wauYsvrmUI82GpLpOydNdxHUKdZvyU+O8c63Uhp0db5oxe7o3lU20WqtrboaKm8ORhaEpSGVjzDPeFhqvg==
 
 universalify@^0.1.0:
   version "0.1.2"
