@@ -53,11 +53,11 @@ jobs:
         npm run bundle
         cp dist/generated/swagger.json ../casanet_bin/swagger.json
         cp -v bundle/* ../casanet_bin
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: casanet_bin 
         path: casanet_bin
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: swagger-spec 
         path: backend/dist/generated/swagger.json
