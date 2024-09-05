@@ -23,6 +23,7 @@ import { exec } from 'child-process-promise';
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
+import * as ip from 'ip';
 import { Configuration } from './config';
 import { logger } from './utilities/logger';
 import { app } from './app';
@@ -66,6 +67,7 @@ async function initServices() {
     logger.info(`[home-iot-server] ------------------- Initializing HTTP server... -------------------`);
     http.createServer(app).listen(Configuration.http.httpPort, () => {
       logger.info(`[home-iot-server] ------------------- Initializing HTTP server on port ${Configuration.http.httpPort} succeed -------------------`);
+      logger.info(`[home-iot-server] ------------------- Swagger UI http:${ip.address()}:${Configuration.http.httpPort}/docs -------------------`);
     });
 
     // SSL/HTTPS
@@ -84,6 +86,7 @@ async function initServices() {
 
         https.createServer(sslOptions, app).listen(Configuration.http.httpsPort, () => {
           logger.info(`[home-iot-server] ------------------- Initializing HTTPS server on port ${Configuration.http.httpPort} succeed -------------------`);
+          logger.info(`[home-iot-server] ------------------- Swagger UI https:${ip.address()}:${Configuration.http.httpPort}/docs -------------------`);
         });
       } catch (error) {
         logger.error(`Failed to load SSL certificate ${error}, exit...`);

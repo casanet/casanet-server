@@ -41,7 +41,7 @@ export class CasanetMqttDriver extends MqttBaseDriver {
 
   public async convertMqttMessage(topic: string, data: string): Promise<ParsedMqttMessage> {
     const topics = topic.split('/');
-    const minionId = topics[1];
+    const minionId = topics[2];
 
     const minions = await this.retrieveMinions.pull();
 
